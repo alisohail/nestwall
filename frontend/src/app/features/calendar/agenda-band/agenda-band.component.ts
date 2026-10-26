@@ -1,7 +1,6 @@
 import { Component, DestroyRef, HostListener, OnChanges, OnInit, SimpleChanges, WritableSignal, computed, inject, input, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { CalendarService } from '../calendar.service';

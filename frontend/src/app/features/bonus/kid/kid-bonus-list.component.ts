@@ -70,7 +70,7 @@ export function kidBonusErrorKey(err: unknown): string {
 }
 
 /** Cards a child can still act on. */
-const LIVE_STATES: ReadonlyArray<KidBonusState> = ['open', 'once', 'mine'];
+const LIVE_STATES: readonly KidBonusState[] = ['open', 'once', 'mine'];
 
 /** Shows the child's bonus tasks for today. Used as a section on Today and as the Bonus tab on Tasks. */
 @Component({

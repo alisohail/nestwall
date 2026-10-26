@@ -1,4 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { getTranslocoTestingModule } from '../../../core/transloco/transloco-testing.module';
@@ -39,7 +40,11 @@ describe('RemovePersonConfirmComponent', () => {
     tasks = jasmine.createSpyObj<TasksService>('TasksService', ['get', 'removePerson']);
     TestBed.configureTestingModule({
       imports: [RemovePersonConfirmComponent, getTranslocoTestingModule()],
-      providers: [{ provide: TasksService, useValue: tasks }],
+      providers: [
+        { provide: TasksService, useValue: tasks },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
   });
 

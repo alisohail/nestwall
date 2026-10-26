@@ -4,9 +4,14 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
 import { SetupComponent } from './setup.component';
-import { SetupService } from '../../core/setup/setup.service';
+import { SetupService, SetupParentResponse } from '../../core/setup/setup.service';
 
 describe('SetupComponent', () => {
+  const parentResponse: SetupParentResponse = {
+    family_id: 'f1',
+    message: '',
+    user: { id: 'u1', user_id: 'u1', display_name: 'Parent', is_child: false },
+  };
   let fixture: ComponentFixture<SetupComponent>;
   let component: SetupComponent;
   let setupSpy: jasmine.SpyObj<SetupService>;
@@ -60,7 +65,7 @@ describe('SetupComponent', () => {
   });
 
   it('should send the email with the parent account', () => {
-    setupSpy.createParent.and.returnValue(of({ family_id: 'f1', user_id: 'u1' } as any));
+    setupSpy.createParent.and.returnValue(of(parentResponse));
 
     component.start();
     fillValidAccount();
@@ -133,7 +138,7 @@ describe('SetupComponent', () => {
   });
 
   it('should call createParent and advance to step 3 on success', () => {
-    setupSpy.createParent.and.returnValue(of({ family_id: 'f1', user_id: 'u1' } as any));
+    setupSpy.createParent.and.returnValue(of(parentResponse));
 
     component.start();
     fillValidAccount();
@@ -160,7 +165,7 @@ describe('SetupComponent', () => {
 
   it('should navigate to /login from step 3', () => {
     // Jump directly to step 3
-    (component.step as any).set(3);
+    component.step.set(3);
     component.goToLogin();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
@@ -186,7 +191,7 @@ describe('SetupComponent', () => {
 
     it('should upload the archive with the passphrase and wait for restart on success', () => {
       setupSpy.restoreFirstRun.and.returnValue(of({ restarting: true }));
-      setupSpy.live.and.returnValue(of({ status: 'ok' } as any));
+      setupSpy.live.and.returnValue(of({ status: 'ok' }));
       const file = new File(['zip'], 'backup.zip', { type: 'application/zip' });
 
       component.openRestore();

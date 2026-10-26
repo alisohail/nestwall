@@ -68,10 +68,6 @@ describe('MemberEditComponent', () => {
     fixture.detectChanges();
   }
 
-  function setMembers(list: MemberDetail[]): void {
-    familySpy.listMembers.and.returnValue(of({ members: list }));
-  }
-
   beforeEach(async () => {
     familySpy = jasmine.createSpyObj<FamilyService>('FamilyService', ['listMembers', 'listRoles', 'updateMember']);
     familySpy.listMembers.and.returnValue(of({ members: [sam, ava, nana] }));

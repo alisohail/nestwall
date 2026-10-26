@@ -123,6 +123,7 @@ describe('BonusNewComponent', () => {
   it('should block publish and not call the API when no kid is chosen', async () => {
     await build();
     typeInto('[data-testid="bonus-title"]', 'Wash the car');
+    click('[data-testid="bonus-kid-k1"]');
     click('[data-testid="bonus-publish"]');
     expect(api.create).not.toHaveBeenCalled();
     expect(fixture.nativeElement.textContent).toContain('Choose at least one child');
@@ -139,7 +140,6 @@ describe('BonusNewComponent', () => {
   it('should publish a valid task with the chosen kid and defaults', async () => {
     await build();
     typeInto('[data-testid="bonus-title"]', '  Wash the car  ');
-    click('[data-testid="bonus-kid-k1"]');
     click('[data-testid="bonus-publish"]');
     await fixture.whenStable();
     expect(api.create).toHaveBeenCalledWith({
@@ -170,7 +170,6 @@ describe('BonusNewComponent', () => {
     );
     await build();
     typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-    click('[data-testid="bonus-kid-k1"]');
     click('[data-testid="bonus-publish"]');
     const body = api.create.calls.mostRecent().args[0];
     expect(body.points).toBe(25);
@@ -188,7 +187,6 @@ describe('BonusNewComponent', () => {
     );
     await build();
     typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-    click('[data-testid="bonus-kid-k1"]');
     click('[data-testid="bonus-publish"]');
     expect(api.create.calls.mostRecent().args[0].ends_at).toBeNull();
   });
@@ -196,7 +194,6 @@ describe('BonusNewComponent', () => {
   it('should publish for tomorrow when that day is chosen', async () => {
     await build();
     typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-    click('[data-testid="bonus-kid-k1"]');
     click('[data-testid="bonus-day-tomorrow"]');
     click('[data-testid="bonus-publish"]');
     expect(api.create.calls.mostRecent().args[0].day).toBe('2026-10-14');
@@ -206,7 +203,6 @@ describe('BonusNewComponent', () => {
     familyZone = 'America/New_York';
     await build();
     typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-    click('[data-testid="bonus-kid-k1"]');
     typeInto('[data-testid="bonus-show"]', '09:00');
     typeInto('[data-testid="bonus-ends"]', '18:30');
     click('[data-testid="bonus-publish"]');
@@ -218,7 +214,6 @@ describe('BonusNewComponent', () => {
   it('should block an end time before the show time', async () => {
     await build();
     typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-    click('[data-testid="bonus-kid-k1"]');
     typeInto('[data-testid="bonus-show"]', '10:00');
     typeInto('[data-testid="bonus-ends"]', '09:00');
     click('[data-testid="bonus-publish"]');
@@ -229,7 +224,6 @@ describe('BonusNewComponent', () => {
   it('should send everyone_once when that mode is chosen', async () => {
     await build();
     typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-    click('[data-testid="bonus-kid-k1"]');
     click('[data-testid="bonus-mode-everyone-once"]');
     click('[data-testid="bonus-publish"]');
     expect(api.create.calls.mostRecent().args[0].claim_mode).toBe('everyone_once');
@@ -273,7 +267,6 @@ describe('BonusNewComponent', () => {
     expect(el<HTMLTextAreaElement>('[data-testid="bonus-description"]')?.value).toBe('Use the hose');
     expect(el<HTMLInputElement>('[data-testid="bonus-points"]')?.value).toBe('25');
     expect(el<HTMLInputElement>('[data-testid="bonus-approval"]')?.checked).toBeFalse();
-    click('[data-testid="bonus-kid-k1"]');
     click('[data-testid="bonus-publish"]');
     expect(api.create.calls.mostRecent().args[0].template_id).toBe('tpl-car');
     expect(api.create.calls.mostRecent().args[0].points).toBe(25);

@@ -43,8 +43,8 @@ export class ColourPickerComponent implements ControlValueAccessor {
     return `conic-gradient(${[...colours, colours[0]].join(', ')})`;
   });
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {};
+  private onChange: (value: string) => void = () => undefined;
+  private onTouched: () => void = () => undefined;
 
   writeValue(value: string | null): void {
     this.value.set(value ?? '');

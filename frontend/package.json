@@ -38,7 +38,9 @@
     "@types/jasmine": "^5.1.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.0.0",
+    "angular-eslint": "18.4.3",
     "axe-core": "^4.14.0",
+    "eslint": "^9.15.0",
     "jasmine-core": "^5.4.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
@@ -47,7 +49,8 @@
     "karma-jasmine-html-reporter": "^2.3.0",
     "stylelint": "^16.0.0",
     "stylelint-config-standard-scss": "^13.0.0",
-    "typescript": "~5.4.0"
+    "typescript": "~5.4.0",
+    "typescript-eslint": "8.16.0"
   },
   "allowScripts": {
     "esbuild@0.23.0": true,

@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { getTranslocoTestingModule } from '../../../core/transloco/transloco-testing.module';
@@ -97,6 +99,8 @@ describe('EventDialogComponent', () => {
       providers: [
         { provide: CalendarService, useValue: calendar },
         { provide: FamilyService, useValue: family },
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   });

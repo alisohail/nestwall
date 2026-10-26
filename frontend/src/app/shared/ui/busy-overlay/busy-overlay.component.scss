@@ -4,6 +4,6 @@
   z-index: var(--nw-z-dialog);
   display: grid;
   place-items: center;
-  background: rgb(0 0 0 / 0.35);
+  background: var(--nw-color-scrim-soft);
   cursor: progress;
 }

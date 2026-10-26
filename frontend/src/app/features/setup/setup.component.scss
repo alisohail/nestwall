@@ -295,7 +295,7 @@ h2 {
 .restart-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--nw-z-overlay);
   display: flex;
   flex-direction: column;
   align-items: center;

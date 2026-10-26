@@ -11,7 +11,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ChecklistItem, Task, TaskStatus } from '../../tasks/tasks.models';
 import { TaskConfirmComponent } from '../../tasks/task-confirm/task-confirm.component';
 import { TasksService } from '../../tasks/tasks.service';
-import { addDaysIso, formatDay, taskErrorKey, todayIso } from '../../tasks/tasks.format';
+import { formatDay, taskErrorKey, todayIso } from '../../tasks/tasks.format';
 import { MyTasksService } from '../my-tasks.service';
 
 /** One task copy for the child: its steps, a tick for each step, and the "I'm done!" button. */

@@ -56,16 +56,16 @@
 
 /* Dawn and dusk warm the sky, and night gets a darker sky with light text. */
 .wx-card[data-part='dawn'] {
-  background: linear-gradient(170deg, color-mix(in srgb, #ffb38a 38%, transparent), transparent 65%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
+  background: linear-gradient(170deg, color-mix(in srgb, var(--nw-color-weather-dawn) 38%, transparent), transparent 65%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
 }
 
 .wx-card[data-part='dusk'] {
-  background: linear-gradient(170deg, color-mix(in srgb, #ff7a59 30%, transparent), color-mix(in srgb, #6a3fa0 22%, transparent) 75%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
+  background: linear-gradient(170deg, color-mix(in srgb, var(--nw-color-weather-dusk) 30%, transparent), color-mix(in srgb, var(--nw-color-weather-dusk-deep) 22%, transparent) 75%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
 }
 
 .wx-card[data-part='night'] {
-  --nw-color-on-weather: #eef3ff;
-  background: linear-gradient(160deg, #1d2a57, #2a2150 80%);
+  --nw-color-on-weather: var(--nw-color-on-weather-night);
+  background: linear-gradient(160deg, var(--nw-color-weather-night-top), var(--nw-color-weather-night-bottom) 80%);
 }
 
 .wx-scene[data-scene='storm'] {
@@ -98,8 +98,8 @@
   height: 300px;
   border-radius: 50%;
   background: repeating-conic-gradient(from 0deg, transparent 0deg 12deg, color-mix(in srgb, var(--nw-color-weather-sun) 16%, transparent) 12deg 18deg);
-  -webkit-mask: radial-gradient(circle, #000 20%, transparent 70%);
-  mask: radial-gradient(circle, #000 20%, transparent 70%);
+  -webkit-mask: radial-gradient(circle, black 20%, transparent 70%);
+  mask: radial-gradient(circle, black 20%, transparent 70%);
   animation: wxs-spin 60s linear infinite;
 }
 
@@ -108,7 +108,7 @@
 }
 
 .wx-scene[data-scene='sun'][data-part='night'] .wx-sun {
-  background: radial-gradient(circle, rgba(235, 242, 255, 0.5) 0%, rgba(235, 242, 255, 0.5) 22%, transparent 66%);
+  background: radial-gradient(circle, var(--nw-color-moon-glow) 0%, var(--nw-color-moon-glow) 22%, transparent 66%);
 }
 
 .wx-scene[data-scene='sun'][data-part='night'] .wx-rays {
