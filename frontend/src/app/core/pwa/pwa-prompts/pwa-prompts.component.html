@@ -1,0 +1,23 @@
+@if (updateReady()) {
+  <aside class="pwa-prompt" role="region" aria-labelledby="pwa-update-title" data-testid="pwa-update-prompt">
+    <div class="text">
+      <h2 id="pwa-update-title">{{ 'pwa.update_title' | transloco }}</h2>
+      <p class="muted">{{ 'pwa.update_body' | transloco }}</p>
+    </div>
+    <div class="foot">
+      <button type="button" class="btn ghost" data-testid="pwa-update-dismiss" (click)="dismissUpdate()">{{ 'pwa.dismiss' | transloco }}</button>
+      <button type="button" class="btn primary" data-testid="pwa-update-reload" (click)="reload()">{{ 'pwa.update' | transloco }}</button>
+    </div>
+  </aside>
+} @else if (installAvailable()) {
+  <aside class="pwa-prompt" role="region" aria-labelledby="pwa-install-title" data-testid="pwa-install-prompt">
+    <div class="text">
+      <h2 id="pwa-install-title">{{ 'pwa.install_title' | transloco }}</h2>
+      <p class="muted">{{ 'pwa.install_body' | transloco }}</p>
+    </div>
+    <div class="foot">
+      <button type="button" class="btn ghost" data-testid="pwa-install-dismiss" (click)="dismissInstall()">{{ 'pwa.install_dismiss' | transloco }}</button>
+      <button type="button" class="btn primary" data-testid="pwa-install-accept" (click)="install()">{{ 'pwa.install' | transloco }}</button>
+    </div>
+  </aside>
+}

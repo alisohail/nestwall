@@ -1,0 +1,7 @@
+<div [attr.inert]="busy.busy() ? '' : null">
+  <router-outlet></router-outlet>
+  <app-pwa-prompts></app-pwa-prompts>
+</div>
+<app-unsaved-changes-dialog></app-unsaved-changes-dialog>
+<app-busy-overlay></app-busy-overlay>
+<app-save-error-bar></app-save-error-bar>

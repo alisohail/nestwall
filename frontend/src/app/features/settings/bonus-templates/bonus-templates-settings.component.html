@@ -1,0 +1,206 @@
+<div class="tpl-page" [class.editing]="editing()">
+<nav class="type-seg" [attr.aria-label]="'settings.kind.label' | transloco">
+  <a routerLink="/settings/admin/templates" routerLinkActive="on" data-testid="kind-regular">{{ 'settings.kind.regular' | transloco }}</a>
+  <a routerLink="/settings/admin/bonus-templates" routerLinkActive="on" data-testid="kind-bonus">{{ 'settings.kind.bonus' | transloco }}</a>
+</nav>
+
+<app-banner class="rules" tone="info">{{ 'settings.bonus.rules' | transloco }}</app-banner>
+
+@if (loadState() === 'loading') {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (loadState() === 'error') {
+  <app-load-error [error]="loadError()" (retry)="load()" />
+} @else {
+  <section class="card defaults">
+    <div class="section-head">
+      <h2>{{ 'settings.bonus.defaults_title' | transloco }}</h2>
+    </div>
+    <p class="hint">{{ 'settings.bonus.defaults_hint' | transloco }}</p>
+
+    <div class="grid mt-s">
+      <div class="field">
+        <label class="field-label" for="bdef-points">{{ 'settings.bonus.points' | transloco }}</label>
+        <input
+          id="bdef-points"
+          class="input num"
+          type="number"
+          [attr.min]="pointsMin"
+          [attr.max]="pointsMax"
+          step="1"
+          [(ngModel)]="defaultsPoints"
+          [placeholder]="'settings.common.no_default' | transloco"
+        />
+      </div>
+      <div class="field">
+        <label class="field-label" for="bdef-mode">{{ 'settings.bonus.mode' | transloco }}</label>
+        <select id="bdef-mode" class="select" [(ngModel)]="defaultsClaimMode">
+          <option [ngValue]="null">{{ 'settings.common.no_default' | transloco }}</option>
+          <option value="first_come">{{ 'settings.bonus.mode_first_come' | transloco }}</option>
+          <option value="everyone_once">{{ 'settings.bonus.mode_everyone_once' | transloco }}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="bdef-show-from">{{ 'settings.bonus.show_from' | transloco }}</label>
+        <input id="bdef-show-from" class="input" type="time" [(ngModel)]="defaultsShowFrom" />
+      </div>
+      <div class="field">
+        <label class="field-label" for="bdef-ends">{{ 'settings.bonus.ends' | transloco }}</label>
+        <select id="bdef-ends" class="select" [(ngModel)]="defaultsEnds">
+          <option value="">{{ 'settings.common.no_default' | transloco }}</option>
+          <option value="end_of_day">{{ 'settings.bonus.ends_end_of_day' | transloco }}</option>
+          <option value="20:00">{{ 'settings.bonus.ends_8pm' | transloco }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="grow">
+        <span class="t" id="bdef-approval-label">{{ 'settings.templates.approval' | transloco }}</span>
+      </div>
+      <div class="seg" role="group" aria-labelledby="bdef-approval-label">
+        <button type="button" [class.on]="defaultsApproval === 'unset'" [attr.aria-pressed]="defaultsApproval === 'unset'" (click)="defaultsApproval = 'unset'">{{ 'settings.templates.approval_unset' | transloco }}</button>
+        <button type="button" [class.on]="defaultsApproval === 'required'" [attr.aria-pressed]="defaultsApproval === 'required'" (click)="defaultsApproval = 'required'">{{ 'settings.common.approval_required' | transloco }}</button>
+        <button type="button" [class.on]="defaultsApproval === 'not_required'" [attr.aria-pressed]="defaultsApproval === 'not_required'" (click)="defaultsApproval = 'not_required'">{{ 'settings.common.approval_not_required' | transloco }}</button>
+      </div>
+    </div>
+
+    <div class="foot">
+      @if (defaultsSaved()) {
+        <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+      }
+      @if (defaultsError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      <button type="button" class="btn primary" data-testid="bonus-defaults-save" [disabled]="defaultsBusy() || !defaultsDirty()" (click)="saveDefaults()">{{ 'settings.bonus.save_defaults' | transloco }}</button>
+    </div>
+  </section>
+
+  <div class="split mt" [class.show-editor]="editing()">
+    <section class="card list-col">
+      <div class="section-head">
+        <h2>{{ 'settings.bonus.list_title' | transloco }}</h2>
+        <button
+          type="button"
+          class="new-tpl right"
+          data-testid="bonus-tpl-new"
+          [attr.aria-label]="'settings.bonus.new' | transloco"
+          [title]="'settings.bonus.new' | transloco"
+          (click)="newTemplate()"
+        >
+          <span class="material-icons" aria-hidden="true">add</span>
+        </button>
+      </div>
+
+      @if (templates().length === 0) {
+        <p class="nw-empty-note">{{ 'settings.bonus.empty' | transloco }}</p>
+      }
+
+      @for (t of templates(); track t.id) {
+        <button type="button" class="item" [class.sel]="current()?.id === t.id" [attr.data-testid]="'bonus-tpl-' + t.id" (click)="edit(t)">
+          <span class="swatch" [style.--c]="categoryFor(t.category_id)?.colour ?? null"></span>
+          <span class="item-body">
+            <span class="name">{{ t.name }}</span>
+            <span class="meta">
+              <span>{{ categoryFor(t.category_id)?.name ?? ('settings.templates.no_category' | transloco) }}</span>
+              <span>
+                @if (t.points !== null) {
+                  {{ 'settings.common.points_badge' | transloco: { points: t.points } }}
+                } @else {
+                  {{ 'settings.templates.no_points' | transloco }}
+                }
+              </span>
+            </span>
+          </span>
+        </button>
+      }
+
+      @if (listError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      @if (nextCursor()) {
+        <div class="row">
+          <button type="button" class="btn ghost sm" [disabled]="loadingMore()" (click)="loadMore()">{{ 'settings.common.load_more' | transloco }}</button>
+        </div>
+      }
+    </section>
+
+    <section class="card editor-col col" #editorCol>
+      @if (editing()) {
+        <div class="section-head">
+          <button type="button" class="icon-btn back" (click)="closeEditor()" [attr.aria-label]="'settings.common.back' | transloco">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+          </button>
+          @if (current(); as stored) {
+            <h2>{{ stored.name }}</h2>
+          } @else {
+            <h2>{{ 'settings.bonus.new_title' | transloco }}</h2>
+          }
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="btpl-name">{{ 'settings.templates.name' | transloco }}</label>
+            <input id="btpl-name" class="input" data-testid="bonus-tpl-name" [attr.maxlength]="nameMax" [(ngModel)]="form.name" />
+            @if (submitted() && form.name.trim() === '') {
+              <span class="hint err">{{ 'settings.error.required' | transloco }}</span>
+            }
+          </div>
+          <div class="field">
+            <label class="field-label" for="btpl-category">{{ 'settings.templates.category' | transloco }}</label>
+            <select id="btpl-category" class="select" [(ngModel)]="form.category_id">
+              <option [ngValue]="null">{{ 'settings.templates.no_category' | transloco }}</option>
+              @for (c of categories(); track c.id) {
+                <option [ngValue]="c.id">{{ c.emoji }} {{ c.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="btpl-title">{{ 'settings.templates.title_field' | transloco }}</label>
+            <input id="btpl-title" class="input" [attr.maxlength]="titleMax" [(ngModel)]="form.title" [placeholder]="'settings.common.no_default' | transloco" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="btpl-description">{{ 'settings.templates.description' | transloco }}</label>
+            <textarea id="btpl-description" class="textarea" rows="2" [attr.maxlength]="descriptionMax" [(ngModel)]="form.description" [placeholder]="'settings.common.no_default' | transloco"></textarea>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="btpl-points">{{ 'settings.bonus.points' | transloco }}</label>
+            <input id="btpl-points" class="input num" type="number" [attr.min]="pointsMin" [attr.max]="pointsMax" step="1" [(ngModel)]="form.points" [placeholder]="'settings.common.no_default' | transloco" />
+          </div>
+          <div class="field">
+            <span class="field-label" id="btpl-approval-label">{{ 'settings.templates.approval' | transloco }}</span>
+            <div class="seg" role="group" aria-labelledby="btpl-approval-label">
+              <button type="button" [class.on]="form.approval_required" [attr.aria-pressed]="form.approval_required" (click)="form.approval_required = true">{{ 'settings.common.approval_required' | transloco }}</button>
+              <button type="button" [class.on]="!form.approval_required" [attr.aria-pressed]="!form.approval_required" (click)="form.approval_required = false">{{ 'settings.common.approval_not_required' | transloco }}</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="hint">{{ 'settings.bonus.changes_note' | transloco }}</p>
+
+        @if (editorError(); as key) {
+          <app-banner tone="error">{{ key | transloco }}</app-banner>
+        }
+        @if (saved()) {
+          <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+        }
+
+        <div class="foot">
+          @if (current()) {
+            <button type="button" class="btn danger danger-zone" data-testid="bonus-tpl-delete" [disabled]="deleting()" (click)="remove()">{{ 'settings.common.delete' | transloco }}</button>
+          }
+          <button type="button" class="btn ghost" (click)="closeEditor()">{{ 'settings.common.cancel' | transloco }}</button>
+          <button type="button" class="btn primary" data-testid="bonus-tpl-save" [disabled]="saving() || !editorDirty()" (click)="save()">{{ 'settings.templates.save' | transloco }}</button>
+        </div>
+      } @else {
+        <p class="muted">{{ 'settings.bonus.pick' | transloco }}</p>
+      }
+    </section>
+  </div>
+}
+</div>

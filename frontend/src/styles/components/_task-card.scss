@@ -1,0 +1,9 @@
+// Hover for every task card, kid and parent: the border turns to the primary colour and the card gets a soft shadow.
+@mixin task-card-hover {
+  transition: border-color var(--nw-motion-fast) ease, box-shadow var(--nw-motion-fast) ease;
+
+  &:hover {
+    border-color: var(--nw-color-primary);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--nw-color-on-surface) 14%, transparent);
+  }
+}

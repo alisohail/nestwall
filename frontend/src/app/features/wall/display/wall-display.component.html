@@ -1,0 +1,260 @@
+<div class="kiosk" [class.dim]="night()" data-testid="wall-display">
+  <div class="bg" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
+
+  @if (summary(); as s) {
+    <header class="top">
+      <div class="hello rise">
+        @if (s.options.show_greeting) {
+          <div class="greet" data-testid="greet">{{ greeting() }} <span class="wave" aria-hidden="true">👋</span></div>
+        }
+        <div class="sub" [class.fade]="subFading()" data-testid="sub">{{ subMessage() }}</div>
+      </div>
+
+      <div class="wxduo">
+        @if (weatherToday(); as w) {
+          <div class="wx panel rise" style="--d: 0.15s" data-testid="wx-today">
+            <app-weather-icon [condition]="w.condition" [size]="52" />
+            <div>
+              <div class="lab">{{ 'wall.display.weather_today' | transloco }}</div>
+              <div class="deg">{{ w.temp }}&deg;<small>{{ 'wall.display.feels' | transloco: { temp: w.feels } }}</small></div>
+              <div class="meta">
+                {{ w.label }} &middot; {{ 'wall.display.high' | transloco: { temp: w.high } }} {{ 'wall.display.low' | transloco: { temp: w.low } }}
+                @if (w.precip !== null) { &middot; <b>{{ w.precip }}%</b> }
+              </div>
+            </div>
+          </div>
+        }
+        @if (weatherTomorrow(); as t) {
+          <div class="wx panel rise" [class.rain]="t.wet" style="--d: 0.25s" data-testid="wx-tomorrow">
+            <app-weather-icon [condition]="t.condition" [size]="52" />
+            <div>
+              <div class="lab">{{ 'wall.display.weather_tomorrow' | transloco }}</div>
+              <div class="deg">{{ t.high }}&deg;<small>{{ 'wall.display.low' | transloco: { temp: t.low } }}</small></div>
+              <div class="meta">
+                {{ t.label }}
+                @if (t.precip !== null) { &middot; <b>{{ t.precip }}%</b> }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="clockbox rise" style="--d: 0.1s">
+        <div class="time" data-testid="clock">{{ clock().hour }}<span class="colon">:</span>{{ clock().minute }}<small>{{ clock().period }}</small></div>
+        <div class="date">{{ dateLine() }}</div>
+      </div>
+    </header>
+
+    @if (bonus().length) {
+      <section class="bonusband rise" style="--d: 0.35s" data-testid="bonus">
+        <i class="sp s1" aria-hidden="true">&#10022;</i><i class="sp s2" aria-hidden="true">&#10024;</i><i class="sp s3" aria-hidden="true">&#10022;</i>
+        <div class="bb-flag">
+          <span class="bb-star" aria-hidden="true">🌟</span>
+          <div>
+            <div class="bb-t">{{ 'wall.display.bonus_title' | transloco }}</div>
+            <div class="bb-s">{{ 'wall.display.bonus_sub' | transloco }}</div>
+          </div>
+        </div>
+        <div class="bb-list" appWallScrollCue="x">
+          @for (b of bonus(); track b.id) {
+            <div class="bb-card" data-testid="bonus-card">
+              <span class="bb-em" aria-hidden="true">🎯</span>
+              <div class="bb-m">
+                <b>{{ b.title }}</b>
+                <small>{{ b.meta }}</small>
+              </div>
+              <span class="bb-pts">+{{ b.points }}<i aria-hidden="true">&#11088;</i></span>
+            </div>
+          }
+          <span class="scroll-cue is-x" aria-hidden="true"></span>
+        </div>
+      </section>
+    }
+
+    <main class="body">
+      <section class="kids">
+        @for (kid of kids(); track kid.id; let i = $index) {
+          <section class="kid panel rise" data-testid="kid" [style.--c]="kid.colour" [style.--d]="(0.3 + i * 0.12) + 's'">
+            <div class="kh">
+              @if (kid.avatar) {
+                <img class="kid-avatar" [src]="kid.avatar" alt="" data-testid="kid-avatar" />
+              } @else {
+                <span class="kid-avatar">{{ kid.initial }}</span>
+              }
+              <div class="kh-text">
+                <div class="nm">{{ kid.name }}</div>
+                <div class="cnt" data-testid="kid-count">{{ kid.countText }}</div>
+              </div>
+            </div>
+            <div class="bar"><i [style.--w]="kid.pct + '%'"></i></div>
+
+            @if (kid.allDone) {
+              <div class="pend celebrate">
+                @for (c of confetti; track $index) {
+                  <i class="conf" [style.left.%]="c.left" [style.background]="c.colour" [style.animation-duration.s]="c.duration" [style.animation-delay.s]="c.delay"></i>
+                }
+                <div class="cele" data-testid="kid-celebrate">
+                  <div class="em" aria-hidden="true">🎉</div>
+                  <b>{{ 'wall.display.celebrate_title' | transloco: { name: kid.name } }}</b>
+                  <span>{{ 'wall.display.celebrate_body' | transloco }}</span>
+                </div>
+              </div>
+            } @else {
+              <div class="sechead">
+                <span>{{ 'wall.display.todo_heading' | transloco: { count: kid.pending.length } }}</span>
+              </div>
+              <div class="pend" appWallScrollCue>
+                @for (row of kid.pending; track row.id) {
+                  <div class="t" [class.late]="row.late">
+                    <span class="b"></span>
+                    <span class="ttl">
+                      {{ row.title }}
+                      @if (row.late) {
+                        <em class="lt">{{ 'wall.display.late' | transloco: { when: row.due } }}</em>
+                      }
+                    </span>
+                    @if (!row.late) {
+                      <span class="due">{{ row.due }}</span>
+                    }
+                  </div>
+                }
+                @if (kid.hasTasks) {
+                  <div class="cheer" data-testid="kid-cheer"><b>{{ kid.pct }}%</b> {{ 'wall.display.cheer' | transloco }}</div>
+                }
+                <span class="scroll-cue" aria-hidden="true"></span>
+              </div>
+            }
+
+            <div class="done">
+              <div class="sechead"><span>{{ 'wall.display.done_heading' | transloco: { count: kid.doneCount } }}</span></div>
+              @for (d of kid.done; track d.id) {
+                <div class="d">
+                  <span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg></span>
+                  <span class="dt">{{ d.title }}</span>
+                  <span class="tm">{{ d.time }}</span>
+                </div>
+              }
+              @if (kid.moreDone > 0) {
+                <div class="d more">{{ 'wall.display.more_done' | transloco: { count: kid.moreDone } }}</div>
+              }
+            </div>
+          </section>
+        }
+      </section>
+
+      <aside class="side panel rise" style="--d: 0.5s">
+        <div class="sechead">
+          <span>{{ 'wall.display.agenda_heading' | transloco }}</span>
+        </div>
+        <div class="agenda" appWallScrollCue>
+          @for (row of agenda(); track row.key) {
+            @if (row.kind === 'head') {
+              <div class="dayhead" [class.tom]="row.tomorrow">
+                <span>{{ row.label }}</span>
+                @if (row.sub) {
+                  <span>{{ row.sub }}</span>
+                }
+              </div>
+            } @else if (row.kind === 'empty') {
+              <div class="ev empty">
+                <div class="tt">{{ row.title }}</div>
+              </div>
+            } @else {
+              <div class="ev" [class.past]="row.past" [class.next]="row.next">
+                <div class="tm">{{ row.time }}</div>
+                <div class="tt">
+                  {{ row.title }}
+                  @if (row.location) {
+                    <span class="loc">{{ row.location }}</span>
+                  }
+                  @if (row.inText) {
+                    <span class="in">{{ row.inText }}</span>
+                  }
+                </div>
+                <div class="who">
+                  @if (row.everyone) {
+                    <span class="all">{{ 'wall.display.everyone' | transloco }}</span>
+                  } @else {
+                    @for (a of row.attendees; track a.id) {
+                      @if (a.avatar) {
+                        <img class="avatar" [src]="a.avatar" alt="" />
+                      } @else {
+                        <span class="avatar" [style.--c]="a.colour">{{ a.initial }}</span>
+                      }
+                    }
+                  }
+                </div>
+              </div>
+            }
+          }
+          <span class="scroll-cue" aria-hidden="true"></span>
+        </div>
+      </aside>
+    </main>
+  } @else {
+    <div class="waiting" data-testid="wall-waiting">
+      @if (offline()) {
+        <p>{{ 'wall.display.offline_empty' | transloco }}</p>
+      } @else {
+        <app-loading variant="spinner" />
+      }
+    </div>
+  }
+
+  <div class="status" data-testid="status"><i [class.off]="offline()"></i>{{ statusText() }}</div>
+
+  <button type="button" class="exit-x" data-testid="exit-x" [attr.aria-label]="'wall.display.exit.open_label' | transloco" (click)="openKeypad()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+  </button>
+  <button
+    type="button"
+    class="exit-hot"
+    data-testid="exit-hot"
+    [attr.aria-label]="'wall.display.exit.open_label' | transloco"
+    (pointerdown)="startExitHold()"
+    (pointerup)="cancelExitHold()"
+    (pointerleave)="cancelExitHold()"
+    (pointercancel)="cancelExitHold()"
+  ></button>
+
+  @if (keypadOpen()) {
+    <div class="pin-bg" data-testid="exit-keypad">
+      @if (!keypadUnlocked()) {
+        <div class="pin" role="dialog" aria-modal="true" aria-labelledby="pin-title">
+          <div class="pin-h">
+            <img src="/assets/images/nesty-dark.svg" alt="" />
+            <div>
+              <b id="pin-title">{{ 'wall.display.exit.title' | transloco }}</b>
+              <small>{{ 'wall.display.exit.subtitle' | transloco }}</small>
+            </div>
+          </div>
+          <div class="pin-dots" [class.shake]="keypadShake()" aria-hidden="true">
+            @for (slot of codeSlots; track slot) {
+              <i [class.on]="keypadCode().length > slot"></i>
+            }
+          </div>
+          <div class="pin-msg" [class.err]="keypadError()" role="status" aria-live="polite" data-testid="exit-msg">{{ keypadMsg() }}</div>
+          <div class="pin-pad">
+            @for (key of padKeys; track $index) {
+              <button type="button" [attr.data-key]="key" [attr.aria-label]="keyLabel(key)" [disabled]="keyDisabled(key)" (click)="pressKey(key)">{{ key }}</button>
+            }
+          </div>
+          <button type="button" class="pin-x" data-testid="exit-cancel" (click)="closeKeypad()">{{ 'wall.display.exit.cancel' | transloco }}</button>
+        </div>
+      } @else {
+        <div class="pin pin-ok" data-testid="exit-unlocked">
+          <div class="pin-h">
+            <span class="pin-lock" aria-hidden="true">🔓</span>
+            <div>
+              <b>{{ 'wall.display.exit.unlocked_title' | transloco }}</b>
+              <small>{{ 'wall.display.exit.unlocked_subtitle' | transloco }}</small>
+            </div>
+          </div>
+          <button type="button" class="pin-btn" data-testid="exit-wall" (click)="exitWall()">{{ 'wall.display.exit.exit_wall' | transloco }}</button>
+          <button type="button" class="pin-btn alt" data-testid="exit-unpair" [disabled]="keypadBusy()" (click)="unpairDisplay()">{{ 'wall.display.exit.unpair' | transloco }}</button>
+          <button type="button" class="pin-x" data-testid="exit-stay" (click)="stayOnWall()">{{ 'wall.display.exit.stay' | transloco }}</button>
+        </div>
+      }
+    </div>
+  }
+</div>

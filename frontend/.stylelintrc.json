@@ -1,0 +1,22 @@
+{
+  "customSyntax": "postcss-scss",
+  "rules": {
+    "color-no-hex": true,
+    "function-disallowed-list": ["rgb", "rgba", "hsl", "hsla"],
+    "declaration-property-value-disallowed-list": {
+      "font-size": ["/px$/"],
+      "z-index": ["/^[0-9-]+$/"]
+    }
+  },
+  "overrides": [
+    {
+      "files": ["src/styles/tokens/**/*.scss", "src/styles/themes/**/*.scss"],
+      "rules": {
+        "color-no-hex": null,
+        "function-disallowed-list": null,
+        "declaration-property-value-disallowed-list": null
+      }
+    }
+  ],
+  "ignoreFiles": ["dist/**", "node_modules/**"]
+}

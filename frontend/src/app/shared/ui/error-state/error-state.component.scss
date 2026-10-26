@@ -1,0 +1,35 @@
+:host {
+  display: block;
+}
+
+.nw-error-state__row {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+}
+
+.nw-error-state__message {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.nw-error-state__retry {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--nw-color-error);
+  border-radius: 50%;
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  cursor: pointer;
+}
+
+.nw-error-state__retry .material-icons {
+  font-size: 1.25rem;
+}

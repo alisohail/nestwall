@@ -1,0 +1,16 @@
+<div class="modal-bg" (click)="cancelled.emit()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="task-confirm-title" data-testid="task-confirm" (click)="$event.stopPropagation()">
+    <h2 id="task-confirm-title">{{ heading() }}</h2>
+    @if (message()) {
+      <p class="muted">{{ message() }}</p>
+    }
+    <div class="foot">
+      <button type="button" class="btn ghost" data-testid="task-confirm-cancel" [disabled]="busy()" (click)="cancelled.emit()">
+        {{ 'tasks.confirm.cancel' | transloco }}
+      </button>
+      <button type="button" class="btn primary" data-testid="task-confirm-ok" [disabled]="busy()" (click)="confirmed.emit()">
+        {{ confirmLabel() }}
+      </button>
+    </div>
+  </div>
+</div>

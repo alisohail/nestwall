@@ -1,0 +1,119 @@
+<div class="kid-bonus" data-testid="kid-bonus" [attr.data-mode]="mode()" [class.card]="inCard()" [class.section-card]="inCard()">
+  @if (inCard()) {
+    <div class="section-head tone-points">
+      <div class="sh-title">
+        <span class="sh-icon" aria-hidden="true"><span class="material-icons">auto_awesome</span></span>
+        <h2 id="kid-bonus-title">{{ 'kidBonus.heading' | transloco }}</h2>
+      </div>
+      @if (active() > 0) {
+        <span class="sh-count" data-testid="kid-bonus-count">{{ 'kidBonus.upForGrabs' | transloco: activeParams() }}</span>
+      } @else {
+        <span class="sh-count" data-testid="kid-bonus-count">{{ 'kidBonus.allTaken' | transloco }}</span>
+      }
+    </div>
+  }
+
+  <div class="kid-bonus-body" [class.section-body]="inCard()">
+  @if (loadFailed()) {
+    <div data-testid="kid-bonus-load-error">
+      <app-load-error [error]="loadError()" (retry)="retry()" />
+    </div>
+  }
+
+  @if (error(); as key) {
+    <app-banner tone="error" data-testid="kid-bonus-error">{{ key | transloco }}</app-banner>
+  }
+
+  @if (!loaded()) {
+    @if (mode() === 'tab') {
+      <app-loading variant="full" labelKey="kidBonus.loading" data-testid="kid-bonus-loading" />
+    }
+  } @else {
+    @for (task of visible(); track task.id) {
+      <article
+        class="bn"
+        data-testid="kid-bonus-card"
+        [attr.data-state]="stateOf(task)"
+        [class.mine]="stateOf(task) === 'mine'"
+        [class.taken]="stateOf(task) === 'taken'"
+        [class.done]="stateOf(task) === 'done'"
+      >
+        <span class="ico material-icons" aria-hidden="true">auto_awesome</span>
+
+        <div class="grow">
+          <h3 class="ttl">
+            <a
+              class="ttl-link"
+              [routerLink]="['/my-tasks/bonus', task.id]"
+              [queryParams]="{ from: origin() }"
+              data-testid="kid-bonus-title"
+              >{{ task.title }}</a
+            >
+          </h3>
+          <p class="meta">
+            <span class="pts">+{{ task.points }}</span>
+            <span class="muted">{{ untilKey(task) | transloco: untilParams(task) }}</span>
+          </p>
+        </div>
+
+        <div class="act">
+          @switch (stateOf(task)) {
+            @case ('open') {
+              <button
+                type="button"
+                class="btn amber sm"
+                data-testid="kid-bonus-grab"
+                [disabled]="busyId() !== null"
+                (click)="grab(task)"
+              >
+                {{ 'kidBonus.grab' | transloco }}
+              </button>
+            }
+            @case ('once') {
+              <button
+                type="button"
+                class="btn primary sm"
+                data-testid="kid-bonus-grab"
+                [disabled]="busyId() !== null"
+                (click)="grab(task)"
+              >
+                {{ 'kidBonus.doOnce' | transloco }}
+              </button>
+            }
+            @case ('mine') {
+              <button
+                type="button"
+                class="btn primary sm"
+                data-testid="kid-bonus-finish"
+                [disabled]="busyId() !== null"
+                (click)="finish(task)"
+              >
+                {{ 'kidBonus.finish' | transloco }}
+              </button>
+              <button
+                type="button"
+                class="btn ghost sm"
+                data-testid="kid-bonus-giveback"
+                [disabled]="busyId() !== null"
+                (click)="giveBack(task)"
+              >
+                {{ 'kidBonus.giveBack' | transloco }}
+              </button>
+            }
+            @case ('taken') {
+              <span class="status"><span class="material-icons" aria-hidden="true">lock</span>{{ 'kidBonus.taken' | transloco }}</span>
+            }
+            @case ('done') {
+              <span class="status ok"><span class="material-icons" aria-hidden="true">check_circle</span>{{ doneKey(task) | transloco }}</span>
+            }
+          }
+        </div>
+      </article>
+    } @empty {
+      @if (mode() === 'tab' && !loadFailed()) {
+        <app-empty-state data-testid="kid-bonus-empty" icon="auto_awesome" titleKey="myTasks.bonus.empty" />
+      }
+    }
+  }
+  </div>
+</div>

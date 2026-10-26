@@ -1,0 +1,97 @@
+<article
+  class="card-row"
+  [class.has-steps]="steps().length > 0"
+  [class.late]="item().past_due"
+  [style.--row-colour]="colour()"
+  data-testid="today-task"
+>
+  <span class="ico" aria-hidden="true">
+    @if (item().category_emoji; as emoji) {
+      {{ emoji }}
+    } @else {
+      <span class="material-icons">task_alt</span>
+    }
+  </span>
+
+  <div class="grow">
+    <a class="title" [routerLink]="['/my-tasks', item().task_id]" [queryParams]="{ from: origin() }" data-testid="today-task-title">{{ item().title }}</a>
+    <div class="meta">
+      @if (item().past_due) {
+        {{ 'myTasks.meta.past_due' | transloco: { time: clock() } }}
+      } @else {
+        {{ 'myTasks.part.' + part() | transloco }} &middot; {{ 'myTasks.meta.due' | transloco: { time: clock() } }}
+      }
+    </div>
+  </div>
+
+  <span class="pts" [attr.aria-label]="'myTasks.points' | transloco: { points: item().points }">
+    <span class="material-icons" aria-hidden="true">star</span>{{ item().points }}
+  </span>
+
+  @if (!steps().length) {
+    <button
+      type="button"
+      class="check"
+      [disabled]="busy()"
+      [attr.aria-label]="'today.card.complete' | transloco: { title: item().title }"
+      (click)="confirming.set(true)"
+      data-testid="today-task-complete"
+    >
+      <span class="material-icons" aria-hidden="true">check</span>
+    </button>
+  } @else {
+    <div class="steps-block">
+      <div class="steps-head">
+        <span class="meter" aria-hidden="true">
+          @for (step of steps(); track step.id) {
+            <i [class.on]="step.done"></i>
+          }
+        </span>
+        <span class="count" data-testid="today-task-count">
+          {{ allStepsDone() ? ('today.card.steps_all' | transloco) : ('myTask.progress' | transloco: { done: doneCount(), total: steps().length }) }}
+        </span>
+      </div>
+
+      <div class="steps" role="group" [attr.aria-label]="'myTask.steps' | transloco">
+        @for (step of steps(); track step.id) {
+          <button
+            type="button"
+            class="step"
+            [class.done]="step.done"
+            [disabled]="busy()"
+            [attr.aria-pressed]="step.done"
+            (click)="toggle(step)"
+            data-testid="today-task-step"
+          >
+            <span class="box" aria-hidden="true">
+              @if (step.done) {
+                <span class="material-icons">check</span>
+              }
+            </span>
+            <span class="text">{{ step.text }}</span>
+          </button>
+        }
+      </div>
+
+      <button type="button" class="btn primary finish" [disabled]="busy()" (click)="confirming.set(true)" data-testid="today-task-finish">
+        <span class="material-icons" aria-hidden="true">check</span>
+        {{ 'myTask.finish' | transloco }}
+      </button>
+    </div>
+  }
+
+  @if (error(); as key) {
+    <p class="error" role="alert">{{ key | transloco }}</p>
+  }
+
+  @if (confirming()) {
+    <app-task-confirm
+      [heading]="'today.card.confirm_heading' | transloco"
+      [message]="stepsLeft() ? ('today.card.confirm_steps_left' | transloco) : ('today.card.confirm_message' | transloco: { title: item().title })"
+      [confirmLabel]="'today.card.confirm_yes' | transloco"
+      [busy]="busy()"
+      (confirmed)="confirming.set(false); finish()"
+      (cancelled)="confirming.set(false)"
+    />
+  }
+</article>

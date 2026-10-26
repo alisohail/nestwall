@@ -1,0 +1,288 @@
+<ng-template #headerActions>
+  <div class="row wrap">
+    <button type="button" class="btn primary" data-testid="badges-new-open" [disabled]="!config()" (click)="openNew()">
+      <span class="material-icons" aria-hidden="true">add</span>
+      {{ 'settings.badges.create' | transloco }}
+    </button>
+  </div>
+</ng-template>
+
+<div class="col">
+  @if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="settings.common.loading" data-testid="badges-loading" />
+  } @else if (loadState() === 'error') {
+    <app-load-error data-testid="badges-load-error" [error]="loadError()" (retry)="load()" />
+  } @else {
+    @if (config(); as cfg) {
+      @if (saveError(); as key) {
+        <app-banner tone="error" data-testid="badges-save-error">{{ key | transloco }}</app-banner>
+      }
+      @if (stale()) {
+        <div class="row">
+          <button type="button" class="btn soft" data-testid="badges-reload" (click)="load()">
+            {{ 'settings.common.reload' | transloco }}
+          </button>
+        </div>
+      }
+
+      <section class="card" aria-labelledby="badges-master-title">
+        <div class="row head">
+          <span class="emoji" aria-hidden="true">🏅</span>
+          <div class="grow">
+            <h2 id="badges-master-title">{{ 'settings.badges.master_title' | transloco }}</h2>
+            <p class="hint">{{ 'settings.badges.master_body' | transloco }}</p>
+          </div>
+          <label class="switch">
+            <input
+              type="checkbox"
+              role="switch"
+              data-testid="badges-enabled"
+              [attr.aria-label]="'settings.badges.master_title' | transloco"
+              [checked]="cfg.settings.enabled"
+              [disabled]="busy()"
+              (change)="toggleSetting('enabled', $event)"
+            />
+            <span class="track" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="grow">
+            <div class="t" id="badges-kid-label">{{ 'settings.badges.show_kid' | transloco }}</div>
+            <div class="d hint">{{ 'settings.badges.show_kid_hint' | transloco }}</div>
+          </div>
+          <label class="switch">
+            <input
+              type="checkbox"
+              role="switch"
+              data-testid="badges-show-kid"
+              aria-labelledby="badges-kid-label"
+              [checked]="cfg.settings.show_on_kid_dashboard"
+              [disabled]="busy()"
+              (change)="toggleSetting('show_on_kid_dashboard', $event)"
+            />
+            <span class="track" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="grow">
+            <div class="t" id="badges-wall-label">{{ 'settings.badges.show_wall' | transloco }}</div>
+          </div>
+          <label class="switch">
+            <input
+              type="checkbox"
+              role="switch"
+              data-testid="badges-show-wall"
+              aria-labelledby="badges-wall-label"
+              [checked]="cfg.settings.show_on_wall"
+              [disabled]="busy()"
+              (change)="toggleSetting('show_on_wall', $event)"
+            />
+            <span class="track" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="grow">
+            <div class="t" id="badges-notify-label">{{ 'settings.badges.notify_child' | transloco }}</div>
+          </div>
+          <label class="switch">
+            <input
+              type="checkbox"
+              role="switch"
+              data-testid="badges-notify-child"
+              aria-labelledby="badges-notify-label"
+              [checked]="cfg.settings.notify_child"
+              [disabled]="busy()"
+              (change)="toggleSetting('notify_child', $event)"
+            />
+            <span class="track" aria-hidden="true"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="badges-groups-title">
+        <div class="section-head">
+          <h2 id="badges-groups-title">{{ 'settings.badges.groups_title' | transloco }}</h2>
+        </div>
+        @for (g of cfg.groups; track g.group) {
+          <div class="setting group" [attr.data-testid]="'badges-group-' + g.group">
+            <div class="grow">
+              <div class="t">
+                {{ 'settings.badges.group.' + g.group | transloco }}
+                <span class="badge">{{ 'settings.badges.group_count' | transloco: { count: g.badges.length } }}</span>
+              </div>
+              <div class="chips">
+                @for (b of g.badges; track b.id) {
+                  <span class="badge chip-badge" [class.off]="!b.enabled">
+                    <span aria-hidden="true">{{ emojiFor(b.key) }}</span>
+                    {{ 'settings.badges.builtin.' + b.key | transloco }}
+                  </span>
+                }
+              </div>
+              @if (g.group === 'kindness') {
+                <p class="hint">{{ 'settings.badges.kindness_hint' | transloco }}</p>
+              }
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                role="switch"
+                [attr.data-testid]="'badges-group-switch-' + g.group"
+                [attr.aria-label]="'settings.badges.group.' + g.group | transloco"
+                [checked]="g.enabled"
+                [disabled]="busy()"
+                (change)="toggleGroup(g, $event)"
+              />
+              <span class="track" aria-hidden="true"></span>
+            </label>
+          </div>
+        }
+      </section>
+
+      <section class="card" aria-labelledby="badges-custom-title">
+        <div class="section-head split">
+          <h2 id="badges-custom-title">{{ 'settings.badges.custom_title' | transloco }}</h2>
+          <p class="hint">{{ 'settings.badges.custom_hint' | transloco }}</p>
+        </div>
+        @if (cfg.custom.length === 0) {
+          <p class="muted" data-testid="badges-custom-empty">{{ 'settings.badges.custom_empty' | transloco }}</p>
+        }
+        @for (c of cfg.custom; track c.id) {
+          <div class="item" [attr.data-testid]="'badges-custom-' + c.id">
+            <span class="pic" aria-hidden="true">{{ c.emoji }}</span>
+            <span class="item-body">
+              <span class="name">{{ c.name }}</span>
+              @if (c.description) {
+                <span class="hint">{{ c.description }}</span>
+              }
+            </span>
+            <span class="meta">
+              @if (!c.enabled) {
+                <span class="badge">{{ 'settings.badges.off' | transloco }}</span>
+              }
+              @if (c.awarded_count === 1) {
+                <span class="badge">{{ 'settings.badges.given_one' | transloco }}</span>
+              } @else {
+                <span class="badge">{{ 'settings.badges.given' | transloco: { count: c.awarded_count } }}</span>
+              }
+            </span>
+            <button
+              type="button"
+              class="btn ghost sm"
+              [attr.aria-label]="('settings.common.edit' | transloco) + ' ' + c.name"
+              (click)="openEdit(c)"
+            >
+              {{ 'settings.common.edit' | transloco }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+  }
+</div>
+
+@if (modalOpen()) {
+  <div class="modal-bg" (click)="$event.target === $event.currentTarget && closeModal()">
+    <div class="modal" role="dialog" aria-modal="true" data-testid="badges-custom-modal"
+      [attr.aria-label]="(editing() ? 'settings.badges.edit_title' : 'settings.badges.new_title') | transloco">
+      <h2>{{ (editing() ? 'settings.badges.edit_title' : 'settings.badges.new_title') | transloco }}</h2>
+
+      <div class="col">
+        <div class="field">
+          <span class="field-label" id="badge-picture-label">{{ 'settings.badges.picture' | transloco }}</span>
+          <div class="row wrap" role="group" aria-labelledby="badge-picture-label">
+            @for (e of pictures; track e) {
+              <button
+                type="button"
+                class="emoji-btn"
+                [attr.aria-pressed]="form.emoji === e"
+                [attr.aria-label]="e"
+                (click)="form.emoji = e"
+              >
+                {{ e }}
+              </button>
+            }
+          </div>
+          <label class="field-label sub" for="badge-emoji-custom">{{ 'settings.badges.emoji_custom' | transloco }}</label>
+          <input
+            id="badge-emoji-custom"
+            class="input emoji-input"
+            data-testid="badge-emoji-custom"
+            name="badge-emoji-custom"
+            autocomplete="off"
+            aria-describedby="badge-emoji-hint"
+            [(ngModel)]="form.emoji"
+          />
+          <span id="badge-emoji-hint" class="hint">{{ 'settings.badges.emoji_custom_hint' | transloco }}</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="badge-name">{{ 'settings.badges.name' | transloco }}</label>
+          <input
+            id="badge-name"
+            class="input"
+            data-testid="badge-name"
+            name="badge-name"
+            [maxlength]="nameMax"
+            [(ngModel)]="form.name"
+          />
+          @if (submitted() && form.name.trim() === '') {
+            <span class="hint err">{{ 'settings.error.required' | transloco }}</span>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="badge-description">
+            {{ 'settings.badges.description' | transloco }}
+            <span class="optional">{{ 'settings.badges.optional' | transloco }}</span>
+          </label>
+          <input
+            id="badge-description"
+            class="input"
+            name="badge-description"
+            [maxlength]="descriptionMax"
+            [placeholder]="'settings.badges.description_placeholder' | transloco"
+            [(ngModel)]="form.description"
+          />
+        </div>
+
+        @if (editing()) {
+          <div class="setting">
+            <div class="grow">
+              <div class="t" id="badge-enabled-label">{{ 'settings.badges.enabled' | transloco }}</div>
+              <div class="d hint">{{ 'settings.badges.enabled_hint' | transloco }}</div>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                role="switch"
+                data-testid="badge-enabled"
+                aria-labelledby="badge-enabled-label"
+                [checked]="form.enabled"
+                (change)="form.enabled = $any($event.target).checked"
+              />
+              <span class="track" aria-hidden="true"></span>
+            </label>
+          </div>
+        }
+
+        <app-banner tone="info">{{ 'settings.badges.by_hand' | transloco }}</app-banner>
+
+        @if (modalError(); as key) {
+          <app-banner tone="error" data-testid="badge-modal-error">{{ key | transloco }}</app-banner>
+        }
+      </div>
+
+      <div class="foot">
+        <button type="button" class="btn ghost" (click)="closeModal()" [disabled]="saving()">
+          {{ 'settings.common.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="badge-save" (click)="saveCustom()" [disabled]="saving()">
+          {{ (editing() ? 'settings.common.save' : 'settings.badges.create_action') | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

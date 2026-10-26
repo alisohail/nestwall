@@ -1,0 +1,11 @@
+<section class="all-done" aria-labelledby="all-done-title">
+  <span class="medal material-icons" aria-hidden="true">check</span>
+  <h2 id="all-done-title">{{ 'today.all_done.title' | transloco }}</h2>
+  <p class="muted">{{ 'today.all_done.body' | transloco: { name: name() } }}</p>
+  @if (streakDays() > 0) {
+    <span class="streak">
+      <span class="material-icons" aria-hidden="true">local_fire_department</span>
+      {{ 'today.streak' | transloco: { days: streakDays() } }}
+    </span>
+  }
+</section>

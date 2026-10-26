@@ -1,0 +1,24 @@
+.email-prompt {
+  text-align: center;
+}
+
+.icon-circle {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--nw-space-3);
+  border-radius: 50%;
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-on-primary-container);
+}
+
+.foot {
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .btn {
+    min-height: 44px;
+    flex: 1 1 140px;
+  }
+}

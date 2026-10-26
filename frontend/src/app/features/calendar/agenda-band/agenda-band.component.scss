@@ -1,0 +1,301 @@
+:host {
+  display: block;
+}
+
+.agenda-band {
+  --ring: var(--nw-color-surface);
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  padding: 0;
+  overflow: hidden;
+}
+
+.ab-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--nw-space-4) var(--nw-space-5);
+}
+
+.ab-col.soon {
+  --ring: var(--nw-color-surface-variant);
+  border-left: 1px solid var(--nw-color-outline);
+  background: var(--nw-color-surface-variant);
+}
+
+.ab-col .card-head {
+  margin-bottom: var(--nw-space-2);
+}
+
+.ab-col h2 {
+  margin: 0;
+  font-size: var(--nw-text-base);
+}
+
+.ab-filter-bar {
+  display: flex;
+  gap: var(--nw-space-2);
+  margin-left: auto;
+}
+
+.ab-filter-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface);
+  color: inherit;
+  cursor: pointer;
+}
+
+.ab-filter-btn.is-active {
+  border-color: var(--nw-color-primary);
+  color: var(--nw-color-primary);
+}
+
+.ab-filter-btn:focus-visible,
+.ab-chip:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.ab-filter-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-primary);
+  box-shadow: 0 0 0 0.125rem var(--nw-color-surface);
+}
+
+.ab-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--nw-space-1);
+  margin-bottom: var(--nw-space-2);
+}
+
+.ab-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface);
+  color: inherit;
+  font: inherit;
+  font-size: var(--nw-text-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ab-chip[aria-pressed='true'] {
+  border-color: var(--nw-color-primary);
+  background: var(--nw-color-primary);
+  color: var(--nw-color-on-primary);
+}
+
+.ab-state {
+  margin: var(--nw-space-2) 0;
+}
+
+.ab-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-1);
+}
+
+.ab-ev {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+  width: 100%;
+  padding: var(--nw-space-2) 10px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ab-ev:hover {
+  box-shadow: inset 0 0 0 2px var(--nw-color-outline);
+}
+
+.ab-ev:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.ab-ev.past {
+  opacity: 0.5;
+}
+
+.ab-ev.next {
+  --ring: var(--nw-color-primary-container);
+  background: var(--nw-color-primary-container);
+}
+
+.bar {
+  align-self: stretch;
+  flex: none;
+  width: 5px;
+  min-height: 34px;
+  border-radius: 9px;
+  background: var(--c);
+}
+
+.tm {
+  flex: none;
+  width: 74px;
+  font-size: var(--nw-text-sm);
+  font-weight: 800;
+}
+
+.ab-ev.next .tm {
+  color: var(--nw-color-primary);
+}
+
+.grow {
+  min-width: 0;
+  flex: 1;
+}
+
+.tt {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-1);
+  font-size: var(--nw-text-xs);
+  color: var(--nw-color-on-surface-variant);
+}
+
+.faces {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Ring in the background of the row, so overlapping avatars stay separate. */
+.face {
+  display: inline-flex;
+  border-radius: var(--nw-radius-full);
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.face + .face {
+  margin-left: -0.375rem;
+}
+
+.face.everyone {
+  width: 1.625rem;
+  height: 1.625rem;
+  align-items: center;
+  justify-content: center;
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-lg);
+}
+
+.in {
+  flex: none;
+  font-size: var(--nw-text-xs);
+  font-weight: 800;
+  white-space: nowrap;
+  color: var(--nw-color-primary);
+}
+
+/* Pinned to the bottom right of its card, below the rows. */
+.ab-more-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: var(--nw-space-1);
+}
+
+/* A text link, like "See all" on the dashboard cards. */
+.ab-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--nw-space-1) var(--nw-space-2);
+  border: 0;
+  border-radius: var(--nw-radius-full);
+  background: none;
+  color: var(--nw-color-primary);
+  font: inherit;
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ab-more .material-icons {
+  font-size: var(--nw-text-lg);
+}
+
+.ab-more:hover {
+  background: var(--nw-color-primary-container);
+}
+
+.ab-more:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.modal.band-more {
+  width: min(460px, 100%);
+  gap: var(--nw-space-3);
+}
+
+.band-more-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-2);
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-lg);
+    font-weight: 800;
+  }
+}
+
+.band-more .ab-list {
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+}
+
+@media (max-width: 800px) {
+  .agenda-band {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ab-col {
+    padding: var(--nw-space-4);
+  }
+
+  .ab-col.soon {
+    border-left: 0;
+    border-top: 1px solid var(--nw-color-outline);
+  }
+
+  .tm {
+    width: 64px;
+  }
+}

@@ -1,0 +1,15 @@
+<app-banner tone="error" icon="error_outline">
+  <div class="nw-error-state__row">
+    <span class="nw-error-state__message" data-testid="error-state-message">{{ messageKey() | transloco }}</span>
+    <button
+      type="button"
+      class="nw-error-state__retry"
+      data-testid="error-state-retry"
+      [attr.aria-label]="retryKey() | transloco"
+      [attr.title]="retryKey() | transloco"
+      (click)="retry.emit()"
+    >
+      <span class="material-icons" aria-hidden="true">refresh</span>
+    </button>
+  </div>
+</app-banner>

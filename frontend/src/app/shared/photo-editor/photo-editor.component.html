@@ -1,0 +1,70 @@
+<div class="modal-bg" role="presentation">
+  <section class="modal photo-dialog" role="dialog" aria-modal="true" aria-labelledby="photo-dialog-title" data-testid="photo-editor">
+    <header class="dialog-head">
+      <h2 id="photo-dialog-title">{{ heading() }}</h2>
+      <p class="muted">{{ intro() }}</p>
+    </header>
+
+    <div class="preview-wrap">
+      @if (image()) {
+        <canvas
+          #preview
+          class="preview"
+          data-testid="photo-preview"
+          role="img"
+          [attr.aria-label]="'avatar.preview_alt' | transloco"
+          (pointerdown)="onPointerDown($event)"
+          (pointermove)="onPointerMove($event)"
+          (pointerup)="onPointerUp()"
+          (pointercancel)="onPointerUp()"
+        ></canvas>
+      } @else {
+        <app-avatar size="xl" [name]="name()" [colour]="colour()" [avatarId]="avatarId()" />
+      }
+    </div>
+
+    <div class="choose">
+      <button type="button" class="tile tile-primary" data-testid="photo-upload" [disabled]="saving()" (click)="chooseFile()">
+        <app-icon name="upload" [size]="22" />
+        <span>{{ 'avatar.upload' | transloco }}</span>
+      </button>
+      <button type="button" class="tile" data-testid="photo-camera" [disabled]="saving()" (click)="chooseCamera()">
+        <app-icon name="camera" [size]="22" />
+        <span>{{ 'avatar.take_photo' | transloco }}</span>
+      </button>
+    </div>
+    <input #fileInput type="file" [accept]="accept" data-testid="photo-file" [disabled]="saving()" (change)="onFile($event)" hidden />
+    <input #cameraInput type="file" [accept]="accept" capture="user" data-testid="photo-camera-file" [disabled]="saving()" (change)="onFile($event)" hidden />
+
+    @if (image()) {
+      <label class="slider">
+        <span>{{ 'avatar.zoom' | transloco }}</span>
+        <input type="range" min="1" max="4" step="0.01" data-testid="photo-zoom" [value]="zoom()" [disabled]="saving()" (input)="setZoom($event)" />
+      </label>
+      <label class="slider">
+        <span>{{ 'avatar.move_across' | transloco }}</span>
+        <input type="range" min="0" max="1" step="0.01" [value]="panX()" [disabled]="saving()" (input)="setPanX($event)" />
+      </label>
+      <label class="slider">
+        <span>{{ 'avatar.move_down' | transloco }}</span>
+        <input type="range" min="0" max="1" step="0.01" [value]="panY()" [disabled]="saving()" (input)="setPanY($event)" />
+      </label>
+    }
+
+    <p class="hint-box">{{ 'avatar.hint_dialog' | transloco }}</p>
+
+    @if (errorKey(); as key) {
+      <p class="error" role="alert" data-testid="photo-error">{{ key | transloco }}</p>
+    }
+
+    <button type="button" class="btn ghost wide" data-testid="photo-remove" [disabled]="saving() || !avatarId()" (click)="removePicture()">
+      <app-icon name="trash" [size]="18" />
+      <span>{{ removeLabel() }}</span>
+    </button>
+
+    <div class="dialog-foot">
+      <button type="button" class="btn ghost" data-testid="photo-cancel" [disabled]="saving()" (click)="cancel()">{{ 'avatar.cancel' | transloco }}</button>
+      <button type="button" class="btn primary" data-testid="photo-save" [disabled]="!canSave()" (click)="save()">{{ 'avatar.save' | transloco }}</button>
+    </div>
+  </section>
+</div>

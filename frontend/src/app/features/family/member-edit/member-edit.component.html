@@ -1,0 +1,229 @@
+<section class="edit-page" data-testid="member-edit">
+  <a
+    class="icon-btn back"
+    data-testid="member-edit-back"
+    [routerLink]="['/family']"
+    [queryParams]="familyMembersTab"
+    [attr.aria-label]="'family.edit.back' | transloco"
+  >
+    <span class="material-icons" aria-hidden="true">arrow_back</span>
+  </a>
+
+  @if (loadError(); as err) {
+    <div data-testid="member-edit-error">
+      <app-load-error [error]="err" (retry)="load()" />
+    </div>
+  } @else if (loading()) {
+    <app-loading variant="full" labelKey="family.edit.loading" data-testid="member-edit-loading" />
+  } @else {
+    @if (member(); as m) {
+      <h1 class="page-title">{{ 'family.edit.heading' | transloco: { name: m.display_name } }}</h1>
+
+      @if (!canManage()) {
+        <p class="notice" data-testid="member-edit-read-only">{{ 'family.edit.read_only' | transloco }}</p>
+      }
+
+      <div class="edit-layout">
+        <aside class="card hero">
+          <app-avatar
+            [name]="form.controls.display_name.value || m.display_name"
+            [colour]="form.controls.colour.value"
+            [avatarId]="m.avatar_id"
+            size="xl"
+          />
+          <p class="hero-name">{{ form.controls.display_name.value || m.display_name }}</p>
+          <p class="muted">{{ m.role_name }}</p>
+          <div class="badges">
+            @if (m.is_child) {
+              <span class="badge">{{ 'family.badge.child' | transloco }}</span>
+            }
+            @if (!form.controls.active.value) {
+              <span class="badge">{{ 'family.status.inactive' | transloco }}</span>
+            }
+          </div>
+          @if (canManage() || isSelf()) {
+            <button type="button" class="btn ghost wide" data-testid="member-edit-photo" (click)="photoOpen.set(true)">
+              <app-icon name="pencil" [size]="14" />
+              <span>{{ 'family.edit.photo.change' | transloco }}</span>
+            </button>
+          }
+        </aside>
+
+        <form class="card form" [formGroup]="form" (ngSubmit)="save()" novalidate data-testid="member-edit-form">
+          <section class="section" aria-labelledby="edit-profile-heading">
+            <h2 id="edit-profile-heading">{{ 'family.edit.section.profile' | transloco }}</h2>
+            <div class="grid">
+              <label class="field-row wide">
+                <span class="label">{{ 'family.edit.name.label' | transloco }}</span>
+                <input class="input" formControlName="display_name" autocomplete="off" data-testid="edit-name" />
+                @if (form.controls.display_name.touched && form.controls.display_name.invalid) {
+                  <span class="field-error">{{ 'family.edit.name.error' | transloco }}</span>
+                }
+              </label>
+              <div class="field-row wide">
+                <span class="label">{{ 'family.edit.colour.label' | transloco }}</span>
+                <app-colour-picker formControlName="colour" [label]="'family.edit.colour.label' | transloco" />
+              </div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="edit-account-heading">
+            <h2 id="edit-account-heading">{{ 'family.edit.section.account' | transloco }}</h2>
+            <div class="grid">
+              <label class="field-row">
+                <span class="label">{{ 'family.edit.username.label' | transloco }}</span>
+                <input class="input" formControlName="user_id" autocomplete="off" data-testid="edit-username" />
+                @if (form.controls.user_id.touched && form.controls.user_id.invalid) {
+                  <span class="field-error">{{ 'family.edit.username.error' | transloco }}</span>
+                }
+              </label>
+              <div class="field-row">
+                <span class="label" id="edit-role-label">{{ 'family.edit.role.label' | transloco }}</span>
+                @if (isParent()) {
+                  <p class="locked" data-testid="edit-role-locked">
+                    {{ m.role_name }}
+                    <span class="hint">{{ 'family.edit.role.locked' | transloco }}</span>
+                  </p>
+                } @else {
+                  <select class="input" formControlName="role_id" aria-labelledby="edit-role-label" data-testid="edit-role">
+                    @for (r of assignableRoles(); track r.id) {
+                      <option [value]="r.id">{{ r.name }}</option>
+                    }
+                  </select>
+                }
+              </div>
+              @if (isSelf()) {
+                <p class="hint wide">{{ 'family.edit.active.self' | transloco }}</p>
+              } @else {
+                <label class="switch-row wide">
+                  <input type="checkbox" formControlName="active" data-testid="edit-active" />
+                  <span>
+                    <span class="label">{{ 'family.edit.active.label' | transloco }}</span>
+                    <span class="hint">{{ 'family.edit.active.hint' | transloco }}</span>
+                  </span>
+                </label>
+              }
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="edit-contact-heading">
+            <h2 id="edit-contact-heading">{{ 'family.edit.section.contact' | transloco }}</h2>
+            <div class="grid">
+              <label class="field-row wide">
+                <span class="label">{{ 'family.edit.email.label' | transloco }}</span>
+                <input type="email" class="input" formControlName="email" autocomplete="email" data-testid="edit-email" />
+                <span class="hint">{{ (isParent() ? 'family.edit.email.hint_parent' : 'family.edit.email.hint_optional') | transloco }}</span>
+                @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+                  <span class="field-error">{{ 'family.edit.email.required' | transloco }}</span>
+                } @else if (form.controls.email.touched && form.controls.email.invalid) {
+                  <span class="field-error">{{ 'family.edit.email.error' | transloco }}</span>
+                }
+              </label>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="edit-personal-heading">
+            <h2 id="edit-personal-heading">{{ 'family.edit.section.personal' | transloco }}</h2>
+            <div class="grid">
+              <label class="field-row">
+                <span class="label">{{ 'family.edit.birth_date.label' | transloco }}</span>
+                <input type="date" class="input" formControlName="date_of_birth" [attr.min]="birthDateMin" [attr.max]="today" data-testid="edit-birth-date" />
+                <span class="hint">{{ 'family.edit.birth_date.hint' | transloco }}</span>
+                @if (form.controls.date_of_birth.touched && form.controls.date_of_birth.invalid) {
+                  <span class="field-error">{{ 'family.edit.birth_date.error' | transloco }}</span>
+                }
+              </label>
+              <label class="field-row">
+                <span class="label">{{ 'family.edit.gender.label' | transloco }}</span>
+                <select class="input" formControlName="gender" data-testid="edit-gender">
+                  <option value="">{{ 'family.edit.gender.not_set' | transloco }}</option>
+                  @for (g of genders; track g) {
+                    <option [value]="g">{{ 'family.edit.gender.' + g | transloco }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="edit-security-heading">
+            <h2 id="edit-security-heading">{{ 'family.edit.section.security' | transloco }}</h2>
+            <div class="grid">
+              @if (m.is_child) {
+                <label class="field-row">
+                  <span class="label">{{ 'family.edit.pin.label' | transloco }}</span>
+                  <input class="input" formControlName="pin" inputmode="numeric" maxlength="8" autocomplete="off" data-testid="edit-pin" />
+                  <span class="hint">{{ 'family.edit.pin.hint' | transloco }}</span>
+                  @if (form.controls.pin.touched && form.controls.pin.invalid) {
+                    <span class="field-error">{{ 'family.edit.pin.error' | transloco }}</span>
+                  }
+                </label>
+              }
+              @if (!isSelf()) {
+                <label class="field-row">
+                  <span class="label">{{ 'family.edit.password.label' | transloco }}</span>
+                  <input class="input" type="password" formControlName="password" autocomplete="new-password" data-testid="edit-password" />
+                  <span class="hint">{{ 'family.edit.password.hint' | transloco }}</span>
+                  @if (form.controls.password.touched && form.controls.password.invalid) {
+                    <span class="field-error">{{ 'family.edit.password.error' | transloco }}</span>
+                  }
+                </label>
+              } @else {
+                <div class="field-row wide">
+                  <span class="hint">{{ 'family.edit.own_password.hint' | transloco }}</span>
+                  <button type="button" class="btn ghost self-start" data-testid="member-edit-own-password" (click)="passwordOpen.set(true)">
+                    <app-icon name="lock" [size]="14" />
+                    <span>{{ 'family.edit.own_password.open' | transloco }}</span>
+                  </button>
+                </div>
+              }
+            </div>
+          </section>
+
+          @if (canManage()) {
+            <footer class="savebar">
+              @if (saveError(); as err) {
+                <p class="error" role="alert" data-testid="member-edit-save-error">{{ err | transloco }}</p>
+              }
+              <span class="hint savebar-status">
+                {{ (hasChanges() ? 'family.edit.changes_pending' : 'family.edit.no_changes') | transloco }}
+              </span>
+              <button type="submit" class="btn primary" data-testid="member-edit-save" [disabled]="saving() || !hasChanges()">
+                {{ 'family.edit.save' | transloco }}
+              </button>
+            </footer>
+          }
+        </form>
+      </div>
+
+      @if (photoOpen()) {
+        <app-photo-editor
+          [memberId]="m.id"
+          [name]="m.display_name"
+          [colour]="m.colour"
+          [avatarId]="m.avatar_id"
+          [heading]="'family.edit.photo.heading' | transloco"
+          [intro]="'family.edit.photo.intro' | transloco"
+          [removeLabel]="'family.edit.photo.use_letter' | transloco"
+          (changed)="onPhotoChanged($event)"
+          (closed)="photoOpen.set(false)"
+        />
+      }
+
+      @if (passwordOpen()) {
+        <div class="modal-bg">
+          <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="'family.edit.own_password.heading' | transloco">
+            <h2>{{ 'family.edit.own_password.heading' | transloco }}</h2>
+            <app-own-password />
+            <div class="foot">
+              <button type="button" class="btn ghost" data-testid="member-edit-password-close" (click)="passwordOpen.set(false)">{{ 'family.edit.photo.done' | transloco }}</button>
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <section class="card empty" data-testid="member-edit-missing">
+        <h1>{{ 'family.edit.not_found' | transloco }}</h1>
+      </section>
+    }
+  }
+</section>

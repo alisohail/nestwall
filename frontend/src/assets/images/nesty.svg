@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="NestWall">
+  <path d="M44 150 Q100 206 156 150 Q100 166 44 150 Z" fill="#B45309"/>
+  <path d="M62 152 Q100 164 138 152" stroke="#FBBF24" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="86" cy="40" rx="7" ry="17" transform="rotate(-24 86 40)" fill="#EC4899"/>
+  <ellipse cx="100" cy="34" rx="7" ry="18" fill="#F59E0B"/>
+  <ellipse cx="114" cy="40" rx="7" ry="17" transform="rotate(24 114 40)" fill="#6366F1"/>
+  <circle cx="100" cy="102" r="56" fill="#14B8A6"/>
+  <ellipse cx="100" cy="122" rx="34" ry="28" fill="#CCFBF1"/>
+  <circle cx="80" cy="92" r="13" fill="#fff"/><circle cx="120" cy="92" r="13" fill="#fff"/>
+  <circle cx="82" cy="94" r="6.5" fill="#134E4A"/><circle cx="122" cy="94" r="6.5" fill="#134E4A"/>
+  <circle cx="84" cy="91" r="2.2" fill="#fff"/><circle cx="124" cy="91" r="2.2" fill="#fff"/>
+  <path d="M90 108 L110 108 L100 122 Z" fill="#F59E0B" stroke="#D97706" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="64" cy="112" r="8" fill="#F9A8D4" opacity=".9"/><circle cx="136" cy="112" r="8" fill="#F9A8D4" opacity=".9"/>
+  <path d="M44 108 Q30 122 46 136 Q54 124 52 110 Z" fill="#0F766E"/><path d="M156 108 Q170 122 154 136 Q146 124 148 110 Z" fill="#0F766E"/>
+</svg>

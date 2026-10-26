@@ -1,0 +1,168 @@
+// Shell layout styles are in src/styles.scss (global .app, .sidebar, .main, .bottomnav rules).
+// Component-scoped additions go here.
+
+.chip-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-left: 0.625rem;
+}
+
+.chip-name {
+  font-weight: 700;
+  font-size: var(--nw-text-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip-role {
+  font-size: var(--nw-text-xs);
+  color: var(--nw-color-on-surface-variant);
+}
+
+.app-version {
+  padding: 4px 12px 0;
+  font-size: var(--nw-text-xs);
+  color: var(--nw-color-on-surface-variant);
+  text-align: center;
+}
+
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-date {
+  font-size: var(--nw-text-sm);
+  color: var(--nw-color-on-surface-variant);
+  white-space: nowrap;
+}
+
+.theme-toggle-btn,
+.logout-btn,
+.bell-btn {
+  width: 44px;
+  height: 44px;
+}
+
+.bell-btn {
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .topbar-date {
+    display: none;
+  }
+}
+
+/* Kid rail: a 104px column in place of the parent sidebar, from the same 1100px breakpoint. */
+.app.is-kid {
+  grid-template-columns: 104px minmax(0, 1fr);
+}
+
+.kid-rail {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 10px 22px;
+  background: var(--nw-color-surface);
+  border-right: 1px solid var(--nw-color-outline);
+}
+
+.rail-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-family: var(--nw-font-logo);
+}
+
+.rail-brand img {
+  width: 48px;
+  height: 48px;
+}
+
+.rail-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.rail-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 84px;
+  padding: 12px 4px;
+  border-radius: 20px;
+  color: var(--nw-color-on-surface-variant);
+  font-weight: 800;
+  font-size: var(--nw-text-sm);
+  text-decoration: none;
+  transition: background var(--nw-motion-fast), color var(--nw-motion-fast);
+}
+
+.rail-link:hover {
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface);
+}
+
+.rail-link.active {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-on-primary-container);
+}
+
+.rail-me {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 84px;
+  font-weight: 800;
+  font-size: var(--nw-text-xs);
+  text-decoration: none;
+}
+
+.rail-me span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rail-link:focus-visible,
+.rail-me:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1100px) {
+  .app.is-kid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .kid-rail {
+    display: none;
+  }
+}
+
+.avatar-link {
+  display: inline-flex;
+  border-radius: var(--nw-radius-full);
+}
+
+.avatar-link:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}

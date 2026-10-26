@@ -1,0 +1,5 @@
+@if (src(); as url) {
+  <img [class]="sizeClass()" [src]="url" [alt]="'avatar.alt' | transloco: { name: name() }" />
+} @else {
+  <span [class]="sizeClass()" [style.background]="colour()" aria-hidden="true">{{ initial() }}</span>
+}

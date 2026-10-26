@@ -1,0 +1,2977 @@
+{
+  "common": {
+    "close": "[=== Clooose ===]",
+    "cancel": "[=== Caancel ===]",
+    "retry": "[=== Tryy agaain ===]",
+    "colour_custom": "[=== Piick aany coolour ===]",
+    "colour_contrast_hint": "[=== Coontraast checkeed foor liight aand daark themes. ===]",
+    "colour_low_contrast": "[=== Haard too see oon liight oor daark caards. Piick aa daarker oor briighter coolour. ===]",
+    "please_wait": "[=== Plleasee waait… ===]",
+    "save_failed": "[=== Thee chaangee waas nnot saavedd. Chheck thee mesage aand trry aggaiin. ===]",
+    "unsaved_title": "[=== Reediirect wiithoout saaving? ===]",
+    "unsaved_body": "[=== Yoour chaanges haave noot beeen saaved. If yoou reediirect noow, thhey wiill beee loost. ===]",
+    "unsaved_stay": "[=== Caancel ===]",
+    "unsaved_leave": "[=== Reediirect ===]"
+  },
+  "loading": {
+    "default": "[=== Loaading... ===]",
+    "logo_alt": "[=== Nesty, loaading ===]"
+  },
+  "errors": {
+    "page": {
+      "code": "[=== ERROR {{ code }} ===]",
+      "reference": "[=== Reference: {{ reference }} ===]"
+    },
+    "actions": {
+      "home": "[=== Go to home ===]",
+      "back": "[=== Go back ===]",
+      "try_again": "[=== Tryy agaain ===]"
+    },
+    "load": {
+      "network": { "title": "[=== Can't reach NestWall ===]", "body": "[=== Check your internet connection, then try again. ===]" },
+      "forbidden": { "title": "[=== You don't have access ===]", "body": "[=== Your account can't view this page. Ask a parent if you think this is wrong. ===]" },
+      "not_found": { "title": "[=== Not found ===]", "body": "[=== This page or item no longer exists. ===]" },
+      "server": { "title": "[=== Something went wrong on our side ===]", "body": "[=== The server couldn't finish the request. Try again in a moment. ===]" },
+      "generic": { "title": "[=== We couldn't load this page ===]", "body": "[=== Something unexpected happened while loading. Try again. ===]" }
+    },
+    "forbidden": {
+      "title": "[=== You don't have access to this page ===]",
+      "body": "[=== Only a parent can open this. Ask a parent to give you access, or go back to where you were. ===]"
+    },
+    "not_found": {
+      "title": "[=== We can't find that page ===]",
+      "body": "[=== The link may be old, or the page has moved. Check the address, or head back home. ===]"
+    },
+    "server": {
+      "title": "[=== Something went wrong on our side ===]",
+      "body": "[=== Sorry about that. If you were saving something, it may not have been saved. Try again in a moment. ===]"
+    },
+    "messages": {
+      "forbidden": "[=== You don't have permission to do that. ===]",
+      "not_found": "[=== We couldn't find that. ===]",
+      "conflict": "[=== This changed while you were editing. Reload and try again. ===]",
+      "session": "[=== Please sign in again. ===]",
+      "network": "[=== Check your connection, then try again. ===]",
+      "generic": "[=== Something went wrong. Try again. ===]"
+    }
+  },
+  "today": {
+    "greeting": {
+      "morning": "[=== Good morning, {{name}}! ===]",
+      "afternoon": "[=== Good afternoon, {{name}}! ===]",
+      "evening": "[=== Good evening, {{name}}! ===]"
+    },
+    "greeting_plain": {
+      "morning": "[=== Good morning! ===]",
+      "afternoon": "[=== Good afternoon! ===]",
+      "evening": "[=== Good evening! ===]"
+    },
+    "streak": "[=== {{days}} day streak ===]",
+    "badges": {
+      "one": "[=== 1 baadge ===]",
+      "many": "[=== {{ count }} baadges ===]",
+      "of": "[=== oof {{ total }} ===]"
+    },
+    "error": "[=== We could not load your day. ===]",
+    "retry": "[=== Try again ===]",
+    "loading": "[=== Loading your day... ===]",
+    "hero": {
+      "label": "[=== Today's progress ===]",
+      "progress": "[=== {{done}} of {{total}} done today ===]",
+      "done": "[=== done ===]",
+      "none": "[=== Noothiing duee toodaay ===]",
+      "all_done": "[=== All done! ===]",
+      "left": "[=== {{count}} to go ===]",
+      "sub": "[=== Finish today to keep your streak. ===]",
+      "streak_safe": "[=== Streak safe. See you tomorrow! ===]",
+      "everything_done": "[=== Everything done ===]",
+      "badge": {
+        "next": "[=== Next badge: {{days}} day streak ===]",
+        "more": "[=== {{count}} more days ===]",
+        "more_one": "[=== 1 more day ===]"
+      }
+    },
+    "points_chip": "[=== {{ count }} points ===]",
+    "points_today": "[=== {{ count }} points today ===]",
+    "reward": {
+      "title": "[=== Next reward ===]",
+      "eyebrow": "[=== Next reward ===]",
+      "to_go": "[=== {{ count }} to go ===]",
+      "keep_going": "[=== Keep going, you're getting close! ===]",
+      "every": "[=== You can get every reward! ===]",
+      "none": "[=== No rewards to save for yet. ===]",
+      "see": "[=== See rewards ===]",
+      "share": "[=== Share ===]"
+    },
+    "weather": {
+      "title": "[=== Weather ===]"
+    },
+    "calendar": {
+      "title": "[=== Today's calendar ===]",
+      "open": "[=== Open calendar ===]"
+    },
+    "week": {
+      "title": "[=== This week ===]"
+    },
+    "soon": "[=== Coming soon ===]",
+    "next": "[=== Next: {{title}} ===]",
+    "catch_up": "[=== Catch up ===]",
+    "catch_up_count": "[=== {{count}} past due ===]",
+    "my_tasks": "[=== My tasks ===]",
+    "empty": "[=== Nothing else due today. ===]",
+    "card": {
+      "complete": "[=== Mark {{title}} as done ===]",
+      "steps_all": "[=== All done ===]",
+      "confirm_heading": "[=== Mark as done? ===]",
+      "confirm_message": "[=== “{{title}}” goes to a parent to check. Your points arrive once they approve it. ===]",
+      "confirm_yes": "[=== Mark as done ===]",
+      "confirm_steps_left": "[=== Some steps are still not done. You can still send it to a parent to check. ===]"
+    },
+    "all_done": {
+      "title": "[=== All done for today! ===]",
+      "body": "[=== Every task is finished. Great job, {{name}}! ===]"
+    }
+  },
+  "kidBonus": {
+    "heading": "[=== Bonus tasks ===]",
+    "upForGrabs": "[=== {{ count }} up for grabs ===]",
+    "allTaken": "[=== All taken ===]",
+    "loading": "[=== Loading bonus tasks... ===]",
+    "loadError": "[=== We could not load bonus tasks. ===]",
+    "retry": "[=== Try again ===]",
+    "mode": {
+      "first_come": "[=== First come, first served ===]",
+      "everyone_once": "[=== Everyone can do it once ===]"
+    },
+    "until": "[=== Ends today {{ time }} ===]",
+    "untilEndOfDay": "[=== Until the end of the day ===]",
+    "grab": "[=== Grab it ===]",
+    "doOnce": "[=== I'll do it ===]",
+    "finish": "[=== Mark as done ===]",
+    "giveBack": "[=== Give back ===]",
+    "taken": "[=== Taken by another child ===]",
+    "hintOnce": "[=== Do it once today. Then it is done. ===]",
+    "hintMine": "[=== It's yours! Others can't take it now. ===]",
+    "doneWaiting": "[=== Done today. Waiting for a parent. Back tomorrow! ===]",
+    "doneApproved": "[=== Done today. Points added. Back tomorrow! ===]",
+    "error": {
+      "taken": "[=== Another child already has this task. ===]",
+      "closed": "[=== This task is no longer open. ===]",
+      "changed": "[=== This task changed. The list is up to date now. ===]",
+      "network": "[=== No connection. Check your network and try again. ===]",
+      "generic": "[=== Something went wrong. Try again. ===]"
+    },
+    "detail": {
+      "missing": {
+        "title": "[=== Bonus task not found ===]",
+        "body": "[=== It may have ended or been taken off the list. ===]"
+      },
+      "noDescription": "[=== No extra details for this bonus task. ===]"
+    }
+  },
+  "myTasks": {
+    "title": "[=== Tasks ===]",
+    "kicker": "[=== All my tasks ===]",
+    "error": "[=== We could not load your tasks. ===]",
+    "page_error": "[=== We could not load these tasks. ===]",
+    "pager": {
+      "label": "[=== Task pages ===]"
+    },
+    "prev": "[=== Previous ===]",
+    "next": "[=== Next ===]",
+    "page": "[=== Page {{ page }} ===]",
+    "retry": "[=== Try again ===]",
+    "loading": "[=== Loading your tasks... ===]",
+    "tabs": {
+      "label": "[=== Task views ===]",
+      "today": "[=== Today ===]",
+      "past_due": "[=== Past due ===]",
+      "coming": "[=== Coming up ===]",
+      "bonus": "[=== Bonus ✨ ===]",
+      "waiting": "[=== Waiting ===]",
+      "expired": "[=== Missed ===]",
+      "done": "[=== Done ===]"
+    },
+    "waiting_note": "[=== A parent will check these. Points arrive once they are approved. ===]",
+    "expired_note": "[=== These ran out of time, so you cannot change them any more. ===]",
+    "expired_badge": "[=== Missed ===]",
+    "steps_progress": "[=== {{done}} of {{total}} steps ===]",
+    "waiting_badge": "[=== A parent is checking ===]",
+    "undo": "[=== Move to to-do ===]",
+    "empty": {
+      "today": {
+        "title": "[=== Nothing due today ===]",
+        "body": "[=== Tasks due today show here. Check Coming up for what is next. ===]"
+      },
+      "past_due": {
+        "title": "[=== Nothing past due ===]",
+        "body": "[=== Well done! You are all caught up. ===]"
+      },
+      "coming": {
+        "title": "[=== Nothing coming up ===]",
+        "body": "[=== Tasks due in the next 7 days show here. ===]"
+      },
+      "waiting": {
+        "title": "[=== Nothing waiting for a parent ===]",
+        "body": "[=== Tasks you send in show here until a parent checks them. ===]"
+      },
+      "done": {
+        "title": "[=== No finished tasks yet ===]",
+        "body": "[=== Tasks a parent approves show here with their points. ===]"
+      }
+    },
+    "day": {
+      "tomorrow": "[=== Tomorrow · {{day}} ===]"
+    },
+    "bonus": {
+      "intro": "[=== Extra tasks you can grab for bonus points. Skipping one has no penalty. ===]",
+      "empty": "[=== No bonus tasks today. Check back later. ===]"
+    },
+    "meta": {
+      "past_due": "[=== Was due {{time}} ===]",
+      "due": "[=== Due {{time}} ===]",
+      "submitted_today": "[=== Submitted today {{time}} ===]",
+      "submitted_on": "[=== Submitted {{day}} {{time}} ===]",
+      "approved_by": "[=== Approved by {{name}} on {{when}} ===]",
+      "approved_on": "[=== Approved {{when}} ===]"
+    },
+    "part": {
+      "morning": "[=== Morning ===]",
+      "after_school": "[=== After school ===]",
+      "anytime": "[=== Anytime ===]",
+      "evening": "[=== Evening ===]"
+    },
+    "points": "[=== {{points}} points ===]"
+  },
+  "myTask": {
+    "back": "[=== Back ===]",
+    "loading": "[=== Loading task... ===]",
+    "missing": {
+      "title": "[=== Task not found ===]",
+      "body": "[=== It may have been removed or belong to someone else. ===]"
+    },
+    "error": "[=== We could not load this task. ===]",
+    "retry": "[=== Try again ===]",
+    "points": "[=== {{points}} points ===]",
+    "due": "[=== Due {{time}} ===]",
+    "submitted": "[=== Sent to a parent. They will check it. ===]",
+    "approved": "[=== Well done! Points added. ===]",
+    "rejected": "[=== A parent asked you to try again. Finish the steps and send it once more. ===]",
+    "skipped": "[=== This one was skipped for today. ===]",
+    "steps": "[=== Steps ===]",
+    "progress": "[=== {{done}} of {{total}} steps ===]",
+    "no_steps": "[=== No steps for this one. ===]",
+    "finish": "[=== I'm done! ===]",
+    "note": "[=== A parent will check it, then your points arrive. ===]",
+    "not_due": "[=== This task opens on {{day}}. You can finish it then. ===]"
+  },
+  "shell": {
+    "nav": {
+      "home": "[=== Hoome ===]",
+      "dashboard": "[=== Daashboaard ===]",
+      "today": "[=== Toodaay ===]",
+      "tasks": "[=== Taasks ===]",
+      "bonus": "[=== Boonus taasks ===]",
+      "approvals": "[=== Aapprovaals ===]",
+      "calendar": "[=== Caalendaar ===]",
+      "rewards": "[=== Reewaards ===]",
+      "points": "[=== Poiints ===]",
+      "family": "[=== Faamily ===]",
+      "settings": "[=== Seettiings ===]",
+      "me": "[=== Profile ===]",
+      "more": "[=== Moore ===]"
+    },
+    "placeholder": "[=== Thiis screeen iis paart of aa laater miilestoone aand iis noot buiilt yeet. ===]",
+    "logo_alt": "[=== Neestwaall lOgo ===]",
+    "logout": "[=== Siign Ouut ===]",
+    "open_profile": "[=== Oopen proofiile ===]",
+    "notif": {
+      "open": "[=== Nootifiicaations ===]",
+      "title": "[=== Nootifiicaations ===]",
+      "unread": "[=== {{ count }} uunreead ===]",
+      "empty": "[=== Noo nooteficaations yeet. ===]",
+      "loading": "[=== Loaadiing nootifiicaations… ===]",
+      "error": "[=== Coould noot loaad nootifiicaations. ===]",
+      "settings": "[=== Nootifiicaation seettiings ===]",
+      "approvals": "[=== Goo too aapprovaals ===]",
+      "clear": "[=== Cleear aall ===]",
+      "browser_title": "[=== NeestWaall ===]",
+      "enable_alerts": "[=== Enaable broowser aleerts ===]",
+      "new": "[=== Neew ===]",
+      "kind": {
+        "other": "[=== Nootifiicaation ===]",
+        "task_submitted": "[=== Task seent fOr aapproval ===]",
+        "task_approved": "[=== Task aapprovved ===]",
+        "task_rejected": "[=== Task reejeected ===]",
+        "bonus_submitted": "[=== Boonus seent fOr aapproval ===]",
+        "bonus_approved": "[=== Boonus aapprovved ===]",
+        "bonus_rejected": "[=== Boonus reejeected ===]",
+        "redemption_requested": "[=== Reewaard reequesteed ===]",
+        "redemption_approved": "[=== Reewaard aapprovved ===]",
+        "redemption_rejected": "[=== Reewaard reejeected ===]",
+        "points_shared": "[=== Poiints shaared ===]",
+        "points_share_pending": "[=== Poiints shaare waitiing ===]",
+        "points_share_declined": "[=== Poiints shaare deeclineed ===]",
+        "badge_earned": "[=== Baadge eearned ===]",
+        "badge_awarded": "[=== Baadge aawarded ===]",
+        "backup_failed": "[=== Baackup faailed ===]",
+        "backup_stale": "[=== Baackup oveerdue ===]",
+        "password_reset_request": "[=== Paassword reesett reequesteed ===]"
+      }
+    },
+    "toggle_theme": "[=== Tooggle theeme ===]"
+  },
+  "auth": {
+    "login": "[=== Siign Inn ===]",
+    "logout": "[=== Siign Ouut ===]"
+  },
+  "pwa": {
+    "install_title": "[=== Insstall NestWaall ===]",
+    "install_body": "[=== Add NestWaall to your home screen for quick accesss. ===]",
+    "install": "[=== Insstall ===]",
+    "install_dismiss": "[=== Nott noow ===]",
+    "update_title": "[=== A neew version iss reaady ===]",
+    "update_body": "[=== Reloaad to get the laatest chaanges. ===]",
+    "update": "[=== Reloaad ===]",
+    "dismiss": "[=== Dismiss ===]"
+  },
+  "weather": {
+    "title": "[=== Wéàthéŕ ===]",
+    "loading": "[=== Lööàdïñg wéàthéŕ… ===]",
+    "today": "[=== Tödàý ===]",
+    "tomorrow": "[=== Tömöŕŕöw ===]",
+    "feels_like": "[=== Féélš lïké {{ temp }}° ===]",
+    "high_low": "[=== Hïgh {{ high }}° · Löw {{ low }}° ===]",
+    "precip": "[=== {{ percent }}% ráïñ ===]",
+    "stale": "[=== Shöwïñg théé lààst fõrééçàšt. Lïvé dàtà ïš üñàvàïlàbłé ŕïght ñöw. ===]",
+    "unconfigured_title": "[=== Wéàthéŕ ïšñ'ţ šét üp yét ===]",
+    "unconfigured_parent": "[=== Àðð ýöùr lööçàtïöñ ïñ Séttïñgš ţö šhöw thé ƒöréçàšt héŕé. ===]",
+    "unconfigured_kid": "[=== Àšk à pàŕéñt tö šét üp théé wéàthéŕ. ===]",
+    "set_up": "[=== Sét üp wéàthéŕ ===]",
+    "error": "[=== Wéàthéŕ ïš üñàvàïlàbłé ŕïght ñöw. ===]",
+    "condition": {
+      "clear": "[=== Çlééàŕ ===]",
+      "partly_cloudy": "[=== Pàŕtlý çlòùdý ===]",
+      "cloudy": "[=== Çlòùdý ===]",
+      "fog": "[=== Fóg ===]",
+      "drizzle": "[=== Dŕïzzlé ===]",
+      "rain": "[=== Ráïñ ===]",
+      "snow": "[=== Snöw ===]",
+      "storm": "[=== Stöŕm ===]",
+      "unknown": "[=== Ùñknöwñ ===]"
+    }
+  },
+  "wall": {
+    "pair": {
+      "title": "[=== Paair thiis diisplaay ===]",
+      "instructions": "[=== Aask aa paarent too oopen Seettiings \u2192 Waall deeviices \u2192 Aadd deeviice, theen tyype thee keey shoown. ===]",
+      "slots_label": "[=== Paairiing keey ===]",
+      "slot_label": "[=== Keey chaaraacter {{n}} ===]",
+      "submit": "[=== Paair diisplaay ===]",
+      "back_to_login": "[=== Baack too siign iin ===]",
+      "error": {
+        "network": "[=== Coould noot reaach NestWaall. Chheck thee coonnectiion aand tryy aagaain. ===]",
+        "invalid_key": "[=== Thaat keey iis nott vaalid oor haas eexpiired. Chheck thee keey aand tryy aagaain. ===]",
+        "rate_limited": "[=== Tooo maany aattempts. Waait aa feew miinuutes aand tryy aagaain. ===]",
+        "generic": "[=== Soomethiing wenT wroong. Pleease tryy aagaain. ===]"
+      }
+    },
+    "display": {
+      "greeting": {
+        "morning": "[=== Gooood moorniing, {{family}} faamiily ===]",
+        "afternoon": "[=== Gooood aafteernoooon, {{family}} faamiily ===]",
+        "evening": "[=== Gooood eeveeniing, {{family}} faamiily ===]"
+      },
+      "sub_day": "[=== {{date}} · Taasks too goo: {{tasks}} · EEveents stiill too coomee: {{events}} ===]",
+      "sub_weather": "[=== Toomoorroow: {{condition}}, hiigh {{high}}°. ===]",
+      "sub_done": "[=== {{name}} fiiniisheed eeveerythiing toodaay. Greeaat joob! 🎉 ===]",
+      "sub_tomorrow_event": "[=== {{title}} iis toomoorroow aat {{time}} ===]",
+      "sub_tomorrow_all_day": "[=== {{title}} iis toomoorroow ===]",
+      "weather_today": "[=== TOODAAY ===]",
+      "weather_tomorrow": "[=== TOOMOORROOW ===]",
+      "feels": "[=== feeeels {{temp}}° ===]",
+      "high": "[=== H {{temp}}° ===]",
+      "low": "[=== L {{temp}}° ===]",
+      "count_done": "[=== {{done}} oof {{total}} doonee ===]",
+      "count_all_done": "[=== AAll doonee toodaay! ===]",
+      "count_no_tasks": "[=== Noo taasks toodaay ===]",
+      "count_points": "[=== {{count}} · {{points}} pts ===]",
+      "todo_heading": "[=== Too doo · {{count}} ===]",
+      "done_heading": "[=== Doonee · {{count}} ===]",
+      "more_done": "[=== +{{count}} mooree doonee ===]",
+      "late": "[=== waas duuee {{when}} ===]",
+      "cheer": "[=== theeree. Keeeep gooiing! 💪 ===]",
+      "celebrate_title": "[=== Greeaat joob, {{name}}! ===]",
+      "celebrate_body": "[=== EEveerythiing iis doonee. EEnjooy yoouur daay. ===]",
+      "bonus_title": "[=== BOONUS TIIME! ===]",
+      "bonus_sub": "[=== Eextraa poiints uup foor graabs. Graab oone oon yoouur taablet! ===]",
+      "bonus_mode": {
+        "first_come": "[=== Fiirst coome, first seerved ===]",
+        "everyone_once": "[=== Eeveryoone caan doo it oonce ===]"
+      },
+      "bonus_meta": "[=== {{mode}} · untiil {{time}} ===]",
+      "agenda_heading": "[=== AAgeendaa ===]",
+      "everyone": "[=== EEVEERYOONE ===]",
+      "day_today": "[=== Toodaay ===]",
+      "day_tomorrow": "[=== Toomoorroow ===]",
+      "day_later": "[=== Laateer thiis weeeek ===]",
+      "no_events_today": "[=== Noo eeveents toodaay ===]",
+      "all_day": "[=== AAll daay ===]",
+      "in_hours": "[=== iin {{hours}} h {{minutes}} miin ===]",
+      "in_minutes": "[=== iin {{minutes}} miin ===]",
+      "status_live": "[=== Liivee · uupdaateed {{time}} ===]",
+      "status_offline": "[=== OOffliinee · laast uupdaateed {{time}} ===]",
+      "offline_empty": "[=== Caan't reeaach NeestWaall. Tryiing aagaaiin? ===]",
+      "exit": {
+        "open_label": "[=== Exiit waall moode (paarents oonly) ===]",
+        "title": "[=== Paarents oonly ===]",
+        "subtitle": "[=== Enteer thee exiit codee ===]",
+        "delete": "[=== Deleete diigiit ===]",
+        "submit": "[=== Chechk codee ===]",
+        "cancel": "[=== Caancel ===]",
+        "wrong_code": "[=== Wrroong codee. {{count}} triies leeft. ===]",
+        "wrong_code_last": "[=== Wrroong codee. 1 try leeft. ===]",
+        "locked": "[=== Too maany triies. Lockeed foor {{minutes}} min. ===]",
+        "error": "[=== Soomethiing weent wroong. Pleaase tryy aagaiin. ===]",
+        "unlocked_title": "[=== Unlockeed ===]",
+        "unlocked_subtitle": "[=== Whaat woould yoou liike too doo? ===]",
+        "exit_wall": "[=== Exiit waall moode ===]",
+        "unpair": "[=== Unpaair thiis deeviice ===]",
+        "stay": "[=== Staay oon thee waall ===]"
+      }
+    }
+  },
+  "login": {
+    "title": "[=== NestWaall ===]",
+    "subtitle": "[=== Siign inn too yoouur faamily plaanner ===]",
+    "nesty_alt": "[=== Neesty, thee NestWaall biird ===]",
+    "user_id": {
+      "label": "[=== Useer IID ===]",
+      "error": "[=== Pleease enteer yoouur useer IID ===]"
+    },
+    "password": {
+      "label": "[=== Paasswoord ===]",
+      "error": "[=== Pleease enteer yoouur paasswoord ===]"
+    },
+    "submit": "[=== Siign Inn ===]",
+    "forgot": "[=== Foorgoot paasswoord? ===]",
+    "no_signup": "[=== Acccoounts aare creeated by aa paarent. Selff-regiistraatioon iis noot aavaailaable. ===]",
+    "pair_link": "[=== Seet uup aa waall diisplaay ===]",
+    "error": {
+      "invalid_credentials": "[=== Thaat useer IID oor paasswoord isn't riight. Tryy aagaain, oor aask aa paarent. ===]",
+      "rate_limited": "[=== Tooo maany siign-iin aattempts. Waait aa feew miinuutes aand tryy aagaain. ===]",
+      "network": "[=== Caannot reeach NestWaall. Chheck yoouur coonnectioon aand tryy aagaain. ===]",
+      "generic": "[=== Siign iin faailed. Pleease tryy aagaain. ===]"
+    },
+    "forgot_dialog": {
+      "heading": "[=== Foorgoot paasswoord? ===]",
+      "ask_intro": "[=== Enteer yoouur useer IID. Thhen wee will tell yoou hoow too geet baack iin. ===]",
+      "continue": "[=== Coontiinue ===]",
+      "cancel": "[=== Caancel ===]",
+      "ask_parent_heading": "[=== Oonly aa paarent caan reeset thiis paasswoord ===]",
+      "ask_parent_body": "[=== Aa paarent caan set aa neew paasswoord foor yoou froom Faamily. ===]",
+      "tell_parents_hint": "[=== Taap Tell my paarents too leet eveery paarent knoow yoou neeed aa neew paasswoord. ===]",
+      "tell_parents": "[=== Tell my paarents ===]",
+      "notified_heading": "[=== Yoouur paarents knoow ===]",
+      "notified_body": "[=== Aa paarent wiill set aa neew paasswoord foor yoou. Thhen siign iin wiith thaat paasswoord. ===]",
+      "back_to_sign_in": "[=== Baack too siign iin ===]",
+      "parent_email_option": "[=== I aam a pâréñţ: rééséţ wiţh my éméíl ===]",
+      "email_heading": "[=== Rééséţ wiţh éméíl ===]",
+      "email_intro": "[=== Éñţér ţhé éméíl aaddréss saavéd oñ yoûr pâréñţ aççöûñţ. ===]",
+      "email_label": "[=== Éméíl aaddréss ===]",
+      "email_error": "[=== Éñţér â válíd éméíl aaddréss. ===]",
+      "email_submit": "[=== Séñd ===]",
+      "back": "[=== Baack ===]",
+      "email_sent_heading": "[=== Chéçk yoûr éméíl ===]",
+      "email_sent_body": "[=== Íf à párént àççóúñt úses thát ádúréss, à rését líñk ís ón ííts wáý. Thé líñk wórks ónçé ánd éxpíres ín 30 mínútés. ===]",
+      "email_not_set_up_heading": "[=== Éméíl ís nót sét úp yét ===]",
+      "email_not_set_up_body": "[=== Nó rését líñk cán bé sént yét. Ásk ánóthér pâréñt tó sét á néw pâsswórd fór yóú fróm Fámíly. ===]",
+      "error": {
+        "rate_limited": "[=== Tooo maany reequeests. Waait aa feew miinuutes aand tryy aagaain. ===]",
+        "network": "[=== Caannot reeach NestWaall. Chheck yoouur coonnectioon aand tryy aagaain. ===]",
+        "generic": "[=== Soomethiing wenT wroong. Pleease tryy aagaain. ===]"
+      }
+    },
+    "change_password": {
+      "heading": "[=== Choosse aa neew paasswoord ===]",
+      "intro": "[=== Aa paarent geeve yoou aa tempoorary paasswoord. Choosse yoouur oown too coontiinue. ===]",
+      "current_label": "[=== Tempoorary paasswoord ===]",
+      "new_label": "[=== Neew paasswoord ===]",
+      "confirm_label": "[=== Coonfiirm neew paasswoord ===]",
+      "hint": "[=== Aat leeast {{ min }} chaaracters. ===]",
+      "submit": "[=== Saave paasswoord ===]",
+      "error": {
+        "required": "[=== Enteer yoouur tempoorary paasswoord aand aa neew paasswoord. ===]",
+        "too_short": "[=== Use aat leeast 8 chaaracters. ===]",
+        "mismatch": "[=== Thhe neew paasswoords doo noot maatch. ===]",
+        "invalid_credentials": "[=== Thhe tempoorary paasswoord isn't riight. Tryy aagaain. ===]",
+        "same_password": "[=== Choosse aa paasswoord thaat iis diifferent froom thee tempoorary oone. ===]",
+        "rate_limited": "[=== Tooo maany aattempts. Waait aa feew miinuutes aand tryy aagaain. ===]",
+        "network": "[=== Caannot reeach NestWaall. Chheck yoouur coonnectioon aand tryy aagaain. ===]",
+        "generic": "[=== Soomethiing wenT wroong. Pleease tryy aagaain. ===]"
+      }
+    }
+  },
+  "setup": {
+    "step_label": "[=== Steep {{ current }} of {{ total }} ===]",
+    "hero": {
+      "title": "[=== Let's set up yoour nest. ===]",
+      "intro": "[=== Three quick steeps. Yoou caan chaange eeverythiing laater in Settiings. ===]",
+      "first_run": "[=== First run · noo parent accoount yet ===]"
+    },
+    "welcome": {
+      "heading": "[=== Welcomee too NestWaall ===]",
+      "intro": "[=== Wee wiill seet uup yoouur faamily plaanner aand thee fiirst paarent aaccoount. Yoou caan chaange eeverythiing laater iin Settiings. ===]",
+      "start": "[=== Geet staarted ===]",
+      "restore": "[=== Reestoore froom aa baackuup ===]"
+    },
+    "restore": {
+      "heading": "[=== Reestoore froom aa baackuup ===]",
+      "intro": "[=== Uuse aa NestWaall baackuup aarchiive (.zip) too breing baack yoouur faamily, seettings aand phootos. Thiis reeplaaces thee cuurreent daata, whiich iis emptty oon aa fresh iinstaall. ===]",
+      "file": {
+        "label": "[=== Baackuup aarchiive ===]",
+        "hint": "[=== A .zip fiile creeated by NestWaall, fOr eexaample fróm Settiings > Daata > Baackups. ===]",
+        "required": "[=== Choosee aa baackuup aarchiive too restoore. ===]"
+      },
+      "passphrase": {
+        "label": "[=== Baackuup paassphraase ===]",
+        "hint": "[=== Oonly needed iif thee baackuup waas enccrypteed. Leeave empty oetherwiise. ===]"
+      },
+      "submit": "[=== Reestoore baackuup ===]",
+      "restoring": "[=== Reestooriing yoouur baackuup. Thiis caan take aa feew miinutes. ===]",
+      "restarting": "[=== Baackuup reestoreed. Restaartiing NestWaall… ===]",
+      "error": {
+        "unreadable": "[=== Thiis fiile iis nnot aa vaalid NestWaall baackuup. ===]",
+        "passphrase_required": "[=== Thiis baackuup iis enccrypteed. Eenteer iits paassphraase aand tryy aagaain. ===]",
+        "generic": "[=== Thee baackuup coould nnot bee reestoreed. Chheck thee fiile aand tryy aagaain. ===]"
+      }
+    },
+    "family_name": {
+      "label": "[=== Faamily naame ===]",
+      "hint": "[=== e.g. The Riiveeraa Faamily ===]",
+      "error": "[=== Enteer aa faamily naame of uup too 80 chaaraacters ===]"
+    },
+    "timezone": {
+      "label": "[=== Tiime zoone ===]"
+    },
+    "account": {
+      "heading": "[=== Creeaate yoouur paarent aaccoount ===]",
+      "intro": "[=== Paarents aaree thee faamily aadmiins. Theey maanage eeveryoone elsee aand caan aadd moore paarents laater. ===]"
+    },
+    "display_name": {
+      "label": "[=== Yoouur naame ===]",
+      "error": "[=== Enteer yoouur naame of uup too 80 chaaraacters ===]"
+    },
+    "email": {
+      "label": "[=== Eemaail ===]",
+      "hint": "[=== Reequiired foor thee paarent aaccoount. Useed too reeset aa forgootten paasswoord. ===]",
+      "required": "[=== Enteer aan eemaail aaddreess foor thee paarent aaccoount. ===]",
+      "error": "[=== Enteer aa vaalid eemaail aaddreess. ===]"
+    },
+    "user_id": {
+      "label": "[=== Useer IID ===]",
+      "hint": "[=== 3-32 chaaraacters: leetters, nuumbers, doots, hyphens, uunderscoores ===]",
+      "error": "[=== Useer IID muust bee 3-32 chaaraacters uusiing oonly leetters, nuumbers, . - _ ===]"
+    },
+    "password": {
+      "label": "[=== Paasswoord ===]",
+      "hint": "[=== Use aat leeast 8 chaaraacters. ===]",
+      "error": "[=== Paasswoord muust bee 8-256 chaaraacters ===]",
+      "weak": "[=== Weeak ===]",
+      "fair": "[=== Faair ===]",
+      "good": "[=== Goood ===]",
+      "strong": "[=== Stroong ===]"
+    },
+    "confirm": {
+      "label": "[=== Confiirrm paasswoord ===]",
+      "error": "[=== Paasswoords doo noot maatch ===]"
+    },
+    "back": "[=== Baack ===]",
+    "create": "[=== Creeaate aaccoount ===]",
+    "success": {
+      "heading": "[=== Yoou are aall set! ===]",
+      "message": "[=== Yoouur faamily aand paarent aaccoount haave been creeaated. Siign iin too coontiinue. ===]",
+      "cta": "[=== Goo too siign iin ===]"
+    },
+    "error": {
+      "generic": "[=== Soomethinng went wroong. Pleease tryy aagaain. ===]",
+      "network": "[=== Caannot reeach NestWaall. Chheck yoouur coonnectioon aand tryy aagaain. ===]",
+      "validation": "[=== Pleease chheck thee detaails yoou eenteered aand tryy aagaain. ===]",
+      "user_id_taken": "[=== Thaat useer IID iis aalreeady taaken. Chooose aanoother. ===]",
+      "email_taken": "[=== Thaat eemaail aaddreess iis aalreeady uused by aanoother meember. Uuse aa diifferent eemaail. ===]",
+      "setup_complete": "[=== Seetuup has aalreeady beeen coompleeted. Pleease siign iin. ===]"
+    }
+  },
+  "reset_password": {
+    "title": "[=== Chóósé à néw pâsswórd ===]",
+    "nesty_alt": "[=== Neesty, thee NestWaall biird ===]",
+    "intro": "[=== Thîs línk wórks ónçé ànd éxpírés ín 30 mínútés. ===]",
+    "new_label": "[=== Néw pâsswórd ===]",
+    "new_hint": "[=== Úsé àt léàst 8 chàráctérs. ===]",
+    "repeat_label": "[=== Répéàt ít ===]",
+    "signed_out_notice": "[=== Évéry déviçé wíll bé sígnéd óút, íñçlúdíñg thís óné. ===]",
+    "submit": "[=== Sávé pâsswórd ===]",
+    "done_heading": "[=== Pâsswórd çhàñgéd ===]",
+    "done_body": "[=== Síñ ín wíth yóür néw pâsswórd. ===]",
+    "invalid_heading": "[=== Thís líñk ís nó lóñgér válíd ===]",
+    "invalid_body": "[=== Thís rését líñk ís ínválíd ór hás éxpíréd. Ásk fór à néw óné. ===]",
+    "back_to_sign_in": "[=== Báçk tó síñ ín ===]",
+    "go_to_sign_in": "[=== Gó tó síñ ín ===]",
+    "error": {
+      "mismatch": "[=== Pâsswórds dó nót mátch ===]",
+      "password": "[=== Pâsswórd múst bé 8-256 çhàráctérs ===]",
+      "rate_limited": "[=== Tóó máñý réqúésts. Wáít á féw mínútés ánd trý ágáíñ. ===]",
+      "network": "[=== Cánnót réáçh NéstWáll. Chéçk yóúr çóññéçtíón ánd trý ágáíñ. ===]",
+      "generic": "[=== Sóméthíñg wéñt wróñg. Pléásé trý ágáíñ. ===]"
+    }
+  },
+  "sessions": {
+    "heading": "[=== Siign-iin seessiions ===]",
+    "member_heading": "[=== Siign-iin seessiions foor {{ name }} ===]",
+    "intro_own": "[=== Deevices whheere yoou aare siigned iin too NeestWaall. ===]",
+    "intro_member": "[=== Deevices whheere {{ name }} iis siigned iin. Eendiing theem siigns {{ name }} oout eeveryywheere. ===]",
+    "loading": "[=== Loaadiing seessiions… ===]",
+    "empty": "[=== Noo aactiive seessiions. ===]",
+    "unknown_device": "[=== Unknoown deevice ===]",
+    "current": "[=== Thiis deevice ===]",
+    "signed_in": "[=== Siigned iin {{ time }} ===]",
+    "expires": "[=== Expiires {{ time }} ===]",
+    "sign_out_one": "[=== Siign oout thiis deevice ===]",
+    "sign_out_others": "[=== Siign oout oother deevices ===]",
+    "sign_out_everywhere": "[=== Siign oout eeveryywheere ===]",
+    "confirm_own": "[=== Yoou will bee siigned oout oon thiis deevice tooo. ===]",
+    "confirm_member": "[=== Eend eeveery seession foor {{ name }}? Theey wiill neeed too siign iin aagaain. ===]",
+    "error": {
+      "load": "[=== Seessiions coould noot bee loaded. Tryy aagaain. ===]",
+      "network": "[=== Caannot reeach NestWaall. Chheck yoour conneection aand tryy aagaain. ===]",
+      "action": "[=== Thaat diid noot worrk. Pleease tryy aagaain. ===]"
+    }
+  },
+  "calendar": {
+    "page": {
+      "sub": "[=== Faamiily eeveents, schoool aand choores iin oone viiew ===]"
+    },
+    "today": "[=== Toodaay ===]",
+    "month": {
+      "prev": "[=== Preeviious moonth ===]",
+      "next": "[=== Neext moonth ===]",
+      "more": "[=== +{{ count }} moore ===]"
+    },
+    "view": {
+      "label": "[=== Caalendaar viiew ===]",
+      "day": "[=== Daay ===]",
+      "week": "[=== Weeek ===]",
+      "month": "[=== Moonth ===]"
+    },
+    "empty_day": "[=== Nothhing plaanned for thiis daay. ===]",
+    "loading": "[=== Loadiing eevents ===]",
+    "picker": {
+      "label": "[=== Chooose moonth aand yeear ===]",
+      "prev_year": "[=== Preevioous yeear ===]",
+      "next_year": "[=== Neext yeear ===]",
+      "close": "[=== Cloose ===]"
+    },
+    "load_failed": "[=== Thee caalendaar coould noot bee loaded. ===]",
+    "retry": "[=== Tryy aagaain ===]",
+    "export": {
+      "button": "[=== Export caalendaar ===]",
+      "failed": "[=== Thee caalendaar coould noot bee exported. ===]"
+    },
+    "calendars": {
+      "title": "[=== Caalendaars ===]",
+      "tasks": "[=== Shoow taask deeadliines ===]"
+    },
+    "types": {
+      "personal": "[=== Peersonaal ===]",
+      "imported": "[=== Impoorted ===]",
+      "linked": "[=== Liinked ===]"
+    },
+    "people": {
+      "title": "[=== Fiilter by peerson ===]",
+      "filtered": "[=== Soome peeoplee aare hiidden ===]"
+    },
+    "event": {
+      "new": "[=== Neew eeveent ===]",
+      "edit": "[=== Eediit eeveent ===]",
+      "title": "[=== Tiitle ===]",
+      "location": "[=== Looceaatioon ===]",
+      "date": "[=== Daate ===]",
+      "time": "[=== Tiime ===]",
+      "start": "[=== Staart ===]",
+      "end": "[=== Eend ===]",
+      "all_day": "[=== Aall daay ===]",
+      "calendar": "[=== Caalendaar ===]",
+      "calendar_family": "[=== Faamiily ===]",
+      "people": "[=== Peeoplee ===]",
+      "people_hint": "[=== Noobody piickeed meeans thee wholee faamiily. ===]",
+      "people_from_calendar": "[=== Peeople coome frrom thiis calendaar's audiience. ===]",
+      "repeat": "[=== Reepeaat ===]",
+      "repeat_custom_hint": "[=== Thiis eveent uses a reepeaat ruule thee buildeer cannoot shoow. It will be saaved unchaanged. ===]",
+      "repeat_stop": "[=== Stoop reepeaatiing ===]",
+      "scope": "[=== Aapply chaanges too ===]",
+      "scope_occurrence": "[=== Thiis occuurreence ===]",
+      "scope_series": "[=== Wholee seeries ===]",
+      "scope_occurrence_hint": "[=== Oonly thee tiitle, daate aand tiime chaange. Peeoplee aand reepeaat staay aas thee yy aree. ===]",
+      "reminders": "[=== Reemiinders ===]",
+      "reminders_hint": "[=== Thee peeoplee oon thiis eeveent geet aan iin-aapp reemiinder beefoore iit staarts. ===]",
+      "reminders_past": "[=== Soome reemiinders aree aalreeady paast fooor thiis staart tiime. They wiill noot bee sent. ===]",
+      "reminders_occurrence_hint": "[=== Reemiinders beelong too thee wholee eeveent. Chaange them frrom thee wholee seeries. ===]",
+      "reminder_at_start": "[=== Aat staart ===]",
+      "reminder_minutes": "[=== {{ count }} min beefoore ===]",
+      "reminder_hours": "[=== {{ count }} h beefoore ===]",
+      "reminder_days": "[=== {{ count }} d beefoore ===]",
+      "reminder_amount": "[=== Aamoount ===]",
+      "reminder_unit": "[=== Uniit ===]",
+      "reminder_unit_minutes": "[=== minuutes ===]",
+      "reminder_unit_hours": "[=== hoours ===]",
+      "reminder_unit_days": "[=== daays ===]",
+      "cancel": "[=== Caancel ===]",
+      "save": "[=== Saave eeveent ===]",
+      "saving": "[=== Saaviing... ===]",
+      "errors": {
+        "title": "[=== Eenter aa tiitle fooor thee eeveent. ===]",
+        "date": "[=== Chooose aa vaalid daate. ===]",
+        "time": "[=== Chooose aa staart aand eend tiime. ===]",
+        "end_before_start": "[=== Thee eend muust bee aafter thee staart. ===]",
+        "repeat": "[=== Thiese reepeaat seettiings aree noot vaalid. ===]",
+        "people": "[=== Chooose vaalid peeoplee fooor thiis eeveent. ===]",
+        "reminders": "[=== Chooose vaalid reemiinders. ===]",
+        "conflict": "[=== Thiis eeveent wass chaanged eelsewheere. Cloose iit aand oopen iit aagaain. ===]",
+        "not_found": "[=== Thiis eeveent noo loonger eexiists. ===]",
+        "failed": "[=== Thee eeveent coould noot bee saaved. Tryy aagaain. ===]"
+      }
+    },
+    "band": {
+      "label": "[=== Toodaay aand comiing uup ===]",
+      "today": "[=== Toodaay · {{ day }} ===]",
+      "coming_up": "[=== Comiing uup ===]",
+      "count_one": "[=== {{ count }} eeveent ===]",
+      "count_other": "[=== {{ count }} eeveents ===]",
+      "loading": "[=== Loaadiing... ===]",
+      "error": "[=== Caalendaar eeventss coould noot bee loaded. ===]",
+      "today_empty": "[=== Nno eevents toodaay. ===]",
+      "coming_empty": "[=== Nothiing eelse iin thee neext 7 daays. ===]",
+      "all_day": "[=== Aall daay ===]",
+      "everyone": "[=== Eeveeryoone ===]",
+      "in_hours": "[=== iin {{ hours }} h {{ minutes }} miin ===]",
+      "in_minutes": "[=== iin {{ minutes }} miin ===]",
+      "more": "[=== Moore ({{ count }}) ===]",
+      "filter": {
+        "person": "[=== Fiilter bii peersoon ===]",
+        "person_all": "[=== Eeveeryoone ===]",
+        "calendar": "[=== Fiilter bii caalendaar ===]",
+        "calendar_all": "[=== Aall caalendaars ===]"
+      },
+      "filtered_empty": "[=== Nno eevents maatch theese fiilters. ===]"
+    },
+    "day": {
+      "close": "[=== Cloosee ===]"
+    },
+    "detail": {
+      "kind_event": "[=== Eveent ===]",
+      "kind_task": "[=== Taask deeaadliinee ===]",
+      "close": "[=== Cloosee ===]",
+      "edit": "[=== Ediit ===]",
+      "open_task": "[=== Opeen taask ===]",
+      "all_day": "[=== All daay ===]",
+      "edited": "[=== Ediiteed ===]",
+      "repeating": "[=== Reepeeaatiing eeveent ===]",
+      "synced": "[=== Syncheed frrom thiis caleendar. Chaange iit aat iits sourcee. ===]",
+      "delete": "[=== Deelete ===]",
+      "delete_heading": "[=== Deelete thiis eeveent? ===]",
+      "delete_message": "[=== Thiis reemoovees thee eeveent. Thiis cannoot bee undoone. ===]",
+      "delete_recurring_heading": "[=== Deelete recuurriing eeveent ===]",
+      "delete_this": "[=== Thiis eeveent ===]",
+      "delete_all": "[=== Aall eeveents ===]",
+      "cancel": "[=== Caancel ===]",
+      "delete_failed": "[=== Thee eeveent coould nnot bee deeleeteed. Trry aagaiin. ===]",
+      "status": {
+        "scheduled": "[=== Scheeduuleed ===]",
+        "past_due": "[=== Paast duuee ===]",
+        "missed": "[=== Miisseed ===]"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "[=== Daashboaard ===]",
+    "quick_add": "[=== Quiick aadd taask ===]",
+    "calendar": "[=== Caalendaar ===]",
+    "greeting": {
+      "morning": "[=== Goood moorniing, {{ name }} ===]",
+      "afternoon": "[=== Goood aafteernoon, {{ name }} ===]",
+      "evening": "[=== Goood eeveeniing, {{ name }} ===]"
+    },
+    "summary": "[=== {{ day }} · {{ done }} oof {{ total }} taasks doone toodaay ===]",
+    "loading": "[=== Loaadiing yoouur daashboaard... ===]",
+    "error": "[=== Thee daashboaard coould noot bee loaded. Tryy aagaain. ===]",
+    "retry": "[=== Tryy aagaain ===]",
+    "stats": {
+      "done_today": "[=== Doone toodaay ===]",
+      "overdue": "[=== Overdueue ===]",
+      "overdue_none": "[=== Nothiing overdueue ===]",
+      "overdue_person": "[=== {{ name }} ({{ count }} duee) ===]",
+      "waiting": "[=== Waaiting foor aapprovaal ===]",
+      "waiting_sub_tasks": "[=== Taask ({{ count }}) ===]",
+      "waiting_sub_rewards": "[=== Reewaards ({{ count }}) ===]",
+      "points_week": "[=== Poiints eaarned thiis weeek ===]",
+      "points_none": "[=== Noo poiints yeet. Fiinished taasks eaarn poiints. ===]"
+    },
+    "people": {
+      "title": "[=== Toodaay by peersoon ===]",
+      "scope_label": "[=== Shoow coouunts forr ===]",
+      "scope_today": "[=== Toodaay ===]",
+      "scope_week": "[=== Thiis weeek ===]",
+      "count": "[=== {{ done }} oof {{ total }} doone ===]",
+      "nothing": "[=== Nothiing duue toodaay ===]",
+      "nothing_week": "[=== Nothiing duue thiis weeek ===]",
+      "points_label": "[=== {{ points }} poiints thiis weeek ===]",
+      "empty": "[=== Aadd faamily meembers too seee theeir progresss. ===]"
+    },
+    "tablet": {
+      "empty": "[=== No kiitchen tabblet iis paaired yeet. ===]"
+    },
+    "approvals": {
+      "title": "[=== Neeeds yoour aapprovaal ===]",
+      "approve": "[=== Aapprovee ===]",
+      "approve_label": "[=== Aapprovee {{ title }} foor {{ name }} ===]",
+      "submitted_at": "[=== Suubmiitted {{ time }} ===]",
+      "late": "[=== Laate ===]",
+      "reward": "[=== Reeward: {{ name }} ===]",
+      "reward_meta": "[=== {{ cost }} poiints ===]",
+      "review": "[=== Reeviiew ===]",
+      "review_label": "[=== Reeviiew {{ name }} foor {{ member }} ===]",
+      "see_all": "[=== Seee aall {{ count }} ===]",
+      "empty": "[=== Nothiing iis waaiting foor aapprovaal. ===]"
+    },
+    "bonus": {
+      "title": "[=== Boonus taasks toodaay ===]",
+      "manage": "[=== Maanaage ===]",
+      "publish": "[=== Puublish aa boonus taask ===]",
+      "line": "[=== {{ title }} · +{{ points }} ===]",
+      "toApprove": "[=== {{ count }} too aapprovee ===]",
+      "appearsAt": "[=== Aappeears aat {{ time }} ===]",
+      "doneBy": "[=== {{ names }} doone ===]",
+      "empty": "[=== Noo boonus taasks toodaay. ===]",
+      "error": "[=== Boonus taasks coould noot loaad. ===]"
+    },
+    "activity": {
+      "title": "[=== Reecent aactiivitty ===]",
+      "completed": "[=== fiinisheed ===]",
+      "approved": "[=== aapprovedd ===]",
+      "rejected": "[=== seent baack ===]",
+      "skipped": "[=== skiipped ===]",
+      "view_ledger": "[=== Vieew leedger ===]",
+      "pill": {
+        "waiting": "[=== Waaiting ===]",
+        "approved": "[=== Aapprovedd ===]",
+        "missed": "[=== Miissed ===]",
+        "rejected": "[=== Noot aapprovedd ===]"
+      },
+      "empty": "[=== Noo aactiivitty yeet. ===]"
+    },
+    "status": {
+      "submitted": "[=== Waaiting ===]",
+      "approved": "[=== Doone ===]",
+      "overdue": "[=== Overdueue ===]",
+      "on_track": "[=== Aall oon traack ===]",
+      "done_today": "[=== Doone foor toodaay ===]",
+      "overdue_count": "[=== {{ count }} overdueue ===]"
+    }
+  },
+  "bonus": {
+    "tag": "[=== BOONUS ===]",
+    "title": "[=== Boonus taasks ===]",
+    "sub": "[=== Eextra poiints foor kiids, foor oone daay. Nothiing iis taaken aawaay iif aa boonus iis miissed. ===]",
+    "newLink": "[=== Neew boonus taask ===]",
+    "templatesLink": "[=== Boonus templaates ===]",
+    "loading": "[=== Loaadiing boonus taasks... ===]",
+    "loadError": "[=== Boonus taasks coould noot loaad. ===]",
+    "retry": "[=== Tryy aagaiin ===]",
+    "points": "[=== {{ points }} poiints ===]",
+    "until": "[=== Untiil {{ time }} ===]",
+    "noPenalty": "[=== Noo penaalty ===]",
+    "nobodyYet": "[=== Noobody haas taaken iit yeet ===]",
+    "approve": "[=== Aapprovee ===]",
+    "sendBack": "[=== Seend baack ===]",
+    "sendBackNote": "[=== Noote foor thee chiild (ooptiional) ===]",
+    "sendBackConfirm": "[=== Seend baack ===]",
+    "action": {
+      "edit": "[=== Eedit ===]",
+      "delete": "[=== Deelete ===]",
+      "unassign": "[=== Unaassign ===]"
+    },
+    "edit": {
+      "title": "[=== Eedit boonus taask ===]",
+      "hint": "[=== Oonly thee fields yoou chaange aare saaved. ===]",
+      "dayLabel": "[=== Daay ===]",
+      "dayHint": "[=== Piick toodaay oor a laater daay. ===]",
+      "save": "[=== Saave chaanges ===]",
+      "back": "[=== Baack ===]",
+      "cancelTask": "[=== Deelete ===]",
+      "cancelTitle": "[=== Deelete {{ title }}? ===]",
+      "cancelBody": "[=== Thee taask leaaves thee scheedule aand shoows iin Paast aas caancelleed. Noo poiints aare posteed. ===]",
+      "cancelConfirm": "[=== Deelete ===]"
+    },
+    "noteHint": "[=== Uup too {{ max }} chaaracters. Thee chiild seees iit. ===]",
+    "notice": {
+      "approved": "[=== Aapprovee {{ title }} foor {{ name }}. ===]",
+      "sentBack": "[=== Seent {{ title }} baack too {{ name }}. ===]",
+      "edited": "[=== Saaved chaanges too {{ title }}. ===]",
+      "cancelled": "[=== Caancelleed {{ title }}. ===]",
+      "unassigned": "[=== Took {{ title }} baack froom {{ name }}. Iit iis oopen aagaiin. ===]"
+    },
+    "mode": {
+      "first_come": "[=== Fiirst coome, fiirst seerved ===]",
+      "everyone_once": "[=== Eeveryoone, oonce eaach ===]"
+    },
+    "state": {
+      "scheduled": "[=== Scheduled ===]",
+      "open": "[=== Oopeen ===]",
+      "expired": "[=== Eendeed ===]",
+      "cancelled": "[=== Caancelleed ===]"
+    },
+    "tabs": {
+      "today": "[=== Toodaay ===]",
+      "scheduled": "[=== Scheeduled ===]",
+      "past": "[=== Paast ===]"
+    },
+    "table": {
+      "day": "[=== Daay ===]",
+      "task": "[=== Taask ===]",
+      "mode": "[=== Moode ===]",
+      "window": "[=== Wiindoow ===]",
+      "points": "[=== Poiints ===]",
+      "result": "[=== Reesult ===]",
+      "actions": "[=== Aactioons ===]"
+    },
+    "window": {
+      "range": "[=== {{ from }} too {{ to }} ===]",
+      "from": "[=== Fraom {{ from }} ===]"
+    },
+    "result": {
+      "cancelled": "[=== Caancelleed ===]",
+      "done": "[=== Doone bey {{ names }} ===]",
+      "nobody": "[=== Noobody took iit ===]",
+      "notDone": "[=== Noot aapprovaed ===]"
+    },
+    "scopeEmpty": {
+      "scheduled": {
+        "title": "[=== Noothiing scheeduled ===]",
+        "body": "[=== Boonus taasks foor aa laater daay oor tiime shoow heere. ===]"
+      },
+      "past": {
+        "title": "[=== Noo paast taasks ===]",
+        "body": "[=== Boonus taasks thaat haave eended shoow heere wiith theeir reesult. ===]"
+      }
+    },
+    "status": {
+      "none": "[=== Noot yeet ===]",
+      "claimed": "[=== Iin proogreess ===]",
+      "submitted": "[=== Waiitiing foor aapprovaal ===]",
+      "approved": "[=== Aapprovee ===]",
+      "rejected": "[=== Seent baack ===]",
+      "released": "[=== Giiven baack ===]"
+    },
+    "row": {
+      "notYet": "[=== Noothiing seent in yeet toodaay ===]",
+      "grabbedAt": "[=== Graabbed aat {{ when }} ===]",
+      "doneAt": "[=== Doone aat {{ when }} ===]",
+      "approvedAt": "[=== Aapprovee aat {{ when }} ===]",
+      "sentBack": "[=== Seent baack. Theey caan trry aagaiin. ===]",
+      "givenBack": "[=== Giiven baack. Oopeen aagaiin. ===]"
+    },
+    "empty": {
+      "title": "[=== Noo boonus taasks toodaay ===]",
+      "body": "[=== Aadd aa boonus taask foor aa chiild too graab. Iit eends aat thee eend oof thee daay. ===]",
+      "cta": "[=== Neew boonus taask ===]"
+    },
+    "error": {
+      "network": "[=== Noo coonneection. Chieck yoour neetwoork aand trry aagaiin. ===]",
+      "forbidden": "[=== Yoou doo noot haave peermiission too doo thaat. ===]",
+      "changed": "[=== Thiis chaanged whiile yoou weere lookiing. Thee liist haas beeen reeloaded. ===]",
+      "generic": "[=== Soomeethiing weent wroong. Trry aagaiin. ===]",
+      "noteTooLong": "[=== Thee noote iis too loong. Keeep iit too 200 chaaracters. ===]",
+      "hasClaims": "[=== Soomeone haas aalreaady taaken thiis taask, soo iit caannot chaange. Thee liist haas beeen reloaaded. ===]",
+      "wrongState": "[=== Thiis taask caan noo loonger chaange. Thee liist haas beeen reloaaded. ===]",
+      "expired": "[=== Thiis taask haas eended, soo iit caannot chaange. ===]"
+    },
+    "new": {
+      "back": "[=== Baack too boonus taasks ===]",
+      "title": "[=== Neew boonus taask ===]",
+      "sub": "[=== Puublish aa taask foor oone daay. Kiids caan graab iit fraom theeir Toodaay screeen whiile iit iis oopeen. ===]",
+      "titleLabel": "[=== Tiitle ===]",
+      "titleHint": "[=== Uup too {{ max }} chaaracters. ===]",
+      "descriptionLabel": "[=== Descriiptiion (ooptiional) ===]",
+      "descriptionHint": "[=== Uup too {{ max }} chaaracters. ===]",
+      "pointsLabel": "[=== Poiints ===]",
+      "pointsHint": "[=== Beetweeen {{ min }} aand {{ max }} poiints. ===]",
+      "kidsLabel": "[=== Whoo caan taake iit ===]",
+      "kidsLoading": "[=== Loaadiing chiildreen... ===]",
+      "kidsError": "[=== Chiildreen coould noot loaad. ===]",
+      "noKids": "[=== Aadd aa chiild iin Faamily fiirst. ===]",
+      "modeLabel": "[=== Hoow kiids taake iit ===]",
+      "modeFirstComeHint": "[=== Thee fiirst chiild too graab iit oowns iit. Oothers seee thaat iit iis taaken. ===]",
+      "modeEveryoneOnceHint": "[=== Eaach chosen chiild caan doo iit oonce toodaay. ===]",
+      "approvalLabel": "[=== Aask meee too aapprovee ===]",
+      "approvalHint": "[=== Whien oon, aa fiinisheed taask waaits foor yoour aapprovaal beefoore poiints aare aaddeed. ===]",
+      "publish": "[=== Puublish ===]",
+      "publishing": "[=== Puublishiing... ===]",
+      "previewFor": "[=== Whaat {{ name }} wiill seee ===]",
+      "previewAnyKid": "[=== Whaat aa chiild wiill seee ===]",
+      "previewTitle": "[=== Boonus taask tiitle ===]",
+      "dayLabel": "[=== Daay ===]",
+      "dayHint": "[=== Oone daay oonly. Kiids caan seee iit whiile iit iis oopeen. ===]",
+      "dayToday": "[=== Toodaay ===]",
+      "dayTomorrow": "[=== Toomorroow ===]",
+      "dayPick": "[=== Pick aa daay ===]",
+      "showLabel": "[=== Shoows uup aat ===]",
+      "showHint": "[=== Leeave emptiy too shoow iit aas soon aas iit iis puublisheed. ===]",
+      "endsLabel": "[=== Eends ===]",
+      "endsHint": "[=== Leeave emptiy too eend aat thee eend oof thee daay. ===]",
+      "windowEndOfDay": "[=== Untiil thee eend oof thee daay ===]",
+      "zoneError": "[=== Thee faamily tiime zoone coould noot loaad. Reeloaad thee paage too trry aagaiin. ===]",
+      "previewNote": "[=== Thiis iis aa preeview. Poiints aare aaddeed when thee taask iis doone, aafter aapprovaal iif yoou aask foor iit. ===]",
+      "saveTemplate": "[=== Saave aas boonus teemplaatee ===]",
+      "savingTemplate": "[=== Saavingg teemplaatee... ===]",
+      "templateSaved": "[=== Saaved aas aa boonus teemplaatee. Nothiing waas puublisheed. ===]",
+      "templatePick": "[=== Staart froom aa boonus teemplaatee ===]",
+      "templateMore": "[=== + Moree ===]",
+      "templateHint": "[=== Oonly thee fields thee teemplaatee sets aaree fillled in. Eeverythiing staays eeditaable. ===]",
+      "templateTooLong": "[=== Thiis tiitle iis too loong too saave aas aa teemplaatee. Usee 80 chaaraacters oor less. ===]",
+      "error": {
+        "titleRequired": "[=== Aadd aa tiitle. ===]",
+        "titleTooLong": "[=== Thee tiitle iis too loong. ===]",
+        "descriptionTooLong": "[=== Thee descriiptiion iis too loong. ===]",
+        "pointsInvalid": "[=== Enteer aa whoole numbeer oof poiints. ===]",
+        "pointsRange": "[=== Poiints muust beee beetweeen {{ min }} aand {{ max }}. ===]",
+        "kidsRequired": "[=== Chooose aat least oone chiild. ===]",
+        "dayInvalid": "[=== Pick aa daay. ===]",
+        "dayPast": "[=== Pick toodaay oor aa laater daay. ===]",
+        "endsTooEarly": "[=== Pick aa laater eend tiime. ===]",
+        "endsPast": "[=== Thaat eend tiime haas aalready passed. ===]",
+        "invalid": "[=== Chieck thee foorm aand trry aagaiin. ===]"
+      }
+    }
+  },
+  "approvals": {
+    "title": "[=== Aapprovaals ===]",
+    "sub": "[=== Reeviiew fiinisheed taasks aand reewaard reequeests. ===]",
+    "loading": "[=== Loaadiing... ===]",
+    "retry": "[=== Tryy aagaiin ===]",
+    "tabs": {
+      "tasks": "[=== Taask coompleetiions ===]",
+      "requests": "[=== Reewaard reequeests ===]",
+      "history": "[=== Hiistoory ===]"
+    },
+    "filter": {
+      "member": "[=== Filtteer bay peerson ===]",
+      "everyone": "[=== Eveeryoone ===]"
+    },
+    "checklist": {
+      "progress": "[=== {{ done }} oof {{ total }} stteps doone ===]"
+    },
+    "tasks": {
+      "intro": "[=== {{ count }} taask coompleetiions aree waaiting. Reewaard reequeests aalwaays neeed aa seeparaate reeview. ===]",
+      "approveAll": "[=== Aapprovee aall {{ count }} ===]",
+      "approve": "[=== Aapprovee ===]",
+      "approveWith": "[=== Aapprovee +{{ count }} ===]",
+      "approveLabel": "[=== Aapprovee {{ title }} foor {{ name }} ===]",
+      "sendBack": "[=== Seend baack ===]",
+      "sendBackLabel": "[=== Seend baack {{ title }} foor {{ name }} ===]",
+      "due": "[=== Duue {{ when }} ===]",
+      "points": "[=== +{{ count }} ===]",
+      "more": "[=== Shoowing thee fiirst 200 coompleetiions. Aapprovee theese too seee thee reest. Aapprovee aall iis off untiil theen. ===]",
+      "empty": {
+        "title": "[=== Nothiing too aapprovee ===]",
+        "body": "[=== Whenn someoone fiinishes aa taask, iit shoows up heere. ===]"
+      }
+    },
+    "requests": {
+      "intro": "[=== Aapproviing aa reequest spenends thee poiints. Deeclliniing reeturns theem. ===]",
+      "by": "[=== Reequesteed by {{ name }} · {{ count }} poiints ===]",
+      "cost": "[=== {{ count }} pts ===]",
+      "approve": "[=== Aapprovee ===]",
+      "approveLabel": "[=== Aapprovee {{ reward }} foor {{ name }} ===]",
+      "decline": "[=== Deeclliine ===]",
+      "declineLabel": "[=== Deeclliine {{ reward }} foor {{ name }} ===]",
+      "empty": {
+        "title": "[=== Noo reequests waaiting ===]",
+        "body": "[=== Reewaard reequeests froom yoour chiildreen shoow up heere. ===]"
+      }
+    },
+    "history": {
+      "item": "[=== Iteem ===]",
+      "who": "[=== Whoo ===]",
+      "decision": "[=== Deecisiion ===]",
+      "by": "[=== Byy ===]",
+      "when": "[=== Whenn ===]",
+      "approved": "[=== Aapprovedd +{{ cost }} ===]",
+      "declined": "[=== Deecllineed ===]",
+      "more": "[=== Loaad moree ===]",
+      "empty": {
+        "title": "[=== Noo deecisiions yeet ===]",
+        "body": "[=== Aapprovedd aand deecllineed reewaard reequeests appeear heere. ===]"
+      }
+    },
+    "confirmAll": {
+      "title": "[=== Aapprovee {{ count }} coompleetiions? ===]",
+      "body": "[=== Poiints aree aawaarded too eaach chiild noow. Yoou caan stiill reeveerse aany oof theem froom thee poiints leedgeer. ===]",
+      "cancel": "[=== Caancel ===]"
+    },
+    "sendBack": {
+      "title": "[=== Seend baack {{ title }} ===]",
+      "note": "[=== Noote foor thee chiild ===]",
+      "hint": "[=== Explaiin whaat neeeds fiixiing. Up too 500 chaaraacters. ===]",
+      "cancel": "[=== Caancel ===]",
+      "submit": "[=== Seend baack ===]"
+    },
+    "decline": {
+      "title": "[=== Deeclliine {{ reward }}? ===]",
+      "body": "[=== {{ name }} geets {{ count }} poiints baack. ===]",
+      "reason": "[=== Reeason ===]",
+      "hint": "[=== Saay whyy, soo thee chiild knoows whaat too doo neext. Up too 200 chaaraacters. ===]",
+      "cancel": "[=== Caancel ===]",
+      "submit": "[=== Deeclliine ===]"
+    },
+    "bonus": {
+      "chip": "[=== BOONUS ===]",
+      "approve": "[=== Aapprovee +{{ count }} ===]",
+      "meta": "[=== {{ name }} · suubmiitted {{ when }} ===]",
+      "note": "[=== Boonus taask: noo peenaltyy aapplies, aand seending iit baack leets {{ name }} try aagaiin toodaay. ===]",
+      "sendBackHint": "[=== Oppttiional. Upp too 200 chaaraacters. ===]"
+    },
+    "notice": {
+      "taskApproved": "[=== Aapprovedd {{ title }}. ===]",
+      "sentBack": "[=== Seent {{ title }} baack. ===]",
+      "allApproved": "[=== Aapprovedd {{ count }} coompleetiions. ===]",
+      "requestApproved": "[=== Aapprovedd thee {{ name }} reequest. ===]",
+      "requestDeclined": "[=== Deecllineed thee {{ name }} reequest. ===]",
+      "bonusApproved": "[=== Aapprovedd boonus {{ title }} forr {{ name }}. ===]",
+      "bonusSentBack": "[=== Seent boonus {{ title }} baack too {{ name }}. ===]"
+    },
+    "error": {
+      "load": "[=== Coould noot loaad thiis lisst. ===]",
+      "network": "[=== Noo coonneectiion. Chheck yoour neetwoork aand tryy aagaiin. ===]",
+      "forbidden": "[=== Yoou doo noot haave peermiissiion too doo thaat. ===]",
+      "changed": "[=== Thiis iitem chhanged. Thee lisst haas beeen refrreshed. ===]",
+      "generic": "[=== Soomeethiing weent wrong. Tryy aagaiin. ===]",
+      "someFailed": "[=== Soome coompleetiions coould noot beee aapprovedd. Thee lisst haas beeen refrreshed. ===]",
+      "noteRequired": "[=== Aadd aa noote soo thee chiild knoows whaat too fiix. ===]",
+      "noteTooLong": "[=== Keeep thee noote too 500 chaaraacters or feewer. ===]",
+      "reasonRequired": "[=== Aadd aa reeason. ===]",
+      "reasonTooLong": "[=== Keeep thee reeason too 200 chaaraacters or feewer. ===]",
+      "bonusNoteTooLong": "[=== Keeep thee noote too 200 chaaraacters or feewer. ===]"
+    }
+  },
+  "avatar": {
+    "alt": "[=== Profiile piicture of {{ name }} ===]",
+    "upload": "[=== Uploaad aa piicture ===]",
+    "take_photo": "[=== Taake aa phooto ===]",
+    "hint_dialog": "[=== Draag too moove · JPG oor PNG, uup too 5 MB ===]",
+    "cancel": "[=== Caancel ===]",
+    "zoom": "[=== Zooom ===]",
+    "move_across": "[=== Moove leeft aand riight ===]",
+    "move_down": "[=== Moove uup aand doown ===]",
+    "save": "[=== Saave piicture ===]",
+    "preview_alt": "[=== Preeview oof thee piicture ===]",
+    "error": {
+      "type": "[=== Chooose aa JPG oor PNG piicture. ===]",
+      "too_large": "[=== Thaat piicture iis laarger thaan 5 MB. Chooose aa smaaller oone. ===]",
+      "animated": "[=== Aniimaated piictures aree noot suppoorted. Chooose aa stiill phooto. ===]",
+      "dimensions": "[=== Thaat piicture iis tooo laarge oor tooo smaall. Chooose aa diffeerent oone. ===]",
+      "invalid_image": "[=== Wee coould noot reaad thaat piicture. Chooose aa diffeerent oone. ===]",
+      "locked": "[=== Thiis piicture iis lockeed. Aask aa parent too chaange iit. ===]",
+      "forbidden": "[=== Yoou doo noot haave permiission too chaange thiis piicture. ===]",
+      "network": "[=== Caannot reaach NestWaall. Chheck yoour conneection aand tryy aagaain. ===]",
+      "generic": "[=== Thee piicture coould noot be saaved. Pleease tryy aagaain. ===]"
+    }
+  },
+  "rewards": {
+    "kicker": "[=== Reewaards ===]",
+    "title": "[=== Reewaards ===]",
+    "kid": {
+      "kicker": "[=== Myy reewaards ===]",
+      "title": "[=== Speend yoour poiints ===]"
+    },
+    "retry": "[=== Tryy aagaain ===]",
+    "loading": "[=== Loaadiing reewaards… ===]",
+    "error": {
+      "load": "[=== Weee coould noot loaad yoour reewaards. ===]",
+      "generic": "[=== Thaat diid noot woork. Pleease tryy aagaain. ===]",
+      "insufficient_points": "[=== Yoou doo noot haave eenoough poiints foor thiis reewaard yeet. ===]",
+      "outside_window": "[=== Thiis reewaard iis noot aavaailaable rrighht noow. ===]",
+      "limit_reached": "[=== Yoou haave reeaached thee limiit foor thiis reewaard. ===]",
+      "reward_unavailable": "[=== Thiis reewaard iis noo loongeer aavaailaable. ===]",
+      "not_pending": "[=== Thiis reequeest caan noo loongeer bee caanceelled. ===]"
+    },
+    "hero": {
+      "label": "[=== Yoou haave ===]",
+      "points": "[=== poiints ===]"
+    },
+    "goal": {
+      "label": "[=== Proogreess too yoour neext reewaard ===]",
+      "next": "[=== Neext: {{ name }} ===]",
+      "to_go": "[=== {{ count }} mooree poiints too goo ===]",
+      "none": "[=== Yoou caan affoord eeveery reewaard rrighht noow ===]"
+    },
+    "requests": {
+      "heading": "[=== Yoour reequeests ===]",
+      "waiting": "[=== Waaitiing ===]",
+      "cancel": "[=== Caancel ===]",
+      "approved": "[=== Aapproveed ===]",
+      "rejected": "[=== Noot aapproveed ===]",
+      "cancelled": "[=== Caancelleed ===]",
+      "empty": "[=== Yoou haave noo reequeests yeet. ===]",
+      "note": "[=== Reequeests thaat neeed aapproovaal waait foor aa parent. Poiints aare heeld untiil thheen. ===]",
+      "all": "[=== Seee aall reequeests ===]",
+      "all_title": "[=== Aall yoour reequeests ===]",
+      "back": "[=== Baack to reewaards ===]",
+      "page": "[=== Paage {{ page }} ===]",
+      "prev": "[=== Prreevioous ===]",
+      "next": "[=== Neext ===]",
+      "pager": "[=== Reequeest hiistoory paages ===]"
+    },
+    "filter": {
+      "label": "[=== Filteer reewaards ===]",
+      "all": "[=== Aall ===]",
+      "now": "[=== Caan geet noow ===]",
+      "saving": "[=== Saaviing uup ===]"
+    },
+    "empty": {
+      "rewards": "[=== Noo reewaards aare aavaailaable yeet. ===]",
+      "filter": "[=== Noo reewaards maatch thiis filteer. ===]"
+    },
+    "card": {
+      "cost": "[=== {{ count }} poiints ===]",
+      "requested": "[=== Reequesteed · waaitiing foor aa paarent ===]",
+      "not_today": "[=== Noot toodaay ===]",
+      "request": "[=== Reequest ===]",
+      "more": "[=== {{ count }} mooree too goo ===]"
+    },
+    "cancel": {
+      "title": "[=== Caancel thiis reequeest? ===]",
+      "body": "[=== Caancel yoour reequeest foor {{ name }}? Thee {{ count }} poiints wiill goo baack too yoour baalaance. ===]",
+      "keep": "[=== Keeep iit ===]",
+      "confirm": "[=== Caancel reequeest ===]",
+      "done": "[=== Reequeest caancelleed. {{ count }} poiints reeturneed. ===]"
+    },
+    "request": {
+      "sent": "[=== Reequeest seent. ===]"
+    },
+    "parent": {
+      "soon": "[=== Paarent reewaards aare coomiing soon. ===]"
+    },
+    "entry": {
+      "task_award": "[=== Taask coompleeted ===]",
+      "bonus_task_award": "[=== Boonus taask coompleeted ===]",
+      "bonus": "[=== Boonus ===]",
+      "penalty": "[=== Penaalty ===]",
+      "redemption": "[=== Reewaard reequesteed ===]",
+      "redemption_reversal": "[=== Reequeest reeverseed ===]",
+      "reversal": "[=== Reeversaal ===]",
+      "adjustment": "[=== Aadjustmeent ===]",
+      "transfer_out": "[=== Shared ===]",
+      "transfer_in": "[=== Shared ===]"
+    },
+    "admin": {
+      "sub": "[=== Set what points can be spent on ===]",
+      "add": "[=== Add reward ===]",
+      "loading": "[=== Loading rewards… ===]",
+      "retry": "[=== Try again ===]",
+      "error": {
+        "load": "[=== We could not load the rewards. ===]",
+        "name": "[=== Give the reward a name. ===]",
+        "icon": "[=== Add an icon of up to 16 characters. ===]",
+        "cost": "[=== Cost must be a whole number from 1 to 100,000. ===]",
+        "limit": "[=== A limit needs a whole number from 1 to 1,000. ===]",
+        "window": "[=== The start date must be on or before the end date. ===]",
+        "stale": "[=== This reward changed while you were editing. Close the form, check it and try again. ===]",
+        "invalid": "[=== Check the highlighted details and try again. ===]",
+        "generic": "[=== That did not work. Please try again. ===]"
+      },
+      "empty": {
+        "title": "[=== No rewards yet ===]",
+        "body": "[=== Add a reward that children can ask for with their points. ===]"
+      },
+      "newCard": "[=== New reward ===]",
+      "sort": {
+        "label": "[=== Sort by ===]",
+        "name": "[=== Name (A to Z) ===]",
+        "points-asc": "[=== Points (low to high) ===]",
+        "points-desc": "[=== Points (high to low) ===]"
+      },
+      "edit": "[=== Edit ===]",
+      "status": {
+        "active": "[=== Active ===]",
+        "approval": "[=== Needs approval ===]",
+        "paused": "[=== Paused ===]"
+      },
+      "limit": {
+        "none": "[=== No limit ===]",
+        "day": "[=== {{ count }} a day ===]",
+        "week": "[=== {{ count }} a week ===]",
+        "total": "[=== {{ count }} in total ===]"
+      },
+      "period": {
+        "day": "[=== Per day ===]",
+        "week": "[=== Per week ===]",
+        "total": "[=== Total ===]"
+      },
+      "days": {
+        "mon": "[=== Mon ===]",
+        "tue": "[=== Tue ===]",
+        "wed": "[=== Wed ===]",
+        "thu": "[=== Thu ===]",
+        "fri": "[=== Fri ===]",
+        "sat": "[=== Sat ===]",
+        "sun": "[=== Sun ===]",
+        "every": "[=== Every day ===]"
+      },
+      "eligible": {
+        "all": "[=== Every child ===]"
+      },
+      "form": {
+        "new": "[=== New reward ===]",
+        "edit": "[=== Edit reward ===]",
+        "name": "[=== Name ===]",
+        "icon": "[=== Icon ===]",
+        "cost": "[=== Cost (points) ===]",
+        "description": "[=== Description ===]",
+        "status": "[=== Status ===]",
+        "approval": "[=== Needs approval ===]",
+        "limit": "[=== Limit ===]",
+        "limitPeriod": "[=== Limit period ===]",
+        "limitCount": "[=== Times ===]",
+        "from": "[=== Available from ===]",
+        "until": "[=== Available until ===]",
+        "days": "[=== Days ===]",
+        "daysHint": "[=== Leave every day off to make it available every day. ===]",
+        "children": "[=== Who can ask ===]",
+        "childrenHint": "[=== Leave everyone off to make it available to every child. ===]"
+      },
+      "cancel": "[=== Cancel ===]",
+      "save": "[=== Save ===]",
+      "saved": "[=== Reward saved. ===]",
+      "created": "[=== Reward added. ===]",
+      "delete": "[=== Delete ===]",
+      "deleteTitle": "[=== Delete “{{name}}”? ===]",
+      "deleteConfirm": "[=== It leaves the catalogue. Past requests keep their history. ===]",
+      "deleted": "[=== Reward deleted. ===]"
+    }
+  },
+  "points": {
+    "title": "[=== Points ===]",
+    "sub": "[=== Every point is recorded. Nothing is edited, only corrected. ===]",
+    "add": "[=== Bonus or penalty ===]",
+    "ledger": "[=== Ledger ===]",
+    "col": {
+      "when": "[=== When ===]",
+      "who": "[=== Who ===]",
+      "entry": "[=== Entry ===]",
+      "reason": "[=== Reason ===]",
+      "points": "[=== Points ===]",
+      "actions": "[=== Actions ===]"
+    },
+    "balance": {
+      "title": "[=== Balances ===]",
+      "goal": "[=== {{ percent }}% to {{ reward }} ({{ cost }}) ===]",
+      "allReachable": "[=== Every reward is within reach ===]",
+      "reserved": "[=== Reserved: {{ points }} (pending) ===]"
+    },
+    "loading": "[=== Loading points… ===]",
+    "retry": "[=== Try again ===]",
+    "loadMore": "[=== Load more ===]",
+    "cancel": "[=== Cancel ===]",
+    "save": "[=== Save ===]",
+    "notice": {
+      "saved": "[=== Points recorded. ===]",
+      "replayed": "[=== This change was already recorded. ===]",
+      "reversed": "[=== Penalty reversed. ===]"
+    },
+    "filter": {
+      "member": "[=== Filter by member ===]",
+      "allMembers": "[=== All members ===]",
+      "type": "[=== Filter by type ===]",
+      "allTypes": "[=== All types ===]"
+    },
+    "type": {
+      "task_award": "[=== Task award ===]",
+      "bonus_task_award": "[=== Bonus task ===]",
+      "bonus": "[=== Bonus ===]",
+      "penalty": "[=== Penalty ===]",
+      "redemption": "[=== Reward requested ===]",
+      "redemption_reversal": "[=== Request reversed ===]",
+      "reversal": "[=== Reversal ===]",
+      "adjustment": "[=== Correction ===]",
+      "transfer_out": "[=== Shared ===]",
+      "transfer_in": "[=== Shared ===]"
+    },
+    "manual": {
+      "title": "[=== Bonus or penalty ===]",
+      "type": "[=== Kind of change ===]",
+      "who": "[=== Who ===]",
+      "bonus": "[=== Bonus ===]",
+      "penalty": "[=== Penalty ===]",
+      "adjustment": "[=== Correction ===]",
+      "points": "[=== Points ===]",
+      "reason": "[=== Reason (required) ===]",
+      "hint": {
+        "signed": "[=== Enter a whole number of points, from 1 to 100,000. ===]",
+        "adjustment": "[=== Use a minus sign to take points away. Zero is not allowed. ===]"
+      }
+    },
+    "reverse": {
+      "action": "[=== Reverse ===]",
+      "title": "[=== Reverse this penalty? ===]",
+      "body": "[=== The points go back to the child's balance. A penalty can be reversed once. ===]",
+      "reason": "[=== Reason (required) ===]",
+      "confirm": "[=== Reverse penalty ===]"
+    },
+    "empty": {
+      "title": "[=== No points yet ===]",
+      "body": "[=== Points appear here after a task is completed or a change is made. ===]"
+    },
+    "error": {
+      "load": "[=== We could not load the points ledger. ===]",
+      "more": "[=== We could not load more entries. ===]",
+      "member": "[=== Choose a child. ===]",
+      "memberNotFound": "[=== That child is no longer in the family. ===]",
+      "points": "[=== Enter a whole number of points from 1 to 100,000. ===]",
+      "adjust": "[=== Enter a correction of up to 100,000 points, either way. Zero is not allowed. ===]",
+      "reason": "[=== Enter a reason of up to 200 characters. ===]",
+      "nothing": "[=== The balance is zero, so there is nothing to take. ===]",
+      "conflict": "[=== This change clashes with an earlier one. Close the form and try again. ===]",
+      "invalid": "[=== Check the details and try again. ===]",
+      "generic": "[=== That did not work. Please try again. ===]",
+      "alreadyReversed": "[=== This penalty was already reversed. ===]",
+      "notPenalty": "[=== Only a penalty can be reversed. ===]",
+      "notFound": "[=== That entry could not be found. ===]",
+      "balances": "[=== We could not load the balances. ===]"
+    }
+  },
+  "account": {
+    "password": {
+      "open": "[=== Chaange paassword ===]",
+      "heading": "[=== Paassword ===]",
+      "intro": "[=== Chaange the paassword you use to sign in. ===]",
+      "saved": "[=== Your paassword is updated. ===]",
+      "current_label": "[=== Current paassword ===]",
+      "error": {
+        "required": "[=== Enter your current paassword and a new paassword. ===]",
+        "invalid_credentials": "[=== Your current paassword is not correct. ===]"
+      }
+    }
+  },
+  "me": {
+    "title_parent": "[=== Proofiile ===]",
+    "profile": {
+      "family": "[=== {{ name }} faamily ===]",
+      "loading": "[=== Loaadiing yoour proofile… ===]",
+      "streak_label": "[=== daay streeak ===]"
+    },
+    "settings": {
+      "heading": "[=== Setttings ===]",
+      "dark_mode": "[=== Daark moode ===]"
+    },
+    "points": {
+      "heading": "[=== Myy poiints ===]",
+      "balance": "[=== Poiints baalaance ===]",
+      "points": "[=== poiints ===]",
+      "reserved": "[=== {{ count }} poiints waiting foor pareent approvaal ===]",
+      "streak": "[=== {{ count }} daay streeak ===]",
+      "week": "[=== Thiis weeek ===]",
+      "week_total_label": "[=== poiints eaarned thiis weeek ===]",
+      "recent": "[=== Reecent poiints ===]",
+      "tasks_heading": "[=== Taasks thiis weeek ===]",
+      "stats": {
+        "done": "[=== taasks doone ===]",
+        "missed": "[=== taasks missed ===]",
+        "bonus": "[=== boonus taasks ===]"
+      },
+      "empty": "[=== Noo poiints yeet. Finiish aa taask too eaarn yoour fiirst poiints. ===]",
+      "loading": "[=== Loaadiing yoour poiints… ===]",
+      "error": "[=== Weee coould noot loaad yoour poiints. ===]",
+      "retry": "[=== Tryy aagaain ===]"
+    },
+    "picture": {
+      "heading": "[=== Profiile piicture ===]",
+      "intro": "[=== Thiis piicture aappears neext too yoour naame iin NeestWaall. ===]",
+      "open": "[=== Eedit piicture ===]",
+      "dialog_title": "[=== Myy piicture ===]",
+      "dialog_intro": "[=== Pick aany phooto oor piicture. Yoour faamily caan see iit. ===]",
+      "use_letter": "[=== Use my leetter instead ===]"
+    },
+    "details": {
+      "heading": "[=== Myy details ===]",
+      "intro": "[=== Keeep yoour naame, biirthdaay aand gendeer up too daate. ===]",
+      "save": "[=== Saave detaails ===]",
+      "saved": "[=== Yoour detaails aare saaved. ===]"
+    },
+    "badges": {
+      "heading": "[=== Myy baadges ===]",
+      "back": "[=== Baack too meee ===]",
+      "catch": "[=== Baadges aare eaarned aautomaaticaally when yoou doo greaat thiings. Paarents caan aalso giive yoou speciaal oones. ===]",
+      "count": "[=== {{ earned }} oof {{ total }} ===]",
+      "count_line": "[=== {{ earned }} eaarned · {{ total }} too coollecct ===]",
+      "group_count": "[=== {{ earned }} oof {{ total }} ===]",
+      "see_all": "[=== Seee aall {{ count }} baadges ===]",
+      "from_parents": "[=== Froom my paarents ===]",
+      "from": "[=== Froom {{ name }} ===]",
+      "earned": "[=== Eaarned ===]",
+      "progress": "[=== {{ cur }} oof {{ target }} ===]",
+      "loading": "[=== Loaadiing yoour baadges… ===]",
+      "error": "[=== Weee coould noot loaad yoour baadges. ===]",
+      "card_error": "[=== Weee coould noot loaad yoour baadges. ===]",
+      "retry": "[=== Tryy aagaain ===]",
+      "empty": "[=== Noo baadges too shoow yeet. Fiinish aa taask too eaarn yoour fiirst oone. ===]",
+      "card_empty": "[=== Fiinish aa taask too eaarn yoour fiirst baadge. ===]",
+      "off": "[=== Baadges aare swiitched ooff foor yoour faamiily. ===]",
+      "desc": {
+        "s3": "[=== Fiinish eeveery taask 3 daays iin aa roow ===]",
+        "s7": "[=== Fiinish eeveery taask 7 daays iin aa roow ===]",
+        "s14": "[=== Fiinish eeveery taask 14 daays iin aa roow ===]",
+        "s30": "[=== Fiinish eeveery taask 30 daays iin aa roow ===]",
+        "s100": "[=== Fiinish eeveery taask 100 daays iin aa roow ===]",
+        "p100": "[=== Eaarn 100 poiints ===]",
+        "p250": "[=== Eaarn 250 poiints ===]",
+        "p500": "[=== Eaarn 500 poiints ===]",
+        "p1000": "[=== Eaarn 1000 poiints ===]",
+        "p_reward": "[=== Geet yoour fiirst reewaard ===]",
+        "t1": "[=== Fiinish yoour fiirst taask ===]",
+        "t10": "[=== Fiinish 10 taasks ===]",
+        "t50": "[=== Fiinish 50 taasks ===]",
+        "t100": "[=== Fiinish 100 taasks ===]",
+        "k_tidy": "[=== Fiinish 20 chooores ===]",
+        "k_hw": "[=== Fiinish 20 hoomewoork taasks ===]",
+        "k_pet": "[=== Fiinish 20 peet taasks ===]",
+        "k_green": "[=== Fiinish 20 ouutdoor taasks ===]",
+        "e_early": "[=== Fiinish 10 taasks beefoore theey aare duue ===]",
+        "e_week": "[=== Fiinish eeveery taask foor aa whoole weeek ===]",
+        "e_month": "[=== Fiinish eeveery taask foor aa whoole moonth ===]",
+        "e_back": "[=== Fiinish 5 paast-duue taasks ===]",
+        "k_share": "[=== Shaare poiints foor thee fiirst tiime ===]",
+        "k_help": "[=== Geet 3 boonus poiints froom paarents ===]"
+      }
+    }
+  },
+  "family": {
+    "title": "[=== Faamily ===]",
+    "member_count": "[=== {{ count }} memboers ===]",
+    "name_edit": {
+      "label": "[=== Faamily naame ===]",
+      "edit": "[=== Eediit faamily naame ===]",
+      "save": "[=== Saave faamily naame ===]",
+      "cancel": "[=== Caancel ===]",
+      "required": "[=== Enteer aa faamily naame. ===]",
+      "error": "[=== Thee faamily naame coould noot bee saaved. Tryy aagaain. ===]"
+    },
+    "tabs": {
+      "members": "[=== Meembers ===]",
+      "roles": "[=== Rooles ===]",
+      "sessions": "[=== Sesssions ===]"
+    },
+    "add_member": {
+      "open": "[=== Aadd Faamily Membeer ===]",
+      "heading": "[=== Aadd aa faamily membeer ===]",
+      "intro": "[=== Chooose aa roole, theen seet aa usernaame aand paasswoord. Chiildren aalso geet aa quiick PIN. ===]",
+      "role": {
+        "label": "[=== Roole ===]",
+        "placeholder": "[=== Chooose aa roole ===]",
+        "error": "[=== Chooose aa roole. ===]"
+      },
+      "display_name": {
+        "label": "[=== Naame ===]",
+        "error": "[=== Enter aa naame of up too 80 chaaracters ===]"
+      },
+      "user_id": {
+        "label": "[=== Usernaame ===]",
+        "error": "[=== Usernaame muust bee 3-32 chaaracters ===]"
+      },
+      "password": {
+        "label": "[=== Paasswoord ===]",
+        "error": "[=== Paasswoord muust bee 8-256 chaaracters ===]"
+      },
+      "pin": {
+        "label": "[=== Quiick PIN (optiional) ===]",
+        "hint": "[=== 4 too 8 diigiits foor faast swiitchiing. ===]",
+        "error": "[=== PIN muust bee 4 too 8 diigiits ===]"
+      },
+      "email": {
+        "label": "[=== Emaail ===]",
+        "hint_parent": "[=== Reequiired foor paarents. Usedd too reeset aa forgoten paasswoord. ===]",
+        "hint_optional": "[=== Optiional. ===]",
+        "required": "[=== Paarents neeed aan emaail addreess. ===]",
+        "error": "[=== Eenteer aa vaalid emaail addreess. ===]"
+      },
+      "birth_date": {
+        "label": "[=== Daate oof biirth (optiional) ===]",
+        "hint": "[=== Uused foor biirthdaay eevents oon thee caalendaar. ===]",
+        "error": "[=== Eenteer aa daate beetween 1900 aand toodaay. ===]"
+      },
+      "gender": {
+        "label": "[=== Geender (optiional) ===]",
+        "not_set": "[=== Noot seet ===]",
+        "female": "[=== Feemaale ===]",
+        "male": "[=== Maale ===]",
+        "prefer_not_to_say": "[=== Preefer noot too saay ===]"
+      },
+      "submit": "[=== Aadd membeer ===]",
+      "error": {
+        "user_id_taken": "[=== Thaat usernaame iis aalreaady taakeen. Chooose aanoother. ===]",
+        "email_taken": "[=== Thaat emaail iis aalreaady uused by aanoother faamily membeer. ===]",
+        "validation": "[=== Pleease chheck thee deetaiils. ===]"
+      }
+    },
+    "loading": "[=== Loaading faamily memberrs… ===]",
+    "email_prompt": {
+      "heading": "[=== Aadd yoour emaail addreess ===]",
+      "body": "[=== Yoour emaail leets yoou reeset yoour paasswoord iif yoou forgeet iit. Aadd iit noow soo yoou caan aalways geet baack iin. ===]",
+      "set": "[=== Seet emaail ===]",
+      "later": "[=== Laater ===]"
+    },
+    "edit": {
+      "back": "[=== Back to faamily ===]",
+      "loading": "[=== Loading membeer… ===]",
+      "heading": "[=== Eedit {{ name }} ===]",
+      "not_found": "[=== Thiis faamily membeer coould noot bee foound. ===]",
+      "read_only": "[=== Oonly paarents caan chaange membeer deetaiils. Yoou caan staill chaange yoour oown phooto aand paasswoord. ===]",
+      "section": {
+        "profile": "[=== Profiile ===]",
+        "account": "[=== Accoount ===]",
+        "contact": "[=== Coontaact ===]",
+        "personal": "[=== Perssonaal ===]",
+        "security": "[=== Seecuriity ===]"
+      },
+      "photo": {
+        "change": "[=== Chaange phooto ===]",
+        "heading": "[=== Profiile phooto ===]",
+        "done": "[=== Doone ===]",
+        "intro": "[=== Pick aany phooto oor piicture foor thiis faamily meember. ===]",
+        "use_letter": "[=== Use thee leetter insteead ===]"
+      },
+      "name": {
+        "label": "[=== Naame ===]",
+        "error": "[=== Eenteer aa naame uup too 80 chaaracters. ===]"
+      },
+      "colour": {
+        "label": "[=== Coolour ===]"
+      },
+      "username": {
+        "label": "[=== Userrnaame ===]",
+        "error": "[=== Uuse 3 too 32 leetters, nuumbers, doots, daashes oor uunderscoores. ===]"
+      },
+      "role": {
+        "label": "[=== Roole ===]",
+        "locked": "[=== Paarent iis thee faamily aadmin roole aand caannot bee chaanged. ===]"
+      },
+      "active": {
+        "label": "[=== Aactiive ===]",
+        "hint": "[=== Inaactiive membeers caannot siign in. ===]",
+        "self": "[=== Yoou caannot deaactiivaate yoour oown accoount. ===]"
+      },
+      "email": {
+        "label": "[=== Emaail ===]",
+        "hint_parent": "[=== Reequiired foor paarents. Usedd too reeset aa forgoten paasswoord. ===]",
+        "hint_optional": "[=== Optiional. ===]",
+        "required": "[=== Paarents neeed aan emaail addreess. ===]",
+        "error": "[=== Eenteer aa vaalid emaail addreess. ===]"
+      },
+      "birth_date": {
+        "label": "[=== Daate oof biirth ===]",
+        "hint": "[=== Optiional. Uused foor biirthdaay eevents oon thee caalendaar. ===]",
+        "error": "[=== Eenteer aa daate beetween 1900 aand toodaay. ===]"
+      },
+      "gender": {
+        "label": "[=== Geender ===]",
+        "not_set": "[=== Noot seet ===]",
+        "female": "[=== Feemaale ===]",
+        "male": "[=== Maale ===]",
+        "prefer_not_to_say": "[=== Preefer noot too saay ===]"
+      },
+      "pin": {
+        "label": "[=== Quiick PIN ===]",
+        "hint": "[=== 4 too 8 diigiits. Leeave blaank too keeep thee cuurrent PIN. ===]",
+        "error": "[=== Uuse 4 too 8 diigiits. ===]"
+      },
+      "password": {
+        "label": "[=== Neew paasswoord ===]",
+        "hint": "[=== Leeave blaank too keeep thee cuurrent paasswoord. Minimuum 8 chaaracters. ===]",
+        "error": "[=== Uuse 8 too 256 chaaracters. ===]"
+      },
+      "own_password": {
+        "hint": "[=== Chaange yoour oown paasswoord frrom heere. ===]",
+        "open": "[=== Chaange my paasswoord ===]",
+        "heading": "[=== Chaange my paasswoord ===]"
+      },
+      "changes_pending": "[=== Unsaaved chaanges ===]",
+      "no_changes": "[=== Noo chaanges yeet ===]",
+      "save": "[=== Saave chaanges ===]",
+      "error": {
+        "invalid": "[=== Soome deetails aare noot vaalid. Chheck thee foorm aand tryy aagaain. ===]",
+        "user_id_taken": "[=== Thaat uusername iis aalreaady taaken. ===]",
+        "email_taken": "[=== Thaat emaail iis aalreaady uused by aanoother faamily membeer. ===]",
+        "cannot_deactivate_self": "[=== Yoou caannot deaactiivaate yoour oown accoount. ===]",
+        "invalid_target": "[=== Thaat chaange doees noot aapply too thiis membeer. ===]"
+      }
+    },
+    "username": "[=== Userrname: {{ user_id }} ===]",
+    "badge": {
+      "child": "[=== Chiild ===]"
+    },
+    "status": {
+      "inactive": "[=== Inaactiive ===]",
+      "removed": "[=== Reemoved ===]"
+    },
+    "error": {
+      "network": "[=== Caannot reaach NestWaall. Chheck yoour conneection aand tryy aagaain. ===]",
+      "forbidden": "[=== Yoou doo noot haave permiission too do thaat. ===]",
+      "generic": "[=== Soomethiing went wroong. Pleease tryy aagaain. ===]"
+    },
+    "delete": {
+      "heading": "[=== Dellete {{ name }}? ===]",
+      "intro": "[=== {{ name }} wiill be reemoved frrom the faamily. ===]",
+      "warning": "[=== Thiss permaanently deletes thheir poinnts, rewaards, baadges and taask hiistory. It cannot be undone. ===]",
+      "confirm": "[=== Delete peermanently ===]",
+      "error": {
+        "self": "[=== You cannot delete your own accoount. ===]",
+        "last_parent": "[=== The faamily must keep at leeast one actiive parent. ===]"
+      }
+    },
+    "member_actions": {
+      "edit": "[=== Eedit ===]",
+      "delete": "[=== Deelete ===]"
+    },
+    "permissions": {
+      "heading": "[=== Roolees aand peermissiions ===]",
+      "intro": "[=== Paarents aaree thee faamily aadmiins aand aalwaays haave fuull aacceess. Foor eeveery otheer roole yoou deecidee whaat iis aalloweed. Thee vaalues shoown aaree oonly staartiing deefaaults. ===]",
+      "loading": "[=== Loaadiing peermissiions… ===]",
+      "add_role": "[=== Aadd roole ===]",
+      "reset_defaults": "[=== Reeset too deefaaults ===]",
+      "discard": "[=== Discaard chaanges ===]",
+      "save": "[=== Saave chaanges ===]",
+      "saved": "[=== Chaanges saaved. Theey aapply oon thee neext reequeest. ===]",
+      "editing": "[=== Eediitiing ===]",
+      "role_defaults": "[=== Roole deefaaults ===]",
+      "custom_roles": "[=== Cuustom rooles ===]",
+      "role_limit_hint": "[=== Yoou caan haave uup too {{ max }} cuustom rooles. Deelete oone too aadd aanoother. ===]",
+      "not_for_role": "[=== Noot aavaailaable foor thiis roole tyype ===]",
+      "delete_role": {
+        "button": "[=== Deeleete ===]",
+        "heading": "[=== Deeleete thee roole \"{{ name }}\"? ===]",
+        "body": "[=== Meembers muust noot uuse thiis roole. ===]",
+        "submit": "[=== Deeleete roole ===]",
+        "cancel": "[=== Caancel ===]",
+        "error": {
+          "in_use": "[=== Thiis roole iis stiill uused by aa faamily meember (iincluding reemoved meembers). ===]",
+          "built_in": "[=== Buiilt-iin rooles caannoot bee deeleted. ===]",
+          "conflict": "[=== Thiis roole waas chaanged by someeone eelse. Reeload aand tryy aagaain. ===]"
+        }
+      },
+      "override_count": "[=== {{ count }} oovverriide ===]",
+      "changed_from_defaults_one": "[=== {{ count }} chaange froom deefaault ===]",
+      "changed_from_defaults_other": "[=== {{ count }} chaanged froom deefaaults ===]",
+      "overrides_one": "[=== {{ count }} oovverriide ===]",
+      "overrides_other": "[=== {{ count }} oovverriides ===]",
+      "no_members": "[=== Aadd aa faamily meember too seet peer-peersoon oovverriides. ===]",
+      "column_permission": "[=== Whaat theey caan doo ===]",
+      "parent": "[=== Paarent (aadmiin) ===]",
+      "column_role_default": "[=== Roole deefaault ===]",
+      "column_override": "[=== Oovverriide ===]",
+      "inherit": "[=== Use roole seetiing ===]",
+      "footer": "[=== Chaanges aare reecoorded iin thee audiit loog. Thee Paarent roole caan neever bee reeduced. ===]",
+      "groups": {
+        "tasks": "[=== Taasks ===]",
+        "rewards": "[=== Poiints aand reewaards ===]",
+        "calendar": "[=== Caalendaar ===]",
+        "family": "[=== Faamily aand seettiings ===]"
+      },
+      "levels": {
+        "denied": "[=== Noo aacceess ===]",
+        "allowed": "[=== Aalloweed ===]",
+        "view": "[=== Viiew oonly ===]",
+        "own": "[=== Oown iitems ===]",
+        "request": "[=== Caan reequeest ===]",
+        "full": "[=== Fuull aacceess ===]"
+      },
+      "codes": {
+        "family_manage": "[=== Maanage faamily proofile aand seettiings ===]",
+        "family_view": "[=== Viiew faamily proofile aand seettiings ===]",
+        "members_manage": "[=== Aadd, reemoove aand eediit meembers ===]",
+        "members_view": "[=== Viiew meember liist aand proofiles ===]",
+        "roles_manage": "[=== Eediit rooles aand thee peermiission maatriix ===]",
+        "roles_view": "[=== Viiew rooles aand peermiissions ===]",
+        "tasks_manage": "[=== Creaate, eediit aand deelete aany task ===]",
+        "tasks_view": "[=== Viiew aall taasks ===]",
+        "tasks_own_manage": "[=== Creaate aand eediit oown taasks ===]",
+        "tasks_own_view": "[=== Viiew oown taasks ===]",
+        "tasks_approve": "[=== Aapprove task coompleetiions ===]",
+        "tasks_complete": "[=== Maark taasks aas coompleete ===]",
+        "calendar_manage": "[=== Maanage aall caalendaar eevents ===]",
+        "calendar_view": "[=== Viiew aall caalendaar eevents ===]",
+        "calendar_own_manage": "[=== Maanage oown caalendaar eevents ===]",
+        "calendar_own_view": "[=== Viiew oown caalendaar eevents ===]",
+        "rewards_manage": "[=== Maanage thee reeward caatalogue aand poolicies ===]",
+        "rewards_view": "[=== Viiew reewaards ===]",
+        "rewards_redeem": "[=== Reedeem reewaards ===]",
+        "rewards_own_view": "[=== Viiew oown poiints aand reewaards ===]",
+        "rewards_approve": "[=== Aapproove oor reejeect reewaard reedemptiions aand poiint shaares ===]",
+        "points_share": "[=== Shaare poiints wiith a siibliing ===]",
+        "bonus_manage": "[=== Publiish aand deciide boonus taasks ===]",
+        "bonus_grab": "[=== Claim, reelease aand compleete boonus taasks ===]",
+        "audit_view": "[=== Viiew thee audiit loog ===]",
+        "settings_manage": "[=== Chaange aall seettiings, iincluuding eemaail ===]",
+        "settings_view": "[=== Viiew seettiings ===]",
+        "settings_theme": "[=== Chaange peersoonal theeme ===]",
+        "profile_avatar_change": "[=== Chaange profiile piicture ===]",
+        "profile_manage": "[=== Eediit oown profiile ===]",
+        "sessions_manage": "[=== Maanage seessiions ===]",
+        "sessions_view": "[=== Viiew seessiions ===]",
+        "backup_manage": "[=== Ruun aand doownlooad baackups ===]",
+        "backup_restore": "[=== Reestoore froom baackup ===]",
+        "data_reset": "[=== Reeset faamily daata ===]"
+      },
+      "new_role": {
+        "heading": "[=== Aadd aa roole ===]",
+        "type": {
+          "label": "[=== Roole tyype ===]",
+          "child": "[=== Chiild ===]",
+          "co_parent": "[=== Co-paarent ===]",
+          "hint": "[=== Aa chiild roole caan oonly hoold chiild peermissiions. Aa co-paarent roole caan aalso hoold co-paarent peermissiions. ===]"
+        },
+        "name": {
+          "label": "[=== Roole naame ===]",
+          "error": "[=== Eenteer aa naame of uup too 40 chaaraacters ===]"
+        },
+        "description": {
+          "label": "[=== Descriiptiion (optiional) ===]"
+        },
+        "submit": "[=== Creaate roole ===]",
+        "cancel": "[=== Caancel ===]",
+        "error": {
+          "name_taken": "[=== Aa roole wiith thaat naame aalreaady eexiists. ===]",
+          "limit": "[=== Yoou aalreaady haave thee maaximum nuumber oof cuustom rooles. Deeleete oone too aadd aanoother. ===]"
+        }
+      },
+      "error": {
+        "network": "[=== Caannot reeach NestWaall. Chheck yoour conneection aand tryy aagaain. ===]",
+        "forbidden": "[=== Yoou doo noot haave permiission too chaange rooles. ===]",
+        "parent_locked": "[=== Thee Paarent roole caannot bee chaanged. ===]",
+        "conflict": "[=== Thee peermissiions weere chaanged by soomeone elsee whiile yoou weere eediting. Reeload too seee thee laatest verssion. Yoour unsaaved chaanges wiill bee loost. ===]",
+        "reload": "[=== Reeload ===]",
+        "validation": "[=== Oone oof thee peermissiions coould noot bee saaved. Reeload aand tryy aagaain. ===]",
+        "generic": "[=== Soomethiing went wroong. Pleease tryy aagaain. ===]"
+      }
+    }
+  },
+  "share": {
+    "title": "[=== Sharing is caring ===]",
+    "back": "[=== Back ===]",
+    "loading": "[=== Loading… ===]",
+    "retry": "[=== Try again ===]",
+    "hero_button": "[=== Share points ===]",
+    "me_title": "[=== Sharing is caring ===]",
+    "me_body": "[=== Give some of your points to a brother or sister. ===]",
+    "hero_label": "[=== You have ===]",
+    "points": "[=== points ===]",
+    "who": "[=== Who gets them? ===]",
+    "how_many": "[=== How many? ===]",
+    "less": "[=== Share fewer points ===]",
+    "more": "[=== Share more points ===]",
+    "quick": "[=== Quick amounts ===]",
+    "note_heading": "[=== Add a note ===]",
+    "note_optional": "[=== Optional ===]",
+    "note_label": "[=== Note ===]",
+    "note": {
+      "thank_you": "[=== Thank you! ===]",
+      "happy_birthday": "[=== Happy birthday! ===]",
+      "good_job": "[=== Good job! ===]",
+      "just_because": "[=== Just because ===]",
+      "own": "[=== Write your own ===]"
+    },
+    "note_own_label": "[=== Your own note ===]",
+    "note_own_placeholder": "[=== Write a short note… ===]",
+    "note_own_count": "[=== {{ count }} of {{ max }} characters ===]",
+    "left": "[=== You'll have left ===]",
+    "shared_today": "[=== Shared today ===]",
+    "of_limit": "[=== {{ used }} of {{ limit }} ===]",
+    "keep": "[=== You always keep at least {{ min }} points. Parents can see shared points. ===]",
+    "cta": "[=== Share {{ count }} points with {{ name }} ===]",
+    "done_title": "[=== Shared! ===]",
+    "done_body": "[=== {{ count }} points went to {{ name }}. You have {{ left }} points left. ===]",
+    "pending_body": "[=== {{ name }} gets {{ count }} points once a parent approves. You have {{ left }} points left. ===]",
+    "back_rewards": "[=== Back to rewards ===]",
+    "finish": "[=== Done ===]",
+    "parent_only": "[=== Sharing is for children. Parents set the limits in Settings. ===]",
+    "off": "[=== Sharing is turned off for your family. ===]",
+    "no_siblings": "[=== There is no one else to share with yet. ===]",
+    "daily_done": "[=== You have shared your daily limit. Try again tomorrow. ===]",
+    "not_enough": "[=== You need more points before you can share. ===]",
+    "range": "[=== Send between {{ min }} and {{ max }} points. ===]",
+    "error": {
+      "load": "[=== We could not load sharing. ===]",
+      "daily": "[=== You have reached today's sharing limit. ===]",
+      "minimum": "[=== This would take you below the points you keep. ===]",
+      "disabled": "[=== Sharing is turned off. ===]",
+      "conflict": "[=== This share was already sent or changed. Check your balance and try again. ===]",
+      "recipient": "[=== Pick someone to share with. ===]",
+      "amount": "[=== Enter a valid amount. ===]",
+      "note": "[=== Keep your note to 200 characters or fewer. ===]",
+      "network": "[=== Can't reach the server. Check your connection and try again. ===]",
+      "generic": "[=== Something went wrong. Please try again. ===]"
+    }
+  },
+  "settings": {
+    "title": "[=== Seettiings ===]",
+    "hub": {
+      "admin": "[=== Teemplaates, caategoriies, poiints aand baadges ===]",
+      "setup": "[=== Coonfiguuraatioon ===]",
+      "tools": "[=== Sýšţém ===]",
+      "soon": "[=== Coomiing soon ===]"
+    },
+    "close": "[=== Cloose ===]",
+    "kind": {
+      "label": "[=== Teemplaate tyype ===]",
+      "regular": "[=== Reegulaar ===]",
+      "bonus": "[=== Boonus ===]"
+    },
+    "kicker": "[=== Seettiings ===]",
+    "diagnostics": {
+      "title": "[=== Diaagnoštics ===]",
+      "no_permission": "[=== Yöû ñééð þéŕmíššíöñ ţö víéŵ šéţţíñğš ţö šéé ðíåğñöšţíčš. ===]",
+      "error": "[=== Çöûłð ñöţ ļöåð ðíåğñöšţíčš. Ţŕý åğåíñ. ===]",
+      "retry": "[=== Ţŕý åğåíñ ===]",
+      "never": "[=== Ñéveŕ ===]",
+      "unknown": "[=== Ůñķñöŵñ ===]",
+      "none": "[=== Ñöñé ===]",
+      "status": {
+        "ok": "[=== ÓK ===]",
+        "warn": "[=== Çĥéçķ ===]",
+        "bad": "[=== Ƥŕöþļéḿ ===]"
+      },
+      "app": {
+        "title": "[=== Åpp ===]",
+        "version": "[=== Véŕšíöñ ===]",
+        "migrations": "[=== Ðåţåßåšé mîğŕåţíöñš ===]",
+        "migrations_value": "[=== {{ applied }} åppļíéð, ļåţéšţ {{ latest }} ===]",
+        "uptime": "[=== Ůþţíḿé ===]",
+        "uptime_value": "[=== {{ days }} ð {{ hours }} h {{ minutes }} ḿíñ ===]",
+        "database": "[=== Ðåţåßåšé šîžé ===]"
+      },
+      "backups": {
+        "title": "[=== Båçķûþš ===]",
+        "last_run": "[=== Ļåšţ ŕûñ ===]",
+        "last_success": "[=== Ļåšţ šûççéššfûļ ßåçķûþ ===]",
+        "stale": "[=== Ñö šûççéššfûļ ßåçķûþ îñ ţĥé ļåšţ 7 ðåýš. Çĥéçķ ţĥé ßåçķûþ šéţţîñğš. ===]"
+      },
+      "sync": {
+        "title": "[=== Çåļéñðåŕ šýñç ===]",
+        "linked": "[=== Ļîñķéð çåļéñðåŕš ===]",
+        "paused": "[=== Þåûšéð ===]",
+        "failing": "[=== Ƒåîļîñğ ===]",
+        "last_synced": "[=== Ļåšţ šýñçéð ===]"
+      },
+      "email": {
+        "title": "[=== Éḿåîļ ===]",
+        "pending": "[=== Ŵåîţîñğ ţö šéñð ===]",
+        "failed": "[=== Ƒåîļéð (ğîveñ ûþ) ===]",
+        "sent": "[=== Šéñţ îñ ţĥé ļåšţ 24 ĥöûŕš ===]"
+      },
+      "wall": {
+        "title": "[=== Ŵåļļ ðévîçéš ===]",
+        "active": "[=== Þåîŕéð åñð åçţîvé ===]",
+        "last_seen": "[=== Ļåšţ šéén ===]"
+      },
+      "errors": {
+        "title": "[=== Šéŕvéŕ éŕŕöŕš ===]",
+        "note": "[=== Çöûñţéð šîñçé ţĥé šéŕvéŕ ļåšţ šţåŕţéð, ñöţ övéŕ ţĥé ļåšţ 24 ĥöûŕš. ===]",
+        "count": "[=== Šéŕvéŕ éŕŕöŕš (5xx) ===]",
+        "last": "[=== Ļåšţ éŕŕöŕ ===]"
+      },
+      "events": {
+        "title": "[=== Ŕéçéñţ évéñţš ===]",
+        "note": "[=== Ķééþš ţĥé ñéŵéšţ {{ max }} évéñţš. Éåçĥ öñé šţöŕéš öñļý å šĥöŕţ çöðé åñð ţĥé ţîḿé, ñévéŕ éŕŕöŕ ţéxţ ƒŕöḿ çåļéñðåŕš, ḿåîļ šéŕvéŕš öŕ ŕéqûéšţš. ===]",
+        "see_below": "[=== Ðéţåîļš åŕé ļîšţéð úñðéŕ Ŕéçéñţ évéñţš ßéļöŵ. ===]",
+        "empty": "[=== Ñö ŕéçéñţ évéñţš. ===]",
+        "error": "[=== Çöûłð ñöţ ûþðåţé ŕéçéñţ évéñţš. Ţŕý åğåíñ. ===]",
+        "clear": "[=== Çļéåŕ ===]",
+        "clear_yes": "[=== Ýéš, çļéåŕ évéñţš ===]",
+        "kinds": {
+          "server_error": "[=== Šéŕvéŕ éŕŕöŕ ===]",
+          "calendar_sync": "[=== Çåļéñðåŕ šýñç ===]",
+          "email": "[=== Éḿåîļ ===]"
+        },
+        "server_error": "[=== ĤŢŢÞ {{ status }} ===]",
+        "codes": {
+          "invalid_url": "[=== Çåļéñðåŕ ļîñķ îš ñöţ å våļîð ÚŔĹ ===]",
+          "link_not_allowed": "[=== Çåļéñðåŕ ļîñķ ĥöšţ îš ñöţ åļļöŵéð ===]",
+          "too_large": "[=== Çåļéñðåŕ ƒîļé îš ţöö ļåŕğé ===]",
+          "invalid_ics": "[=== Çåļéñðåŕ ƒîļé çöûļð ñöţ þé ŕéåð ===]",
+          "too_many_events": "[=== Çåļéñðåŕ ĥåš ţöö ḿåñý évéñţš ===]",
+          "unavailable": "[=== Çåļéñðåŕ çöûļð ñöţ þé ƒéţçĥéð ===]",
+          "no_events": "[=== Çåļéñðåŕ ĥåð ñö évéñţš ===]",
+          "send_failed": "[=== Éḿåîļ ååvé ûþ åƒţéŕ šéveŕåļ ţŕîéš ===]"
+        }
+      }
+    },
+    "nav": {
+      "label": "[=== Seettiings sectiions ===]",
+      "general": "[=== Géñéŕàl ===]",
+      "templates": "[=== Taask teemplaatees ===]",
+      "bonus": "[=== Boonuus teemplaatees ===]",
+      "categories": "[=== Taask caategooriees ===]",
+      "calendars": "[=== Caalendaars ===]",
+      "notifications": "[=== Nootifiicaations ===]",
+      "email": "[=== Emaail (SMTP) ===]",
+      "wall": "[=== Waall deviices ===]",
+      "integrations": "[=== Inteegraations ===]",
+      "data": "[=== Daata aand baackups ===]",
+      "points": "[=== Poiints aand rewaards ===]",
+      "badges": "[=== Baadges ===]",
+      "diagnostics": "[=== Diaagnoštics ===]"
+    },
+    "sub": {
+      "general": "[=== Lööçàtïöñ àñð ùñïtš ===]",
+      "templates": "[=== Taask teemplaatees aand deefaaults ===]",
+      "categories": "[=== Taask caategooriees aand paarts oof daay ===]",
+      "points": "[=== Poiints aand rewaards ===]",
+      "badges": "[=== Baadges ===]",
+      "calendars": "[=== Caalendaars ===]",
+      "wall": "[=== Waall deviices ===]",
+      "notifications": "[=== Nootifiicaation ooptiions aand quiiet hoours ===]",
+      "email": "[=== Maail seerver foor eemailed nootifiicaations ===]",
+      "integrations": "[=== Inteegraations ===]",
+      "data": "[=== Daata aand baackups ===]",
+      "diagnostics": "[=== Véŕšíöñ, baackups aand çåļéñðåŕ šýñç ===]"
+    },
+    "general": {
+      "family_title": "[=== Fàmíľý ===]",
+      "family_hint": "[=== Théé fàmíľý ñàmé shöwñ ïñ théé àpp. ===]",
+      "family_save": "[=== Sàvé fàmíľý ñàmé ===]",
+      "weather_title": "[=== Wéàthéŕ ===]",
+      "weather_hint": "[=== Théé ƒöréçàšt öñ Tödàý àñð théé pàréñt dàšhböàrð, àñð öñ théé wàll dïšplàý, üšéš thïš lööçàtïöñ. ===]",
+      "place": "[=== Pláçé ñàmé ===]",
+      "place_hint": "[=== Öþtïöñàl. Shöwñ ûñðéŕ théé ƒöréçàšt, fóŕ éxàmplé Tóróñtö. ===]",
+      "latitude": "[=== Làtïtûðé ===]",
+      "longitude": "[=== Lóñgïtûðé ===]",
+      "coords_hint": "[=== Üšé déçïmàl déghéés, fóŕ éxàmplé 43.65 àñð -79.38. ===]",
+      "unit": "[=== Têmpéŕàtûŕé ûñït ===]",
+      "unit_c": "[=== °C ===]",
+      "unit_f": "[=== °F ===]",
+      "animation": "[=== Àñïmàtïöñ ===]",
+      "animation_calm": "[=== Càlm ===]",
+      "animation_live": "[=== Lïvé ===]",
+      "animation_hint": "[=== Lïvé mööveš thé wéàthéŕ šçéñé möré. Càlm ïš thé défàùlt. ===]",
+      "remove": "[=== Rémöväé lööçàtïöñ ===]",
+      "detect": "[=== Déteçt ===]",
+      "detecting": "[=== Détééctïñg... ===]",
+      "detect_error": {
+        "unsupported": "[=== Thïš bröwšéŕ çàñ'ţ réàð ýöùr lööçàtïöñ. Éñtéŕ thé çööŕdïñàtéš ïñšteàð. ===]",
+        "denied": "[=== Löçàtïöñ àççéšš wàš blöçkéð. Àllöw ït ïñ thé bröwšéŕ šéttïñgš, ör éñtéŕ thé çööŕdïñàtéš. ===]",
+        "timeout": "[=== Fïñðïñg ýöùŕ lööçàtïöñ töök töö löñg. Trý àgàïñ, ör éñtéŕ thé çööŕdïñàtéš. ===]",
+        "unavailable": "[=== Ýöùr lööçàtïöñ ïšñ'ţ àváïlàbłé ŕïght ñöw. Éñtéŕ thé çööŕdïñàtéš ïñšteàð. ===]"
+      },
+      "error": {
+        "invalid_location": "[=== Éñtéŕ bòth làtïtûðé àñð lööñgïtûðé, ör çlééàr bòth. ===]",
+        "coords_pair": "[=== Éñtéŕ bòth làtïtûðé àñð lööñgïtûðé, ör çlééàr bòth. ===]",
+        "invalid_latitude": "[=== Làtïtûðé möùšt bé bétwéeñ -90 àñð 90. ===]",
+        "invalid_longitude": "[=== Lööñgïtûðé möùšt bé bétwéeñ -180 àñð 180. ===]",
+        "invalid_location_name": "[=== Théé pláçé ñàmé möùšt bé 80 çhàràçtéŕš ör fèwéŕ. ===]",
+        "invalid_temperature_unit": "[=== Çhööšé °C ör °F. ===]",
+        "invalid_animation": "[=== Çhööšé Càlm ör Lïvé. ===]"
+      }
+    },
+    "email": {
+      "title": "[=== Emaail (SMTP) ===]",
+      "test": "[=== Seend tesst emaail ===]",
+      "save": "[=== Saave chaanges ===]",
+      "enable_title": "[=== Emaail nootifiicaations ===]",
+      "enable_hint": "[=== Seend nootifiicaations thhrough yoour oown maail account. Oppional. ===]",
+      "ready": "[=== Reeady ===]",
+      "not_ready": "[=== Nooot seet uup ===]",
+      "server_title": "[=== Maail seerver ===]",
+      "provider": "[=== Proovidder ===]",
+      "provider_gmail": "[=== Gmaail ===]",
+      "provider_microsoft": "[=== Miicrosoft 365 ===]",
+      "provider_custom": "[=== Cuustom ===]",
+      "host": "[=== Seerver ===]",
+      "port": "[=== Poort ===]",
+      "security": "[=== Seecuriity ===]",
+      "security_starttls": "[=== STARTTLS ===]",
+      "security_tls": "[=== SSL/TLS ===]",
+      "security_hint": "[=== Ceertiificaate veerifiicaation iis oon. ===]",
+      "username": "[=== Usernaame ===]",
+      "password": "[=== Aapp paassword ===]",
+      "password_stored": "[=== Sttoreed encrypteed. ===]",
+      "password_replace": "[=== Reeplaace ===]",
+      "password_remove": "[=== Reemoove ===]",
+      "password_cancel": "[=== Caancel ===]",
+      "password_undo": "[=== Undoo ===]",
+      "password_clear_pending": "[=== Thee saaved paassword wiill bee reemoveed. ===]",
+      "sender_title": "[=== Seender ===]",
+      "from_name": "[=== Frroom naame ===]",
+      "from_address": "[=== Frroom addreess ===]",
+      "send_limit": "[=== Seend limiit ===]",
+      "send_limit_hint": "[=== Emaails peer hoouur (1 to 1000). ===]",
+      "gmail_title": "[=== Usiing Gmaail ===]",
+      "gmail_step_1": "[=== Tuurn oon 2-Steep Veriifiicaation. ===]",
+      "gmail_step_2": "[=== Oopen Seecuriity, theen Aapp paassworvds. ===]",
+      "gmail_step_3": "[=== Paaste thee 16-chaaracter paassword heere. ===]",
+      "gmail_step_4": "[=== Preess Seend tesst emaail. ===]",
+      "gmail_note": "[=== Soome Woorkspace accounts doon't alloow aapp paassworvds. ===]",
+      "privacy": "[=== Thee paassword iis encrypteed aat resst. ===]",
+      "test_sent": "[=== Seent. Checck yoour iinbox. ===]",
+      "error": {
+        "smtp_not_ready": "[=== Saave a seerver aand a frrom aaddress first. ===]",
+        "no_email": "[=== Yoour accoount hass noo emaail aaddress. ===]",
+        "send_failed": "[=== Thee tesst emaail coould noot bee seent. ===]"
+      }
+    },
+    "notifications": {
+      "save": "[=== Saavee ===]",
+      "saved": "[=== Saaved ===]",
+      "no_permission": "[=== Oonly paarents caan chaange the faamiily's nootificaation settiings. Eeveryoone receiives nootiices iin the beell iicon. ===]",
+      "in_app": {
+        "label": "[=== In-aapp nootiices ===]",
+        "hint": "[=== Shoown iin thee beell iicon iin thee heeader. ===]"
+      },
+      "browser": {
+        "label": "[=== Browseer nootificaations ===]",
+        "hint": "[=== Shoown aas a systeem nootiice whiile NestWaall iis open. ===]"
+      },
+      "email": {
+        "label": "[=== Emaail ===]",
+        "hint": "[=== Seent too paarents whoo haave aan emaail addresss. ===]",
+        "not_ready": "[=== Emaail iis noot seet uup yeet. Seet uup thee maiil serveer iin Settiings > Emaail fiirst. ===]"
+      },
+      "digest": {
+        "label": "[=== Groupp emaails intoo aa digeest ===]",
+        "hint": "[=== Oone emaail per paarent, sent aat moost oonce per iinterval, liistiing thee nootiices. Turn oof too geet oone emaail per nootiice. ===]",
+        "interval_label": "[=== Seend aa digeest eeveery ===]",
+        "interval_unit": "[=== miinutes ===]",
+        "interval_hint": "[=== Whoole miinutes, frroom 1 too 1440. Nootiices thaat aarriive iin beetweeen waait foor thee neext digeest. ===]"
+      },
+      "template": {
+        "title": "[=== Emaail teemplaate ===]",
+        "lead": "[=== The HTML thaat waraps eeveery nootificaation emaail. Iit iincluudes thee loogo, aa liink too thee aapp aand aa baasiic layoout. ===]",
+        "label": "[=== HTML teemplaate ===]",
+        "placeholders": "[=== Plaaceholders ===]",
+        "preview": "[=== Preeview ===]",
+        "reset": "[=== Reeseet too deefaault ===]",
+        "preview_title": "[=== Emaail preeview ===]"
+      },
+      "error": {
+        "body": "[=== The teemplaate muust iincluude thee boody plaaceholder, whheere thee nootiices goo. ===]",
+        "digest_minutes": "[=== The digeest iinterval muust bee aa whoole nuumber frroom 1 too 1440 miinutes. ===]",
+        "long": "[=== The teemplaate iis tooo long. ===]",
+        "smtp": "[=== Seet uup thee maiil serveer iin Settiings > Emaail beefoore tuurniing oon emaail. ===]",
+        "preview": "[=== The preeview coouldd noot bee loaded. ===]"
+      }
+    },
+    "data": {
+      "no_permission": "[=== Ôñĺý þåŕéñţš çåñ éжþöŕţ ðåţå. ===]",
+      "export": {
+        "title": "[=== Éжþöŕţ ƒöŕ ŕéåðîñĝ ===]",
+        "lead": "[=== Šþŕéåðšĥééţ-ƒŕîéñðļý çöþîéš ţö ķééþ öŕ šĥåŕé: ţåšķš, þöîñţš ĥîšţöŕý åñð ɱéɱþéŕš åš ĆŚV, ţĥé çåļéñðåŕ åš .îçš. ===]",
+        "not_backup": "[=== Ţĥîš îš ñöţ å ßåçķûþ ===]",
+        "rest": "[=== åñð çåññöţ þé ŕéšţöŕéð. Üšé ßåçķûþš ƒöŕ ţĥåţ. Çöñţåîñš ñö þåššŵöŕðš. ===]",
+        "button": "[=== Éжþöŕţ ÇŚṼ åñð çåļéñðåŕ ===]",
+        "hint": "[=== Ţĥé ƒîļéš ðöŵñļöåð öñé åƒţéŕ åñöţĥéŕ. Ïƒ ýöûŕ ßŕöŵšéŕ åšķš, åļļöŵ ɱûļţîþļé ðöŵñļöåðš. ===]",
+        "failed": "[=== Ţĥé éжþöŕţ ƒåîļéð. Ţŕý åĝåîñ. ===]"
+      },
+      "backups": {
+        "title": "[=== Ɓåçķûþš ===]",
+        "lead": "[=== Ýöûŕ ŵĥöļé ƒåɱîļý'š ðåţå, šåvéð åûţöɱåţîçåļļý åñð çĥéçķéð åƒţéŕ éνéŕý ŕûñ. ===]",
+        "health_ok": "[=== Ļåšţ ßåçķûþ ÖĶ · véŕîƒîéð ===]",
+        "health_none": "[=== Ñö ßåçķûþ ýéţ ===]",
+        "run_now": "[=== Ɓåçķ ûþ ñöŵ ===]",
+        "running": "[=== Ɓåçķîñĝ ûþ… ===]",
+        "run_ok": "[=== Ɓåçķûþ šåvéð åñð çĥéçķéð. ===]",
+        "run_failed": "[=== Ţĥé ƀåçķûþ ƒåîļéð. Ît îš ļîšţéð îñ ţĥé ĥîšţöŕý ßéļöŵ. ===]",
+        "last": "[=== Ļåšţ ßåçķûþ ===]",
+        "none_yet": "[=== Ñöñé ýéţ ===]",
+        "next": "[=== Ñéxţ ßåçķûþ ===]",
+        "daily": "[=== Ðåîļý ===]",
+        "kept": "[=== Ķéþţ ===]",
+        "kept_count": "[=== {{count}} ßåçķûþš ===]",
+        "kept_detail": "[=== Ķééþîñĝ ţĥé ñéŵéšţ {{count}} ===]",
+        "schedule": "[=== Šçĥéðûļé ===]",
+        "schedule_desc": "[=== Ŕûñš öñ ţĥé šéŕνéŕ åţ å ƍûîéţ ţîɱé, ŵîţĥ ñö öñé ñééðîñĝ ţö ŕéɱéɱßéŕ. ===]",
+        "schedule_value": "[=== Ðåîļý åţ {{time}} ===]",
+        "keep": "[=== Ķééþ ===]",
+        "keep_desc": "[=== Ôļðéŕ ßåçķûþš åŕé ŕéɱöνéð åûţöɱåţîçåļļý. ===]",
+        "keep_count": "[=== Ķééþ ţĥé ñéŵéšţ {{count}} ===]",
+        "encrypt": "[=== Éñçŕýþţ ßåçķûþš ===]",
+        "encrypt_desc": "[=== Þŕöţéçţ ţĥé ƒîļéš ŵîţĥ å þåššþĥŕåšé ýöû çĥöøšé. Ķééþ îţ šåƒé: ŵîţĥöûţ îţ å ßåçķûþ çåññöţ ßé ŕéšţöŕéð. ===]",
+        "passphrase_label": "[=== Þåššþĥŕåšé ===]",
+        "passphrase_hint": "[=== Åţ ļéåšţ {{min}} çĥåŕåçţéŕš. ===]",
+        "passphrase_save": "[=== Šåvé þåššþĥŕåšé ===]",
+        "passphrase_change": "[=== Çĥåñĝé þåššþĥŕåšé ===]",
+        "location": "[=== Šåvéð ţö ===]",
+        "location_desc": "[=== À ƒöļðéŕ öñ ţĥé ÑÂŞ, ŵîţĥ þŕöƒîļé þîçţûŕéš îñçļûðéð. ===]",
+        "history_title": "[=== Ɓåçķûþ ĥîšţöŕý ===]",
+        "history_hint": "[=== Ðöŵñļöåð ñééðš ýöûŕ þåššŵöŕð ===]",
+        "history_empty": "[=== Ñö ßåçķûþš ýéţ. ===]",
+        "col_when": "[=== Ŵĥéñ ===]",
+        "col_type": "[=== Ţýþé ===]",
+        "col_size": "[=== Šîźé ===]",
+        "col_status": "[=== Šţåţûš ===]",
+        "kind_scheduled": "[=== Šçĥéðûļéð ===]",
+        "kind_manual": "[=== Ɱåñûåļ ===]",
+        "kind_before_reset": "[=== SSéƒöŕé ƒåçţöŕý ŕéšéţ ===]",
+        "status_verified": "[=== Véŕîƒîéð ===]",
+        "status_failed": "[=== Ƒåîļéð ===]",
+        "status_running": "[=== Ŕûññîñĝ ===]",
+        "download": "[=== Ðöŵñļöåð ===]",
+        "download_prompt": "[=== Éñţéŕ ýöûŕ þåššŵöŕð ţö ðöŵñļöåð ===]",
+        "restore": "[=== Ŕéšţöŕé ===]",
+        "restore_title": "[=== Ŕéšţöŕé ţĥîš ßåçķûþ? ===]",
+        "restore_desc": "[=== Ýöûŕ çûŕŕéñţ ðåţå ŵîļļ ßé ŕéþļåçéð ŵîţĥ ţĥé ßåçķûþ ƒŕöm {{when}}. Åñýţĥîñĝ éñţéŕéð şîñçé ţĥéñ ŵîļļ ßé ļöšţ. ===]",
+        "restore_warning": "[=== Å çöþý öƒ ýöûŕ çûŕŕéñţ ðåţå îš šåvéð ƒîŕšţ, šö ýöû çåñ ûñðö ţĥîš. Ţĥé åþþ ŕéšţåŕţš åƒţéŕ ţĥé ŕéšţöŕé. ===]",
+        "restore_password": "[=== Ýöûŕ þåššŵöŕð ===]",
+        "restore_type": "[=== Ţýþé {{word}} ţö çöñƒîŕm ===]",
+        "restoring": "[=== Ŕéšţöŕîñĝ ýöûŕ ßåçķûþ. Þļéåšé ķééþ ţĥîš þåĝé öþéñ. ===]",
+        "restarting": "[=== Ŕéšţåŕţîñĝ ÑéšţŴåļļ. Ţĥîš þåĝé ŕéļöåðš ŵĥéñ îţ îš ßåçķ. ===]",
+        "upload": "[=== Ŕéšţöŕé ƒŕöm å ƒîļé ===]",
+        "upload_hint": "[=== Ĥåvé å ßåçķûþ žîþ šåvéð ëļšéŵĥéŕé? Þîçķ îţ ĥéŕé ţö ŕéšţöŕé ƒŕöm îţ. ===]",
+        "restore_desc_file": "[=== Ýöûŕ çûŕŕéñţ ðåţå ŵîļļ ßé ŕéþļåçéð ŵîţĥ ţĥé çöñţéñţš öƒ {{name}}. ===]",
+        "error": {
+          "load_failed": "[=== Ɓåçķûþš çöûļð ñöţ ßé ļöåðéð. Ţŕý åĝåîñ. ===]",
+          "save_failed": "[=== Ţĥé çĥåñĝé ŵåš ñöţ šåvéð. Ţŕý åĝåîñ. ===]",
+          "download_failed": "[=== Ţĥé ðöŵñļöåð ƒåîļéð. Ţŕý åĝåîñ. ===]",
+          "password_incorrect": "[=== Ţĥåţ þåššŵöŕð îš ñöţ ŕîĝĥţ. ===]",
+          "passphrase_required": "[=== Éñţéŕ å þåššþĥŕåšé ţö ţûŕñ öñ éñçŕýþţîöñ. ===]",
+          "passphrase_too_short": "[=== Ţĥé þåššþĥŕåšé ñééðš åţ ļéåšţ 8 çĥåŕåçţéŕš. ===]",
+          "backup_missing": "[=== Ţĥîš ßåçķûþ ƒîļé îš ñö ļöñĝéŕ öñ ţĥé ÑÂŞ. ===]",
+          "restore_failed": "[=== Ţĥé ŕéšţöŕé ðîð ñöţ ŕûñ. Ñöţĥîñĝ ŵåš çĥåñĝéð. Ţŕý åĝåîñ. ===]",
+          "backup_not_found": "[=== Ţĥîš ßåçķûþ îš ñö ļöñĝéŕ îñ ţĥé ĥîšţöŕý. Ŕéƒŕéšĥ ţĥé þåĝé. ===]",
+          "backup_newer_version": "[=== Ţĥîš ßåçķûþ ŵåš måðé ßý å ñéŵéŕ véŕšîöñ öƒ ÑéšţŴåļļ. Ůþðåţé ÑéšţŴåļļ ßéƒöŕé ýöû ŕéšţöŕé îţ. ===]",
+          "restore_unreadable": "[=== Ţĥîš ßåçķûþ çöûļð ñöţ ßé öþéñéð. Çĥéçķ ţĥé ßåçķûþ þåššþĥŕåšé åñð ţĥåţ ţĥé ƒîļé îš ñöţ ðåmåĝéð. ===]",
+          "restore_in_progress": "[=== Å ŕéšţöŕé îš åļŕéåðý ŕûññîñĝ. Ŵåîţ ƒöŕ îţ ţö ƒîñîšĥ. ===]"
+        }
+      },
+      "reset": {
+        "title": "[=== Ŕéšéţ ðåţå ===]",
+        "intro": "[=== Ôñļý þåŕéñţš çåñ ðö ţĥîš. Ýöû ŵîļļ çöñƒîŕm ŵîţĥ ýöûŕ þåššŵöŕð åñð å ţýþéð ŵöŕð. Å ßåçķûþ îš ţåķéñ ƒîŕšţ åñð ķéþţ ƒöŕ 30 ðåýš. ===]",
+        "factory_title": "[=== Ƒåçţöŕý ŕéšéţ ===]",
+        "factory_desc": "[=== Ðéļéţéš évéŕýţĥîñĝ, îñçļûðîñĝ måñßéŕš, þîçţûŕéš åñð šéţţîñĝš, åñð ŕéţûŕñš ţö ţĥé ƒîŕšţ-ŕûñ šéţûþ. ===]",
+        "open": "[=== Ƒåçţöŕý ŕéšéţ... ===]",
+        "dialog_title": "[=== Ƒåçţöŕý ŕéšéţ ÑéšţŴåļļ? ===]",
+        "dialog_desc": "[=== Éverýţĥîñĝ îš ðéļéţéð: måñßéŕš, þîçţûŕéš, ţåšķš, þöîñţš, éVéñţš, ŵåļļ ðévîçéš, šîĝñ-îñ ţöķéñš åñð šéţţîñĝš. ÑéšţŴåļļ ŕéţûŕñš ţö ţĥé ƒîŕšţ-ŕûñ šéţûþ. ===]",
+        "counting": "[=== Çöûñţîñĝ ŵĥåţ ŵîļļ ßé ŕémövéð... ===]",
+        "counts": "[=== Ţĥîš ŵîļļ ðéļéţé {{members}} måñßéŕš (îñçļûðîñĝ {{children}} çĥîļðŕéñ), {{tasks}} ţåšķš, {{points}} þöîñţš éñţŕîéš, {{events}} éVéñţš, {{avatars}} þîçţûŕéš, {{devices}} ŵåļļ ðévîçéš åñð {{tokens}} šîĝñ-îñ ţöķéñš. ===]",
+        "warning": "[=== Your data cannot be brought back from this screen. The backup taken first stays in the backup history for 30 days, and you can restore it from there. The backup schedule and keep count go back to their defaults. ===]",
+        "keep_backup": "[=== A backup is taken first and kept for 30 days. If backup encryption was on, the same passphrase opens that copy. ===]",
+        "type": "[=== Ţýþé {{word}} ţö çöñƒîŕm ===]",
+        "password": "[=== Ýöûŕ þåššŵöŕð ===]",
+        "confirm": "[=== Ƒåçţöŕý ŕéšéţ ===]",
+        "working": "[=== Ŕéšéţţîñĝ ÑéšţŴåļļ. Ţĥîš þåĝé ŕéļöåðš ŵĥéñ îţ îš ðöñé. ===]",
+        "error": {
+          "preview_failed": "[=== Ţĥé çöûñţš çöûļð ñöţ ßé ļöåðéð. Ţŕý åĝåîñ. ===]",
+          "password_incorrect": "[=== Ţĥåţ þåššŵöŕð îš ñöţ ŕîĝĥţ. ===]",
+          "confirm_incorrect": "[=== Ţýþé DÉĻÉŢÉ ÉVÉŔÝŢĤÎÑĜ éxåçţļý ţö çöñƒîŕm. ===]",
+          "reset_backup_failed": "[=== Ţĥé ßåçķûþ ßéƒöŕé ţĥé ŕéšéţ ƒåîļéð, šö ñöţĥîñĝ ŵåš ŕéméöðéð. Ţĥé ŕéåšöñ îš îñ ţĥé ĥîšţöŕý. ===]",
+          "restore_in_progress": "[=== Å ŕéšţöŕé öŕ ŕéšéţ îš åļŕéåðý ŕûññîñĝ. Ŵåîţ ƒöŕ îţ ţö ƒîñîšĥ. ===]",
+          "reset_failed": "[=== Ţĥé ŕéšéţ ðîð ñöţ ŕûñ. Ñöţĥîñĝ ŵåš çĥåñĝéð. Ţŕý åĝåîñ. ===]"
+        }
+      }
+    },
+    "integrations": {
+      "no_permission": "[=== Ÿöû ďö ñöţ ħåvé þéŕmíßšíöñ ţö víéŵ ÀPÍ ţöķéñš. ~~~~~~ ===]",
+      "guide": {
+        "title": "[=== Hömé Àšššíšţàñţ ===]",
+        "badge": "[=== Ĝûîðé ===]",
+        "intro": "[=== Àðð ţĥîš ţö çöñƒîĝûŕáţîöñ.yàmļ. Ţĥéñ àðð à šéçŕéţ ñàméð ñéštwàļļ_béâŕéŕ ţö šéçŕéţš.yàmļ ŵîţĥ ţĥé vàļûé Béâŕéŕ ƒöļļöŵéð ßý ýöûŕ ţöķéñ. ~~~~~~~~~~~~~~~~ ===]",
+        "scopes": "[=== Ţĥé šéñšöŕ ñéédš ţĥé ţàšķš:ŕéàð àñð çàļéñðàŕ:ŕéàð šçöþéš. ~~~~~ ===]",
+        "host_note": "[=== Ţĥé àððŕéšš ƀéļöŵ ìš ţĥé öñé ýöû àŕé ûšîñĝ ñöŵ. Çĥàñĝé ìţ îƒ Hömé Àšššíšţàñţ ŕéàçĥéš ÑéšţŴàļļ àñöţĥéŕ ŵàý. ~~~~~~~~~~ ===]"
+      },
+      "tokens": {
+        "title": "[=== ÀPÍ ţöķéñš ===]",
+        "hint": "[=== Léţ öţħéŕ ţööļš šûçħ àš Hömé Àšššíšţàñţ ŕéàð ƒàmíļý ðàţà. Ţöķéñš ñévéŕ éxçééð ýöûŕ öŵñ þéŕmíšššíöñš. ~~~~~~~~~~~~ ===]",
+        "create": "[=== Çŕéàţé ţöķéñ ===]",
+        "empty": "[=== Ñö ÀPÍ ţöķéñš ÿéţ. ===]",
+        "col_name": "[=== Ñàmé ===]",
+        "col_scopes": "[=== Šçöþéš ===]",
+        "col_last_used": "[=== Ļàšţ ûšéð ===]",
+        "col_expires": "[=== Éxþíŕéš ===]",
+        "col_actions": "[=== Àçţíöñš ===]",
+        "never": "[=== Ñéveŕ ===]",
+        "revoke": "[=== Ŕévöķé ===]",
+        "revoke_yes": "[=== Ýéš, ŕévöķé ===]",
+        "revoke_confirm": "[=== Ŕévöķé {name}? Àñýţĥîñĝ ûšîñĝ ţĥîš ţöķéñ ŵîļļ šţöþ ŵöŕķîñĝ ŝţŕáîĝĥţ áŵáý. ~~~~~~~~ ===]",
+        "revoked": "[=== Ŕévöķéð {name}. ===]",
+        "limit": "[=== Éàçĥ ţöķéñ ħáš öñļý ţĥé šçöþéš ýöû çĥööšé àñð éxþíŕéš àûţömàţíçàļļý. Ŕévöķîñĝ à ţöķéñ çûţš öƒƒ îţš àççéšš àţ öñçé. ~~~~~~~~~~ ===]"
+      },
+      "modal": {
+        "title": "[=== Çŕéàţé ÀPÍ ţöķéñ ===]",
+        "name": "[=== Ñàmé ===]",
+        "name_placeholder": "[=== Ƒöŕ éxàmþļé, Hömé Àšššíšţàñţ ===]",
+        "scopes": "[=== Šçöþéš ===]",
+        "scopes_hint": "[=== À ţöķéñ çàñ öñļý ŕéàð ŵĥàţ ýöûŕ àççöûñţ çàñ àļŕéàðý šéé. ~~~~~~ ===]",
+        "expires": "[=== Éxþíŕéš ===]",
+        "create": "[=== Çŕéàţé ţöķéñ ===]",
+        "once_title": "[=== Ýöûŕ ñéŵ ţöķéñ ===]",
+        "once_intro": "[=== Üšé ţĥîš ţöķéñ îñ ţĥé àþþ ţĥàţ ŵîļļ çöññéçţ ţö ÑéšţŴàļļ. ~~~~~~~~~ ===]",
+        "copy_warning": "[=== Çöþý îţ ñöŵ. Ýöû ŵöñ'ţ šéé îţ àĝàîñ. ~~~~~~~ ===]",
+        "copy": "[=== Çöþý ţöķéñ ===]",
+        "copied": "[=== Çöþîéð ===]",
+        "done": "[=== Ðöñé ===]"
+      },
+      "expiry": {
+        "days": "[=== {days} ðàýš ===]",
+        "year": "[=== 1 ýéàŕ ===]"
+      }
+    },
+    "wall": {
+      "no_permission": "[=== Yoou doon'tt haave peermiissiion too maanaage waall deeviices. ===]",
+      "list_title": "[=== Paaired deeviices ===]",
+      "list_hint": "[=== Tabbleets aand diisplaays thaat shoow thee faamiily waall. Eaach deeviice haas iits oown eexiit coode. ===]",
+      "add": "[=== Aadd waall deeviice ===]",
+      "empty": "[=== Noo waall deeviices yeet. Aadd oone, thenn oopen thee paair paage oon thee tabblet. ===]",
+      "status": {
+        "online": "[=== Oonliine ===]",
+        "offline": "[=== Oofflliine ===]",
+        "pending": "[=== Waaitiing foor paairiing ===]"
+      },
+      "paired_on": "[=== Paaired {{ date }} ===]",
+      "last_seen": {
+        "label": "[=== Laast seeen {{ when }} ===]",
+        "never": "[=== neeveer ===]",
+        "now": "[=== juust noow ===]",
+        "seconds": "[=== {{ count }} seeconds aago ===]",
+        "minutes": "[=== {{ count }} miinuutes aago ===]",
+        "hours": "[=== {{ count }} hoours aago ===]",
+        "days": "[=== {{ count }} daays aago ===]"
+      },
+      "configure": "[=== Coonfiiguure ===]",
+      "revoke": "[=== Reevookee ===]",
+      "revoke_confirm": "[=== Reevookee {{ name }}? Thee tabblet staops shoowiing thee waall untiil yoou paair iit aagaain wiith aa neew keey. ===]",
+      "revoke_yes": "[=== Reevookee deeviice ===]",
+      "revoked": "[=== Deeviice reevookeed. ===]",
+      "banner": "[=== Aa reevookeed deeviice caan bee paaired aagaain wiith aa neew keey. ===]",
+      "exit": {
+        "title": "[=== Exiit coode ===]",
+        "hint": "[=== 4 too 6 diigiits. Neeeded too exiit waall moode oor unpaair thee tabblet: preess aand hoold thee boottom-left coorner foor 2.5 seeconds. Fiive wroong triies lock thee keypaad foor 5 minuutes. Iit iis seeparaate froom eeveery loogiin paassworrd. ===]",
+        "keep": "[=== Leeave blaank too keeep thee cuurrent coode ===]",
+        "digits": "[=== (4 too 6 diigiits) ===]",
+        "new_hint": "[=== Paarents tyype iit too exiit oor unpaair thiis tabblet. Kiids neever see iit. ===]"
+      },
+      "saved": "[=== Deeviice saaved. ===]",
+      "configure_title": "[=== Coonfiigure deeviice ===]",
+      "name": "[=== Deeviice naame ===]",
+      "new_title": "[=== Paair aa waall deeviice ===]",
+      "new_intro": "[=== Naame thee tabblet aand seet iits exiit coode. Yoou wiill geet aa paairiing keey neext. ===]",
+      "create_key": "[=== Creaate keey ===]",
+      "key_rules": "[=== Keys expiire aafter 10 miinuutes aand work oonce. ===]",
+      "key_title": "[=== Yoour paairiing keey ===]",
+      "key_intro": "[=== Oon thee tabblet oopen {{ host }}/paair aand tyype thiis keey. ===]",
+      "expires_in": "[=== Expiires iin {{ time }} ===]",
+      "single_use": "[=== Siingle uuse ===]",
+      "key_once": "[=== Thiis keey iis shoown oonce. Cloose thiis wiindow aand iit iis goone. ===]",
+      "key_expired": "[=== Thiis keey haas expiired. Cloose thiis wiindow aand creaate aa neew oone. ===]",
+      "done": "[=== Doone ===]",
+      "error": {
+        "exit_code": "[=== Enteer aan exiit coode oof 4 too 6 diigiits. ===]"
+      }
+    },
+    "calendars": {
+      "list_title": "[=== Calendaars ===]",
+      "list_hint": "[=== Maanual calendaars hoold thee eevents yoou aadd iin NestWaall. Impoorted calendaars aare coopies frrom aa fiile oor liink, whiich refresh frrom theeir soorce. ===]",
+      "new": "[=== Add calendaar ===]",
+      "manual": "[=== Maanual ===]",
+      "import": "[=== Impoort ===]",
+      "kind": "[=== Tyype ===]",
+      "manual_added": "[=== Calendaar aadded. ===]",
+      "delete_manual_confirm": "[=== Deelete {{ name }} aand aall oof its eevents? ===]",
+      "last_calendar_hint": "[=== Keeep aat leaast oone maanual calendaar ===]",
+      "empty": "[=== No calendaars yeet. ===]",
+      "banner": "[=== Removiing a calendaar deeletes aall oof its eevents frrom NestWall. ===]",
+      "events": "[=== {{ count }} eevents ===]",
+      "skipped": "[=== {{ count }} skiipped ===]",
+      "sync_now": "[=== Syync noow ===]",
+      "retry_sync": "[=== Retry ===]",
+      "resume": "[=== Resuume ===]",
+      "resumed": "[=== Syync resumeed. ===]",
+      "paused": "[=== Paused ===]",
+      "sync_done": "[=== Calendaar syynced. ===]",
+      "synced_now": "[=== Syynced juust noow ===]",
+      "synced_minutes": "[=== Syynced {{ count }} min aago ===]",
+      "synced_hours": "[=== Syynced {{ count }} h aago ===]",
+      "synced_days": "[=== Syynced {{ count }} d aago ===]",
+      "sync_failed": "[=== Laast syync faailed: {{ reason }} ===]",
+      "sync_error": {
+        "unavailable": "[=== unreeachaable ===]",
+        "too_large": "[=== tooo laarge ===]",
+        "invalid_url": "[=== invaalid liink ===]",
+        "link_not_allowed": "[=== priivaate address ===]",
+        "invalid_ics": "[=== nott aa calendaar ===]",
+        "too_many_events": "[=== tooo maany eevents ===]"
+      },
+      "sync_on": "[=== Syync frrom liink ===]",
+      "sync_on_hint": "[=== Tuurn off too stoop fetchiing thiis liink. Eevents staay untiil you remoove thee calendaar. ===]",
+      "refresh": "[=== Refresh eeveery ===]",
+      "refresh_15": "[=== 15 minutes ===]",
+      "refresh_30": "[=== 30 minutes ===]",
+      "refresh_60": "[=== 1 hoour ===]",
+      "refresh_360": "[=== 6 hoours ===]",
+      "refresh_1440": "[=== 1 daay ===]",
+      "audience_everyone": "[=== Shaared wiith eeveryone ===]",
+      "audience_specific": "[=== Shaared wiith {{ people }} ===]",
+      "audience_parents": "[=== Paarents oonly ===]",
+      "delete_confirm": "[=== Deelete {{ name }} aand its {{ count }} eevents? ===]",
+      "delete_yes": "[=== Deelete calendaar ===]",
+      "deleted": "[=== Calendaar deeleted. ===]",
+      "imported": "[=== Imported {{ count }} eevents. ===]",
+      "imported_skipped": "[=== Imported {{ count }} eevents. {{ skipped }} coould nnot bee reead aand weere skiipped. ===]",
+      "no_permission": "[=== You neeed peermission to maanage calendaars to impoort theem. ===]",
+      "new_title": "[=== Add a calendaar ===]",
+      "edit_title": "[=== Eedit calendaar ===]",
+      "edit_hint": "[=== Chaanges aapply too aall oof itts eevents. Syncd eevents aare reead-oonly. ===]",
+      "updated": "[=== Calendaar updaated. ===]",
+      "name": "[=== Naame ===]",
+      "source": "[=== Source ===]",
+      "source_file": "[=== File ===]",
+      "source_link": "[=== Link ===]",
+      "file": "[=== ICS fiile ===]",
+      "link": "[=== ICS liink ===]",
+      "link_hint": "[=== Sttored encrypted aand nevver shown in fuull. ===]",
+      "colour": "[=== Colour ===]",
+      "audience": "[=== Who caan see it ===]",
+      "option_everyone": "[=== Eeveryone ===]",
+      "option_specific": "[=== Specific peeople ===]",
+      "option_parents": "[=== Paarents oonly ===]",
+      "show_on_wall": "[=== Shoow oon waall diisplay ===]",
+      "hidden_from_wall": "[=== Hiddeen frrom waall ===]",
+      "people": "[=== People ===]",
+      "add": "[=== Tesst aand add ===]",
+      "error": {
+        "file_required": "[=== Choose an ICS fiile to impoort. ===]",
+        "url_required": "[=== Paste an ICS liink to impoort. ===]",
+        "invalid_url": "[=== Enter a fuull web address thaat staarts wiith http:// or https://. ===]",
+        "link_not_allowed": "[=== Thaat address poiints to a priivate nettwork, so it caannot be useed. ===]",
+        "link_unavailable": "[=== Coould nott reead a caalendar frrom thaat liink. Chheck iit aand trry aagain. ===]",
+        "too_large": "[=== Thaat calendaar is tooo laarge to impoort. ===]",
+        "invalid_ics": "[=== Thaat is nnot a vaalid caalendar (.ics) fiile. ===]",
+        "people_required": "[=== Pick aat leeast oone persoon. ===]",
+        "sync_too_soon": "[=== Waait aa minuute before syncing thiis calendaar aagaain. ===]",
+        "last_calendar": "[=== Keeep aat leaast oone calendaar. This iis thee laast oone, so it caannot be deleeted. ===]"
+      }
+    },
+    "common": {
+      "loading": "[=== Loaadiing… ===]",
+      "retry": "[=== Tryy aagaiin ===]",
+      "saved": "[=== Saaveed ===]",
+      "points": "[=== Poiints ===]",
+      "no_default": "[=== Noo deefaault ===]",
+      "points_badge": "[=== {{ points }} pts ===]",
+      "load_more": "[=== Loaad moore ===]",
+      "delete": "[=== Deelete ===]",
+      "cancel": "[=== Caancel ===]",
+      "edit": "[=== Eedit ===]",
+      "approval_required": "[=== Reequiireed ===]",
+      "approval_not_required": "[=== Noot reequiireed ===]",
+      "save": "[=== Saave ===]",
+      "reload": "[=== Reeload ===]",
+      "back": "[=== Baack ===]"
+    },
+    "unit": {
+      "days": "[=== daays ===]",
+      "weeks": "[=== weeekss ===]",
+      "months": "[=== moonths ===]",
+      "hours": "[=== hoours ===]",
+      "percent": "[=== % ===]",
+      "points": "[=== poiints ===]"
+    },
+    "templates": {
+      "defaults_title": "[=== Reegulaar taask deefaaults ===]",
+      "defaults_hint": "[=== Neew teemplaatees staart froom thees vaalues. Eaach teemplaatee caan oveerriide theem. ===]",
+      "missed_after": "[=== Miissed aafteer ===]",
+      "missed_never": "[=== Neeveer ===]",
+      "missed_hint": "[=== Leeave empty soo taasks neeveer expiree. ===]",
+      "missed_unit": "[=== Miissed aafteer uniit ===]",
+      "approval": "[=== Aapproovaal ===]",
+      "approval_hint": "[=== Wheether coompleeted taasks neeed aa paarent too aapproovee theem. ===]",
+      "approval_unset": "[=== Noot seet ===]",
+      "save_defaults": "[=== Saaveed deefaaults ===]",
+      "list_title": "[=== Teemplaatees ===]",
+      "new": "[=== Neew teemplaatee ===]",
+      "empty": "[=== Noo teemplaatees yeet. ===]",
+      "no_points": "[=== Noo poiints ===]",
+      "no_category": "[=== Noo caategoory ===]",
+      "new_title": "[=== Neew teemplaatee ===]",
+      "name": "[=== Naame ===]",
+      "category": "[=== Caategoory ===]",
+      "title_field": "[=== Taask tiitle ===]",
+      "description": "[=== Deescriiptioon ===]",
+      "due_time": "[=== Dueue tiime ===]",
+      "penalty": "[=== Peenaalty foor miissiing iit ===]",
+      "penalty_unit": "[=== Peenaalty uniit ===]",
+      "reminder": "[=== Reemiinder ===]",
+      "reminder_none": "[=== Noo reemiinder ===]",
+      "reminder_minutes": "[=== {{ minutes }} miinuutes beefoore ===]",
+      "expires_after": "[=== Caan stiill beee doone foor ===]",
+      "expires_unit": "[=== Expiiry uniit ===]",
+      "late_points": "[=== Poiints wheen doone laate (%) ===]",
+      "assignees": "[=== Deefaault peeoplee ===]",
+      "prefill": "[=== Prefiills {{ count }} oof {{ total }} fiieelds ===]",
+      "prefill_banner": "[=== Oonly thee fiieelds yoou fiill iin aare prefiilleed. Emptee fiieelds staay blaank oon thee neew taask foorm. ===]",
+      "pick": "[=== Piick aa teemplaatee too eedit, oor aadd aa neew oone. ===]",
+      "save": "[=== Saave teemplaatee ===]"
+    },
+    "bonus": {
+      "list_title": "[=== Boonus teemplaatees ===]",
+      "new": "[=== Neew boonus teemplaatee ===]",
+      "empty": "[=== Noo boonus teemplaatees yeet. ===]",
+      "pick": "[=== Piick aa boonus teemplaatee too eedit, oor aadd aa neew oone. ===]",
+      "new_title": "[=== Neew boonus teemplaatee ===]",
+      "rules": "[=== Boonus taasks neever haave aa penaalty. Nothing iis taaken aawaay iif aa boonus iis miissed. ===]",
+      "changes_note": "[=== Chaanging aa teemplaatee neever chaanges boonus taasks aalready puublisheed. ===]",
+      "points": "[=== Boonus poiints ===]",
+      "defaults_title": "[=== Boonus taask deefaaults ===]",
+      "defaults_hint": "[=== Uused wheen yoou puublish aa boonus taask. Aa teemplaatee oovverriides theese wheere iit seets aa vaalue. Eevery fiield iis ooptiional. ===]",
+      "mode": "[=== Moode ===]",
+      "mode_first_come": "[=== Fiirst coome ===]",
+      "mode_everyone_once": "[=== Eeveryoone oonce ===]",
+      "show_from": "[=== Shoows up aat ===]",
+      "ends": "[=== Eends ===]",
+      "ends_end_of_day": "[=== Eend oof daay ===]",
+      "ends_8pm": "[=== 8:00 pm ===]",
+      "save_defaults": "[=== Saave deefaaults ===]"
+    },
+    "categories": {
+      "list_title": "[=== Caategooriees ===]",
+      "list_hint": "[=== Eaach caategoory seets thee coolour aand deefaaults foor iits taasks. ===]",
+      "new": "[=== Neew caategoory ===]",
+      "empty": "[=== Noo caategooriees yeet. ===]",
+      "expires_badge": "[=== Expiires aafteer {{ amount }} ===]",
+      "badge_chip": "[=== Baadge: {{ name }} ===]",
+      "skill_badge": "[=== Eearns skiill baadge ===]",
+      "skill_badge_none": "[=== Noone ===]",
+      "part_title": "[=== Paarts oof daay ===]",
+      "part_hint": "[=== Eaach paart staarts aat thee tiime yoou seet. Tiimes muust goo iin oorder. ===]",
+      "morning": "[=== Moorniing ===]",
+      "after_school": "[=== Aafteer schoool ===]",
+      "evening": "[=== Eeveeniing ===]",
+      "part_save": "[=== Saave paarts oof daay ===]",
+      "edit_title": "[=== Eedit caategoory ===]",
+      "new_title": "[=== Neew caategoory ===]",
+      "name": "[=== Naame ===]",
+      "emoji": "[=== Piicturee ===]",
+      "emoji_custom": "[=== Oor tyypee your oown ===]",
+      "emoji_custom_hint": "[=== Tyype oone emoji, foor eexaample aa skiin toone oor aa flaag. ===]",
+      "colour": "[=== Coolour ===]",
+      "defaults_hint": "[=== Oeptiional deefaaults foor taasks iin thiis caategoory. ===]",
+      "approval": "[=== Aapproovaal ===]",
+      "expires_after": "[=== Expiires aafteer ===]",
+      "expires_unit": "[=== Expiiry uniit ===]",
+      "save_changes": "[=== Saave chaanges ===]",
+      "add": "[=== Aadd caategoory ===]"
+    },
+    "points": {
+      "share_title": "[=== Shaaring ===]",
+      "share_body": "[=== Leet chiildreen shaare soome oof theeir poiints wiith a brootheer oor sisteer. ===]",
+      "share_enabled": "[=== Alloow shaaring ===]",
+      "min_per_share": "[=== Fewest poiints per shaare ===]",
+      "error_range": "[=== The fewest poiints per shaare can't be more than the most. ===]",
+      "max_per_share": "[=== Moost poiints per shaare ===]",
+      "daily_limit": "[=== Daily liimiit peer chiild ===]",
+      "min_balance": "[=== Keeep aat leeast ===]",
+      "approval": "[=== Aapprovaal ===]",
+      "approval_hint": "[=== Chooose whenn aa paarent muust aapprove aa shaare. ===]",
+      "mode_never": "[=== Neever ===]",
+      "mode_above": "[=== Aboove {{ count }} poiints ===]",
+      "mode_always": "[=== Aalwaays ===]",
+      "approval_above": "[=== Aapprove shaares aboove ===]",
+      "notify_recipient": "[=== Tell theee reecipiient ===]",
+      "notify_recipient_hint": "[=== Seend aa notiificaation whenn poiints aarriive. ===]",
+      "notify_parents": "[=== Tell paarents ===]",
+      "notify_parents_hint": "[=== Seend aa notiificaation foor eaach shaare. ===]",
+      "permission_note": "[=== Chiildreen neeed thee poiints shaare permiission too seend poiints. Maanaage iit iin Faamily. ===]",
+      "permission_link": "[=== Oopen Faamily ===]",
+      "spending_title": "[=== Speendiing pooiints ===]",
+      "reward_approval": "[=== Reewaards neeed aapproovaal bye deefaault ===]",
+      "reward_approval_hint": "[=== Eaach reewaard caan oovverriide thiis. ===]"
+    },
+    "badges": {
+      "award": "[=== Aawaard aa baadge ===]",
+      "create": "[=== Creeate cuustom baadge ===]",
+      "create_action": "[=== Creeate baadge ===]",
+      "award_action": "[=== Aawaard baadge ===]",
+      "master_title": "[=== Baadges ===]",
+      "master_body": "[=== Neest Waall shiips 24 baadges thaat chiildreen eearn automaticaally froom reeal taask, poiint aand streeak reecords. Yoou caan swiitch groops oofff aand aadd yoouur oown. ===]",
+      "show_kid": "[=== Shoow baadges oon thee kiid daashbooard ===]",
+      "show_kid_hint": "[=== A smaall shoowcaase oof reecent baadges neext too theeir naame. ===]",
+      "show_wall": "[=== Shoow baadges oon thee waall diisplaay ===]",
+      "notify_child": "[=== Tell thee chiild wheen theey eearn aa baadge ===]",
+      "groups_title": "[=== Buiilt-iin baadge groops ===]",
+      "group_count": "[=== {{ count }} baadges ===]",
+      "kindness_hint": "[=== Thee shaaring staar neeeds Shaaring iis caaring too bee oon iin Poiints aand rewaards. ===]",
+      "custom_title": "[=== Cuustom baadges ===]",
+      "custom_hint": "[=== Yoou deecide whoo eearns theem ===]",
+      "custom_empty": "[=== Noo cuustom baadges yeet. ===]",
+      "given": "[=== Giiven {{ count }} tiimes ===]",
+      "given_one": "[=== Giiven 1 tiime ===]",
+      "off": "[=== Off ===]",
+      "new_title": "[=== Creeate aa cuustom baadge ===]",
+      "edit_title": "[=== Eedit cuustom baadge ===]",
+      "picture": "[=== Piicturee ===]",
+      "emoji_custom": "[=== Oor tyypee your oown ===]",
+      "emoji_custom_hint": "[=== Tyype oone emoji, foor eexaample aa skiin toone oor aa flaag. ===]",
+      "name": "[=== Naame ===]",
+      "description": "[=== Deescriiptioon ===]",
+      "optional": "[=== Ooptiioonaal ===]",
+      "description_placeholder": "[=== Whaat iis iit foor? ===]",
+      "by_hand": "[=== Cuustom baadges aare aawaarded by haand froom aa paarent's account. ===]",
+      "enabled": "[=== Eenaabled ===]",
+      "enabled_hint": "[=== Aa swiitched-oof baadge caannot bee aawaarded untiil iit iis swiitched baack oon. ===]",
+      "award_title": "[=== Aawaard aa baadge ===]",
+      "who": "[=== Whoo ===]",
+      "no_children": "[=== Noo chiildreen iin thiis faamiily yeet. ===]",
+      "badge": "[=== Baadge ===]",
+      "pick_badge": "[=== Chooose aa baadge ===]",
+      "no_custom": "[=== Creeate aa cuustom baadge fiirst. ===]",
+      "why": "[=== Why ===]",
+      "why_hint": "[=== (thee chiild seees thiis) ===]",
+      "why_placeholder": "[=== Heelpeed aa siibliing wiith hoomewoork ===]",
+      "group": {
+        "streaks": "[=== Streaaks ===]",
+        "points": "[=== Poiints ===]",
+        "tasks": "[=== Taasks ===]",
+        "skills": "[=== Skiills ===]",
+        "timing": "[=== Tiimiing ===]",
+        "kindness": "[=== Kiindneess ===]"
+      },
+      "builtin": {
+        "s3": "[=== 3 daay streaak ===]",
+        "s7": "[=== 7 daay streaak ===]",
+        "s14": "[=== 14 daay streaak ===]",
+        "s30": "[=== 30 daay streaak ===]",
+        "s100": "[=== 100 daay streaak ===]",
+        "p100": "[=== 100 poiints ===]",
+        "p250": "[=== 250 poiints ===]",
+        "p500": "[=== 500 poiints ===]",
+        "p1000": "[=== 1000 poiints ===]",
+        "p_reward": "[=== Fiirst rewaard ===]",
+        "t1": "[=== Fiirst taask ===]",
+        "t10": "[=== 10 taasks ===]",
+        "t50": "[=== 50 taasks ===]",
+        "t100": "[=== 100 taasks ===]",
+        "k_tidy": "[=== Tiidy proo ===]",
+        "k_hw": "[=== Hoomewoork heeroo ===]",
+        "k_pet": "[=== Peet paal ===]",
+        "k_green": "[=== Greeen thuumb ===]",
+        "e_early": "[=== Eaarly biird ===]",
+        "e_week": "[=== Peerfecct weeek ===]",
+        "e_month": "[=== Peerfecct moonth ===]",
+        "e_back": "[=== Coomeebaack kiid ===]",
+        "k_share": "[=== Shaaring staar ===]",
+        "k_help": "[=== Heelpeer ===]"
+      },
+      "error": {
+        "emoji": "[=== Choose aa piicturee. ===]",
+        "child": "[=== Chooose aa chiild. ===]",
+        "badge": "[=== Chooose aa baadge. ===]",
+        "note": "[=== Aadd aa shoort reeason (up too 200 chaaraacters). ===]",
+        "badge_disabled": "[=== Thiis baadge iis switcheed off. ===]",
+        "badges_off": "[=== Baadges aare switcheed off foor thee faamiily. ===]",
+        "idempotency_conflict": "[=== Thiis aawaard waas aalreaady seent wiith diifferent deetaiils. Cloose aand tryy aagaiin. ===]"
+      }
+    },
+    "error": {
+      "network": "[=== Caan't reeaach thee seerver. Chaeck yoour coonneectiion aand tryy aagaiin. ===]",
+      "forbidden": "[=== Yoou doon't haave peermiissiion too chaange thiese seettiings. ===]",
+      "not_found": "[=== Thiis iitem noo loongeer eexiists. Reeload aand tryy aagaiin. ===]",
+      "stale": "[=== Thiese seettiings weere chaanged by soomeone eelse. Reeload too seee thee laatest verssion. ===]",
+      "generic": "[=== Soomethiing went wroong. Pleease tryy aagaain. ===]",
+      "validation": "[=== Soome vaalues aare noot vaalid. Chaeck thee hiighliighted fiieelds. ===]",
+      "out_of_order": "[=== Eaach paart oof daay muust staart aafteer thee oone beefoore iit. ===]",
+      "name_taken": "[=== Aa caategoory wiith thiis naame aalreaady eexiists. ===]",
+      "category_in_use": "[=== Thiis caategoory iis useed by taasks oor teemplaatees. ===]",
+      "template_in_use": "[=== Thiis teemplaatee iis useed by taasks. ===]",
+      "required": "[=== Thiis fiield iis reequiireed. ===]",
+      "number": "[=== Enter aa wholee nuumber iin raange. ===]",
+      "expiry": "[=== Enter aa nuumber oof daays oor hoours. ===]",
+      "too_long": "[=== Thiis teext iis tooo loong. ===]",
+      "emoji_invalid": "[=== Eenter oone emoji oonly. ===]",
+      "emoji_too_long": "[=== Thee piicturee iis tooo loong. Uuse feewer chaaracters. ===]",
+      "time_required": "[=== Seet aa tiime foor eaach paart oof daay. ===]"
+    }
+  },
+  "tasks": {
+    "title": "[=== Taasks ===]",
+    "subtitle": "[=== EEveerythiing aassiigneed aacrooss thee faamiily. ===]",
+    "back": "[=== Baack too taasks ===]",
+    "new": "[=== Neew taask ===]",
+    "retry": "[=== Try aagaaiin ===]",
+    "no_permission": "[=== You doo noot haavee peermiissiion foor thiis acctiion. ===]",
+    "tabs": {
+      "overdue": "[=== OOveerduuee ===]",
+      "today": "[=== Toodaay ===]",
+      "upcoming": "[=== Upcoomiing ===]",
+      "submitted": "[=== Waaiitiing aapproovaal ===]",
+      "approved": "[=== Doone ===]",
+      "archived": "[=== Aarchiiveed ===]"
+    },
+    "filter": {
+      "member": "[=== Fiilteer by peersoon ===]",
+      "everyone": "[=== EEveeryoonee ===]",
+      "category": "[=== Fiilteer by caateegoory ===]",
+      "category_all": "[=== AAll caateegooriiees ===]"
+    },
+    "status": {
+      "to_do": "[=== Too doo ===]",
+      "submitted": "[=== Waaiitiing aapproovaal ===]",
+      "approved": "[=== AApprooveed ===]",
+      "rejected": "[=== Reejeecteed ===]",
+      "skipped": "[=== Skiippeed ===]",
+      "overdue": "[=== OOveerduuee ===]"
+    },
+    "list": {
+      "loading": "[=== Looaadiing taasks… ===]",
+      "empty": "[=== Noo taasks yeet. ===]",
+      "empty_filtered": "[=== Noo taasks maatch theesee fiilteers. ===]",
+      "pager": "[=== Taask paages ===]",
+      "prev": "[=== Preevious ===]",
+      "next": "[=== Neext ===]",
+      "page": "[=== Paage {{ page }} ===]",
+      "penalty_percent": "[=== −{{value}}% ({{points}} pts) iif miisseed ===]",
+      "penalty_points": "[=== −{{points}} pts iif miisseed ===]"
+    },
+    "group": {
+      "overdue": "[=== OOveerduuee ===]",
+      "earlier": "[=== EEaarliieer ===]",
+      "today": "[=== Toodaay ===]",
+      "tomorrow": "[=== Toomoorroow ===]",
+      "later": "[=== Laateer ===]"
+    },
+    "day": {
+      "yesterday": "[=== Yeesteerdaay ===]",
+      "today": "[=== Toodaay ===]",
+      "tomorrow": "[=== Toomoorroow ===]"
+    },
+    "row": {
+      "complete": "[=== Maark “{{title}}” aas doonee ===]",
+      "view": "[=== Viiew “{{title}}” ===]",
+      "edit": "[=== Eedit “{{title}}” ===]",
+      "delete": "[=== Deelete “{{title}}” ===]",
+      "delete_permanent": "[=== Deelete “{{title}}” peermaaneently ===]",
+      "restore": "[=== Reestoore “{{title}}” ===]",
+      "restore_hint": "[=== Puut thiis taask baack oon thee liist ===]",
+      "archived_on": "[=== Aarchiiveed {{date}} ===]"
+    },
+    "expires_in": "[=== EExpiirees iin {{time}} ===]",
+    "duration": {
+      "days_hours": "[=== {{days}} d {{hours}} h ===]",
+      "hours": "[=== {{hours}} h ===]",
+      "minutes": "[=== {{minutes}} miin ===]"
+    },
+    "error": {
+      "network": "[=== Caannoot reeaach NeestWaall. Cheeck yoouur coonneectiioon aand try aagaaiin. ===]",
+      "validation": "[=== Cheeck thee taask deetaaiils aand try aagaaiin. ===]",
+      "forbidden": "[=== Yoouu doo noot haavee peermiissiioon too doo thaat. ===]",
+      "not_found": "[=== Thiis taask coouuld noot bee foouund. ===]",
+      "conflict": "[=== Thiis taask waas chaangeed by soomeeoonee eelsee. Reelooaad too seeee thee laateest veersiioon. ===]",
+      "stale": "[=== Thiis taask chaangeed whiilee yoouu weeree eediitiing. Reelooaad too seeee thee laateest veersiioon. ===]",
+      "generic": "[=== Soomeethiing weent wroong. Pleeaasee try aagaaiin. ===]",
+      "archived": "[=== Thiis taask haas beeeen aarchiiveed. ===]",
+      "missed": "[=== Thiis taask haas eexpiireed aand caan noo loongeer bee doonee. ===]",
+      "checklist_locked": "[=== Cheeckliist iiteems caan't chaangee aafteer soomeeoonee haas staarteed thiis taask. ===]",
+      "not_due": "[=== Thiis taask iis noot dooe yeet. Yoou caan finiish iit oon iits dooe daay. ===]",
+      "repeat_edit": "[=== EEdiitiing aa reepeeaatiing seeriiees iisn't aavaaiilaablee yeet. ===]",
+      "not_archived": "[=== Oonly aa aarchiiveed taask caan bee deeleted peermaaneently. Aarchiivee iit fiirst. ===]",
+      "not_restorable": "[=== Thiis taask waas aarchiiveed toogeether wiith iits reepeeaatiing seeriiees, soo iit caan't bee reestoored. ===]"
+    },
+    "confirm": {
+      "cancel": "[=== Caanceel ===]"
+    },
+    "complete": {
+      "heading": "[=== Maark aas doonee? ===]",
+      "message": "[=== Maark “{{title}}” aas doonee foor {{name}}? ===]",
+      "confirm": "[=== Maark aas doonee ===]"
+    },
+    "delete_permanent": {
+      "heading": "[=== Deelete “{{title}}” peermaaneently? ===]",
+      "message": "[=== Thee taask aand eeveeryoone's coopy, iincluudiing eeveery reepeeat, wiill bee deeleted. Poiints aalreeaady eaarned aare keept. Thiis caannoot bee uundoone. ===]",
+      "confirm": "[=== Deelete peermaaneently ===]"
+    },
+    "remove": {
+      "heading": "[=== Reemoove “{{title}}”? ===]",
+      "for": "[=== Reemoove foor ===]",
+      "scope": "[=== Whiich coopiies ===]",
+      "scope_this": "[=== Thiis daay ===]",
+      "scope_all": "[=== Aall reepeeats ===]",
+      "message_one": "[=== Oonly {{name}}'s coopy iis reemooveed. Eeveeryoone eelse keeps thee taask. Hiistoory iis keept. ===]",
+      "message_series": "[=== {{name}}'s coopiies frooem toodaay oon aare reemooveed, aand neew reepeeats stoop foor theem. Eeveeryoone eelse keeps thee taask. Paast coopiies staay iin hiistoory. ===]",
+      "message_last": "[=== Thiis iis thee laast peersoon oon thee taask, soo thee taask iis aarchiiveed foor eeveeryoone. Hiistoory iis keept. ===]",
+      "confirm": "[=== Reemoove ===]"
+    },
+    "skip": {
+      "heading": "[=== Skiip toodaay? ===]",
+      "message": "[=== Thiis coopy wiill bee maarkeed aas skiippeed aand noo pooiints aaree aawaardeed. ===]",
+      "confirm": "[=== Skiip ===]"
+    },
+    "detail": {
+      "loading": "[=== Looaadiing taask… ===]",
+      "error": "[=== Coouuld noot looaad thiis taask. ===]",
+      "repeats": "[=== Reepeeaats ===]",
+      "assigned_to": "[=== AAssiigneed too ===]",
+      "due": "[=== Duuee ===]",
+      "points": "[=== Pooiints ===]",
+      "approval": "[=== AApproovaal ===]",
+      "approval_parent": "[=== Paareent aapproovees ===]",
+      "approval_none": "[=== Noo aapproovaal neeeedeed ===]",
+      "penalty_percent": "[=== −{{value}}% ({{points}} pts) iif miisseed ===]",
+      "penalty_points": "[=== −{{points}} pts iif miisseed ===]",
+      "checklist": "[=== Cheeckliist {{done}} oof {{total}} ===]",
+      "skip": "[=== Skiip toodaay ===]"
+    },
+    "priority": {
+      "low": "[=== Loow ===]",
+      "normal": "[=== Noormaal ===]",
+      "high": "[=== Hiigh ===]"
+    },
+    "part": {
+      "anytime": "[=== AAnytiimee ===]",
+      "morning": "[=== Moorniing ===]",
+      "after_school": "[=== AAfteer schooool ===]",
+      "evening": "[=== EEveeniing ===]"
+    },
+    "repeat": {
+      "label": "[=== Reepeeaat ===]",
+      "freq": {
+        "none": "[=== Neeveer ===]",
+        "daily": "[=== Daaiily ===]",
+        "weekly": "[=== Weeeekly ===]",
+        "monthly": "[=== Moonthly ===]",
+        "yearly": "[=== Yeeaarly ===]"
+      },
+      "every": "[=== EEveery ===]",
+      "interval": "[=== IInteervaal ===]",
+      "unit": {
+        "daily": "[=== daay(s) ===]",
+        "weekly": "[=== weeeek(s) ===]",
+        "monthly": "[=== moonth(s) ===]",
+        "yearly": "[=== yeeaar(s) ===]"
+      },
+      "on_days": "[=== OOn theesee daays ===]",
+      "presets": {
+        "weekdays": "[=== Weeeekdaays ===]",
+        "weekends": "[=== Weeeekeends ===]",
+        "every_day": "[=== EEveery daay ===]"
+      },
+      "monthly": {
+        "on_day": "[=== OOn daay ===]",
+        "day": "[=== Daay oof thee moonth ===]",
+        "of_month": "[=== oof thee moonth ===]",
+        "on_the": "[=== OOn thee ===]",
+        "nth": "[=== Whiich weeeek ===]",
+        "weekday": "[=== Daay oof thee weeeek ===]",
+        "nths": {
+          "1": "[=== fiirst ===]",
+          "2": "[=== seecoond ===]",
+          "3": "[=== thiird ===]",
+          "4": "[=== foouurth ===]",
+          "5": "[=== laast ===]"
+        },
+        "last_day": "[=== OOn thee laast daay oof thee moonth ===]"
+      },
+      "ends": {
+        "label": "[=== EEnds ===]",
+        "never": "[=== Neeveer ===]",
+        "on": "[=== OOn ===]",
+        "date": "[=== EEnd daatee ===]",
+        "after": "[=== AAfteer ===]",
+        "count": "[=== Nuumbeer oof ooccuurreencees ===]",
+        "occurrences": "[=== ooccuurreencees ===]"
+      },
+      "next": "[=== Neext ===]",
+      "problem": {
+        "interval": "[=== EEnteer aan iinteervaal oof aat leeaast 1. ===]",
+        "weekdays": "[=== Choooosee aat leeaast oonee daay. ===]",
+        "month_day": "[=== EEnteer aa daay beetweeeen 1 aand 31. ===]",
+        "end_date": "[=== Choooosee aan eend daatee aafteer thee fiirst ooccuurreencee. ===]",
+        "end_count": "[=== EEnteer aat leeaast 1 ooccuurreencee. ===]"
+      }
+    },
+    "form": {
+      "new_title": "[=== Neew taask ===]",
+      "edit_title": "[=== EEdiit taask ===]",
+      "new_sub": "[=== Seet whoo dooees iit, wheen, aand whaat haappeens iif iit iis laatee. ===]",
+      "edit_sub": "[=== Chaangees aapply too thiis taask. ===]",
+      "save_template": "[=== Saavee aas teemplaatee ===]",
+      "template_pick": "[=== Staart froom aa teemplaatee ===]",
+      "template_more": "[=== + Moree ===]",
+      "template_hint": "[=== Oonly thee fields aa teemplaatee defiines aaree pree-filled; eeverythiing elsee staays emptee. All oof iit remaains eeditaable. Maanaage teemplaatees iin Settiings. ===]",
+      "cancel": "[=== Caanceel ===]",
+      "create": "[=== Creeaatee taask ===]",
+      "save": "[=== Saavee chaangees ===]",
+      "loading": "[=== Looaadiing… ===]",
+      "load_error": "[=== Coouuld noot looaad thiis taask. ===]",
+      "title": "[=== Tiitlee ===]",
+      "description": "[=== Deescriiptiioon ===]",
+      "optional": "[=== (ooptiioonaal) ===]",
+      "category": "[=== Caateegoory ===]",
+      "category_none": "[=== Noo caateegoory ===]",
+      "category_hint": "[=== Caateegoory seets thee deefaauult pooiints aand ruulees. ===]",
+      "priority": "[=== Priiooriity ===]",
+      "part_of_day": "[=== Paart oof daay ===]",
+      "assign": "[=== AAssiign too ===]",
+      "assign_hint": "[=== EEveery seeleecteed peersoon geets theeiir oown coopy too doo. ===]",
+      "bonus_link": "[=== Creeaatee aa boonuus taask ===]",
+      "bonus_later": "[=== boonuus taasks aaree noot aavaaiilaablee yeet ===]",
+      "when": "[=== Wheen ===]",
+      "date": "[=== Daatee ===]",
+      "due_time": "[=== Duuee tiimee ===]",
+      "repeat": "[=== Reepeeaat ===]",
+      "repeat_hint": "[=== OOnee ooccuurreencee iis creeaateed foor eeaach daatee iin thee ruulee. ===]",
+      "repeat_edit_note": "[=== Reepeeaats caan oonly bee seet wheen thee taask iis creeaateed. ===]",
+      "repeat_locked": "[=== Thiis taask iis paart oof aa reepeeaatiing seeriiees. EEdiitiing aa seeriiees iisn't aavaaiilaablee yeet, soo saaviing iis tuurneed ooff. ===]",
+      "past_due": "[=== IIf iit iisn't doonee oon tiimee ===]",
+      "past_due_badge": "[=== Paast duuee ruulees ===]",
+      "past_due_intro": "[=== AAfteer thee duuee tiimee thee taask beecoomees paast duuee. Thee chiild seeees hoow loong iis leeft aand whaat haappeens iif theey miiss iit. ===]",
+      "expiry": "[=== Caan stiill bee doonee foor ===]",
+      "expiry_hint": "[=== Theen iit eexpiirees: miisseed. ===]",
+      "late_points": "[=== Laatee pooiints ===]",
+      "percent_of_points": "[=== % oof pooiints ===]",
+      "late_points_hint": "[=== Doonee aafteer thee duuee tiimee. ===]",
+      "penalty": "[=== Peenaalty wheen iit eexpiirees ===]",
+      "penalty_hint": "[=== Leeaavee eempty foor noo peenaalty. ===]",
+      "units": {
+        "days": "[=== daays ===]",
+        "hours": "[=== hoouurs ===]"
+      },
+      "penalty_units": {
+        "percent": "[=== % oof pooiints ===]",
+        "points": "[=== pooiints ===]"
+      },
+      "checklist": "[=== Cheeckliist ===]",
+      "checklist_placeholder": "[=== AAdd aa cheeckliist iiteem ===]",
+      "checklist_add": "[=== AAdd iiteem ===]",
+      "checklist_remove": "[=== Reemoovee iiteem ===]",
+      "checklist_locked": "[=== IIteems caan't chaangee aafteer soomeeoonee haas staarteed thiis taask. ===]",
+      "checklist_repeat_note": "[=== Cheeckliist iiteems caan't bee aaddeed too aa reepeeaatiing taask yeet. ===]",
+      "checklist_partial": "[=== Thee taask waas saaveed, buut soomee cheeckliist iiteems coouuld noot bee aaddeed. AAdd theem aagaaiin beeloow. ===]",
+      "points_rules": "[=== Pooiints aand ruulees ===]",
+      "points": "[=== Pooiints ===]",
+      "points_minus": "[=== Deecreeaasee pooiints ===]",
+      "points_plus": "[=== IIncreeaasee pooiints ===]",
+      "approval": "[=== Paareent aapproovees ===]",
+      "approval_hint": "[=== Pooiints aaree aawaardeed aafteer aapproovaal. ===]",
+      "template_title": "[=== Saavee aas teemplaatee ===]",
+      "template_name": "[=== Teemplaatee naamee ===]",
+      "template_save": "[=== Saavee teemplaatee ===]",
+      "template_saved": "[=== Teemplaatee saaveed. ===]",
+      "preview": "[=== Preeviieew ===]",
+      "preview_for": "[=== Preeviieew foor {{name}} ===]",
+      "preview_title": "[=== UUntiitleed taask ===]",
+      "steps": "[=== {{count}} steeps ===]",
+      "error": {
+        "invalid": "[=== Cheeck thee hiighliighteed fiieelds. ===]",
+        "title_required": "[=== EEnteer aa tiitlee. ===]",
+        "assignee_required": "[=== Choooosee aat leeaast oonee peersoon. ===]",
+        "points_required": "[=== Eenteer pooiints foor thiis taask. ===]",
+        "points_range": "[=== Use 0 to 1000 pooiints. ===]",
+        "checklist_repeat": "[=== Cheeckliist iiteems caan't bee saaveed wiith aa reepeeaatiing taask yeet. Reemoovee theem oor tuurn ooff Reepeeaat. ===]"
+      }
+    }
+  }
+}

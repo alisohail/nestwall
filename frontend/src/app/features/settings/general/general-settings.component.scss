@@ -1,0 +1,51 @@
+@use '../settings-ui' as ui;
+
+@include ui.base;
+
+:host {
+  display: grid;
+  gap: var(--nw-space-3);
+}
+
+.emoji {
+  font-size: 1.875rem;
+  line-height: 1;
+}
+
+.head {
+  align-items: flex-start;
+}
+
+.head h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.head .hint {
+  margin: var(--nw-space-1) 0 0;
+}
+
+.grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid .field:first-child {
+  grid-column: 1 / -1;
+}
+
+.detect {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-3);
+}
+
+.detect .hint {
+  margin: 0;
+  flex: 1 1 14rem;
+}
+
+.detect .btn {
+  flex: 0 0 auto;
+}

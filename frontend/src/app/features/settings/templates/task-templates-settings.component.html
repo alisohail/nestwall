@@ -1,0 +1,261 @@
+<div class="tpl-page" [class.editing]="editing()">
+<nav class="type-seg" [attr.aria-label]="'settings.kind.label' | transloco">
+  <a routerLink="/settings/admin/templates" routerLinkActive="on" data-testid="kind-regular">{{ 'settings.kind.regular' | transloco }}</a>
+  <a routerLink="/settings/admin/bonus-templates" routerLinkActive="on" data-testid="kind-bonus">{{ 'settings.kind.bonus' | transloco }}</a>
+</nav>
+
+<section class="card defaults">
+  <div class="section-head">
+    <h2>{{ 'settings.templates.defaults_title' | transloco }}</h2>
+  </div>
+  <p class="hint">{{ 'settings.templates.defaults_hint' | transloco }}</p>
+
+  @if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="settings.common.loading" />
+  } @else if (loadState() === 'error') {
+    <app-load-error [error]="loadApiError()" (retry)="load()" />
+  } @else {
+    <div class="grid mt-s">
+      <div class="field">
+        <label class="field-label" for="def-points">{{ 'settings.common.points' | transloco }}</label>
+        <input
+          id="def-points"
+          class="input num"
+          type="number"
+          min="0"
+          step="1"
+          [(ngModel)]="defaultsPoints"
+          [placeholder]="'settings.common.no_default' | transloco"
+        />
+      </div>
+      <div class="field">
+        <label class="field-label" for="def-missed">{{ 'settings.templates.missed_after' | transloco }}</label>
+        <div class="row">
+          <input
+            id="def-missed"
+            class="input num"
+            type="number"
+            min="1"
+            max="999"
+            step="1"
+            [(ngModel)]="defaultsMissedValue"
+            [placeholder]="'settings.templates.missed_never' | transloco"
+          />
+          <select
+            class="select unit"
+            [attr.aria-label]="'settings.templates.missed_unit' | transloco"
+            [(ngModel)]="defaultsMissedUnit"
+          >
+            @for (u of missedUnits; track u) {
+              <option [ngValue]="u">{{ 'settings.unit.' + u | transloco }}</option>
+            }
+          </select>
+        </div>
+        <span class="hint">{{ 'settings.templates.missed_hint' | transloco }}</span>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="grow">
+        <span class="t" id="def-approval-label">{{ 'settings.templates.approval' | transloco }}</span>
+        <span class="d">{{ 'settings.templates.approval_hint' | transloco }}</span>
+      </div>
+      <div class="seg" role="group" aria-labelledby="def-approval-label">
+        <button type="button" [class.on]="defaultsApproval === 'unset'" [attr.aria-pressed]="defaultsApproval === 'unset'" (click)="defaultsApproval = 'unset'">{{ 'settings.templates.approval_unset' | transloco }}</button>
+        <button type="button" [class.on]="defaultsApproval === 'required'" [attr.aria-pressed]="defaultsApproval === 'required'" (click)="defaultsApproval = 'required'">{{ 'settings.common.approval_required' | transloco }}</button>
+        <button type="button" [class.on]="defaultsApproval === 'not_required'" [attr.aria-pressed]="defaultsApproval === 'not_required'" (click)="defaultsApproval = 'not_required'">{{ 'settings.common.approval_not_required' | transloco }}</button>
+      </div>
+    </div>
+
+    <div class="foot">
+      @if (defaultsSaved()) {
+        <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+      }
+      @if (defaultsError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      <button type="button" class="btn primary" [disabled]="defaultsBusy() || !defaultsDirty()" (click)="saveDefaults()">{{ 'settings.templates.save_defaults' | transloco }}</button>
+    </div>
+  }
+</section>
+
+@if (loadState() === 'ready') {
+  <div class="split mt" [class.show-editor]="editing()">
+    <section class="card list-col">
+      <div class="section-head">
+        <h2>{{ 'settings.templates.list_title' | transloco }}</h2>
+        <button
+          type="button"
+          class="new-tpl right"
+          [attr.aria-label]="'settings.templates.new' | transloco"
+          [title]="'settings.templates.new' | transloco"
+          (click)="newTemplate()"
+        >
+          <span class="material-icons" aria-hidden="true">add</span>
+        </button>
+      </div>
+
+      @if (templates().length === 0) {
+        <p class="nw-empty-note">{{ 'settings.templates.empty' | transloco }}</p>
+      }
+
+      @for (t of templates(); track t.id) {
+        <button type="button" class="item" [class.sel]="current()?.id === t.id" (click)="edit(t)">
+          <span class="swatch" [style.--c]="categoryFor(t.category_id)?.colour ?? null"></span>
+          <span class="item-body">
+            <span class="name">{{ t.name }}</span>
+            <span class="meta">
+              <span>{{ categoryLabel(t.category_id) }}</span>
+              <span>
+                @if (t.points !== null) {
+                  {{ 'settings.common.points_badge' | transloco: { points: t.points } }}
+                } @else {
+                  {{ 'settings.templates.no_points' | transloco }}
+                }
+              </span>
+            </span>
+          </span>
+        </button>
+      }
+
+      @if (listError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      @if (nextCursor()) {
+        <div class="row">
+          <button type="button" class="btn ghost sm" [disabled]="loadingMore()" (click)="loadMore()">{{ 'settings.common.load_more' | transloco }}</button>
+        </div>
+      }
+    </section>
+
+    <section class="card editor-col col" #editorCol>
+      @if (editing()) {
+        <div class="section-head">
+          <button type="button" class="icon-btn back" (click)="closeEditor()" [attr.aria-label]="'settings.common.back' | transloco">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+          </button>
+          @if (current(); as stored) {
+            <h2>{{ stored.name }}</h2>
+          } @else {
+            <h2>{{ 'settings.templates.new_title' | transloco }}</h2>
+          }
+          <span class="count right">{{ 'settings.templates.prefill' | transloco: { count: prefilledCount(), total: prefillTotal } }}</span>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="tpl-name">{{ 'settings.templates.name' | transloco }}</label>
+            <input id="tpl-name" class="input" maxlength="80" [(ngModel)]="form.name" />
+            @if (submitted() && form.name.trim() === '') {
+              <span class="hint err">{{ 'settings.error.required' | transloco }}</span>
+            }
+          </div>
+          <div class="field">
+            <label class="field-label" for="tpl-category">{{ 'settings.templates.category' | transloco }}</label>
+            <select id="tpl-category" class="select" [(ngModel)]="form.category_id">
+              <option [ngValue]="null">{{ 'settings.templates.no_category' | transloco }}</option>
+              @for (c of categories(); track c.id) {
+                <option [ngValue]="c.id">{{ c.emoji }} {{ c.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="tpl-title">{{ 'settings.templates.title_field' | transloco }}</label>
+            <input id="tpl-title" class="input" maxlength="200" [(ngModel)]="form.title" [placeholder]="'settings.common.no_default' | transloco" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="tpl-description">{{ 'settings.templates.description' | transloco }}</label>
+            <textarea id="tpl-description" class="textarea" rows="2" maxlength="2000" [(ngModel)]="form.description" [placeholder]="'settings.common.no_default' | transloco"></textarea>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="tpl-points">{{ 'settings.common.points' | transloco }}</label>
+            <input id="tpl-points" class="input num" type="number" min="0" step="1" [(ngModel)]="form.points" [placeholder]="'settings.common.no_default' | transloco" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="tpl-due">{{ 'settings.templates.due_time' | transloco }}</label>
+            <input id="tpl-due" class="input" type="time" [(ngModel)]="form.due_time" />
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="tpl-penalty">{{ 'settings.templates.penalty' | transloco }}</label>
+            <div class="row">
+              <input id="tpl-penalty" class="input num" type="number" min="0" step="1" [(ngModel)]="form.penalty_value" [placeholder]="'settings.common.no_default' | transloco" />
+              <select class="select unit" [attr.aria-label]="'settings.templates.penalty_unit' | transloco" [(ngModel)]="form.penalty_unit">
+                @for (u of penaltyUnits; track u) {
+                  <option [ngValue]="u">{{ 'settings.unit.' + u | transloco }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="tpl-reminder">{{ 'settings.templates.reminder' | transloco }}</label>
+            <select id="tpl-reminder" class="select" [(ngModel)]="form.reminder_minutes_before">
+              <option [ngValue]="null">{{ 'settings.templates.reminder_none' | transloco }}</option>
+              @for (m of reminderOptions; track m) {
+                <option [ngValue]="m">{{ 'settings.templates.reminder_minutes' | transloco: { minutes: m } }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="field-label" for="tpl-expires">{{ 'settings.templates.expires_after' | transloco }}</label>
+            <div class="row">
+              <input id="tpl-expires" class="input num" type="number" min="0" step="any" [(ngModel)]="form.expiry_value" [placeholder]="'settings.common.no_default' | transloco" />
+              <select class="select unit" [attr.aria-label]="'settings.templates.expires_unit' | transloco" [(ngModel)]="form.expiry_unit">
+                @for (u of expiryUnits; track u) {
+                  <option [ngValue]="u">{{ 'settings.unit.' + u | transloco }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="tpl-late">{{ 'settings.templates.late_points' | transloco }}</label>
+            <input id="tpl-late" class="input num" type="number" min="0" max="100" step="1" [(ngModel)]="form.late_points_percent" [placeholder]="'settings.common.no_default' | transloco" />
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">{{ 'settings.templates.assignees' | transloco }}</span>
+          <div class="chips">
+            @for (m of members(); track m.id) {
+              <button type="button" class="chip" [class.on]="form.default_assignee_ids.includes(m.id)" [attr.aria-pressed]="form.default_assignee_ids.includes(m.id)" (click)="toggleAssignee(m.id)">
+                <app-avatar size="sm" [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />
+                {{ m.display_name }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <app-banner tone="info">{{ 'settings.templates.prefill_banner' | transloco }}</app-banner>
+
+        @if (editorError(); as key) {
+          <app-banner tone="error">{{ key | transloco }}</app-banner>
+        }
+        @if (saved()) {
+          <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+        }
+
+        <div class="foot">
+          @if (current(); as stored) {
+            <button type="button" class="btn danger danger-zone" [disabled]="deleting()" (click)="remove()">{{ 'settings.common.delete' | transloco }}</button>
+          }
+          <button type="button" class="btn ghost" (click)="closeEditor()">{{ 'settings.common.cancel' | transloco }}</button>
+          <button type="button" class="btn primary" [disabled]="saving() || !editorDirty()" (click)="save()">{{ 'settings.templates.save' | transloco }}</button>
+        </div>
+      } @else {
+        <p class="muted">{{ 'settings.templates.pick' | transloco }}</p>
+      }
+    </section>
+  </div>
+}
+</div>

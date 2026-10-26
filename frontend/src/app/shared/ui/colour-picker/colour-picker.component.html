@@ -1,0 +1,36 @@
+<div class="swatches" role="group" [attr.aria-label]="label()">
+  @for (col of palette(); track col) {
+    <button
+      type="button"
+      class="swatch"
+      [style.--c]="col"
+      [attr.aria-pressed]="paletteMatch() === col"
+      [attr.aria-label]="col"
+      [disabled]="disabled()"
+      (click)="choose(col)"
+    ></button>
+  }
+  <label
+    class="swatch custom"
+    [class.on]="customColour() !== null"
+    [class.disabled]="disabled()"
+    [style.--c]="customColour() ?? ''"
+    [style.--rainbow]="rainbow()"
+    [title]="'common.colour_custom' | transloco"
+  >
+    <input
+      type="color"
+      [value]="value() || '#000000'"
+      [disabled]="disabled()"
+      [attr.aria-label]="'common.colour_custom' | transloco"
+      (input)="pickCustom($any($event.target).value)"
+    />
+  </label>
+</div>
+@if (checkContrast()) {
+  @if (lowContrast()) {
+    <p class="hint contrast-warning" role="status">{{ 'common.colour_low_contrast' | transloco }}</p>
+  } @else {
+    <p class="hint">{{ 'common.colour_contrast_hint' | transloco }}</p>
+  }
+}

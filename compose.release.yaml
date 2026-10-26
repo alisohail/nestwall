@@ -1,0 +1,42 @@
+name: nestwall
+
+# Runs NestWall from the published images (no source code or build tools needed).
+# Put this file and a .env file in the same folder, then run: docker compose -f compose.release.yaml up -d
+# The step-by-step guide is in docs/install-guide.md.
+
+services:
+  api:
+    image: ghcr.io/alisohail/nestwall-api:${NESTWALL_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      - APP_URL=${APP_URL:-http://localhost:5842}
+      - DB_PATH=/app/database/nestwall.db
+      - DB_KEY=${DB_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - BACKUP_DIR=/app/database/backups
+      - TZ=${TZ:-America/Toronto}
+    volumes:
+      # The database folder is created next to this file on first start.
+      - ./database:/app/database
+    networks:
+      - nestwall-net
+    healthcheck:
+      test: ["CMD", "/app/api", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  web:
+    image: ghcr.io/alisohail/nestwall-web:${NESTWALL_VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-5842}:80"
+    networks:
+      - nestwall-net
+
+networks:
+  nestwall-net:
+    driver: bridge

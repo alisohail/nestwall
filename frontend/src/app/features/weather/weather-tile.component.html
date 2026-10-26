@@ -1,0 +1,136 @@
+<section
+  class="card wx-card"
+  [class.compact]="variant() === 'compact'"
+  [attr.aria-label]="'weather.title' | transloco"
+  [attr.data-state]="state()"
+  [attr.data-part]="dayPart()"
+  data-testid="weather-tile"
+>
+  <div
+    class="wx-scene"
+    aria-hidden="true"
+    [attr.data-scene]="scene()"
+    [attr.data-motion]="animation()"
+    [attr.data-part]="dayPart()"
+    data-testid="weather-scene"
+  >
+    <span class="wx-sun"></span>
+    <span class="wx-rays"></span>
+    <span class="wx-cloud wx-cloud-a"></span>
+    <span class="wx-cloud wx-cloud-b"></span>
+    <span class="wx-band"></span>
+    <span class="wx-band wx-band-b"></span>
+    <span class="wx-flash"></span>
+    @for (p of particles(); track p) {
+      <span class="wx-particle" [style]="particleStyle(p)"></span>
+    }
+  </div>
+  @switch (state()) {
+    @case ('loading') {
+      <div role="status">
+        <span class="nw-sr-only">{{ 'weather.loading' | transloco }}</span>
+        <app-skeleton [rows]="2" />
+      </div>
+    }
+    @case ('unconfigured') {
+      <div class="wx-empty">
+        <p class="bold">{{ 'weather.unconfigured_title' | transloco }}</p>
+        @if (canConfigure()) {
+          <p class="hint">{{ 'weather.unconfigured_parent' | transloco }}</p>
+          <div class="row">
+            <a class="btn soft sm" routerLink="/settings/admin/general" data-testid="weather-setup-link">
+              {{ 'weather.set_up' | transloco }}
+            </a>
+          </div>
+        } @else {
+          <p class="hint">{{ 'weather.unconfigured_kid' | transloco }}</p>
+        }
+      </div>
+    }
+    @case ('error') {
+      <div class="wx-empty">
+        <p class="hint">{{ 'weather.error' | transloco }}</p>
+        <div class="row">
+          <button type="button" class="btn soft sm" (click)="load()">{{ 'settings.common.retry' | transloco }}</button>
+        </div>
+      </div>
+    }
+    @case ('ready') {
+      @if (forecast(); as f) {
+        @if (location(); as place) {
+          <p class="wx-place" data-testid="weather-location">{{ place }}</p>
+        }
+        @if (variant() === 'full') {
+          <div class="wx-d">
+            <app-weather-icon [condition]="f.current.condition" [size]="64" />
+            <div>
+              <div class="lab">{{ 'weather.today' | transloco }}</div>
+              <div class="deg" data-testid="weather-current">{{ round(f.current.temperature) }}°{{ unitLetter() }}</div>
+              <div class="meta">
+                {{ 'weather.feels_like' | transloco: { temp: round(f.current.feels_like) } }} ·
+                {{ 'weather.condition.' + f.current.condition | transloco }}
+              </div>
+              <div class="meta">
+                {{ 'weather.high_low' | transloco: { high: round(f.today.high), low: round(f.today.low) } }}
+                @if (f.today.precip_chance !== null) {
+                  · {{ 'weather.precip' | transloco: { percent: f.today.precip_chance } }}
+                }
+              </div>
+            </div>
+          </div>
+          <div class="wx-d tom">
+            <app-weather-icon [condition]="f.tomorrow.condition" [size]="46" />
+            <div>
+              <div class="lab">{{ 'weather.tomorrow' | transloco }}</div>
+              <div class="deg s">{{ round(f.tomorrow.high) }}°{{ unitLetter() }}</div>
+              <div class="meta">
+                {{ 'weather.condition.' + f.tomorrow.condition | transloco }} ·
+                {{ 'weather.high_low' | transloco: { high: round(f.tomorrow.high), low: round(f.tomorrow.low) } }}
+                @if (f.tomorrow.precip_chance !== null) {
+                  · {{ 'weather.precip' | transloco: { percent: f.tomorrow.precip_chance } }}
+                }
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="wx-pair">
+            <div class="wx-d">
+              <app-weather-icon [condition]="f.current.condition" [size]="48" />
+              <div>
+                <div class="lab">{{ 'weather.today' | transloco }}</div>
+                <div class="deg" data-testid="weather-current">{{ round(f.current.temperature) }}°{{ unitLetter() }}</div>
+                <div class="meta">
+                  {{ 'weather.condition.' + f.current.condition | transloco }} ·
+                  {{ 'weather.feels_like' | transloco: { temp: round(f.current.feels_like) } }}
+                </div>
+                <div class="meta">
+                  {{ 'weather.high_low' | transloco: { high: round(f.today.high), low: round(f.today.low) } }}
+                  @if (f.today.precip_chance !== null) {
+                    · {{ 'weather.precip' | transloco: { percent: f.today.precip_chance } }}
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="wx-d tom">
+              <app-weather-icon [condition]="f.tomorrow.condition" [size]="40" />
+              <div>
+                <div class="lab">{{ 'weather.tomorrow' | transloco }}</div>
+                <div class="deg s" data-testid="weather-tomorrow">{{ round(f.tomorrow.high) }}°{{ unitLetter() }}</div>
+                <div class="meta">
+                  {{ 'weather.condition.' + f.tomorrow.condition | transloco }} ·
+                  {{ 'weather.high_low' | transloco: { high: round(f.tomorrow.high), low: round(f.tomorrow.low) } }}
+                  @if (f.tomorrow.precip_chance !== null) {
+                    · {{ 'weather.precip' | transloco: { percent: f.tomorrow.precip_chance } }}
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        @if (f.stale) {
+          <p class="meta wx-stale">{{ 'weather.stale' | transloco }}</p>
+        }
+      }
+    }
+  }
+</section>

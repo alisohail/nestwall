@@ -1,0 +1,254 @@
+@use '../../settings-ui' as ui;
+
+@include ui.base;
+
+.small {
+  font-size: 0.8125rem;
+}
+
+.tiny {
+  font-size: 0.75rem;
+}
+
+.end {
+  justify-content: flex-end;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.path {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--nw-color-outline);
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.grid.g3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 700px) {
+  .grid.g3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stat .l {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--nw-color-on-surface-variant);
+}
+
+  .stat .v {
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  color: var(--nw-color-on-surface);
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-4);
+  padding: var(--nw-space-4) 0;
+  border-bottom: 1px solid var(--nw-color-outline);
+}
+
+.setting:last-child {
+  border-bottom: 0;
+}
+
+.setting .t {
+  font-weight: 700;
+  color: var(--nw-color-on-surface);
+}
+
+.setting .d {
+  font-size: 0.8125rem;
+  color: var(--nw-color-on-surface-variant);
+}
+
+@media (max-width: 700px) {
+  .setting {
+    flex-wrap: wrap;
+  }
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 2.75rem;
+  height: 1.5rem;
+  margin-left: auto;
+}
+
+.switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  border: 1px solid var(--nw-color-outline);
+  transition: background 0.15s ease;
+}
+
+.track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-on-surface-variant);
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + .track {
+  background: var(--nw-color-primary);
+  border-color: var(--nw-color-primary);
+}
+
+.switch input:checked + .track::after {
+  transform: translateX(1.25rem);
+  background: var(--nw-color-on-primary);
+}
+
+.switch input:focus-visible + .track {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--nw-color-on-surface-variant);
+  padding: var(--nw-space-3);
+  border-bottom: 1px solid var(--nw-color-outline);
+}
+
+.table td {
+  padding: var(--nw-space-3);
+  border-bottom: 1px solid var(--nw-color-outline);
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nw-space-2);
+}
+
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Restore dialog, same shape as the points and remove-person confirms. */
+.modal.confirm {
+  width: min(420px, 100%);
+  gap: var(--nw-space-4);
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-lg);
+    font-weight: 800;
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nw-space-2);
+}
+
+/* Covers the page while a restore runs, so nothing can be changed mid-swap. */
+.restore-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nw-space-3);
+  background: rgba(15, 23, 42, 0.8);
+  color: #fff;
+}
+
+.restore-spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  animation: restore-spin 0.9s linear infinite;
+}
+
+.restore-text {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Factory reset sits apart from the rest of the page, as the mock's red-bordered card. */
+.danger-card {
+  border-color: var(--nw-color-error);
+}
+
+.danger-title {
+  margin: 0;
+  color: var(--nw-color-error);
+  font-size: var(--nw-text-lg);
+  font-weight: 800;
+}
+
+@keyframes restore-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .restore-spinner {
+    animation-duration: 3s;
+  }
+}

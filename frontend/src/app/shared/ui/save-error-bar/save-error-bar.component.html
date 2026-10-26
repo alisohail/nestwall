@@ -1,0 +1,10 @@
+@if (busy.saveFailure(); as failure) {
+  <div class="save-error-bar" aria-live="assertive" data-testid="save-error-bar">
+    <span class="save-error-bar__text">
+      {{ failure.key ? (failure.key | transloco) : failure.message }}
+    </span>
+    <button type="button" class="save-error-bar__close" (click)="busy.dismissFailure()" [attr.aria-label]="'common.close' | transloco">
+      ×
+    </button>
+  </div>
+}

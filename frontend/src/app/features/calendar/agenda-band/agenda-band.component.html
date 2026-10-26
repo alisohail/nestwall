@@ -1,0 +1,250 @@
+<section class="card agenda-band" [attr.aria-label]="'calendar.band.label' | transloco">
+  @if (failed()) {
+    <p class="muted ab-state" data-testid="band-error">{{ 'calendar.band.error' | transloco }}</p>
+  } @else {
+    <div class="ab-col" data-testid="band-today">
+      <div class="card-head">
+        <h2>{{ 'calendar.band.today' | transloco: { day: formatDay(today()) } }}</h2>
+        @if (!loading()) {
+          <span class="badge teal">
+            {{ (todayAll().length === 1 ? 'calendar.band.count_one' : 'calendar.band.count_other') | transloco: { count: todayAll().length } }}
+          </span>
+        }
+        <ng-container *ngTemplateOutlet="filterButtons; context: { $implicit: 'today' }"></ng-container>
+      </div>
+      <ng-container *ngTemplateOutlet="filterOptions; context: { $implicit: 'today' }"></ng-container>
+      @if (loading()) {
+        <div role="status" class="ab-state">
+          <span class="nw-sr-only">{{ 'calendar.band.loading' | transloco }}</span>
+          <app-skeleton [rows]="3" />
+        </div>
+      } @else if (todayRows().length === 0) {
+        @if (filterActive('today')) {
+          <p class="muted ab-state">{{ 'calendar.band.filtered_empty' | transloco }}</p>
+        } @else {
+          <p class="muted ab-state">{{ 'calendar.band.today_empty' | transloco }}</p>
+        }
+      } @else {
+        <div class="ab-list">
+          @for (row of todayRows(); track row.item.key) {
+            <button
+              type="button"
+              class="ab-ev"
+              [class.next]="row.next"
+              [class.past]="row.past"
+              [style.--c]="row.colour"
+              (click)="open(row)"
+            >
+              <span class="bar"></span>
+              <span class="tm">{{ row.item.all_day ? ('calendar.band.all_day' | transloco) : row.time }}</span>
+              <div class="grow">
+                <div class="tt">{{ row.item.title }}</div>
+                <div class="who">
+                  <ng-container *ngTemplateOutlet="faces; context: { $implicit: row }"></ng-container>
+                </div>
+              </div>
+              @if (row.countdown; as c) {
+                <span class="in">{{ c.key | transloco: c.params }}</span>
+              }
+            </button>
+          }
+        </div>
+      }
+      @if (!loading() && todayHidden() > 0) {
+        <div class="ab-more-row">
+          <button type="button" class="ab-more" data-testid="band-today-more" (click)="showMore('today')">
+            {{ 'calendar.band.more' | transloco: { count: todayHidden() } }}
+            <span class="material-icons" aria-hidden="true">chevron_right</span>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="ab-col soon" data-testid="band-coming">
+      <div class="card-head">
+        <h2>{{ 'calendar.band.coming_up' | transloco }}</h2>
+        <ng-container *ngTemplateOutlet="filterButtons; context: { $implicit: 'coming' }"></ng-container>
+      </div>
+      <ng-container *ngTemplateOutlet="filterOptions; context: { $implicit: 'coming' }"></ng-container>
+      @if (loading()) {
+        <div role="status" class="ab-state">
+          <span class="nw-sr-only">{{ 'calendar.band.loading' | transloco }}</span>
+          <app-skeleton [rows]="3" />
+        </div>
+      } @else if (comingRows().length === 0) {
+        <p class="muted ab-state">{{ (filterActive('coming') ? 'calendar.band.filtered_empty' : 'calendar.band.coming_empty') | transloco }}</p>
+      } @else {
+        <div class="ab-list">
+          @for (row of comingRows(); track row.item.key) {
+            <button type="button" class="ab-ev" [style.--c]="row.colour" (click)="open(row)">
+              <span class="bar"></span>
+              <span class="tm">{{ shortDay(row.item.occurrence_date) }}</span>
+              <div class="grow">
+                <div class="tt">{{ row.item.title }}</div>
+                <div class="who">
+                  <span>{{ row.item.all_day ? ('calendar.band.all_day' | transloco) : row.time }}</span>
+                  <span aria-hidden="true">&middot;</span>
+                  <ng-container *ngTemplateOutlet="faces; context: { $implicit: row }"></ng-container>
+                </div>
+              </div>
+            </button>
+          }
+        </div>
+      }
+      @if (!loading() && comingHidden() > 0) {
+        <div class="ab-more-row">
+          <button type="button" class="ab-more" data-testid="band-coming-more" (click)="showMore('coming')">
+            {{ 'calendar.band.more' | transloco: { count: comingHidden() } }}
+            <span class="material-icons" aria-hidden="true">chevron_right</span>
+          </button>
+        </div>
+      }
+    </div>
+  }
+</section>
+
+@if (more(); as list) {
+  <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget && closeMore()">
+    <div class="modal band-more" role="dialog" aria-modal="true" aria-labelledby="band-more-title" data-testid="band-more">
+      <header class="band-more-head">
+        <h2 id="band-more-title">
+          @if (list === 'today') {
+            {{ 'calendar.band.today' | transloco: { day: formatDay(today()) } }}
+          } @else {
+            {{ 'calendar.band.coming_up' | transloco }}
+          }
+        </h2>
+        <button type="button" class="icon-btn" data-testid="band-more-close" [attr.aria-label]="'calendar.detail.close' | transloco" [title]="'calendar.detail.close' | transloco" (click)="closeMore()">
+          <app-icon name="close" [size]="18" />
+        </button>
+      </header>
+      <div class="ab-list" data-testid="band-more-list">
+        @for (row of moreRows(); track row.item.key) {
+          <button type="button" class="ab-ev" [class.past]="row.past" [class.next]="row.next" [style.--c]="row.colour" (click)="open(row)">
+            <span class="bar"></span>
+            @if (list === 'coming') {
+              <span class="tm">{{ shortDay(row.item.occurrence_date) }}</span>
+            } @else {
+              <span class="tm">{{ row.item.all_day ? ('calendar.band.all_day' | transloco) : row.time }}</span>
+            }
+            <div class="grow">
+              <div class="tt">{{ row.item.title }}</div>
+              <div class="who">
+                @if (list === 'coming') {
+                  <span>{{ row.item.all_day ? ('calendar.band.all_day' | transloco) : row.time }}</span>
+                  <span aria-hidden="true">&middot;</span>
+                }
+                <ng-container *ngTemplateOutlet="faces; context: { $implicit: row }"></ng-container>
+              </div>
+            </div>
+            @if (row.countdown; as c) {
+              <span class="in">{{ c.key | transloco: c.params }}</span>
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+@if (selected(); as sel) {
+  <app-event-detail [pill]="sel.pill" [people]="sel.people" [viewOnly]="true" (closed)="selected.set(null)" />
+}
+
+<ng-template #filterButtons let-list>
+  <div class="ab-filter-bar">
+    <button
+      type="button"
+      class="ab-filter-btn"
+      [class.is-active]="filterOf(list).person().length > 0"
+      [attr.data-testid]="'band-' + list + '-person'"
+      [attr.aria-label]="'calendar.band.filter.person' | transloco"
+      [attr.title]="'calendar.band.filter.person' | transloco"
+      [attr.aria-expanded]="isFilterOpen(list, 'person')"
+      (click)="toggleFilter(list, 'person')"
+    >
+      <app-icon name="user" [size]="18" />
+      @if (filterOf(list).person().length > 0) {
+        <span class="ab-filter-dot" aria-hidden="true"></span>
+      }
+    </button>
+    <button
+      type="button"
+      class="ab-filter-btn"
+      [class.is-active]="filterOf(list).calendar().length > 0"
+      [attr.data-testid]="'band-' + list + '-calendar'"
+      [attr.aria-label]="'calendar.band.filter.calendar' | transloco"
+      [attr.title]="'calendar.band.filter.calendar' | transloco"
+      [attr.aria-expanded]="isFilterOpen(list, 'calendar')"
+      (click)="toggleFilter(list, 'calendar')"
+    >
+      <app-icon name="calendar" [size]="18" />
+      @if (filterOf(list).calendar().length > 0) {
+        <span class="ab-filter-dot" aria-hidden="true"></span>
+      }
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #filterOptions let-list>
+  @if (openFilter(); as open) {
+    @if (open.list === list && open.field === 'person') {
+      <div class="ab-filter-options" role="group" [attr.aria-label]="'calendar.band.filter.person' | transloco">
+        <button
+          type="button"
+          class="ab-chip"
+          [attr.aria-pressed]="isPicked(list, 'person', '')"
+          [attr.data-testid]="'band-' + list + '-person-option-all'"
+          (click)="pickOption(list, 'person', '')"
+        >{{ 'calendar.band.filter.person_all' | transloco }}</button>
+        @for (m of personOptions(); track m.id) {
+          <button
+            type="button"
+            class="ab-chip"
+            [attr.aria-pressed]="isPicked(list, 'person', m.id)"
+            [attr.data-testid]="'band-' + list + '-person-option-' + m.id"
+            (click)="pickOption(list, 'person', m.id)"
+          ><app-avatar size="chip" [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />{{ m.display_name }}</button>
+        }
+      </div>
+    }
+    @if (open.list === list && open.field === 'calendar') {
+      <div class="ab-filter-options" role="group" [attr.aria-label]="'calendar.band.filter.calendar' | transloco">
+        <button
+          type="button"
+          class="ab-chip"
+          [attr.aria-pressed]="isPicked(list, 'calendar', '')"
+          [attr.data-testid]="'band-' + list + '-calendar-option-all'"
+          (click)="pickOption(list, 'calendar', '')"
+        >{{ 'calendar.band.filter.calendar_all' | transloco }}</button>
+        @for (c of calendarOptions(); track c.id) {
+          <button
+            type="button"
+            class="ab-chip"
+            [attr.aria-pressed]="isPicked(list, 'calendar', c.id)"
+            [attr.data-testid]="'band-' + list + '-calendar-option-' + c.id"
+            (click)="pickOption(list, 'calendar', c.id)"
+          >{{ c.name }}</button>
+        }
+      </div>
+    }
+  }
+</ng-template>
+<ng-template #faces let-row>
+  <span
+    class="faces"
+    role="img"
+    [attr.aria-label]="row.people || ('calendar.band.everyone' | transloco)"
+    [attr.title]="row.people || ('calendar.band.everyone' | transloco)"
+  >
+    @if (row.members.length) {
+      @for (m of row.members; track m.id) {
+        <span class="face">
+          <app-avatar size="xs" [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />
+        </span>
+      }
+    } @else {
+      <span class="face everyone material-icons" aria-hidden="true">groups</span>
+    }
+  </span>
+</ng-template>

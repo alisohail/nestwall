@@ -1,0 +1,43 @@
+# Environment files - secrets never enter the repo (.env.example stays tracked)
+.env
+
+# Angular specific
+/dist/
+/out-tsc/
+/tmp/
+/coverage/
+/e2e/test-output/
+/.angular/
+.angular/
+
+
+# Node modules and dependency files
+*/node_modules/
+/yarn.lock
+
+# Angular CLI and build artefacts
+/.angular-cli.json
+/.ng/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Go / backend build artefacts
+backend/bin/
+*.test
+*.out
+
+# Local runtime data (spec 9.1: data lives outside the source tree)
+deploy/data/
+nestwall-data/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+/e2e/.cache/

@@ -1,0 +1,238 @@
+@if (!permsReady()) {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (!canView()) {
+  <app-banner tone="info">{{ 'settings.diagnostics.no_permission' | transloco }}</app-banner>
+} @else {
+  @if (loadState() === 'error') {
+    <app-load-error data-testid="diagnostics-load-error" [error]="loadError()" (retry)="load()" />
+  } @else {
+    @if (data(); as d) {
+    <div class="col">
+    <section class="card" data-testid="diagnostics-app">
+      <div class="card-head">
+        <h2>{{ 'settings.diagnostics.app.title' | transloco }}</h2>
+      </div>
+      <div class="stats mt-s">
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.app.version' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-version">{{ d.version }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.app.uptime' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-uptime">
+            {{ 'settings.diagnostics.app.uptime_value' | transloco: uptime(d.uptime_seconds) }}
+          </span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.app.database' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-database">
+            @if (d.database_bytes !== null) {
+              {{ size(d.database_bytes) }}
+            } @else {
+              {{ 'settings.diagnostics.unknown' | transloco }}
+            }
+          </span>
+        </div>
+        <div class="stat wide">
+          <span class="l">{{ 'settings.diagnostics.app.migrations' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-migrations">
+            {{ 'settings.diagnostics.app.migrations_value' | transloco: { applied: d.migrations.applied, latest: d.migrations.latest } }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-testid="diagnostics-backups">
+      <div class="card-head">
+        <h2>{{ 'settings.diagnostics.backups.title' | transloco }}</h2>
+        <span class="badge {{ badgeClass(backupTone(d)) }}" data-testid="diagnostics-backup-status">
+          {{ ('settings.diagnostics.status.' + backupTone(d)) | transloco }}
+        </span>
+      </div>
+      @if (backupStale(d)) {
+        <app-banner tone="warning" data-testid="diagnostics-backup-stale">
+          {{ 'settings.diagnostics.backups.stale' | transloco }}
+        </app-banner>
+      }
+      <div class="stats mt-s">
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.backups.last_run' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-last-backup">
+            @if (d.last_backup; as b) {
+              {{ b.kind }}, {{ b.status }}
+              @if (b.finished_at) {
+                · {{ b.finished_at | date: 'medium' }}
+              }
+            } @else {
+              {{ 'settings.diagnostics.never' | transloco }}
+            }
+          </span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.backups.last_success' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-last-success">
+            @if (d.last_successful_backup_at; as at) {
+              {{ at | date: 'medium' }}
+            } @else {
+              {{ 'settings.diagnostics.never' | transloco }}
+            }
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-testid="diagnostics-sync">
+      <div class="card-head">
+        <h2>{{ 'settings.diagnostics.sync.title' | transloco }}</h2>
+        <span class="badge {{ badgeClass(syncTone(d)) }}" data-testid="diagnostics-sync-status">
+          {{ ('settings.diagnostics.status.' + syncTone(d)) | transloco }}
+        </span>
+      </div>
+      <div class="stats mt-s">
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.sync.linked' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-linked">{{ d.sync.linked_calendars }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.sync.paused' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-paused">{{ d.sync.paused }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.sync.failing' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-failing">{{ d.sync.failing }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.sync.last_synced' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-last-synced">
+            @if (d.sync.last_synced_at; as at) {
+              {{ at | date: 'medium' }}
+            } @else {
+              {{ 'settings.diagnostics.never' | transloco }}
+            }
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-testid="diagnostics-email">
+      <div class="card-head">
+        <h2>{{ 'settings.diagnostics.email.title' | transloco }}</h2>
+        <span class="badge {{ badgeClass(emailTone(d)) }}" data-testid="diagnostics-email-status">
+          {{ ('settings.diagnostics.status.' + emailTone(d)) | transloco }}
+        </span>
+      </div>
+      <div class="stats mt-s">
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.email.pending' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-email-pending">{{ d.email.pending }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.email.failed' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-email-failed">{{ d.email.failed }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.email.sent' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-email-sent">{{ d.email.sent_last_24h }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-testid="diagnostics-wall">
+      <h2>{{ 'settings.diagnostics.wall.title' | transloco }}</h2>
+      <div class="stats mt-s">
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.wall.active' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-wall-active">{{ d.wall_devices.active }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.wall.last_seen' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-wall-last-seen">
+            @if (d.wall_devices.last_seen_at; as at) {
+              {{ at | date: 'medium' }}
+            } @else {
+              {{ 'settings.diagnostics.never' | transloco }}
+            }
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-testid="diagnostics-errors">
+      <div class="card-head">
+        <h2>{{ 'settings.diagnostics.errors.title' | transloco }}</h2>
+        <span class="badge {{ badgeClass(errorsTone(d)) }}" data-testid="diagnostics-errors-status">
+          {{ ('settings.diagnostics.status.' + errorsTone(d)) | transloco }}
+        </span>
+      </div>
+      <p class="hint">{{ 'settings.diagnostics.errors.note' | transloco }}</p>
+      <p class="hint" data-testid="diagnostics-errors-see-events">{{ 'settings.diagnostics.events.see_below' | transloco }}</p>
+      <div class="stats mt-s">
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.errors.count' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-errors-count">{{ d.server_errors.since_start_count }}</span>
+        </div>
+        <div class="stat">
+          <span class="l">{{ 'settings.diagnostics.errors.last' | transloco }}</span>
+          <span class="v" data-testid="diagnostics-errors-last">
+            @if (d.server_errors.last_at; as at) {
+              {{ at | date: 'medium' }}
+            } @else {
+              {{ 'settings.diagnostics.none' | transloco }}
+            }
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" data-testid="diagnostics-events">
+      <div class="card-head">
+        <h2>{{ 'settings.diagnostics.events.title' | transloco }}</h2>
+        <div class="row">
+          @if (confirmingClear()) {
+            <button type="button" class="btn ghost sm" data-testid="diagnostics-events-cancel" [disabled]="clearing()" (click)="cancelClear()">
+              {{ 'settings.common.cancel' | transloco }}
+            </button>
+            <button type="button" class="btn danger sm" data-testid="diagnostics-events-confirm" [disabled]="clearing()" (click)="clearEvents()">
+              {{ 'settings.diagnostics.events.clear_yes' | transloco }}
+            </button>
+          } @else {
+            <button type="button" class="btn ghost sm" data-testid="diagnostics-events-clear" [disabled]="events().length === 0" (click)="requestClear()">
+              {{ 'settings.diagnostics.events.clear' | transloco }}
+            </button>
+          }
+        </div>
+      </div>
+      <p class="hint">{{ 'settings.diagnostics.events.note' | transloco: { max: eventsMax() } }}</p>
+      @if (eventsError()) {
+        <app-banner tone="error" data-testid="diagnostics-events-error">{{ 'settings.diagnostics.events.error' | transloco }}</app-banner>
+      }
+      @if (events().length === 0) {
+        <p class="nw-empty-note" data-testid="diagnostics-events-empty">{{ 'settings.diagnostics.events.empty' | transloco }}</p>
+      } @else {
+        <ul class="events mt-s" data-testid="diagnostics-events-list">
+          @for (e of events(); track e.id) {
+            <li class="event">
+              <span class="when">{{ e.created_at | date: 'medium' }}</span>
+              <span class="what">
+                <strong>{{ 'settings.diagnostics.events.kinds.' + e.kind | transloco }}</strong>
+                —
+                @if (e.kind === 'server_error') {
+                  {{ 'settings.diagnostics.events.server_error' | transloco: { status: e.status } }}
+                } @else {
+                  {{ 'settings.diagnostics.events.codes.' + e.code | transloco }}
+                }
+              </span>
+              @if (e.path) {
+                <code class="path">{{ e.path }}</code>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </section>
+    </div>
+    } @else {
+    <app-loading variant="full" labelKey="settings.common.loading" />
+    }
+  }
+}

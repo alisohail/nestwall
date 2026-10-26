@@ -1,0 +1,138 @@
+<div class="modal-bg" role="presentation" (click)="onBackdrop($event)">
+  <div class="modal detail" role="dialog" aria-modal="true" aria-labelledby="detail-title" data-testid="event-detail" [style.--c]="pill().colour">
+    <header class="head">
+      <span class="kind">{{ (isTask() ? 'calendar.detail.kind_task' : 'calendar.detail.kind_event') | transloco }}</span>
+      <div class="actions">
+        @if (isTask()) {
+          @if (!viewOnly()) {
+            <button type="button" class="icon-btn" data-testid="detail-open-task" [attr.aria-label]="'calendar.detail.open_task' | transloco" [title]="'calendar.detail.open_task' | transloco" (click)="openTask()">
+              <app-icon name="pencil" [size]="18" />
+            </button>
+            <button type="button" class="icon-btn danger" data-testid="detail-delete" [attr.aria-label]="'calendar.detail.delete' | transloco" [title]="'calendar.detail.delete' | transloco" (click)="openDelete()">
+              <app-icon name="trash" [size]="18" />
+            </button>
+          }
+        } @else if (!viewOnly() && !synced()) {
+          <button type="button" class="icon-btn" data-testid="detail-edit" [attr.aria-label]="'calendar.detail.edit' | transloco" [title]="'calendar.detail.edit' | transloco" (click)="edit.emit()">
+            <app-icon name="pencil" [size]="18" />
+          </button>
+          <button type="button" class="icon-btn danger" data-testid="detail-delete" [attr.aria-label]="'calendar.detail.delete' | transloco" [title]="'calendar.detail.delete' | transloco" (click)="openDelete()">
+            <app-icon name="trash" [size]="18" />
+          </button>
+        }
+        <button type="button" class="icon-btn" data-testid="detail-close" [attr.aria-label]="'calendar.detail.close' | transloco" (click)="closed.emit()">
+          <app-icon name="close" [size]="18" />
+        </button>
+      </div>
+    </header>
+
+    <div class="title-row">
+      <span class="bar" aria-hidden="true"></span>
+      <h2 id="detail-title" data-testid="detail-title">{{ item().title }}</h2>
+    </div>
+
+    <ul class="rows">
+      <li class="row">
+        <app-icon name="clock" [size]="18" />
+        <div>
+          <div data-testid="detail-day">{{ day() }}</div>
+          <div class="sub" data-testid="detail-when">{{ when() }}</div>
+          @if (item().edited) {
+            <div class="sub" data-testid="detail-edited">{{ 'calendar.detail.edited' | transloco }}</div>
+          }
+          @if (pill().recurring) {
+            <div class="sub" data-testid="detail-repeat">{{ 'calendar.detail.repeating' | transloco }}</div>
+          }
+        </div>
+      </li>
+
+      @if (isTask()) {
+        @if (item().status; as status) {
+          <li class="row">
+            <app-icon name="tasks" [size]="18" />
+            <div data-testid="detail-status">{{ 'calendar.detail.status.' + status | transloco }}</div>
+          </li>
+        }
+      } @else {
+        @if (!isTask() && item().location; as location) {
+          <li class="row">
+            <app-icon name="pin" [size]="18" />
+            <div data-testid="detail-location">{{ location }}</div>
+          </li>
+        }
+        <li class="row">
+          <app-icon name="calendar" [size]="18" />
+          <div>
+            <div data-testid="detail-calendar">{{ synced() ? item().calendar_name : ('calendar.event.calendar_family' | transloco) }}</div>
+            @if (synced()) {
+              <div class="sub" data-testid="detail-synced">{{ 'calendar.detail.synced' | transloco }}</div>
+            }
+          </div>
+        </li>
+      }
+
+      @if (people().length) {
+        <li class="row">
+          <app-icon name="users" [size]="18" />
+          <ul class="people" data-testid="detail-people">
+            @for (m of people(); track m.id) {
+              <li>
+                <app-avatar size="sm" role="img" [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" [attr.aria-label]="m.display_name" [attr.title]="m.display_name" />
+              </li>
+            }
+          </ul>
+        </li>
+      }
+
+      @if (!isTask() && item().description; as description) {
+        <li class="row">
+          <app-icon name="text" [size]="18" />
+          <div class="notes" data-testid="detail-description">{{ description }}</div>
+        </li>
+      }
+    </ul>
+
+  </div>
+
+  @if (confirming()) {
+    @if (isTask()) {
+      @if (item().task_id; as taskId) {
+        <app-remove-person-confirm
+          [taskId]="taskId"
+          [title]="item().title"
+          [people]="people()"
+          (removed)="removed.emit()"
+          (cancelled)="confirming.set(false)"
+        />
+      }
+    } @else if (pill().recurring) {
+      <div class="modal-bg" role="presentation" (click)="confirming.set(false)">
+        <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="delete-scope-title" data-testid="delete-scope" (click)="$event.stopPropagation()">
+          <h2 id="delete-scope-title">{{ 'calendar.detail.delete_recurring_heading' | transloco }}</h2>
+          <div class="scope" role="radiogroup" [attr.aria-labelledby]="'delete-scope-title'">
+            <label class="opt">
+              <input type="radio" name="delete-scope" value="occurrence" data-testid="delete-scope-occurrence" [checked]="scope() === 'occurrence'" (change)="scope.set('occurrence')" />
+              <span>{{ 'calendar.detail.delete_this' | transloco }}</span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="delete-scope" value="series" data-testid="delete-scope-series" [checked]="scope() === 'series'" (change)="scope.set('series')" />
+              <span>{{ 'calendar.detail.delete_all' | transloco }}</span>
+            </label>
+          </div>
+          <div class="confirm-actions">
+            <button type="button" class="btn ghost" data-testid="delete-scope-cancel" (click)="confirming.set(false)">{{ 'calendar.detail.cancel' | transloco }}</button>
+            <button type="button" class="btn primary" data-testid="delete-scope-ok" (click)="remove.emit(scope())">{{ 'calendar.detail.delete' | transloco }}</button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <app-task-confirm
+        [heading]="'calendar.detail.delete_heading' | transloco"
+        [message]="'calendar.detail.delete_message' | transloco"
+        [confirmLabel]="'calendar.detail.delete' | transloco"
+        (confirmed)="remove.emit('series')"
+        (cancelled)="confirming.set(false)"
+      />
+    }
+  }
+</div>

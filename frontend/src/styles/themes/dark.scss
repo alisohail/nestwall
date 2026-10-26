@@ -1,0 +1,55 @@
+/* Dark theme semantic tokens */
+[data-theme="dark"] {
+  /* Override semantic tokens for dark mode, values from the mock stylesheet */
+  --nw-color-background: #17133a;
+  --nw-color-primary: #5eead4;
+  --nw-color-on-primary: #12103a;
+  --nw-color-primary-container: #1d3d63;
+  --nw-color-on-primary-container: #5eead4;
+
+  --nw-color-surface: #221d52;
+  --nw-color-on-surface: #f5f2ff;
+  --nw-color-surface-variant: #2c2668;
+  --nw-color-on-surface-variant: #b9b3ea;
+  --nw-color-faint: #aaa5e6;
+
+  --nw-color-success: #6ee7a0;
+  --nw-color-on-success: #12103a;
+  --nw-color-success-container: #1c4a3d;
+  --nw-color-on-success-container: #6ee7a0;
+
+  --nw-color-warning: #ffd166;
+  --nw-color-on-warning: #12103a;
+  --nw-color-warning-container: #4b3b22;
+  --nw-color-on-warning-container: #ffe08a;
+
+  --nw-color-error: #ff8a9a;
+  --nw-color-on-error: #12103a;
+  --nw-color-error-container: #4d2250;
+
+  --nw-color-points: #ffd166;
+  --nw-color-outline: #3b3480;
+
+  --nw-color-primary-hover: #99f6e4;
+  --nw-color-info: #8ab4ff;
+  --nw-color-info-container: #26356f;
+  --nw-color-hero-from: #7c5cff;
+  --nw-color-hero-to: #22d3ee;
+  --nw-color-hero-inner: #4b3fc9;
+  --nw-color-weather-from: #2c4fb0;
+  --nw-color-weather-to: #6a45d6;
+  --nw-color-on-weather: #ffffff;
+
+  --nw-shadow: 0 1px 2px rgba(10, 6, 40, .5), 0 8px 24px rgba(10, 6, 40, .35);
+  --nw-shadow-lg: 0 20px 60px rgba(10, 6, 40, .5);
+
+  /* Member colours for dark */
+  --nw-member-1: #818cf8;
+  --nw-member-2: #22d3ee;
+  --nw-member-3: #f472b6;
+  --nw-member-4: #fbbf24;
+  --nw-member-5: #34d399;
+  --nw-member-6: #a78bfa;
+  --nw-member-7: #2dd4bf;
+  --nw-member-8: #fb923c;
+}

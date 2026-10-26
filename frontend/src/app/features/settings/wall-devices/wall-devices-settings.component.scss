@@ -1,0 +1,50 @@
+@use '../settings-ui' as ui;
+
+:host {
+  display: block;
+}
+
+@include ui.base;
+
+.item {
+  cursor: default;
+}
+
+.device-icon {
+  flex: none;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.row-actions {
+  display: flex;
+  gap: var(--nw-space-2);
+  flex: none;
+}
+
+.confirm {
+  margin: calc(var(--nw-space-2) * -1) 0 var(--nw-space-3);
+  padding: var(--nw-space-3);
+  border-radius: 14px;
+  background: var(--nw-color-surface-variant);
+}
+
+.confirm .grow {
+  margin: 0;
+}
+
+.pair-key {
+  font-family: var(--nw-font-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  padding: var(--nw-space-3);
+  border-radius: 14px;
+  background: var(--nw-color-surface-variant);
+  user-select: all;
+}
+
+.field-note {
+  font-weight: 500;
+}
+

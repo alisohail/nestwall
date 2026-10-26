@@ -1,0 +1,179 @@
+@if (!permsReady()) {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (!canView()) {
+  <app-banner tone="info">{{ 'settings.integrations.no_permission' | transloco }}</app-banner>
+} @else if (loadState() === 'loading') {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (loadState() === 'error') {
+  <app-load-error [error]="loadApiError()" (retry)="load()" />
+} @else {
+  <section class="card mt">
+    <div class="section-head">
+      <div>
+        <h2>{{ 'settings.integrations.tokens.title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.integrations.tokens.hint' | transloco }}</p>
+      </div>
+      @if (canManage()) {
+        <button type="button" class="btn primary sm right" (click)="openNew()">
+          <span class="material-icons" aria-hidden="true">add</span>{{ 'settings.integrations.tokens.create' | transloco }}
+        </button>
+      }
+    </div>
+
+    @if (notice(); as name) {
+      <p class="saved" role="status">{{ 'settings.integrations.tokens.revoked' | transloco: { name } }}</p>
+    }
+    @if (actionError(); as key) {
+      <app-banner tone="error">{{ key | transloco }}</app-banner>
+    }
+
+    @if (tokens().length === 0) {
+      <p class="nw-empty-note">{{ 'settings.integrations.tokens.empty' | transloco }}</p>
+    } @else {
+      <div class="table-wrap">
+        <table class="tokens">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'settings.integrations.tokens.col_name' | transloco }}</th>
+              <th scope="col">{{ 'settings.integrations.tokens.col_scopes' | transloco }}</th>
+              <th scope="col">{{ 'settings.integrations.tokens.col_last_used' | transloco }}</th>
+              <th scope="col">{{ 'settings.integrations.tokens.col_expires' | transloco }}</th>
+              <th scope="col"><span class="visually-hidden">{{ 'settings.integrations.tokens.col_actions' | transloco }}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (token of tokens(); track token.id) {
+              <tr>
+                <td>
+                  <div class="bold">{{ token.name }}</div>
+                  <div class="tiny muted mono">{{ token.token_hint }}</div>
+                </td>
+                <td>
+                  @for (scope of token.scopes; track scope) {
+                    <span class="badge teal">{{ scope }}</span>
+                  }
+                </td>
+                <td>
+                  @if (lastUsedLabel(token); as when) {
+                    {{ when }}
+                  } @else {
+                    <span class="muted">{{ 'settings.integrations.tokens.never' | transloco }}</span>
+                  }
+                </td>
+                <td>{{ expiresLabel(token) }}</td>
+                <td class="actions-cell">
+                  @if (canManage()) {
+                    <button
+                      type="button"
+                      class="btn danger sm"
+                      [disabled]="revokingId() !== null"
+                      (click)="askRevoke(token)"
+                    >{{ 'settings.integrations.tokens.revoke' | transloco }}</button>
+                  }
+                </td>
+              </tr>
+              @if (confirmingRevokeId() === token.id) {
+                <tr class="confirm-row">
+                  <td colspan="5">
+                    <div class="confirm row wrap">
+                      <p class="grow hint">{{ 'settings.integrations.tokens.revoke_confirm' | transloco: { name: token.name } }}</p>
+                      <button type="button" class="btn ghost sm" (click)="cancelRevoke()">{{ 'settings.common.cancel' | transloco }}</button>
+                      <button type="button" class="btn danger sm" [disabled]="revokingId() === token.id" (click)="revoke(token)">{{ 'settings.integrations.tokens.revoke_yes' | transloco }}</button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <p class="hint mt-s">{{ 'settings.integrations.tokens.limit' | transloco }}</p>
+  </section>
+
+  <section class="card mt">
+    <div class="section-head">
+      <div>
+        <h2>{{ 'settings.integrations.guide.title' | transloco }}</h2>
+      </div>
+      <span class="badge info">{{ 'settings.integrations.guide.badge' | transloco }}</span>
+    </div>
+    <p class="hint">{{ 'settings.integrations.guide.intro' | transloco }}</p>
+    <p class="hint">{{ 'settings.integrations.guide.scopes' | transloco }}</p>
+    <pre class="guide-yaml">{{ homeAssistantYaml }}</pre>
+    <p class="hint">{{ 'settings.integrations.guide.host_note' | transloco }}</p>
+  </section>
+}
+
+@if (modalOpen()) {
+  <div class="modal-bg" (click)="closeOnBackdrop($event)">
+    <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="'settings.integrations.modal.title' | transloco">
+      @if (!created()) {
+        <h2>{{ 'settings.integrations.modal.title' | transloco }}</h2>
+
+        <div class="field mt">
+          <label class="field-label" for="token-name">{{ 'settings.integrations.modal.name' | transloco }}</label>
+          <input
+            id="token-name"
+            class="input"
+            maxlength="60"
+            [placeholder]="'settings.integrations.modal.name_placeholder' | transloco"
+            [ngModel]="name()"
+            (ngModelChange)="name.set($event)"
+          />
+        </div>
+
+        <div class="field mt-s">
+          <span class="field-label" id="token-scopes-label">{{ 'settings.integrations.modal.scopes' | transloco }}</span>
+          <div class="row wrap" role="group" aria-labelledby="token-scopes-label">
+            @for (scope of scopes; track scope) {
+              <button
+                type="button"
+                class="chip"
+                [class.on]="isScopeOn(scope)"
+                [attr.aria-pressed]="isScopeOn(scope)"
+                (click)="toggleScope(scope)"
+              >{{ scope }}</button>
+            }
+          </div>
+          <span class="hint">{{ 'settings.integrations.modal.scopes_hint' | transloco }}</span>
+        </div>
+
+        <div class="field mt-s">
+          <label class="field-label" for="token-expiry">{{ 'settings.integrations.modal.expires' | transloco }}</label>
+          <select id="token-expiry" class="select expiry" [ngModel]="expiryDays()" (ngModelChange)="expiryDays.set(+$event)">
+            @for (days of expiryOptions; track days) {
+              <option [ngValue]="days">
+                {{ (days === 365 ? 'settings.integrations.expiry.year' : 'settings.integrations.expiry.days') | transloco: { days } }}
+              </option>
+            }
+          </select>
+        </div>
+
+        @if (modalError(); as key) {
+          <app-banner tone="error">{{ key | transloco }}</app-banner>
+        }
+
+        <div class="foot">
+          <button type="button" class="btn ghost" (click)="closeModal()" [disabled]="creating()">{{ 'settings.common.cancel' | transloco }}</button>
+          <button type="button" class="btn primary" (click)="create()" [disabled]="!canSubmit()">{{ 'settings.integrations.modal.create' | transloco }}</button>
+        </div>
+      } @else {
+        <h2>{{ 'settings.integrations.modal.once_title' | transloco }}</h2>
+        <p class="muted mt-s">{{ 'settings.integrations.modal.once_intro' | transloco }}</p>
+
+        <div class="token-value mt" role="status">{{ created()?.token }}</div>
+        <app-banner tone="warning">{{ 'settings.integrations.modal.copy_warning' | transloco }}</app-banner>
+
+        <div class="foot">
+          <button type="button" class="btn ghost" (click)="copyToken()">
+            <span class="material-icons" aria-hidden="true">content_copy</span>
+            {{ (copied() ? 'settings.integrations.modal.copied' : 'settings.integrations.modal.copy') | transloco }}
+          </button>
+          <button type="button" class="btn primary" (click)="closeModal()">{{ 'settings.integrations.modal.done' | transloco }}</button>
+        </div>
+      }
+    </div>
+  </div>
+}

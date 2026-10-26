@@ -1,0 +1,89 @@
+<div class="settings-page">
+<div class="page-head">
+  <div>
+    <h1>{{ 'settings.title' | transloco }}</h1>
+  </div>
+  <div class="page-actions">
+    @if (header.actions(); as tpl) {
+      <ng-container [ngTemplateOutlet]="tpl" />
+    }
+  </div>
+</div>
+
+<div class="settings-layout">
+  <div class="section-picker">
+    <button
+      type="button"
+      class="btn soft section-trigger"
+      aria-haspopup="true"
+      [attr.aria-expanded]="sheetOpen()"
+      (click)="sheetOpen.set(!sheetOpen())"
+    >
+      <span class="trigger-kicker">{{ 'settings.kicker' | transloco }}</span>
+      <span class="material-icons" aria-hidden="true">{{ active().icon }}</span>
+      <span class="grow">{{ active().labelKey | transloco }}</span>
+      <span class="material-icons" aria-hidden="true">expand_more</span>
+    </button>
+
+    <nav class="subnav" [class.open]="sheetOpen()" [attr.aria-label]="'settings.nav.label' | transloco">
+      @for (s of sections; track s.labelKey) {
+        @if (s.path) {
+          <a
+            class="subnav-item"
+            [routerLink]="['/settings/admin', s.path]"
+            routerLinkActive="on"
+            ariaCurrentWhenActive="page"
+            (click)="sheetOpen.set(false)"
+          >
+            <span class="material-icons" aria-hidden="true">{{ s.icon }}</span>
+            {{ s.labelKey | transloco }}
+          </a>
+        } @else {
+          <span class="subnav-item is-soon">
+            <span class="material-icons" aria-hidden="true">{{ s.icon }}</span>
+            <span class="grow">{{ s.labelKey | transloco }}</span>
+            <span class="soon-tag">{{ 'settings.hub.soon' | transloco }}</span>
+          </span>
+        }
+      }
+    </nav>
+  </div>
+
+  <div class="content">
+    <router-outlet />
+  </div>
+</div>
+</div>
+
+@if (sheetOpen()) {
+  <div class="sheet-bg" (click)="$event.target === $event.currentTarget && sheetOpen.set(false)">
+    <div class="sheet" role="dialog" aria-modal="true" [attr.aria-label]="'settings.nav.label' | transloco">
+      <div class="sheet-head">
+        <span class="grow sheet-title">{{ 'settings.nav.label' | transloco }}</span>
+        <button type="button" class="icon-btn" [attr.aria-label]="'settings.close' | transloco" (click)="sheetOpen.set(false)">
+          <span class="material-icons" aria-hidden="true">close</span>
+        </button>
+      </div>
+      @for (s of sections; track s.labelKey) {
+        @if (s.path) {
+          <a
+            class="subnav-item"
+            [routerLink]="['/settings/admin', s.path]"
+            routerLinkActive="on"
+            ariaCurrentWhenActive="page"
+            (click)="sheetOpen.set(false)"
+          >
+            <span class="material-icons" aria-hidden="true">{{ s.icon }}</span>
+            {{ s.labelKey | transloco }}
+          </a>
+        } @else {
+          <span class="subnav-item is-soon">
+            <span class="material-icons" aria-hidden="true">{{ s.icon }}</span>
+            <span class="grow">{{ s.labelKey | transloco }}</span>
+            <span class="soon-tag">{{ 'settings.hub.soon' | transloco }}</span>
+          </span>
+        }
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,124 @@
+<section class="bonus-detail" aria-labelledby="bonus-title">
+  <a
+    class="icon-btn back"
+    [routerLink]="backRoute()"
+    [queryParams]="backQuery()"
+    [attr.aria-label]="'myTask.back' | transloco"
+    data-testid="bonus-back"
+  >
+    <span class="material-icons" aria-hidden="true">arrow_back</span>
+  </a>
+
+  @switch (loadState()) {
+    @case ('loading') {
+      <app-loading variant="full" labelKey="kidBonus.loading" data-testid="bonus-loading" />
+    }
+    @case ('missing') {
+      <div class="muted" data-testid="bonus-missing">
+        <h1>{{ 'kidBonus.detail.missing.title' | transloco }}</h1>
+        <p>{{ 'kidBonus.detail.missing.body' | transloco }}</p>
+      </div>
+    }
+    @case ('error') {
+      <div data-testid="bonus-load-error">
+        <app-load-error [error]="loadError()" (retry)="retry()" />
+      </div>
+    }
+    @case ('ready') {
+      @if (task(); as t) {
+        <header class="head">
+          <span class="emoji" aria-hidden="true">
+            <span class="material-icons">auto_awesome</span>
+          </span>
+          <div class="grow">
+            <h1 id="bonus-title">{{ t.title }}</h1>
+            <div class="chips">
+              <span class="chip points"><span class="material-icons" aria-hidden="true">star</span>+{{ t.points }}</span>
+              <span class="chip">
+                <span class="material-icons" aria-hidden="true">{{ t.claim_mode === 'first_come' ? 'bolt' : 'groups' }}</span>
+                {{ modeKey(t) | transloco }}
+              </span>
+              <span class="chip">{{ untilKey(t) | transloco: untilParams(t) }}</span>
+              <span class="chip good">{{ 'bonus.noPenalty' | transloco }}</span>
+            </div>
+          </div>
+        </header>
+
+        @if (t.description) {
+          <p class="desc" data-testid="bonus-description">{{ t.description }}</p>
+        } @else {
+          <p class="muted" data-testid="bonus-description">{{ 'kidBonus.detail.noDescription' | transloco }}</p>
+        }
+
+        @if (error(); as key) {
+          <app-banner tone="error" data-testid="bonus-error">{{ key | transloco }}</app-banner>
+        }
+
+        @switch (state()) {
+          @case ('open') {
+            <section class="action-card" data-testid="bonus-action">
+              <div class="action-card__buttons">
+                <button
+                  type="button"
+                  class="btn amber"
+                  data-testid="bonus-grab"
+                  [disabled]="busy()"
+                  (click)="grab()"
+                >
+                  {{ 'kidBonus.grab' | transloco }}
+                </button>
+              </div>
+            </section>
+          }
+          @case ('once') {
+            <section class="action-card" data-testid="bonus-action">
+              <p>{{ 'kidBonus.hintOnce' | transloco }}</p>
+              <div class="action-card__buttons">
+                <button
+                  type="button"
+                  class="btn primary"
+                  data-testid="bonus-grab"
+                  [disabled]="busy()"
+                  (click)="grab()"
+                >
+                  {{ 'kidBonus.doOnce' | transloco }}
+                </button>
+              </div>
+            </section>
+          }
+          @case ('mine') {
+            <section class="action-card" data-testid="bonus-action">
+              <p>{{ 'kidBonus.hintMine' | transloco }}</p>
+              <div class="action-card__buttons">
+                <button
+                  type="button"
+                  class="btn ghost"
+                  data-testid="bonus-giveback"
+                  [disabled]="busy()"
+                  (click)="giveBack()"
+                >
+                  {{ 'kidBonus.giveBack' | transloco }}
+                </button>
+                <button
+                  type="button"
+                  class="btn primary"
+                  data-testid="bonus-finish"
+                  [disabled]="busy()"
+                  (click)="finish()"
+                >
+                  {{ 'kidBonus.finish' | transloco }}
+                </button>
+              </div>
+            </section>
+          }
+          @case ('taken') {
+            <div class="notice info" data-testid="bonus-taken">{{ 'kidBonus.taken' | transloco }}</div>
+          }
+          @case ('done') {
+            <div class="notice ok" data-testid="bonus-done">{{ doneKey(t) | transloco }}</div>
+          }
+        }
+      }
+    }
+  }
+</section>

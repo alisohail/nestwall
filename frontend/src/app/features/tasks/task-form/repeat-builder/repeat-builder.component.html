@@ -1,0 +1,140 @@
+<div class="rep">
+  <div class="seg" role="group" [attr.aria-label]="'tasks.repeat.label' | transloco">
+    @for (f of freqs; track f) {
+      <button type="button" [class.on]="state().freq === f" [attr.aria-pressed]="state().freq === f" (click)="setFreq(f)">
+        {{ 'tasks.repeat.freq.' + f | transloco }}
+      </button>
+    }
+  </div>
+
+  @if (state().freq !== 'none') {
+    <div class="rep-box">
+      <div class="row">
+        <span>{{ 'tasks.repeat.every' | transloco }}</span>
+        <input
+          class="input num"
+          type="number"
+          min="1"
+          max="365"
+          [value]="state().interval"
+          [attr.aria-label]="'tasks.repeat.interval' | transloco"
+          (input)="patch({ interval: num($event) })"
+        />
+        <span>{{ 'tasks.repeat.unit.' + state().freq | transloco }}</span>
+      </div>
+
+      @if (state().freq === 'weekly') {
+        <div>
+          <div class="label">{{ 'tasks.repeat.on_days' | transloco }}</div>
+          <div class="row wrap mt-s">
+            @for (d of weekOrder; track d) {
+              <button
+                type="button"
+                class="chip day"
+                [class.on]="state().weekdays.includes(d)"
+                [attr.aria-pressed]="state().weekdays.includes(d)"
+                (click)="toggleDay(d)"
+              >
+                {{ dayLabel(d) }}
+              </button>
+            }
+          </div>
+          <div class="row wrap mt-s">
+            <button type="button" class="btn ghost sm" [class.on]="isPresetOn(presets.weekdays)" (click)="preset(presets.weekdays)">
+              {{ 'tasks.repeat.presets.weekdays' | transloco }}
+            </button>
+            <button type="button" class="btn ghost sm" [class.on]="isPresetOn(presets.weekends)" (click)="preset(presets.weekends)">
+              {{ 'tasks.repeat.presets.weekends' | transloco }}
+            </button>
+            <button type="button" class="btn ghost sm" [class.on]="isPresetOn(presets.everyDay)" (click)="preset(presets.everyDay)">
+              {{ 'tasks.repeat.presets.every_day' | transloco }}
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (state().freq === 'monthly') {
+        <div class="col">
+          <label class="row">
+            <input type="radio" name="monthly-mode" value="day" [checked]="state().monthlyMode === 'day'" (change)="patch({ monthlyMode: 'day' })" />
+            {{ 'tasks.repeat.monthly.on_day' | transloco }}
+            <input
+              class="input num"
+              type="number"
+              min="1"
+              max="31"
+              [value]="state().monthDay"
+              [attr.aria-label]="'tasks.repeat.monthly.day' | transloco"
+              (input)="patch({ monthDay: num($event), monthlyMode: 'day' })"
+            />
+            {{ 'tasks.repeat.monthly.of_month' | transloco }}
+          </label>
+          <label class="row wrap">
+            <input type="radio" name="monthly-mode" value="nth" [checked]="state().monthlyMode === 'nth'" (change)="patch({ monthlyMode: 'nth' })" />
+            {{ 'tasks.repeat.monthly.on_the' | transloco }}
+            <select class="select" [attr.aria-label]="'tasks.repeat.monthly.nth' | transloco" (change)="patch({ nth: num($event), monthlyMode: 'nth' })">
+              @for (n of nths; track n) {
+                <option [value]="n" [selected]="state().nth === n">{{ 'tasks.repeat.monthly.nths.' + n | transloco }}</option>
+              }
+            </select>
+            <select class="select" [attr.aria-label]="'tasks.repeat.monthly.weekday' | transloco" (change)="patch({ nthWeekday: num($event), monthlyMode: 'nth' })">
+              @for (d of weekOrder; track d) {
+                <option [value]="d" [selected]="state().nthWeekday === d">{{ dayLabel(d) }}</option>
+              }
+            </select>
+          </label>
+          <label class="row">
+            <input type="radio" name="monthly-mode" value="last" [checked]="state().monthlyMode === 'last'" (change)="patch({ monthlyMode: 'last' })" />
+            {{ 'tasks.repeat.monthly.last_day' | transloco }}
+          </label>
+        </div>
+      }
+
+      <div class="col">
+        <div class="label">{{ 'tasks.repeat.ends.label' | transloco }}</div>
+        <label class="row">
+          <input type="radio" name="repeat-ends" value="never" [checked]="state().ends === 'never'" (change)="patch({ ends: 'never' })" />
+          {{ 'tasks.repeat.ends.never' | transloco }}
+        </label>
+        <label class="row">
+          <input type="radio" name="repeat-ends" value="date" [checked]="state().ends === 'date'" (change)="patch({ ends: 'date' })" />
+          {{ 'tasks.repeat.ends.on' | transloco }}
+          <input
+            class="input date"
+            type="date"
+            [value]="state().endDate"
+            [attr.aria-label]="'tasks.repeat.ends.date' | transloco"
+            (input)="patch({ endDate: text($event), ends: 'date' })"
+          />
+        </label>
+        <label class="row">
+          <input type="radio" name="repeat-ends" value="count" [checked]="state().ends === 'count'" (change)="patch({ ends: 'count' })" />
+          {{ 'tasks.repeat.ends.after' | transloco }}
+          <input
+            class="input num"
+            type="number"
+            min="1"
+            max="365"
+            [value]="state().endCount"
+            [attr.aria-label]="'tasks.repeat.ends.count' | transloco"
+            (input)="patch({ endCount: num($event), ends: 'count' })"
+          />
+          {{ 'tasks.repeat.ends.occurrences' | transloco }}
+        </label>
+      </div>
+
+      @if (problem(); as p) {
+        <app-banner tone="error">{{ 'tasks.repeat.problem.' + p | transloco }}</app-banner>
+      } @else {
+        <div class="sum">
+          <div class="label">{{ 'tasks.repeat.next' | transloco }}</div>
+          <div class="row wrap mt-s">
+            @for (d of next(); track d) {
+              <span class="badge teal">{{ dateLabel(d) }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

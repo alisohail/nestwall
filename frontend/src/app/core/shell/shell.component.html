@@ -1,0 +1,146 @@
+<div class="app" [class.is-kid]="isChild()">
+  @if (isChild()) {
+    <!-- Kid rail (tablet and desktop), mirrors the mock's .kid-rail -->
+    <aside class="kid-rail">
+      <div class="rail-brand">
+        <img [src]="logoUrl()" [alt]="'shell.logo_alt' | transloco">
+        <span>NestWall</span>
+      </div>
+
+      <nav class="rail-nav" aria-label="Main navigation">
+        @for (item of sidebarItems(); track item.path) {
+          <a class="rail-link" [routerLink]="item.path" routerLinkActive="active">
+            <app-icon [name]="item.icon" [size]="30" />
+            <span>{{ item.labelKey | transloco }}</span>
+          </a>
+        }
+      </nav>
+
+      <a
+        class="rail-me"
+        [routerLink]="profilePath()"
+        [attr.aria-label]="'shell.open_profile' | transloco"
+        [attr.title]="'shell.open_profile' | transloco">
+        <app-avatar size="md" [name]="displayName()" [colour]="avatarColour()" [avatarId]="avatarId()" />
+        <span>{{ displayName() }}</span>
+      </a>
+      @if (appVersion()) {
+        <div class="app-version" data-testid="app-version">v{{ appVersion() }}</div>
+      }
+    </aside>
+  } @else {
+    <!-- Desktop / Tablet Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img [src]="logoUrl()" [alt]="'shell.logo_alt' | transloco">
+        <span>Nest<b>Wall</b></span>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        @for (item of sidebarItems(); track item.path) {
+          <a [routerLink]="item.path" routerLinkActive="active">
+            <app-icon [name]="item.icon" [size]="20" />
+            <span>{{ item.labelKey | transloco }}</span>
+          </a>
+        }
+      </nav>
+
+      <div class="foot">
+        <div class="family-chip">
+          <a
+            class="avatar-link"
+            [routerLink]="profilePath()"
+            [attr.aria-label]="'shell.open_profile' | transloco"
+            [attr.title]="'shell.open_profile' | transloco">
+            <app-avatar size="sm" [name]="displayName()" [colour]="avatarColour()" [avatarId]="avatarId()" />
+          </a>
+          <div class="chip-text">
+            <div class="chip-name">{{ displayName() }}</div>
+            <div class="chip-role">{{ roleName() }}</div>
+          </div>
+        </div>
+        @if (appVersion()) {
+          <div class="app-version" data-testid="app-version">v{{ appVersion() }}</div>
+        }
+      </div>
+    </aside>
+  }
+
+  <!-- Main Content Panel -->
+  <div class="main">
+    <div class="topbar">
+      <div class="m-brand">
+        <img [src]="logoUrl()" [alt]="'shell.logo_alt' | transloco">
+        <span>Nest<b>Wall</b></span>
+      </div>
+      <div class="topbar-actions">
+        @if (!isChild()) {
+          <span class="topbar-date">{{ today }}</span>
+        }
+        <button
+          class="icon-btn theme-toggle-btn"
+          type="button"
+          (click)="toggleTheme()"
+          [attr.aria-label]="'shell.toggle_theme' | transloco">
+          <app-icon [name]="themeIcon()" [size]="20" />
+        </button>
+        <app-notification-bell />
+        <a
+          class="avatar-link"
+          [routerLink]="profilePath()"
+          [attr.aria-label]="'shell.open_profile' | transloco"
+          [attr.title]="'shell.open_profile' | transloco">
+          <app-avatar size="nav" [name]="displayName()" [colour]="avatarColour()" [avatarId]="avatarId()" />
+        </a>
+        <button
+          class="icon-btn logout-btn"
+          type="button"
+          (click)="logout()"
+          [attr.aria-label]="'shell.logout' | transloco"
+          [attr.title]="'shell.logout' | transloco">
+          <app-icon name="logout" [size]="20" />
+        </button>
+      </div>
+    </div>
+
+    <div id="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="bottomnav" aria-label="Mobile navigation">
+    @for (item of visibleMobileItems(); track item.path) {
+      <a [routerLink]="item.path" routerLinkActive="active">
+        <app-icon [name]="item.icon" [size]="20" />
+        <span>{{ item.labelKey | transloco }}</span>
+      </a>
+    }
+    @if (overflowItems().length) {
+      <button
+        class="more-btn"
+        type="button"
+        [class.active]="moreActive()"
+        [attr.aria-expanded]="moreOpen()"
+        aria-haspopup="menu"
+        (click)="moreOpen.set(!moreOpen())">
+        <app-icon name="dots" [size]="20" />
+        <span>{{ 'shell.nav.more' | transloco }}</span>
+      </button>
+    }
+  </nav>
+
+  @if (moreOpen() && overflowItems().length) {
+    <div class="more-scrim" (click)="moreOpen.set(false)"></div>
+    <div class="more-sheet" role="menu" [attr.aria-label]="'shell.nav.more' | transloco">
+      @for (item of overflowItems(); track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" role="menuitem" (click)="moreOpen.set(false)">
+          <app-icon [name]="item.icon" [size]="20" />
+          <span>{{ item.labelKey | transloco }}</span>
+        </a>
+      }
+    </div>
+  }
+
+  <app-email-prompt />
+</div>

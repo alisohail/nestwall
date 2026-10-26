@@ -1,0 +1,11 @@
+@use '../settings-ui' as ui;
+
+@include ui.base;
+
+.small {
+  font-size: 0.8125rem;
+}
+
+.tiny {
+  font-size: 0.75rem;
+}

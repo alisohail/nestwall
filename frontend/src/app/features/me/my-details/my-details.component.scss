@@ -1,0 +1,123 @@
+:host {
+  display: block;
+}
+
+.my-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+  color: var(--nw-color-on-surface);
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-md);
+    font-weight: 700;
+  }
+}
+
+.intro {
+  margin: 0;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.saved {
+  margin: 0;
+  color: var(--nw-color-primary);
+  font-weight: 600;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--nw-space-4);
+}
+
+.field-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-1);
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--nw-text-sm);
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: var(--nw-space-2) var(--nw-space-3);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-md);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  font: inherit;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 1px;
+}
+
+.hint {
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-xs);
+}
+
+.field-error {
+  color: var(--nw-color-error);
+  font-size: var(--nw-text-xs);
+}
+
+.foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: var(--nw-space-2) var(--nw-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--nw-button-radius);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: var(--nw-color-primary);
+  color: var(--nw-color-on-primary);
+}
+
+@media (max-width: 719px) {
+  .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grid .wide {
+    grid-column: 1 / -1;
+  }
+}

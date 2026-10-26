@@ -1,0 +1,167 @@
+@if (loadState() === 'loading') {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (loadState() === 'error') {
+  <app-load-error [error]="loadError()" (retry)="load()" />
+} @else {
+  <section class="card mt">
+    <div class="section-head">
+      <div>
+        <h2>{{ 'settings.categories.list_title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.categories.list_hint' | transloco }}</p>
+      </div>
+      <button type="button" class="btn primary sm right" (click)="openNew()">
+        <span class="material-icons" aria-hidden="true">add</span>{{ 'settings.categories.new' | transloco }}
+      </button>
+    </div>
+
+    @if (categories().length === 0) {
+      <p class="nw-empty-note">{{ 'settings.categories.empty' | transloco }}</p>
+    }
+
+    @for (c of categories(); track c.id) {
+      <div class="item">
+        <span class="cat-dot" aria-hidden="true" [style.--c]="c.colour">{{ c.emoji }}</span>
+        <span class="item-body">
+          <span class="name">{{ c.name }}</span>
+          <span class="meta">
+            @if (!hasDefaults(c)) {
+              <span>{{ 'settings.common.no_default' | transloco }}</span>
+            }
+            @if (c.points !== null) {
+              <span class="badge teal">{{ 'settings.common.points_badge' | transloco: { points: c.points } }}</span>
+            }
+            @if (approvalLabel(c); as label) {
+              <span class="badge amber">{{ label }}</span>
+            }
+            @if (expiryLabel(c); as label) {
+              <span class="badge ok">{{ 'settings.categories.expires_badge' | transloco: { amount: label } }}</span>
+            }
+            @if (skillBadgeLabel(c); as name) {
+              <span class="badge amber">{{ 'settings.categories.badge_chip' | transloco: { name } }}</span>
+            }
+          </span>
+        </span>
+        <button type="button" class="btn ghost sm" [attr.aria-label]="('settings.common.edit' | transloco) + ' ' + c.name" (click)="openEdit(c)">
+          {{ 'settings.common.edit' | transloco }}
+        </button>
+      </div>
+    }
+  </section>
+
+  <section class="card mt">
+    <div class="section-head">
+      <div>
+        <h2>{{ 'settings.categories.part_title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.categories.part_hint' | transloco }}</p>
+      </div>
+    </div>
+
+    <div class="grid mt-s">
+      <div class="tile">
+        <span class="name"><span class="material-icons" aria-hidden="true">wb_sunny</span> {{ 'settings.categories.morning' | transloco }}</span>
+        <input class="input" type="time" [attr.aria-label]="'settings.categories.morning' | transloco" [(ngModel)]="partTimes.morning_start" />
+      </div>
+      <div class="tile">
+        <span class="name"><span class="material-icons" aria-hidden="true">school</span> {{ 'settings.categories.after_school' | transloco }}</span>
+        <input class="input" type="time" [attr.aria-label]="'settings.categories.after_school' | transloco" [(ngModel)]="partTimes.after_school_start" />
+      </div>
+      <div class="tile">
+        <span class="name"><span class="material-icons" aria-hidden="true">nights_stay</span> {{ 'settings.categories.evening' | transloco }}</span>
+        <input class="input" type="time" [attr.aria-label]="'settings.categories.evening' | transloco" [(ngModel)]="partTimes.evening_start" />
+      </div>
+    </div>
+
+    <div class="foot">
+      @if (partSaved()) {
+        <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+      }
+      @if (partError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      <button type="button" class="btn primary" [disabled]="partSaving() || !hasUnsavedChanges()" (click)="savePartOfDay()">{{ 'settings.categories.part_save' | transloco }}</button>
+    </div>
+  </section>
+}
+
+@if (modalOpen()) {
+  <div class="modal-bg" (click)="$event.target === $event.currentTarget && closeModal()">
+    <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="(editing() ? 'settings.categories.edit_title' : 'settings.categories.new_title') | transloco">
+      <h2>{{ (editing() ? 'settings.categories.edit_title' : 'settings.categories.new_title') | transloco }}</h2>
+
+      <div class="field">
+        <label class="field-label" for="cat-name">{{ 'settings.categories.name' | transloco }}</label>
+        <input id="cat-name" class="input" maxlength="80" [(ngModel)]="form.name" />
+        @if (submitted() && form.name.trim() === '') {
+          <span class="hint err">{{ 'settings.error.required' | transloco }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <span class="field-label">{{ 'settings.categories.emoji' | transloco }}</span>
+        <div class="row wrap emoji-row" role="group" [attr.aria-label]="'settings.categories.emoji' | transloco">
+          @for (e of emojis; track e) {
+            <button type="button" class="emoji-btn" [attr.aria-pressed]="form.emoji === e" (click)="form.emoji = e">{{ e }}</button>
+          }
+        </div>
+        <label class="field-label sub" for="cat-emoji-custom">{{ 'settings.categories.emoji_custom' | transloco }}</label>
+        <input id="cat-emoji-custom" class="input emoji-input" autocomplete="off" [attr.aria-describedby]="'cat-emoji-hint'" [(ngModel)]="form.emoji" />
+        <span id="cat-emoji-hint" class="hint">{{ 'settings.categories.emoji_custom_hint' | transloco }}</span>
+      </div>
+
+      <div class="field">
+        <span class="field-label">{{ 'settings.categories.colour' | transloco }}</span>
+        <app-colour-picker [label]="'settings.categories.colour' | transloco" [(ngModel)]="form.colour" />
+      </div>
+
+      <p class="hint">{{ 'settings.categories.defaults_hint' | transloco }}</p>
+
+      <div class="grid">
+        <div class="field">
+          <label class="field-label" for="cat-points">{{ 'settings.common.points' | transloco }}</label>
+          <input id="cat-points" class="input num" type="number" min="0" step="1" [(ngModel)]="form.points" [placeholder]="'settings.common.no_default' | transloco" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="cat-approval">{{ 'settings.categories.approval' | transloco }}</label>
+          <select id="cat-approval" class="select" [(ngModel)]="form.approval_required">
+            <option [ngValue]="null">{{ 'settings.templates.approval_unset' | transloco }}</option>
+            <option [ngValue]="true">{{ 'settings.common.approval_required' | transloco }}</option>
+            <option [ngValue]="false">{{ 'settings.common.approval_not_required' | transloco }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="cat-expires">{{ 'settings.categories.expires_after' | transloco }}</label>
+        <div class="row">
+          <input id="cat-expires" class="input num" type="number" min="0" step="any" [(ngModel)]="form.expiry_value" [placeholder]="'settings.common.no_default' | transloco" />
+          <select class="select unit" [attr.aria-label]="'settings.categories.expires_unit' | transloco" [(ngModel)]="form.expiry_unit">
+            @for (u of expiryUnits; track u) {
+              <option [ngValue]="u">{{ 'settings.unit.' + u | transloco }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="cat-badge">{{ 'settings.categories.skill_badge' | transloco }}</label>
+        <select id="cat-badge" class="select" [(ngModel)]="form.badge_key">
+          <option [ngValue]="null">{{ 'settings.categories.skill_badge_none' | transloco }}</option>
+          @for (b of skillBadges; track b.key) {
+            <option [ngValue]="b.key">{{ b.nameKey | transloco }}</option>
+          }
+        </select>
+      </div>
+
+      @if (modalError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+
+      <div class="foot">
+        <button type="button" class="btn ghost" (click)="closeModal()">{{ 'settings.common.cancel' | transloco }}</button>
+        <button type="button" class="btn primary" [disabled]="saving()" (click)="save()">
+          {{ (editing() ? 'settings.categories.save_changes' : 'settings.categories.add') | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

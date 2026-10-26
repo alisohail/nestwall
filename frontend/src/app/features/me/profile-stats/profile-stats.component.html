@@ -1,0 +1,21 @@
+<div class="stats" data-testid="me-profile-stats">
+  @if (loadState() === 'loading') {
+    <div role="status" data-testid="me-profile-stats-loading">
+      <span class="nw-sr-only">{{ 'me.profile.loading' | transloco }}</span>
+      <app-skeleton [rows]="1" />
+    </div>
+  } @else if (loadState() === 'error') {
+    <p class="muted error" data-testid="me-profile-stats-error">{{ 'me.points.error' | transloco }}</p>
+  } @else {
+    @if (stats(); as s) {
+      <div class="tile" data-testid="me-stat-points">
+        <span class="value">{{ s.balance }}</span>
+        <span class="label">{{ 'me.points.points' | transloco }}</span>
+      </div>
+      <div class="tile" data-testid="me-stat-streak">
+        <span class="value">{{ s.streak }} <span aria-hidden="true">🔥</span></span>
+        <span class="label">{{ 'me.profile.streak_label' | transloco }}</span>
+      </div>
+    }
+  }
+</div>

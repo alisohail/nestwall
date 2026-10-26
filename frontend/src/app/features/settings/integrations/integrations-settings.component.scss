@@ -1,0 +1,103 @@
+@use '../settings-ui' as ui;
+
+:host {
+  display: block;
+}
+
+@include ui.base;
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table.tokens {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+table.tokens th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--nw-color-on-surface-variant);
+  padding: var(--nw-space-2) var(--nw-space-3);
+  border-bottom: 1px solid var(--nw-color-outline-variant);
+}
+
+table.tokens td {
+  padding: var(--nw-space-3);
+  border-bottom: 1px solid var(--nw-color-outline-variant);
+  vertical-align: middle;
+}
+
+table.tokens td .badge + .badge {
+  margin-left: var(--nw-space-1);
+}
+
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.confirm-row td {
+  border-bottom: 0;
+  padding-top: 0;
+}
+
+.confirm {
+  padding: var(--nw-space-3);
+  border-radius: 14px;
+  background: var(--nw-color-surface-variant);
+}
+
+.confirm .grow {
+  margin: 0;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.tiny {
+  font-size: 0.75rem;
+}
+
+.mono {
+  font-family: var(--nw-font-mono);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.expiry {
+  max-width: 220px;
+}
+
+.token-value {
+  font-family: var(--nw-font-mono);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  padding: var(--nw-space-3);
+  border-radius: 14px;
+  background: var(--nw-color-surface-variant);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.guide-yaml {
+  font-family: var(--nw-font-mono);
+  font-size: 0.875rem;
+  margin: var(--nw-space-3) 0;
+  padding: var(--nw-space-3);
+  border-radius: 12px;
+  border-left: 4px solid var(--nw-color-primary);
+  background: var(--nw-color-surface-variant);
+  overflow: auto;
+}
+

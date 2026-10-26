@@ -1,0 +1,9 @@
+.busy-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nw-z-dialog);
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.35);
+  cursor: progress;
+}

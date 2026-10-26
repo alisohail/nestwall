@@ -1,0 +1,21 @@
+@use '../tasks-ui' as ui;
+
+@include ui.base;
+
+:host {
+  display: block;
+}
+
+.detail {
+  width: min(520px, calc(100% - var(--nw-space-4) * 2));
+  max-height: 85vh;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+}
+
+.close-row {
+  display: flex;
+  justify-content: flex-end;
+}

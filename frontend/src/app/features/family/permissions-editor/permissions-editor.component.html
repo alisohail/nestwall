@@ -1,0 +1,211 @@
+<section class="card perm-card" aria-labelledby="perm-title" data-testid="permissions-editor">
+  <header class="perm-head">
+    <div class="grow">
+      <h2 id="perm-title">{{ 'family.permissions.heading' | transloco }}</h2>
+      <p class="muted">{{ 'family.permissions.intro' | transloco }}</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn ghost small" data-testid="perm-new-role" [disabled]="loading() || !!loadError() || !canAddRole()" (click)="openNewRole()"><app-icon name="plus" [size]="14" />{{ 'family.permissions.add_role' | transloco }}</button>
+      <button type="button" class="btn ghost small" data-testid="perm-reset" [disabled]="loading() || !!loadError()" (click)="resetToDefaults()"><app-icon name="refresh" [size]="14" />{{ 'family.permissions.reset_defaults' | transloco }}</button>
+      <button type="button" class="btn ghost small" data-testid="perm-discard" [disabled]="unsavedCount() === 0" (click)="discardChanges()">{{ 'family.permissions.discard' | transloco }}</button>
+      <button type="button" class="btn primary small" data-testid="perm-save" [disabled]="saving() || unsavedCount() === 0" (click)="save()">{{ 'family.permissions.save' | transloco }}</button>
+    </div>
+  </header>
+
+  @if (!canAddRole()) {
+    <p class="muted small" data-testid="perm-role-limit">{{ 'family.permissions.role_limit_hint' | transloco: { max: maxCustomRoles } }}</p>
+  }
+
+  @if (newRoleOpen()) {
+    <form class="new-role" [formGroup]="newRoleForm" (ngSubmit)="submitNewRole()" novalidate data-testid="new-role-form">
+      <h3>{{ 'family.permissions.new_role.heading' | transloco }}</h3>
+      <label class="field">
+        <span>{{ 'family.permissions.new_role.name.label' | transloco }}</span>
+        <input formControlName="name" autocomplete="off" />
+        @if (newRoleForm.controls.name.touched && newRoleForm.controls.name.invalid) {
+          <span class="field-error">{{ 'family.permissions.new_role.name.error' | transloco }}</span>
+        }
+      </label>
+      <label class="field">
+        <span>{{ 'family.permissions.new_role.description.label' | transloco }}</span>
+        <input formControlName="description" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span>{{ 'family.permissions.new_role.type.label' | transloco }}</span>
+        <select formControlName="role_type" data-testid="new-role-type">
+          <option value="child">{{ 'family.permissions.new_role.type.child' | transloco }}</option>
+          <option value="co_parent">{{ 'family.permissions.new_role.type.co_parent' | transloco }}</option>
+        </select>
+        <span class="muted small">{{ 'family.permissions.new_role.type.hint' | transloco }}</span>
+      </label>
+      @if (roleError(); as key) {
+        <p class="error" role="alert">{{ key | transloco }}</p>
+      }
+      <div class="foot">
+        <button type="button" class="btn ghost" (click)="closeNewRole()">{{ 'family.permissions.new_role.cancel' | transloco }}</button>
+        <button type="submit" class="btn primary" [disabled]="roleSaving()">{{ 'family.permissions.new_role.submit' | transloco }}</button>
+      </div>
+    </form>
+  }
+
+  @if (roleToDelete(); as role) {
+    <div class="new-role" data-testid="delete-role-form">
+      <h3>{{ 'family.permissions.delete_role.heading' | transloco: { name: role.name } }}</h3>
+      <p class="muted small">{{ 'family.permissions.delete_role.body' | transloco }}</p>
+      @if (roleDeleteError(); as key) {
+        <p class="error" role="alert">{{ key | transloco }}</p>
+      }
+      <div class="foot">
+        <button type="button" class="btn ghost" data-testid="delete-role-cancel" (click)="cancelDeleteRole()">{{ 'family.permissions.delete_role.cancel' | transloco }}</button>
+        <button type="button" class="btn danger" data-testid="delete-role-confirm" [disabled]="roleDeleting()" (click)="confirmDeleteRole()">{{ 'family.permissions.delete_role.submit' | transloco }}</button>
+      </div>
+    </div>
+  }
+
+  @if (loadError(); as err) {
+    <div data-testid="perm-load-error">
+      <app-load-error [error]="err" (retry)="load()" />
+    </div>
+  } @else if (loading()) {
+    <app-loading variant="full" labelKey="family.permissions.loading" data-testid="perm-loading" />
+  } @else {
+    <div class="target-bar" role="group" [attr.aria-label]="'family.permissions.editing' | transloco">
+      <span class="target-label muted">{{ 'family.permissions.editing' | transloco }}</span>
+      <button
+        type="button"
+        class="chip"
+        [class.on]="isRoleMode()"
+        [attr.aria-pressed]="isRoleMode()"
+        data-testid="target-roles"
+        (click)="selectTarget(roleTarget)"
+      >{{ 'family.permissions.role_defaults' | transloco }}</button>
+      @for (member of members(); track member.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.on]="target() === member.id"
+          [attr.aria-pressed]="target() === member.id"
+          [attr.data-testid]="'target-' + member.id"
+          (click)="selectTarget(member.id)"
+        >
+          <app-avatar size="chip" [name]="member.display_name" [colour]="member.colour" [avatarId]="member.avatar_id" />
+          {{ member.display_name }}
+          @if (overrideCount(member.id) > 0) {
+            <span class="badge">{{ 'family.permissions.override_count' | transloco: { count: overrideCount(member.id) } }}</span>
+          }
+        </button>
+      }
+      <span class="tally muted" data-testid="perm-mod-count">
+        <span class="swatch" aria-hidden="true"></span>
+        {{ modCountKey() | transloco: { count: modifiedCount() } }}
+      </span>
+    </div>
+
+    @if (isRoleMode() && customRoles().length > 0) {
+      <div class="custom-roles" data-testid="custom-roles">
+        <span class="muted small">{{ 'family.permissions.custom_roles' | transloco }}</span>
+        @for (role of customRoles(); track role.id) {
+          <span class="chip custom" [attr.data-testid]="'custom-role-' + role.id">
+            {{ role.name }}
+            <button
+              type="button"
+              class="icon-btn"
+              [attr.data-testid]="'delete-role-' + role.id"
+              [attr.aria-label]="'family.permissions.delete_role.button' | transloco"
+              [attr.title]="'family.permissions.delete_role.button' | transloco"
+              (click)="askDeleteRole(role)"
+            >
+              <span class="material-icons">delete</span>
+            </button>
+          </span>
+        }
+      </div>
+    }
+
+    @if (members().length === 0) {
+      <p class="muted small" data-testid="perm-no-members">{{ 'family.permissions.no_members' | transloco }}</p>
+    }
+    @if (notice(); as key) {
+      <p class="ok" role="status">{{ key | transloco }}</p>
+    }
+    @if (actionError(); as key) {
+      <p class="error" role="alert">{{ key | transloco }}</p>
+      @if (conflict()) {
+        <button type="button" class="btn ghost small" data-testid="perm-reload" (click)="reloadAfterConflict()">{{ 'family.permissions.error.reload' | transloco }}</button>
+      }
+    }
+
+    <div class="perm-table-wrap">
+      <table class="perm-table" [attr.aria-label]="'family.permissions.heading' | transloco" data-testid="perm-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'family.permissions.column_permission' | transloco }}</th>
+            @if (isRoleMode()) {
+              <th scope="col">{{ 'family.permissions.parent' | transloco }}</th>
+              @for (role of editableRoles(); track role.id) {
+                <th scope="col">{{ role.name }}</th>
+              }
+            } @else {
+              <th scope="col">{{ 'family.permissions.column_role_default' | transloco }}</th>
+              <th scope="col">{{ 'family.permissions.column_override' | transloco }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (group of groups(); track group.key) {
+            <tr class="group-row">
+              <th scope="rowgroup" [attr.colspan]="columnCount()">{{ ('family.permissions.groups.' + group.key) | transloco }}</th>
+            </tr>
+            @for (entry of group.rows; track entry.code) {
+              <tr [attr.data-testid]="'perm-row-' + entry.code">
+                <th scope="row" class="perm-name">{{ codeKey(entry.code) | transloco }}</th>
+
+                @if (isRoleMode()) {
+                  <td [attr.data-label]="'family.permissions.parent' | transloco">
+                    <span class="locked">{{ 'family.permissions.levels.full' | transloco }}</span>
+                  </td>
+                  @for (role of editableRoles(); track role.id) {
+                    <td [attr.data-label]="role.name" [class.mod]="isRoleModified(role, entry.code)">
+                      @if (roleAllows(role, entry)) {
+                        <select
+                          class="perm-select"
+                          [attr.data-testid]="'cell-' + role.id + '-' + entry.code"
+                          [attr.aria-label]="(codeKey(entry.code) | transloco) + ': ' + role.name"
+                          (change)="onRoleSelect(role, entry.code, $event)"
+                        >
+                          @for (level of levelOptions(entry); track level) {
+                            <option [value]="level" [selected]="level === roleLevel(role, entry.code)">{{ levelKey(level) | transloco }}</option>
+                          }
+                        </select>
+                      } @else {
+                        <span class="locked" [attr.title]="'family.permissions.not_for_role' | transloco">—</span>
+                      }
+                    </td>
+                  }
+                } @else {
+                  <td [attr.data-label]="'family.permissions.column_role_default' | transloco">
+                    <span>{{ levelKey(roleDefaultLevel(entry.code)) | transloco }}</span>
+                  </td>
+                  <td [attr.data-label]="'family.permissions.column_override' | transloco" [class.mod]="hasOverride(entry.code)">
+                    <select
+                      class="perm-select"
+                      [attr.data-testid]="'override-' + target() + '-' + entry.code"
+                      [attr.aria-label]="(codeKey(entry.code) | transloco) + ': ' + ('family.permissions.column_override' | transloco)"
+                      (change)="onOverrideSelect(entry.code, $event)"
+                    >
+                      @for (level of overrideOptions(entry); track level) {
+                        <option [value]="level" [selected]="level === overrideValue(entry.code)">{{ levelKey(level) | transloco }}</option>
+                      }
+                    </select>
+                  </td>
+                }
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="muted small foot-note">{{ 'family.permissions.footer' | transloco }}</p>
+  }
+</section>

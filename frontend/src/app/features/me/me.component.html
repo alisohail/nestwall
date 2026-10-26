@@ -1,0 +1,123 @@
+<div class="me-page">
+  <header class="page-head">
+    <h1>{{ (auth.isChild() ? 'shell.nav.me' : 'me.title_parent') | transloco }}</h1>
+  </header>
+
+  @if (auth.isChild()) {
+    <div class="kid-layout">
+      <div class="col">
+        @if (auth.currentUser(); as me) {
+          @if (me.family; as family) {
+            <section class="card profile" data-testid="me-picture" aria-labelledby="me-profile-name">
+              <button
+                type="button"
+                class="avatar-edit"
+                data-testid="me-edit-picture"
+                [attr.aria-label]="'me.picture.open' | transloco"
+                (click)="showPicture.set(true)">
+                <app-avatar size="xl" [name]="me.user.display_name" [colour]="family.colour" [avatarId]="family.avatar_id" />
+                <span class="pencil-badge" aria-hidden="true"><app-icon name="pencil" [size]="16" /></span>
+              </button>
+              <h2 id="me-profile-name" class="name">{{ me.user.display_name }}</h2>
+              <p class="small muted">{{ 'me.profile.family' | transloco: { name: family.family_name } }}</p>
+              <app-me-profile-stats />
+            </section>
+          }
+        }
+
+        <a class="card flat share-link" routerLink="/share" [queryParams]="{ from: 'me' }" data-testid="me-share">
+          <span class="heart" aria-hidden="true">💛</span>
+          <span class="grow">
+            <span class="bold">{{ 'share.me_title' | transloco }}</span>
+            <span class="small muted">{{ 'share.me_body' | transloco }}</span>
+          </span>
+          <span class="material-icons muted" aria-hidden="true">chevron_right</span>
+        </a>
+
+        <app-my-badges-card />
+
+        <section class="card flat settings" data-testid="me-settings" aria-labelledby="me-settings-heading">
+          <h2 id="me-settings-heading" class="section-title">{{ 'me.settings.heading' | transloco }}</h2>
+          <div class="setting">
+            <span class="grow bold" id="me-dark-label">{{ 'me.settings.dark_mode' | transloco }}</span>
+            <button
+              type="button"
+              class="theme-switch"
+              role="switch"
+              data-testid="me-dark-mode"
+              aria-labelledby="me-dark-label"
+              [attr.aria-checked]="isDark()"
+              (click)="toggleTheme()">
+              <span class="knob" aria-hidden="true"></span>
+            </button>
+          </div>
+        </section>
+
+        <app-my-points />
+      </div>
+
+      <div class="col">
+        @if (auth.currentUser(); as me) {
+          @if (me.family) {
+            <section class="card details" data-testid="me-details" [attr.aria-label]="'me.details.heading' | transloco">
+              <app-my-details />
+            </section>
+          }
+        }
+        <section class="card password" data-testid="me-password">
+          <app-own-password />
+        </section>
+
+        <app-sessions />
+      </div>
+    </div>
+  } @else {
+    @if (auth.currentUser(); as me) {
+      @if (me.family; as family) {
+        <section class="card picture" data-testid="me-picture" aria-labelledby="me-picture-title">
+          <h2 id="me-picture-title">{{ 'me.picture.heading' | transloco }}</h2>
+          <p class="muted">{{ 'me.picture.intro' | transloco }}</p>
+          <div class="picture-row">
+            <button
+              type="button"
+              class="avatar-edit"
+              data-testid="me-edit-picture"
+              [attr.aria-label]="'me.picture.open' | transloco"
+              (click)="showPicture.set(true)">
+              <app-avatar size="xl" [name]="me.user.display_name" [colour]="family.colour" [avatarId]="family.avatar_id" />
+              <span class="pencil-badge" aria-hidden="true"><app-icon name="pencil" [size]="16" /></span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card details" data-testid="me-details" [attr.aria-label]="'me.details.heading' | transloco">
+          <app-my-details />
+        </section>
+      }
+    }
+
+    <section class="card password" data-testid="me-password">
+      <app-own-password />
+    </section>
+
+    <app-sessions />
+  }
+
+  @if (showPicture()) {
+    @if (auth.currentUser(); as me) {
+      @if (me.family; as family) {
+        <app-photo-editor
+          [memberId]="family.member_id"
+          [name]="me.user.display_name"
+          [colour]="family.colour"
+          [avatarId]="family.avatar_id"
+          [heading]="'me.picture.dialog_title' | transloco"
+          [intro]="'me.picture.dialog_intro' | transloco"
+          [removeLabel]="'me.picture.use_letter' | transloco"
+          (changed)="onPictureChanged()"
+          (closed)="showPicture.set(false)"
+        />
+      }
+    }
+  }
+</div>

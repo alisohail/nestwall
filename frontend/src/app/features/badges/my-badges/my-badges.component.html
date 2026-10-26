@@ -1,0 +1,88 @@
+<section class="my-badges" data-testid="my-badges-page">
+  <header class="head">
+    <a class="icon-btn back" routerLink="/me" [attr.aria-label]="'me.badges.back' | transloco" data-testid="my-badges-back">
+      <span class="material-icons" aria-hidden="true">arrow_back</span>
+    </a>
+    <div class="titles">
+      @if (data(); as d) {
+        <p class="count" data-testid="my-badges-count">
+          {{ 'me.badges.count_line' | transloco: { earned: d.earned_count, total: builtInTotal } }}
+        </p>
+      }
+      <h1>{{ 'me.badges.heading' | transloco }}</h1>
+    </div>
+  </header>
+
+  <p class="catch">{{ 'me.badges.catch' | transloco }}</p>
+
+  @if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="me.badges.loading" />
+  } @else if (loadState() === 'error') {
+    <div data-testid="my-badges-error">
+      <app-load-error [error]="loadError()" (retry)="load()" />
+    </div>
+  } @else {
+    @if (data(); as d) {
+      @if (!d.enabled) {
+        <p class="muted" data-testid="my-badges-off">{{ 'me.badges.off' | transloco }}</p>
+      } @else {
+        @if (d.from_parents.length) {
+          <section class="card flat group" data-testid="my-badges-from-parents">
+            <header class="group-head">
+              <h2>{{ 'me.badges.from_parents' | transloco }}</h2>
+            </header>
+            <div class="grid">
+              @for (award of d.from_parents; track award.id) {
+                <article class="tile custom">
+                  <span class="em" aria-hidden="true">{{ award.emoji }}</span>
+                  <h3>{{ award.name }}</h3>
+                  @if (award.note) {
+                    <p class="desc">{{ award.note }}</p>
+                  }
+                  <p class="by">{{ 'me.badges.from' | transloco: { name: award.awarded_by } }}</p>
+                </article>
+              }
+            </div>
+          </section>
+        }
+
+        @for (group of d.groups; track trackGroup($index, group)) {
+          <section class="card flat group" [attr.data-testid]="'my-badges-group-' + group.group">
+            <header class="group-head">
+              <h2>{{ 'settings.badges.group.' + group.group | transloco }}</h2>
+              <span class="badge">{{ 'me.badges.group_count' | transloco: { earned: group.earned, total: group.total } }}</span>
+            </header>
+            <div class="grid">
+              @for (badge of group.badges; track trackBadge($index, badge)) {
+                <article class="tile" [class.locked]="!badge.earned">
+                  <span class="em" aria-hidden="true">{{ emojiFor(badge.key) }}</span>
+                  <h3>{{ 'settings.badges.builtin.' + badge.key | transloco }}</h3>
+                  @if (badge.earned) {
+                    <p class="earned">{{ 'me.badges.earned' | transloco }}</p>
+                  } @else {
+                    <p class="desc">{{ 'me.badges.desc.' + badge.key | transloco }}</p>
+                    <div
+                      class="bp"
+                      role="progressbar"
+                      [attr.aria-valuemin]="0"
+                      [attr.aria-valuemax]="badge.target"
+                      [attr.aria-valuenow]="badge.progress"
+                      [attr.aria-label]="'settings.badges.builtin.' + badge.key | transloco"
+                    >
+                      <i [style.width.%]="percent(badge)"></i>
+                    </div>
+                    <p class="prog">{{ 'me.badges.progress' | transloco: { cur: badge.progress, target: badge.target } }}</p>
+                  }
+                </article>
+              }
+            </div>
+          </section>
+        }
+
+        @if (!d.from_parents.length && !d.groups.length) {
+          <p class="nw-empty-note" data-testid="my-badges-empty">{{ 'me.badges.empty' | transloco }}</p>
+        }
+      }
+    }
+  }
+</section>

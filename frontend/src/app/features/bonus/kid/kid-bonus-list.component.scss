@@ -1,0 +1,159 @@
+@use '../../../../styles/components/section-heading' as sh;
+@use '../../../../styles/components/task-card' as tc;
+
+@include sh.section-tones;
+
+:host {
+  display: block;
+}
+
+.kid-bonus {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+}
+
+/* The Bonus tab sits under its intro line. The tag hangs 11px above each card, so leave room for it. */
+.kid-bonus[data-mode='tab'] {
+  padding-top: var(--nw-space-6);
+}
+
+.kid-bonus.section-card {
+  @include sh.section-card;
+  gap: 0;
+}
+
+.kid-bonus-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+}
+
+.kid-bonus-body.section-body {
+  @include sh.section-body;
+}
+
+.section-head {
+  @include sh.section-heading;
+}
+
+.muted {
+  margin: 0;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.small {
+  font-size: var(--nw-text-sm);
+}
+
+.grow {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.bn {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-3) var(--nw-space-4);
+  border-radius: var(--nw-card-radius);
+  border: 1px solid var(--nw-color-outline-variant);
+  background: var(--nw-color-surface);
+  box-shadow: var(--nw-shadow);
+
+  @include tc.task-card-hover;
+
+  &.mine {
+    border-color: var(--nw-color-success);
+  }
+
+  &.taken {
+    opacity: 0.75;
+  }
+
+  &.done {
+    opacity: 0.85;
+  }
+}
+
+.ico {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--nw-radius-lg);
+  background: var(--nw-color-points);
+  color: var(--nw-color-on-points);
+}
+
+.ttl {
+  margin: 0;
+  font-size: var(--nw-text-base);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* Stretched link: the ::after covers the whole card so a tap anywhere opens the bonus. Buttons sit above it. */
+.ttl-link {
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::after {
+      outline: 3px solid var(--nw-color-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+  margin: var(--nw-space-1) 0 0;
+  font-size: var(--nw-text-sm);
+}
+
+.pts {
+  font-weight: 800;
+  color: var(--nw-color-on-warning-container);
+}
+
+.act {
+  position: relative;
+  z-index: var(--nw-z-raised);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2);
+  margin-left: auto;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-1);
+  font-size: var(--nw-text-sm);
+  color: var(--nw-color-on-surface-variant);
+
+  &.ok {
+    color: var(--nw-color-on-success-container);
+  }
+
+  .material-icons {
+    font-size: var(--nw-text-base);
+  }
+}

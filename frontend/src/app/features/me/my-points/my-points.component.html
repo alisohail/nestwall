@@ -1,0 +1,95 @@
+<section class="card my-points" aria-labelledby="me-points-title" data-testid="me-points">
+  <h2 id="me-points-title">{{ 'me.points.week' | transloco }}</h2>
+
+  @if (loadState() === 'error') {
+    <app-banner tone="error" data-testid="me-points-error">
+      {{ 'me.points.error' | transloco }}
+      <button type="button" class="btn ghost sm" (click)="load()">{{ 'me.points.retry' | transloco }}</button>
+    </app-banner>
+  } @else if (loadState() === 'loading') {
+    <div role="status" data-testid="me-points-loading">
+      <span class="nw-sr-only">{{ 'me.points.loading' | transloco }}</span>
+      <app-skeleton [rows]="2" />
+    </div>
+  } @else {
+    @if (points(); as p) {
+    <p class="week-total" data-testid="me-points-total">
+      <span class="total-value">{{ weekTotal() }}</span>
+      <span class="total-label">{{ 'me.points.week_total_label' | transloco }}</span>
+    </p>
+    @if (p.reserved > 0) {
+      <p class="reserved" data-testid="me-points-reserved">
+        <app-icon name="info" />
+        <span>{{ 'me.points.reserved' | transloco: { count: p.reserved } }}</span>
+      </p>
+    }
+    <ul class="stats" data-testid="me-points-stats">
+      <li class="stat" data-testid="me-stat-done">
+        <span class="stat-value">{{ doneTotal() }}</span>
+        <span class="stat-label">{{ 'me.points.stats.done' | transloco }}</span>
+      </li>
+      <li class="stat" data-testid="me-stat-missed">
+        <span class="stat-value">{{ missedTotal() }}</span>
+        <span class="stat-label">{{ 'me.points.stats.missed' | transloco }}</span>
+      </li>
+      <li class="stat" data-testid="me-stat-bonus">
+        <span class="stat-value">{{ bonusTotal() }}</span>
+        <span class="stat-label">{{ 'me.points.stats.bonus' | transloco }}</span>
+      </li>
+    </ul>
+    <div class="week" data-testid="me-points-week">
+      @for (day of days(); track $index) {
+        <div class="day" [class.today]="day.today" [attr.aria-current]="day.today ? 'date' : null">
+          <div class="bar">
+            <span class="value" [style.bottom]="'calc(' + day.percent + '% + 4px)'">{{ day.value }}</span>
+            <i aria-hidden="true" [style.height.%]="day.percent"></i>
+          </div>
+          <span class="day-name">{{ day.label }}</span>
+        </div>
+      }
+    </div>
+
+    <h3 class="sub-heading">{{ 'me.points.tasks_heading' | transloco }}</h3>
+    <ul class="legend" aria-hidden="true">
+      <li><i class="swatch done"></i>{{ 'me.points.stats.done' | transloco }}</li>
+      <li><i class="swatch missed"></i>{{ 'me.points.stats.missed' | transloco }}</li>
+    </ul>
+    <div class="week tasks" data-testid="me-points-tasks">
+      @for (day of taskDays(); track $index) {
+        <div class="day" [class.today]="day.today">
+          <div class="pair">
+            <span class="value" [style.bottom]="'calc(' + day.donePercent + '% + 4px)'">{{ day.done }}</span>
+            <i class="done" aria-hidden="true" [style.height.%]="day.donePercent"></i>
+            <i class="missed" aria-hidden="true" [style.height.%]="day.missedPercent"></i>
+          </div>
+          <span class="day-name">{{ day.label }}</span>
+        </div>
+      }
+    </div>
+
+    <h3 class="sub-heading">{{ 'me.points.recent' | transloco }}</h3>
+    @if (entries().length) {
+      <ul class="entries" data-testid="me-points-entries">
+        @for (e of entries(); track e.id) {
+          <li class="entry">
+            <div class="grow">
+              <div class="bold">{{ 'rewards.entry.' + e.type | transloco }}</div>
+              <div class="sub">
+                {{ e.created_at | date: 'mediumDate' }}
+                @if (e.reward_name) {
+                  · {{ e.reward_name }}
+                } @else if (e.reason) {
+                  · {{ e.reason }}
+                }
+              </div>
+            </div>
+            <span class="amount" [class.plus]="e.amount > 0" [class.minus]="e.amount < 0">{{ sign(e.amount) }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="nw-empty-note">{{ 'me.points.empty' | transloco }}</p>
+    }
+    }
+  }
+</section>

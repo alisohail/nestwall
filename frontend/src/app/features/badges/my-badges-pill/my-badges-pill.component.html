@@ -1,0 +1,23 @@
+@if (view(); as v) {
+  <a class="mini-badges" routerLink="/me/badges" data-testid="today-badges">
+    @if (v.stack.length) {
+      <span class="stack" aria-hidden="true">
+        @for (emoji of v.stack; track $index) {
+          <span class="mb">{{ emoji }}</span>
+        }
+        @if (v.more > 0) {
+          <span class="mb more">+{{ v.more }}</span>
+        }
+      </span>
+    }
+    <span class="lbl">
+      @if (v.earned === 1) {
+        {{ 'today.badges.one' | transloco }}
+      } @else {
+        {{ 'today.badges.many' | transloco: { count: v.earned } }}
+      }
+      <small>{{ 'today.badges.of' | transloco: { total: builtInTotal } }}</small>
+    </span>
+    <span class="go material-icons" aria-hidden="true">chevron_right</span>
+  </a>
+}

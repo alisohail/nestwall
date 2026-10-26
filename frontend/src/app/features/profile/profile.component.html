@@ -1,0 +1,53 @@
+<div class="profile-page" data-testid="profile-page">
+  <header class="page-head">
+    <h1>{{ 'me.title_parent' | transloco }}</h1>
+  </header>
+
+  <div class="column">
+    @if (auth.currentUser(); as me) {
+      @if (me.family; as family) {
+        <section class="card hero" data-testid="profile-hero">
+          <button
+            type="button"
+            class="avatar-edit"
+            data-testid="me-edit-picture"
+            [attr.aria-label]="'me.picture.open' | transloco"
+            (click)="showPicture.set(true)">
+            <app-avatar size="xl" [name]="me.user.display_name" [colour]="family.colour" [avatarId]="family.avatar_id" />
+            <span class="pencil-badge" aria-hidden="true"><app-icon name="pencil" [size]="16" /></span>
+          </button>
+          <h2 class="name">{{ me.user.display_name }}</h2>
+          <p class="muted small">{{ family.role_name }} · {{ family.family_name }}</p>
+        </section>
+
+        <section class="card details" data-testid="me-details" [attr.aria-label]="'me.details.heading' | transloco">
+          <app-my-details />
+        </section>
+      }
+    }
+
+    <section class="card password" data-testid="me-password">
+      <app-own-password />
+    </section>
+
+    <app-sessions />
+  </div>
+
+  @if (showPicture()) {
+    @if (auth.currentUser(); as me) {
+      @if (me.family; as family) {
+        <app-photo-editor
+          [memberId]="family.member_id"
+          [name]="me.user.display_name"
+          [colour]="family.colour"
+          [avatarId]="family.avatar_id"
+          [heading]="'me.picture.dialog_title' | transloco"
+          [intro]="'me.picture.dialog_intro' | transloco"
+          [removeLabel]="'me.picture.use_letter' | transloco"
+          (changed)="onPictureChanged()"
+          (closed)="showPicture.set(false)"
+        />
+      }
+    }
+  }
+</div>

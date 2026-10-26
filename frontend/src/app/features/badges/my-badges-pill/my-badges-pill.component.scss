@@ -1,0 +1,75 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.mini-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  min-height: 2.75rem;
+  padding: var(--nw-space-1) 0.875rem var(--nw-space-1) var(--nw-space-2);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface);
+  box-shadow: var(--nw-shadow);
+  color: var(--nw-color-on-surface);
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-decoration: none;
+  max-width: 100%;
+}
+
+.stack {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.mb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  margin-left: -0.5rem;
+  border: 2px solid var(--nw-color-surface);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-warning-container);
+  font-size: 1rem;
+  line-height: 1;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &.more {
+    width: auto;
+    padding: 0 var(--nw-space-2);
+    background: var(--nw-color-primary-container);
+    color: var(--nw-color-primary);
+    font-size: 0.6875rem;
+    font-weight: 800;
+  }
+}
+
+.lbl {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.1;
+
+  small {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--nw-color-on-surface-variant);
+  }
+}
+
+.go {
+  flex-shrink: 0;
+  color: var(--nw-color-on-surface-variant);
+  font-size: 1rem;
+}

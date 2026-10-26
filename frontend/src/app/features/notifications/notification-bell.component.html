@@ -1,0 +1,82 @@
+<button
+  class="icon-btn bell-btn"
+  type="button"
+  data-testid="bell-button"
+  aria-haspopup="true"
+  [attr.aria-expanded]="open()"
+  [attr.aria-label]="'shell.notif.open' | transloco: { count: unread() }"
+  [attr.title]="'shell.notif.open' | transloco"
+  (click)="toggle()">
+  <app-icon name="bell" [size]="20" />
+  @if (unread() > 0) {
+    <span class="bell-count" data-testid="bell-count">{{ badge() }}</span>
+  }
+</button>
+
+@if (open()) {
+  <div class="bell-panel card" role="dialog" [attr.aria-label]="'shell.notif.title' | transloco" data-testid="bell-panel">
+    <div class="bell-head">
+      <b>{{ 'shell.notif.title' | transloco }}</b>
+      @if (unread() > 0) {
+        <span class="badge teal">{{ 'shell.notif.unread' | transloco: { count: unread() } }}</span>
+      }
+      @if (items().length > 0) {
+        <button type="button" class="bell-clear" data-testid="bell-clear" (click)="clearAll()">
+          {{ 'shell.notif.clear' | transloco }}
+        </button>
+      }
+    </div>
+
+    @if (error()) {
+      <p class="bell-note">{{ 'shell.notif.error' | transloco }}</p>
+    } @else if (loading() && items().length === 0) {
+      <div role="status" data-testid="bell-loading">
+        <span class="nw-sr-only">{{ 'shell.notif.loading' | transloco }}</span>
+        <app-skeleton [rows]="3" />
+      </div>
+    } @else if (!loading() && items().length === 0) {
+      <p class="bell-note nw-empty-note">{{ 'shell.notif.empty' | transloco }}</p>
+    } @else {
+      <ul class="bell-list">
+        @for (item of items(); track item.id) {
+          <li>
+            <button
+              type="button"
+              class="bell-item"
+              [class.unread]="!item.read_at"
+              [attr.data-kind]="item.kind"
+              (click)="markRead(item)">
+              <span class="bell-icon tone-{{ kindMeta(item.kind).tone }}" aria-hidden="true">
+                <app-icon [name]="kindMeta(item.kind).icon" [size]="16" />
+              </span>
+              <span class="bell-text">
+                <span class="bell-title">
+                  {{ kindLabelKey(item.kind) | transloco }}
+                  @if (!item.read_at) {
+                    <span class="bell-new">{{ 'shell.notif.new' | transloco }}</span>
+                  }
+                </span>
+                <span class="bell-body">{{ item.body }}</span>
+                <span class="bell-time">{{ item.created_at | date: 'short' }}</span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="bell-foot">
+      @if (showEnableAlerts()) {
+        <button type="button" class="bell-enable" data-testid="bell-enable-alerts" (click)="enableBrowserAlerts()">
+          {{ 'shell.notif.enable_alerts' | transloco }}
+        </button>
+      }
+      @if (canSettings()) {
+        <a routerLink="/settings/admin/notifications" (click)="close()">{{ 'shell.notif.settings' | transloco }}</a>
+      }
+      @if (!isChild()) {
+        <a routerLink="/approvals" (click)="close()">{{ 'shell.notif.approvals' | transloco }}</a>
+      }
+    </div>
+  </div>
+}

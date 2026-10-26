@@ -1,0 +1,131 @@
+:host {
+  display: block;
+}
+
+.photo-dialog {
+  width: min(440px, 100%);
+}
+
+.dialog-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-1);
+
+  h2 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--nw-text-sm);
+  }
+}
+
+.preview-wrap {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--nw-space-2);
+}
+
+.preview {
+  display: block;
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  touch-action: none;
+  cursor: grab;
+}
+
+.choose {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--nw-space-3);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nw-space-2);
+  min-height: 5.5rem;
+  padding: var(--nw-space-3);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-card-radius);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+
+  &.tile-primary {
+    border: 2px solid var(--nw-color-primary);
+    background: color-mix(in srgb, var(--nw-color-primary) 10%, var(--nw-color-surface));
+    color: var(--nw-color-primary);
+  }
+
+  &:disabled {
+    opacity: .5;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--nw-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-1);
+  width: 100%;
+  font-size: var(--nw-text-sm);
+
+  input {
+    width: 100%;
+    min-height: 44px;
+    font: inherit;
+  }
+}
+
+.hint-box {
+  margin: 0;
+  padding: var(--nw-space-3);
+  border: 1px dashed var(--nw-color-outline);
+  border-radius: var(--nw-card-radius);
+  color: var(--nw-color-faint);
+  font-size: var(--nw-text-sm);
+  text-align: center;
+}
+
+.error {
+  margin: 0;
+  color: var(--nw-color-error);
+  font-size: var(--nw-text-sm);
+}
+
+.wide {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+}
+
+.dialog-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--nw-space-2);
+
+  .btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dialog-foot .btn {
+    flex: 1 1 auto;
+  }
+}

@@ -1,0 +1,378 @@
+:host { display: block; }
+
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+}
+
+.actions {
+  display: flex;
+  gap: var(--nw-space-2);
+  flex-wrap: wrap;
+}
+
+.grow { flex: 1 1 auto; min-width: 0; }
+.bold { font-weight: 700; }
+.small { font-size: var(--nw-text-sm); }
+.state { padding: var(--nw-space-4) 0; }
+
+.person,
+.approval,
+.bonus-row {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-3) 0;
+}
+
+.person { padding: var(--nw-space-2) 0; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+  padding: 0 0 var(--nw-space-3) 3rem;
+}
+
+
+.title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2);
+  margin-top: 2px;
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-sm);
+}
+
+/* Summary cards */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--nw-space-4);
+}
+
+/* The label sits on one top line in every tile. The content is centred in the rest of the tile, both ways. */
+.stat {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+  padding: var(--nw-space-3) var(--nw-space-4);
+}
+
+.stat-main {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nw-space-4);
+  min-width: 0;
+}
+
+.stat-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nw-space-1);
+  min-width: 0;
+  text-align: center;
+}
+
+.stat-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.stat-sub {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--nw-space-1);
+  max-width: 100%;
+  margin: 0;
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-sm);
+}
+
+/* Share bars under the stat value: each segment's width follows its count */
+.meter {
+  display: flex;
+  align-self: stretch;
+  height: 8px;
+  margin-top: var(--nw-space-1);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  overflow: hidden;
+}
+
+.meter i {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.meter i.tasks { background: var(--nw-color-warning); }
+.meter i.rewards { background: var(--nw-color-primary); }
+
+.stat-chip {
+  --chip: var(--nw-color-outline);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-1);
+  padding: 2px var(--nw-space-2) 2px 2px;
+  border-radius: var(--nw-radius-full);
+  background: color-mix(in srgb, var(--chip) 18%, transparent);
+  color: var(--nw-color-on-surface);
+  white-space: nowrap;
+}
+
+.stat-chip.tasks { --chip: var(--nw-color-warning); }
+.stat-chip.rewards { --chip: var(--nw-color-primary); }
+
+/* Overdue people sit in two compact columns so four names take two lines, not four. Narrow tiles drop to one column. */
+.stat-people {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  justify-items: center;
+  gap: 4px 6px;
+}
+
+.stat-people .stat-chip {
+  padding: 1px 6px 1px 1px;
+  font-size: var(--nw-text-xs);
+}
+
+@container (max-width: 240px) {
+  .stat-people {
+    grid-template-columns: max-content;
+  }
+}
+
+.stat-label {
+  margin: 0;
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+}
+
+.stat-value {
+  font-size: var(--nw-text-3xl);
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.stat-value.bad { color: var(--nw-color-error); }
+.stat-value.warn { color: var(--nw-color-warning); }
+
+.stat-value-star {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  color: var(--nw-color-warning);
+}
+
+.ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 5.25rem;
+  height: 5.25rem;
+  border-radius: 50%;
+  background: conic-gradient(var(--nw-color-primary) calc(var(--pct) * 1%), var(--nw-color-surface-variant) 0);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0.5625rem;
+    border-radius: 50%;
+    background: var(--nw-color-surface);
+  }
+}
+
+.ring-inner {
+  position: relative;
+  font-size: 1.375rem;
+  font-weight: 800;
+}
+
+/* Two columns: today by person and activity on the left, approvals and bonus tasks on the right, as in the mock */
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  gap: var(--nw-space-4);
+  align-items: start;
+}
+
+.count-text {
+  flex: none;
+  color: var(--nw-color-on-surface);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Today / This week toggle in the Today by person card header, as in the mock */
+.seg {
+  display: flex;
+  gap: var(--nw-space-1);
+  padding: var(--nw-space-1);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  flex: none;
+
+  button {
+    min-height: 44px;
+    padding: 0 var(--nw-space-3);
+    border: 0;
+    border-radius: var(--nw-radius-full);
+    background: transparent;
+    color: var(--nw-color-on-surface-variant);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+
+    &.on {
+      background: var(--nw-color-surface);
+      color: var(--nw-color-on-surface);
+      box-shadow: var(--nw-shadow);
+    }
+  }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+  min-width: 0;
+}
+
+.person-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--nw-space-2);
+  margin-bottom: 4px;
+}
+
+.page-head { justify-content: space-between; }
+
+.bar {
+  height: 8px;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  width: var(--w, 0%);
+  border-radius: inherit;
+  background: var(--c, var(--nw-color-primary));
+  transition: width var(--nw-motion-base);
+}
+
+.approval-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.approval {
+  padding: 0;
+}
+
+.approval .title { font-size: var(--nw-text-sm); }
+
+.approval .meta {
+  margin-top: 0;
+  font-size: var(--nw-text-xs);
+}
+
+.approval .btn { flex: none; }
+
+/* Bonus tasks today card: amber border as in the mock */
+.bonus-card { border-color: var(--nw-color-points); }
+
+.bonus-row .badge { flex: none; }
+
+.bonus-icon {
+  flex: none;
+  color: var(--nw-color-points);
+}
+
+.bonus-publish {
+  margin-top: var(--nw-space-3);
+  text-decoration: none;
+}
+
+.link {
+  color: var(--nw-color-primary);
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.card-head .link {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 6px;
+    width: 2px;
+    background: var(--nw-color-outline);
+  }
+}
+
+.ev {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.tl-dot {
+  position: absolute;
+  top: 0.25rem;
+  left: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  box-sizing: border-box;
+  border: 3px solid var(--nw-color-primary);
+  border-radius: 50%;
+  background: var(--nw-color-surface);
+}
+
+.ev-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+.ev-line b { font-weight: 800; }
+
+@media (max-width: 1100px) {
+  .cols { grid-template-columns: 1fr; }
+}

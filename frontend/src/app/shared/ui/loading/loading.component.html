@@ -1,0 +1,20 @@
+@switch (variant()) {
+  @case ('full') {
+    <div class="nw-loading nw-loading--full" role="status" data-testid="loading">
+      <img class="nw-loading__logo" [src]="logoUrl()" [alt]="'loading.logo_alt' | transloco" width="96" height="96" />
+      <p class="nw-loading__label">{{ labelKey() | transloco }}</p>
+    </div>
+  }
+  @case ('spinner') {
+    <span class="nw-loading nw-loading--spinner" role="status" data-testid="loading">
+      <span class="nw-loading__ring" aria-hidden="true"></span>
+      <span class="nw-sr-only">{{ labelKey() | transloco }}</span>
+    </span>
+  }
+  @default {
+    <div class="nw-loading nw-loading--inline" role="status" data-testid="loading">
+      <img class="nw-loading__mini" [src]="logoUrl()" alt="" width="40" height="40" />
+      <span class="nw-loading__label">{{ labelKey() | transloco }}</span>
+    </div>
+  }
+}

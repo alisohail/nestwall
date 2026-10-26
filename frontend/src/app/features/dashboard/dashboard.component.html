@@ -1,0 +1,318 @@
+<section class="dash" aria-labelledby="dash-title">
+  <div class="page-head">
+    <div>
+      <h1 id="dash-title">{{ greetingKey() | transloco: { name: displayName() } }}</h1>
+      @if (data(); as d) {
+        <p class="sub">
+          {{ 'dashboard.summary' | transloco: { day: longDay(d.date), done: d.summary.today_done, total: d.summary.today_total } }}
+        </p>
+      }
+    </div>
+    <div class="actions">
+      <a class="btn ghost" routerLink="/calendar" data-testid="dash-calendar">
+        <app-icon name="calendar" [size]="18" />{{ 'dashboard.calendar' | transloco }}
+      </a>
+      <a class="btn primary" routerLink="/tasks/new" data-testid="dash-quick-add">
+        <app-icon name="plus" [size]="18" />{{ 'dashboard.quick_add' | transloco }}
+      </a>
+    </div>
+  </div>
+
+  @if (data(); as d) {
+    @if (actionError(); as key) {
+      <app-banner tone="error" data-testid="dash-action-error">{{ key | transloco }}</app-banner>
+    }
+
+    <app-agenda-band data-testid="dash-band" [zone]="d.timezone" />
+
+    <div class="stats">
+      <div class="card stat" data-testid="stat-done">
+        <p class="stat-label">{{ 'dashboard.stats.done_today' | transloco }}</p>
+        <div class="stat-main">
+          <div class="ring" [style.--pct]="donePct()" aria-hidden="true">
+            <span class="ring-inner">{{ donePct() }}%</span>
+          </div>
+          <div class="stat-body">
+            <p class="stat-value">{{ d.summary.today_done }} / {{ d.summary.today_total }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="card stat" data-testid="stat-overdue">
+        <p class="stat-label">{{ 'dashboard.stats.overdue' | transloco }}</p>
+        <div class="stat-main">
+          <div class="stat-body">
+            <p class="stat-value" [class.bad]="d.summary.overdue > 0">{{ d.summary.overdue }}</p>
+            @if (d.summary.overdue > 0) {
+              <div class="meter" aria-hidden="true">
+                @for (g of overdueGroups(); track g.member_id) {
+                  <i [style.flex-grow]="g.count" [style.background]="g.colour"></i>
+                }
+              </div>
+            }
+            <p class="stat-sub stat-people">
+              @if (d.summary.overdue === 0) {
+                {{ 'dashboard.stats.overdue_none' | transloco }}
+              } @else {
+                @for (g of overdueGroups(); track g.member_id) {
+                  <span class="stat-chip" [style.--chip]="g.colour"><app-avatar size="chip" [name]="g.name" [colour]="g.colour" [avatarId]="g.avatar_id" />{{ 'dashboard.stats.overdue_person' | transloco: { name: g.name, count: g.count } }}</span>
+                }
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+      <a class="card stat stat-link" routerLink="/approvals" data-testid="stat-waiting">
+        <p class="stat-label">{{ 'dashboard.stats.waiting' | transloco }}</p>
+        <div class="stat-main">
+          <div class="stat-body">
+            <p class="stat-value" [class.warn]="waitingTotal() > 0">{{ waitingTotal() }}</p>
+            @if (waitingTotal() > 0) {
+              <div class="meter" aria-hidden="true">
+                <i class="tasks" [style.flex-grow]="d.summary.waiting_approval"></i>
+                <i class="rewards" [style.flex-grow]="d.summary.waiting_reward_requests"></i>
+              </div>
+            }
+            <p class="stat-sub">
+              <span class="stat-chip tasks">{{ 'dashboard.stats.waiting_sub_tasks' | transloco: { count: d.summary.waiting_approval } }}</span>
+              <span class="stat-chip rewards">{{ 'dashboard.stats.waiting_sub_rewards' | transloco: { count: d.summary.waiting_reward_requests } }}</span>
+            </p>
+          </div>
+        </div>
+      </a>
+      <div class="card stat" data-testid="stat-points">
+        <p class="stat-label">{{ 'dashboard.stats.points_week' | transloco }}</p>
+        <div class="stat-main">
+          <div class="stat-body">
+            <p class="stat-value stat-value-star">
+              <app-icon name="star" [size]="22" />{{ d.summary.points_week }}
+            </p>
+            @if (d.summary.points_week === 0) {
+              <p class="stat-sub">{{ 'dashboard.stats.points_none' | transloco }}</p>
+            }
+            @if (pointPeople().length > 0) {
+              <div class="meter" aria-hidden="true">
+                @for (p of pointPeople(); track p.member_id) {
+                  <i [style.flex-grow]="p.points_week" [style.background]="p.member_colour"></i>
+                }
+              </div>
+              <p class="stat-sub">
+                @for (p of pointPeople(); track p.member_id) {
+                  <span class="stat-chip" [style.--chip]="p.member_colour"><app-avatar size="chip" [name]="p.member_name" [colour]="p.member_colour" [avatarId]="p.avatar_id" />{{ p.member_name }} {{ p.points_week }}</span>
+                }
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-weather-tile class="weather-slot" variant="compact" [canConfigure]="canSettings()" />
+
+    <div class="cols">
+      <div class="stack">
+        <section class="card" aria-labelledby="people-title" data-testid="people">
+          <div class="card-head">
+            <h2 id="people-title">{{ 'dashboard.people.title' | transloco }}</h2>
+            <div class="seg" role="group" [attr.aria-label]="'dashboard.people.scope_label' | transloco">
+              <button
+                type="button"
+                data-testid="scope-today"
+                [class.on]="personScope() === 'today'"
+                [attr.aria-pressed]="personScope() === 'today'"
+                (click)="personScope.set('today')"
+              >
+                {{ 'dashboard.people.scope_today' | transloco }}
+              </button>
+              <button
+                type="button"
+                data-testid="scope-week"
+                [class.on]="personScope() === 'week'"
+                [attr.aria-pressed]="personScope() === 'week'"
+                (click)="personScope.set('week')"
+              >
+                {{ 'dashboard.people.scope_week' | transloco }}
+              </button>
+            </div>
+          </div>
+          @for (p of d.people; track p.member_id) {
+            <div class="person" data-testid="person-row">
+              <app-avatar size="list" [name]="p.member_name" [colour]="p.member_colour" [avatarId]="p.avatar_id" />
+              <div class="grow">
+                <div class="person-head">
+                  <span class="bold">{{ p.member_name }}</span>
+                  @if (personStatus(p); as chip) {
+                    <span class="badge {{ chip.cls }}" data-testid="person-status">{{ chip.key | transloco: chip.params }}</span>
+                  }
+                </div>
+                <div
+                  class="bar"
+                  role="progressbar"
+                  [attr.aria-label]="p.member_name"
+                  [attr.aria-valuemin]="0"
+                  [attr.aria-valuemax]="countsFor(p).total"
+                  [attr.aria-valuenow]="countsFor(p).done"
+                >
+                  <i [style.--w]="percentOf(p) + '%'" [style.--c]="p.member_colour"></i>
+                </div>
+              </div>
+              @if (countsFor(p); as c) {
+                <span class="muted small count-text" data-testid="person-count">
+                  @if (c.total === 0) {
+                    {{ (personScope() === 'week' ? 'dashboard.people.nothing_week' : 'dashboard.people.nothing') | transloco }}
+                  } @else {
+                    {{ 'dashboard.people.count' | transloco: { done: c.done, total: c.total } }}
+                  }
+                </span>
+              }
+              <span
+                class="pts"
+                [attr.aria-label]="'dashboard.people.points_label' | transloco: { points: p.points_week }"
+                data-testid="person-points"
+              >
+                <app-icon name="star" [size]="13" />{{ p.points_week }}
+              </span>
+            </div>
+                            @if (personScope() === 'today' && itemsFor(p.member_id).length > 0) {
+                              <div class="chips" data-testid="person-chips">
+                                @for (item of itemsFor(p.member_id); track item.task_id) {
+                                  @if (isDone(item)) {
+                                    <span class="badge ok"><app-icon name="check" [size]="12" />{{ item.title }} · {{ clock(item.due_at) }}</span>
+                                  } @else if (isOverdue(item)) {
+                                    <span class="badge err">{{ item.title }} · {{ clock(item.due_at) }}</span>
+                                  } @else {
+                                    <span class="badge">{{ item.title }} · {{ clock(item.due_at) }}</span>
+                                  }
+                                }
+                              </div>
+                            }
+                          } @empty {
+            <p class="nw-empty-note">{{ 'dashboard.people.empty' | transloco }}</p>
+          }
+        </section>
+
+        <section class="card" aria-labelledby="activity-title" data-testid="activity">
+          <div class="card-head">
+            <h2 id="activity-title">{{ 'dashboard.activity.title' | transloco }}</h2>
+            <a class="link" routerLink="/points" data-testid="activity-ledger">{{ 'dashboard.activity.view_ledger' | transloco }}</a>
+          </div>
+          <ol class="timeline">
+            @for (ev of d.activity; track ev.created_at + ev.task_id + ev.action + ev.member_id) {
+              <li class="ev" data-testid="activity-row">
+                <span class="tl-dot" aria-hidden="true"></span>
+                <div class="ev-line">
+                  <b>{{ ev.member_name }}</b> {{ 'dashboard.activity.' + activityKey(ev) | transloco }} <span>{{ ev.task_title }}</span>
+                  <span class="badge {{ pillFor(ev).cls }}">{{ pillFor(ev).key | transloco: pillFor(ev).params }}</span>
+                </div>
+                  <div class="small muted">{{ when(ev.created_at) }}</div>
+              </li>
+            } @empty {
+              <li class="nw-empty-note" data-testid="activity-empty">{{ 'dashboard.activity.empty' | transloco }}</li>
+            }
+          </ol>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card" aria-labelledby="approvals-title" data-testid="approvals">
+          <div class="card-head">
+            <h2 id="approvals-title">{{ 'dashboard.approvals.title' | transloco }}</h2>
+            <a class="link" routerLink="/approvals" data-testid="approvals-all">
+              {{ 'dashboard.approvals.see_all' | transloco: { count: waitingTotal() } }}
+            </a>
+          </div>
+          <div class="approval-list">
+          @for (a of d.approvals; track a.task_id + a.member_id) {
+            <div class="approval" data-testid="approval-row">
+              <app-avatar size="xs" [name]="a.member_name" [colour]="a.member_colour" [avatarId]="a.avatar_id" />
+              <div class="grow">
+                <div class="title">{{ a.title }}</div>
+                <div class="meta">
+                  <span>{{ 'dashboard.approvals.submitted_at' | transloco: { time: clock(a.completed_at) } }}</span>
+                  @if (a.completed_late) {
+                    <span class="badge amber">{{ 'dashboard.approvals.late' | transloco }}</span>
+                  }
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn soft sm"
+                data-testid="approve-btn"
+                [disabled]="approving() !== null"
+                [attr.aria-busy]="isApproving(a)"
+                [attr.aria-label]="'dashboard.approvals.approve_label' | transloco: { title: a.title, name: a.member_name }"
+                (click)="approve(a)"
+              >
+                {{ 'dashboard.approvals.approve' | transloco }}
+              </button>
+            </div>
+          } @for (r of d.reward_requests; track r.redemption_id) {
+            <div class="approval" data-testid="reward-row">
+              <app-avatar size="xs" [name]="r.member_name" [colour]="r.member_colour" [avatarId]="r.avatar_id" />
+              <div class="grow">
+                <div class="title">
+                  <span aria-hidden="true">{{ r.reward_icon }}</span>
+                  {{ 'dashboard.approvals.reward' | transloco: { name: r.reward_name } }}
+                </div>
+                <div class="meta">
+                  <span>{{ 'dashboard.approvals.reward_meta' | transloco: { cost: r.cost } }}</span>
+                </div>
+              </div>
+              <a
+                class="btn soft sm"
+                routerLink="/approvals"
+                data-testid="review-btn"
+                [attr.aria-label]="'dashboard.approvals.review_label' | transloco: { name: r.reward_name, member: r.member_name }"
+              >
+                {{ 'dashboard.approvals.review' | transloco }}
+              </a>
+            </div>
+          }
+          @if (d.approvals.length === 0 && d.reward_requests.length === 0) {
+            <p class="nw-empty-note" data-testid="approvals-empty">{{ 'dashboard.approvals.empty' | transloco }}</p>
+          }
+          </div>
+        </section>
+
+        <section class="card bonus-card" aria-labelledby="bonus-title" data-testid="dash-bonus">
+          <div class="card-head">
+            <h2 id="bonus-title">{{ 'dashboard.bonus.title' | transloco }}</h2>
+            <a class="link" routerLink="/bonus" data-testid="dash-bonus-manage">{{ 'dashboard.bonus.manage' | transloco }}</a>
+          </div>
+          @if (bonusError()) {
+            <p class="muted" role="status" data-testid="dash-bonus-error">{{ 'dashboard.bonus.error' | transloco }}</p>
+          } @else {
+            @for (b of bonusRows(); track b.id) {
+              <div class="bonus-row" data-testid="dash-bonus-row">
+                <span class="bonus-icon" aria-hidden="true"><app-icon name="gift" [size]="20" /></span>
+                <div class="grow">
+                  <div class="title">{{ 'dashboard.bonus.line' | transloco: { title: b.title, points: b.points } }}</div>
+                  <div class="meta">
+                    <span>{{ b.detailKey | transloco: b.detailParams }}</span>
+                  </div>
+                </div>
+                <span class="badge {{ b.badgeClass }}">{{ b.badgeKey | transloco: b.badgeParams }}</span>
+              </div>
+            } @empty {
+              <p class="nw-empty-note" data-testid="dash-bonus-empty">{{ 'dashboard.bonus.empty' | transloco }}</p>
+            }
+          }
+          <a class="btn amber block bonus-publish" routerLink="/bonus/new" data-testid="dash-bonus-publish">
+            {{ 'dashboard.bonus.publish' | transloco }}
+          </a>
+        </section>
+
+        <app-banner tone="info" icon="monitor" data-testid="kitchen-tablet">
+          <span>{{ 'dashboard.tablet.empty' | transloco }}</span>
+        </app-banner>
+      </div>
+    </div>
+  } @else if (loadState() === 'error') {
+    <div data-testid="dash-error">
+      <app-load-error [error]="loadError()" (retry)="reload()" />
+    </div>
+  } @else {
+    <div data-testid="dash-loading">
+      <app-loading variant="full" labelKey="dashboard.loading" />
+    </div>
+  }
+</section>

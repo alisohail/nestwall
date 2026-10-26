@@ -1,0 +1,28 @@
+@use '../settings-ui' as ui;
+
+:host {
+  display: block;
+}
+
+@include ui.base;
+
+.back {
+  display: none;
+}
+
+// Phone and tablet: the list and the editor take turns on screen. While editing, the editor fills the view.
+@media (max-width: 1100px) {
+  .tpl-page.editing > .defaults,
+  .tpl-page.editing > .type-seg {
+    display: none;
+  }
+
+  .split:not(.show-editor) > .editor-col,
+  .split.show-editor > .list-col {
+    display: none;
+  }
+
+  .back {
+    display: inline-flex;
+  }
+}

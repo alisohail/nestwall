@@ -1,0 +1,374 @@
+<header class="page-head">
+  <div>
+    <a class="icon-btn back" [routerLink]="['/tasks']" [queryParams]="backQuery" [attr.aria-label]="'tasks.back' | transloco">
+      <span class="material-icons" aria-hidden="true">arrow_back</span>
+    </a>
+    <h1>{{ (editing ? 'tasks.form.edit_title' : 'tasks.form.new_title') | transloco }}</h1>
+  </div>
+  @if (loadState() === 'ready') {
+    <div class="actions">
+      @if (!editing) {
+        <button class="btn ghost" type="button" (click)="templateOpen.set(!templateOpen())">{{ 'tasks.form.save_template' | transloco }}</button>
+      }
+      <a class="btn ghost" [routerLink]="['/tasks']" [queryParams]="backQuery">{{ 'tasks.form.cancel' | transloco }}</a>
+      <button class="btn primary" type="submit" form="task-form" [disabled]="saving() || repeatsLocked() || !hasUnsavedChanges()">
+        {{ (editing ? 'tasks.form.save' : 'tasks.form.create') | transloco }}
+      </button>
+    </div>
+  }
+</header>
+
+@if (loadState() === 'loading') {
+  <app-loading class="state" variant="full" labelKey="tasks.form.loading" />
+} @else if (loadState() === 'error') {
+  <app-error-state class="state" messageKey="tasks.form.load_error" retryKey="tasks.retry" (retry)="load()" />
+} @else {
+  <form id="task-form" class="split" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <div class="list-col col">
+      @if (saveError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      @if (partialChecklist) {
+        <p class="notice" role="status">{{ 'tasks.form.checklist_partial' | transloco }}</p>
+      }
+      @if (templateSaved()) {
+        <p class="notice" role="status">{{ 'tasks.form.template_saved' | transloco }}</p>
+      }
+
+      @if (!editing && templates().length > 0) {
+        <section class="card">
+          <h3>{{ 'tasks.form.template_pick' | transloco }}</h3>
+          <div class="row wrap mt-s">
+            @for (t of visibleTemplates(); track t.id) {
+              <button
+                type="button"
+                class="chip"
+                [class.on]="selectedTemplateId() === t.id"
+                [attr.aria-pressed]="selectedTemplateId() === t.id"
+                (click)="applyTemplate(t)"
+              >
+                {{ t.name }}
+              </button>
+            }
+            @if (templates().length > visibleTemplates().length) {
+              <button type="button" class="chip" (click)="templatesExpanded.set(true)">{{ 'tasks.form.template_more' | transloco }}</button>
+            }
+          </div>
+          <p class="tiny muted mt-s">{{ 'tasks.form.template_hint' | transloco }}</p>
+        </section>
+      }
+
+      <section class="card col">
+        <div class="field">
+          <label for="task-title">{{ 'tasks.form.title' | transloco }}</label>
+          <input id="task-title" class="input" formControlName="title" [attr.aria-invalid]="f.title.touched && f.title.invalid" />
+          @if (f.title.touched && f.title.invalid) {
+            <span class="hint err">{{ 'tasks.form.error.title_required' | transloco }}</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="task-description">
+            {{ 'tasks.form.description' | transloco }}
+            <span class="muted weight-normal">{{ 'tasks.form.optional' | transloco }}</span>
+          </label>
+          <textarea id="task-description" class="textarea" rows="3" formControlName="description"></textarea>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label for="task-category">{{ 'tasks.form.category' | transloco }}</label>
+            <select id="task-category" class="select" formControlName="category_id">
+              <option value="">{{ 'tasks.form.category_none' | transloco }}</option>
+              @for (c of categories(); track c.id) {
+                <option [value]="c.id">{{ c.emoji }} {{ c.name }}</option>
+              }
+            </select>
+            <span class="hint">{{ 'tasks.form.category_hint' | transloco }}</span>
+          </div>
+
+          <div class="field">
+            <span class="field-label">{{ 'tasks.form.priority' | transloco }}</span>
+            <div class="seg" role="radiogroup" [attr.aria-label]="'tasks.form.priority' | transloco">
+              @for (p of priorities; track p) {
+                <button
+                  type="button"
+                  role="radio"
+                  [attr.aria-checked]="formValue().priority === p"
+                  [class.on]="formValue().priority === p"
+                  (click)="f.priority.setValue(p)"
+                >
+                  {{ 'tasks.priority.' + p | transloco }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">{{ 'tasks.form.part_of_day' | transloco }}</span>
+          <div class="seg" role="radiogroup" [attr.aria-label]="'tasks.form.part_of_day' | transloco">
+            @for (p of partsOfDay; track p) {
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="formValue().part_of_day === p"
+                [class.on]="formValue().part_of_day === p"
+                (click)="f.part_of_day.setValue(p)"
+              >
+                {{ 'tasks.part.' + p | transloco }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">{{ 'tasks.form.assign' | transloco }}</span>
+          <div class="row wrap">
+            @for (m of activeMembers(); track m.id) {
+              <button
+                type="button"
+                class="chip"
+                [class.on]="formValue().assignees.includes(m.id)"
+                [attr.aria-pressed]="formValue().assignees.includes(m.id)"
+                (click)="toggleAssignee(m.id)"
+              >
+                <app-avatar size="xs" [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />
+                {{ m.display_name }}
+              </button>
+            }
+          </div>
+          @if (f.assignees.touched && f.assignees.invalid) {
+            <span class="hint err">{{ 'tasks.form.error.assignee_required' | transloco }}</span>
+          }
+          <p class="hint mt-s">
+            {{ 'tasks.form.assign_hint' | transloco }}
+            <span class="disabled-link" aria-disabled="true">{{ 'tasks.form.bonus_link' | transloco }}</span>
+            <span class="muted">({{ 'tasks.form.bonus_later' | transloco }})</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="card col">
+        <h3>{{ 'tasks.form.when' | transloco }}</h3>
+        <div class="grid">
+          <div class="field">
+            <label for="task-date">{{ 'tasks.form.date' | transloco }}</label>
+            <input id="task-date" class="input" type="date" formControlName="due_date" />
+          </div>
+          <div class="field">
+            <label for="task-time">{{ 'tasks.form.due_time' | transloco }}</label>
+            <input id="task-time" class="input" type="time" formControlName="due_time" />
+          </div>
+        </div>
+
+        @if (!editing) {
+          <div class="field">
+            <span class="field-label">{{ 'tasks.form.repeat' | transloco }}</span>
+            <app-repeat-builder [(state)]="repeat" [startDate]="dueDate()" />
+            <span class="hint">{{ 'tasks.form.repeat_hint' | transloco }}</span>
+          </div>
+        } @else if (repeatsLocked()) {
+          <p class="notice" role="status">{{ 'tasks.form.repeat_locked' | transloco }}</p>
+        } @else {
+          <p class="hint">{{ 'tasks.form.repeat_edit_note' | transloco }}</p>
+        }
+      </section>
+
+      <section class="card col">
+        <div class="row">
+          <h3>{{ 'tasks.form.past_due' | transloco }}</h3>
+          <span class="badge teal right">{{ 'tasks.form.past_due_badge' | transloco }}</span>
+        </div>
+        <p class="small muted intro">{{ 'tasks.form.past_due_intro' | transloco }}</p>
+        <div class="grid">
+          <div class="field">
+            <span class="field-label">{{ 'tasks.form.expiry' | transloco }}</span>
+            <div class="row">
+              <input class="input num" type="number" min="1" formControlName="expires_value" [attr.aria-label]="'tasks.form.expiry' | transloco" />
+              <select class="select unit" formControlName="expires_unit" [attr.aria-label]="'tasks.form.expiry' | transloco">
+                @for (u of expiryUnits; track u) {
+                  <option [value]="u">{{ 'tasks.form.units.' + u | transloco }}</option>
+                }
+              </select>
+            </div>
+            <span class="hint">{{ 'tasks.form.expiry_hint' | transloco }}</span>
+          </div>
+
+          <div class="field">
+            <span class="field-label">{{ 'tasks.form.late_points' | transloco }}</span>
+            <div class="row">
+              <input class="input num" type="number" min="0" max="100" formControlName="late_points_percent" [attr.aria-label]="'tasks.form.late_points' | transloco" />
+              <span class="muted">{{ 'tasks.form.percent_of_points' | transloco }}</span>
+            </div>
+            <span class="hint">{{ 'tasks.form.late_points_hint' | transloco }}</span>
+          </div>
+
+          <div class="field">
+            <span class="field-label">{{ 'tasks.form.penalty' | transloco }}</span>
+            <div class="row">
+              <input class="input num" type="number" min="0" formControlName="penalty_value" [attr.aria-label]="'tasks.form.penalty' | transloco" />
+              <select class="select unit" formControlName="penalty_unit" [attr.aria-label]="'tasks.form.penalty' | transloco">
+                @for (u of penaltyUnits; track u) {
+                  <option [value]="u">{{ 'tasks.form.penalty_units.' + u | transloco }}</option>
+                }
+              </select>
+            </div>
+            <span class="hint">{{ 'tasks.form.penalty_hint' | transloco }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>{{ 'tasks.form.checklist' | transloco }}</h3>
+        @if (editing ? checklistLocked() : repeat().freq !== 'none') {
+          <p class="notice mt-s" role="status">
+            {{ (editing ? 'tasks.form.checklist_locked' : 'tasks.form.checklist_repeat_note') | transloco }}
+          </p>
+        }
+        @if (checklistError(); as key) {
+          <app-banner tone="error">{{ key | transloco }}</app-banner>
+        }
+
+        @if (editing) {
+          <ul class="checklist mt-s">
+            @for (item of task()?.checklist ?? []; track item.id) {
+              <li>
+                <button
+                  type="button"
+                  class="box"
+                  [class.on]="item.done"
+                  [disabled]="checklistLocked() || pendingStep() !== null"
+                  [attr.aria-pressed]="item.done"
+                  [attr.aria-label]="item.text"
+                  (click)="toggleItem(item)"
+                >
+                  @if (item.done) {
+                    <span class="material-icons">check</span>
+                  }
+                </button>
+                <input
+                  class="input grow"
+                  [value]="item.text"
+                  [disabled]="checklistLocked()"
+                  [attr.aria-label]="item.text"
+                  (change)="renameItem(item, inputValue($event))"
+                />
+                <button
+                  type="button"
+                  class="icon-btn"
+                  [disabled]="checklistLocked()"
+                  [attr.aria-label]="'tasks.form.checklist_remove' | transloco"
+                  (click)="removeItem(item)"
+                >
+                  <span class="material-icons">close</span>
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <ul class="checklist mt-s">
+            @for (text of draftItems(); track $index) {
+              <li>
+                <span class="box"></span>
+                <span class="grow">{{ text }}</span>
+                <button type="button" class="icon-btn" [attr.aria-label]="'tasks.form.checklist_remove' | transloco" (click)="removeDraft($index)">
+                  <span class="material-icons">close</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+
+        <div class="row mt-s quick-add">
+          <input
+            class="input grow"
+            type="text"
+            [value]="newItemText()"
+            [maxLength]="checklistMax"
+            [placeholder]="'tasks.form.checklist_placeholder' | transloco"
+            [attr.aria-label]="'tasks.form.checklist_placeholder' | transloco"
+            (input)="newItemText.set(inputValue($event))"
+            (keydown.enter)="$event.preventDefault(); addItem()"
+          />
+          <button
+            type="button"
+            class="btn soft sm"
+            [disabled]="!newItemText().trim() || checklistLocked() || (!editing && repeat().freq !== 'none')"
+            (click)="addItem()"
+          >
+            <span class="material-icons">add</span>{{ 'tasks.form.checklist_add' | transloco }}
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <aside class="side col sticky">
+      <section class="card col">
+        <h3>{{ 'tasks.form.points_rules' | transloco }}</h3>
+        <div class="field">
+          <span class="field-label">{{ 'tasks.form.points' | transloco }}</span>
+          <div class="row">
+            <button type="button" class="icon-btn" [attr.aria-label]="'tasks.form.points_minus' | transloco" (click)="bumpPoints(-1)">
+              <span class="material-icons">remove</span>
+            </button>
+            <input
+              class="input points"
+              type="number"
+              min="0"
+              max="1000"
+              formControlName="points"
+              [attr.aria-invalid]="f.points.touched && f.points.invalid"
+              [attr.aria-label]="'tasks.form.points' | transloco"
+            />
+            <button type="button" class="icon-btn" [attr.aria-label]="'tasks.form.points_plus' | transloco" (click)="bumpPoints(1)">
+              <span class="material-icons">add</span>
+            </button>
+          </div>
+          @if (f.points.touched && f.points.hasError('required')) {
+            <span class="hint err">{{ 'tasks.form.error.points_required' | transloco }}</span>
+          } @else if (f.points.touched && f.points.invalid) {
+            <span class="hint err">{{ 'tasks.form.error.points_range' | transloco }}</span>
+          }
+        </div>
+        <label class="setting">
+          <span class="grow">
+            <span class="t">{{ 'tasks.form.approval' | transloco }}</span>
+            <span class="d">{{ 'tasks.form.approval_hint' | transloco }}</span>
+          </span>
+          <input type="checkbox" formControlName="approval_required" />
+        </label>
+      </section>
+
+      @if (!editing && templateOpen()) {
+        <section class="card col">
+          <h3>{{ 'tasks.form.template_title' | transloco }}</h3>
+          <input
+            class="input"
+            type="text"
+            maxlength="100"
+            [value]="templateName()"
+            [placeholder]="'tasks.form.template_name' | transloco"
+            [attr.aria-label]="'tasks.form.template_name' | transloco"
+            (input)="templateName.set(inputValue($event))"
+          />
+          <button type="button" class="btn soft" [disabled]="!templateName().trim() || templateSaving()" (click)="saveTemplate()">
+            {{ 'tasks.form.template_save' | transloco }}
+          </button>
+        </section>
+      }
+
+      <section class="card preview-card">
+        <h3>{{ (previewName() ? 'tasks.form.preview_for' : 'tasks.form.preview') | transloco: { name: previewName() } }}</h3>
+        <div class="row mt-s">
+          <span class="grow bold">{{ formValue().title || ('tasks.form.preview_title' | transloco) }}</span>
+          <span class="pts">{{ formValue().points ?? 0 }}</span>
+        </div>
+        <div class="tiny muted">
+          {{ formatDay(formValue().due_date) }}{{ formValue().due_time ? ' ' + formatTime(formValue().due_time) : '' }}
+          · {{ 'tasks.form.steps' | transloco: { count: previewSteps() } }}
+        </div>
+      </section>
+    </aside>
+  </form>
+}

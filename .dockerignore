@@ -1,0 +1,26 @@
+# VCS, CI and editor noise
+.git
+.github
+.vscode
+.idea
+
+# Dependencies and build output
+node_modules
+dist
+coverage
+.angular
+
+# Documentation and mock-ups are not needed inside images
+design
+docs
+mock
+tools
+
+# Environment and local runtime data
+.env
+data
+nestwall-data
+
+# OS junk
+.DS_Store
+Thumbs.db

@@ -1,0 +1,260 @@
+<section class="today" aria-labelledby="today-title">
+  <header class="top">
+    <app-avatar size="lg" [name]="firstName()" [colour]="avatarColour()" [avatarId]="avatarId()" />
+    <div class="greet">
+      @if (data(); as d) {
+        <p class="kicker">{{ longDay(d.date) }}</p>
+      }
+      <h1 id="today-title">
+        @if (firstName()) {
+          {{ 'today.greeting.' + greetingPart() | transloco: { name: firstName() } }}
+        } @else {
+          {{ 'today.greeting_plain.' + greetingPart() | transloco }}
+        }
+      </h1>
+    </div>
+    <app-my-badges-pill />
+    <div class="top-chips">
+      @if (points(); as p) {
+        <span class="chip points" data-testid="today-points">
+          <span class="material-icons" aria-hidden="true">stars</span>
+          {{ 'today.points_chip' | transloco: { count: p.balance } }}
+        </span>
+      }
+      @if (data(); as d) {
+        <span class="chip streak" data-testid="today-streak">
+          <span class="material-icons" aria-hidden="true">local_fire_department</span>
+          {{ 'today.streak' | transloco: { days: d.streak_days } }}
+        </span>
+      }
+    </div>
+  </header>
+
+  @if (loadState() === 'error') {
+    <div data-testid="today-error">
+      <app-load-error [error]="loadError()" (retry)="reload()" />
+    </div>
+  } @else if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="today.loading" data-testid="today-loading" />
+  } @else {
+    @if (data(); as d) {
+    <div class="today-band">
+    <section class="card hero" [attr.aria-label]="'today.hero.label' | transloco" data-testid="today-hero">
+      <div class="hero-main">
+        <div class="ring" [style.--p]="donePct()" role="img" [attr.aria-label]="'today.hero.progress' | transloco: { done: d.summary.today_done, total: d.summary.today_total }">
+          <span class="ring-text"><b>{{ d.summary.today_done }}/{{ d.summary.today_total }}</b><small>{{ 'today.hero.done' | transloco }}</small></span>
+        </div>
+        <div class="grow">
+          <p class="hero-title">
+            @if (openToday() === 0) {
+              {{ 'today.hero.all_done' | transloco }}
+            } @else {
+              {{ 'today.hero.left' | transloco: { count: openToday() } }}
+            }
+          </p>
+          <p class="hero-sub">{{ (openToday() === 0 ? 'today.hero.streak_safe' : 'today.hero.sub') | transloco }}</p>
+          <div class="hero-chips">
+            @if (points()) {
+              <span class="chip points" data-testid="today-points-today">{{ 'today.points_today' | transloco: { count: pointsToday() } }}</span>
+            }
+            @if (d.summary.next_up; as next) {
+              <a class="chip" [routerLink]="['/my-tasks', next.task_id]" data-testid="today-next-up">
+                <span class="material-icons" aria-hidden="true">schedule</span>
+                {{ 'today.next' | transloco: { title: next.title } }}
+              </a>
+            } @else {
+              <span class="chip" data-testid="today-everything-done">
+                <span class="material-icons" aria-hidden="true">celebration</span>
+                {{ 'today.hero.everything_done' | transloco }}
+              </span>
+            }
+            @if (d.catch_up.length) {
+              <span class="chip amber" data-testid="today-past-due">
+                <span class="material-icons" aria-hidden="true">warning</span>
+                {{ 'today.catch_up_count' | transloco: { count: d.catch_up.length } }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+      @if (nextBadge(); as next) {
+        <div class="hero-badge" data-testid="today-next-badge">
+          <div class="hb-row">
+            <span class="hb-name">
+              <span class="material-icons" aria-hidden="true">emoji_events</span>
+              {{ 'today.hero.badge.next' | transloco: { days: next.days } }}
+            </span>
+            <span>{{ (next.more === 1 ? 'today.hero.badge.more_one' : 'today.hero.badge.more') | transloco: { count: next.more } }}</span>
+          </div>
+          <div class="hb-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="next.pct" [attr.aria-label]="'today.hero.badge.next' | transloco: { days: next.days }">
+            <span [style.width.%]="next.pct"></span>
+          </div>
+        </div>
+      } @else if (!badgesReady()) {
+        <div class="hero-badge" data-testid="today-badge-skeleton">
+          <app-skeleton [rows]="1" />
+        </div>
+      }
+    </section>
+
+    <section class="card reward-card" [attr.aria-label]="'today.reward.title' | transloco" data-testid="today-reward">
+      @if (rewardsReady()) {
+        @if (nextReward(); as reward) {
+        <div class="reward-head">
+          <div class="ico" aria-hidden="true">{{ reward.icon }}</div>
+          <div class="grow">
+            <p class="eyebrow">{{ 'today.reward.eyebrow' | transloco }}</p>
+            <p class="reward-name">{{ reward.name }}</p>
+          </div>
+        </div>
+        <div>
+          <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="rewardPct()" [attr.aria-label]="reward.name">
+            <span [style.width.%]="rewardPct()"></span>
+          </div>
+          <div class="reward-numbers">
+            <b>{{ points()?.balance }} / {{ reward.cost }}</b>
+            <span class="muted">
+              {{ 'today.reward.to_go' | transloco: { count: pointsToGo() } }}
+            </span>
+          </div>
+        </div>
+        <div class="reward-pills">
+          @for (pick of affordable(); track pick.id) {
+            <span class="pill">{{ pick.icon }} {{ pick.name }} · {{ pick.cost }}</span>
+          } @empty {
+            <span class="muted" data-testid="today-reward-close">{{ 'today.reward.keep_going' | transloco }}</span>
+          }
+        </div>
+      } @else if (allAffordable()) {
+        <p class="reward-all" data-testid="today-reward-all">{{ 'today.reward.every' | transloco }}</p>
+      } @else {
+        <p class="muted" data-testid="today-reward-none">{{ 'today.reward.none' | transloco }}</p>
+      }
+      <div class="reward-actions">
+        <a class="btn soft sm" routerLink="/rewards">{{ 'today.reward.see' | transloco }}</a>
+        @if (nextReward()) {
+          <a class="btn ghost sm" routerLink="/share" [queryParams]="{ from: 'home' }" data-testid="today-reward-share">{{ 'today.reward.share' | transloco }}</a>
+        }
+      </div>
+      } @else {
+        <app-skeleton [rows]="2" data-testid="today-reward-skeleton" />
+      }
+    </section>
+
+    <app-weather-tile class="weather-slot" variant="full" />
+    </div>
+
+    <div class="today-cols">
+    <div class="today-main">
+    @if (d.catch_up.length) {
+      <section class="card section-card" aria-labelledby="catch-up-title" data-testid="today-catch-up">
+        <div class="section-head tone-danger">
+          <div class="sh-title">
+            <span class="sh-icon" aria-hidden="true"><span class="material-icons">history</span></span>
+            <h2 id="catch-up-title">{{ 'today.catch_up' | transloco }}</h2>
+          </div>
+          <span class="sh-count">{{ 'today.catch_up_count' | transloco: { count: d.catch_up.length } }}</span>
+        </div>
+        <div class="section-body">
+          <div class="list">
+            @for (item of d.catch_up; track item.task_id) {
+              <app-task-row [item]="item" origin="home" />
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    @if (allDone()) {
+      <app-all-done class="section" data-testid="today-all-done" [name]="firstName()" [streakDays]="d.streak_days" />
+    } @else {
+      <section class="card section-card" aria-labelledby="today-list-title" data-testid="today-list">
+        <div class="section-head tone-primary">
+          <div class="sh-title">
+            <span class="sh-icon" aria-hidden="true"><span class="material-icons">checklist</span></span>
+            <h2 id="today-list-title">{{ 'today.my_tasks' | transloco }}</h2>
+          </div>
+        </div>
+        <div class="section-body">
+          @for (group of groups(); track group.part) {
+            <h3 class="part">{{ 'myTasks.part.' + group.part | transloco }}</h3>
+            <div class="list">
+              @for (item of group.items; track item.task_id) {
+                <app-today-task [item]="item" origin="home" (changed)="reload()" />
+              }
+            </div>
+          } @empty {
+            <p class="nw-empty-note" data-testid="today-empty">{{ 'today.empty' | transloco }}</p>
+          }
+        </div>
+      </section>
+    }
+    </div>
+    <div class="today-side">
+      <div class="bonus-band">
+        <app-kid-bonus-list mode="section" />
+      </div>
+      <aside class="card section-card" aria-labelledby="today-calendar-title" data-testid="today-calendar">
+        <div class="section-head tone-neutral">
+          <div class="sh-title">
+            <span class="sh-icon" aria-hidden="true"><span class="material-icons">calendar_month</span></span>
+            <h2 id="today-calendar-title">{{ 'today.calendar.title' | transloco }}</h2>
+          </div>
+        </div>
+        <div class="section-body">
+          @if (eventsFailed()) {
+            <p class="muted" data-testid="today-calendar-error">{{ 'calendar.band.error' | transloco }}</p>
+          } @else if (events().length) {
+            <ul class="today-events" data-testid="today-events">
+              @for (event of events(); track event.key) {
+                <li class="today-event">
+                  <span class="today-event-time muted">{{ event.all_day ? ('calendar.band.all_day' | transloco) : clock(event.starts_at) }}</span>
+                  <span class="today-event-title">{{ event.title }}</span>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="muted" data-testid="today-calendar-empty">{{ 'calendar.band.today_empty' | transloco }}</p>
+          }
+          <a class="today-events-link" routerLink="/calendar" data-testid="today-calendar-link">{{ 'today.calendar.open' | transloco }}</a>
+        </div>
+      </aside>
+      <aside class="card section-card today-week" aria-labelledby="today-week-title" data-testid="today-week-placeholder">
+        <div class="section-head tone-neutral">
+          <div class="sh-title">
+            <span class="sh-icon" aria-hidden="true"><span class="material-icons">bar_chart</span></span>
+            <h2 id="today-week-title">{{ 'today.week.title' | transloco }}</h2>
+          </div>
+        </div>
+        <div class="section-body">
+          @if (!pointsLoaded()) {
+            <app-skeleton [rows]="2" />
+          } @else {
+            @if (weekPie(); as pie) {
+              <div class="week-pie">
+                <div class="pie" #ring [style.background]="pie.background" aria-hidden="true" (mousemove)="onRingMove($event, ring)" (mouseleave)="hovered.set(null)">
+                  @if (centre(); as c) {
+                    <span class="pie-hole">
+                      <span class="pie-value" data-testid="today-week-centre-value">{{ c.value }}</span>
+                      <span class="pie-hole-label" data-testid="today-week-centre-label">{{ c.labelKey | transloco }}</span>
+                    </span>
+                  }
+                </div>
+                <ul class="pie-legend" data-testid="today-week-legend">
+                  <li data-testid="today-week-done" [class.active]="hovered() === 'done'" (mouseenter)="hovered.set('done')" (mouseleave)="hovered.set(null)"><i class="swatch done"></i><span class="pie-value">{{ pie.done }}</span> {{ 'me.points.stats.done' | transloco }}</li>
+                  <li data-testid="today-week-missed" [class.active]="hovered() === 'missed'" (mouseenter)="hovered.set('missed')" (mouseleave)="hovered.set(null)"><i class="swatch missed"></i><span class="pie-value">{{ pie.missed }}</span> {{ 'me.points.stats.missed' | transloco }}</li>
+                  <li data-testid="today-week-bonus" [class.active]="hovered() === 'bonus'" (mouseenter)="hovered.set('bonus')" (mouseleave)="hovered.set(null)"><i class="swatch bonus"></i><span class="pie-value">{{ pie.bonus }}</span> {{ 'me.points.stats.bonus' | transloco }}</li>
+                </ul>
+              </div>
+            } @else {
+              <p class="muted" data-testid="today-week-error">{{ 'me.points.error' | transloco }}</p>
+            }
+          }
+        </div>
+
+      </aside>
+    </div>
+    </div>
+    }
+  }
+</section>

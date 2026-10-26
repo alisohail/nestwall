@@ -1,0 +1,94 @@
+@use '../../tasks-ui' as ui;
+
+@include ui.base;
+
+:host {
+  display: block;
+}
+
+.rep {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+}
+
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--nw-radius-lg);
+  background: var(--nw-color-surface-variant);
+
+  button {
+    min-height: 40px;
+    padding: 0 var(--nw-space-3);
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--nw-color-on-surface-variant);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button.on {
+    background: var(--nw-color-surface);
+    color: var(--nw-color-on-surface);
+    box-shadow: var(--nw-shadow-lg);
+  }
+}
+
+.input,
+.select {
+  min-height: 44px;
+  padding: 0 var(--nw-space-3);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-lg);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.input.num {
+  width: 72px;
+  text-align: center;
+}
+
+.input.date {
+  width: 170px;
+}
+
+.rep-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+  padding: var(--nw-space-4);
+  border-radius: var(--nw-radius-xl);
+  background: var(--nw-color-surface-variant);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chip.day {
+  justify-content: center;
+  width: 52px;
+  height: 44px;
+  padding: 0;
+  border-radius: 14px;
+}
+
+.sum {
+  padding-top: var(--nw-space-3);
+  border-top: 1px dashed var(--nw-color-outline);
+}
+
+label.row {
+  cursor: pointer;
+}

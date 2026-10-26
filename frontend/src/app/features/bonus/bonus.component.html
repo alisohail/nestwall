@@ -1,0 +1,585 @@
+<section class="bonus" data-testid="bonus-page">
+  <header class="page-head">
+    <div class="grow">
+      <h1>{{ "bonus.title" | transloco }}</h1>
+    </div>
+    <div class="head-actions">
+      <a
+        class="btn ghost"
+        routerLink="/settings/admin/bonus-templates"
+        data-testid="bonus-templates-link"
+        >{{ "bonus.templatesLink" | transloco }}</a
+      >
+      <a
+        class="btn primary new-link"
+        routerLink="/bonus/new"
+        data-testid="bonus-new-link"
+        >{{ "bonus.newLink" | transloco }}</a
+      >
+    </div>
+  </header>
+
+  @if (notice(); as n) {
+    <app-banner tone="info" data-testid="bonus-notice">{{
+      n.key | transloco: n.params
+    }}</app-banner>
+  }
+  @if (error(); as e) {
+    <app-banner tone="error" data-testid="bonus-error">{{
+      e | transloco
+    }}</app-banner>
+  }
+
+  <div
+    class="tabs"
+    role="tablist"
+    [attr.aria-label]="'bonus.title' | transloco"
+  >
+    @for (tab of scopes; track tab) {
+      <button
+        type="button"
+        role="tab"
+        class="tab"
+        [id]="'bonus-tab-' + tab"
+        [attr.aria-selected]="scope() === tab"
+        [attr.tabindex]="scope() === tab ? 0 : -1"
+        [attr.data-testid]="'bonus-tab-' + tab"
+        (click)="setScope(tab)"
+      >
+        {{ "bonus.tabs." + tab | transloco }}
+      </button>
+    }
+  </div>
+
+  @if (state() === "loading") {
+    <app-loading
+      variant="full"
+      labelKey="bonus.loading"
+      data-testid="bonus-loading"
+    />
+  } @else if (state() === "error") {
+    <app-error-state
+      data-testid="bonus-load-error"
+      messageKey="bonus.loadError"
+      retryKey="bonus.retry"
+      (retry)="load()"
+    />
+  } @else if (scope() !== "today") {
+    @if (listRows().length === 0) {
+      <app-empty-state
+        data-testid="bonus-empty-scope"
+        [titleKey]="'bonus.scopeEmpty.' + scope() + '.title'"
+        [bodyKey]="'bonus.scopeEmpty.' + scope() + '.body'"
+      />
+    } @else if (scope() === "scheduled") {
+      <div class="card table-wrap" data-testid="bonus-scheduled-table">
+        <table class="bonus-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ "bonus.table.day" | transloco }}</th>
+              <th scope="col">{{ "bonus.table.task" | transloco }}</th>
+              <th scope="col">{{ "bonus.table.mode" | transloco }}</th>
+              <th scope="col">{{ "bonus.table.window" | transloco }}</th>
+              <th scope="col" class="num">
+                {{ "bonus.table.points" | transloco }}
+              </th>
+              <th scope="col" class="num">{{ "bonus.table.actions" | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of listRows(); track row.task.id) {
+              <tr [attr.data-testid]="'bonus-scheduled-row-' + row.task.id">
+                <td class="bold">{{ row.dayLabel }}</td>
+                <td>{{ row.task.title }}</td>
+                <td>
+                  <span class="chip">{{
+                    "bonus.mode." + row.task.claim_mode | transloco
+                  }}</span>
+                </td>
+                <td>{{ row.windowKey | transloco: row.windowParams }}</td>
+                <td class="num points">
+                  {{
+                    "bonus.points"
+                      | transloco: { points: formatPoints(row.task.points) }
+                  }}
+                </td>
+                <td>
+                  @if (row.task.editable) {
+                    <div class="row-acts">
+                      <button
+                        type="button"
+                        class="btn ghost sm"
+                        [disabled]="busy() !== null"
+                        (click)="openEdit(row.task)"
+                        [attr.data-testid]="
+                          'bonus-scheduled-edit-' + row.task.id
+                        "
+                      >
+                        {{ "bonus.action.edit" | transloco }}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn danger sm"
+                        [disabled]="busy() !== null"
+                        (click)="openEdit(row.task, 'cancel')"
+                        [attr.data-testid]="
+                          'bonus-scheduled-delete-' + row.task.id
+                        "
+                      >
+                        {{ "bonus.action.delete" | transloco }}
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+              @if (editing()?.id === row.task.id) {
+                <tr>
+                  <td colspan="6">
+                    <ng-container *ngTemplateOutlet="editPanel" />
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="card table-wrap" data-testid="bonus-past-table">
+        <table class="bonus-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ "bonus.table.day" | transloco }}</th>
+              <th scope="col">{{ "bonus.table.task" | transloco }}</th>
+              <th scope="col">{{ "bonus.table.result" | transloco }}</th>
+              <th scope="col" class="num">
+                {{ "bonus.table.points" | transloco }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of listRows(); track row.task.id) {
+              <tr [attr.data-testid]="'bonus-past-row-' + row.task.id">
+                <td class="bold">{{ row.dayLabel }}</td>
+                <td>{{ row.task.title }}</td>
+                <td data-testid="bonus-result">
+                  <span class="done-avatars">
+                    @for (m of row.doneMembers; track m.id) {
+                      <app-avatar
+                        [name]="m.display_name"
+                        [colour]="m.colour"
+                        [avatarId]="m.avatar_id"
+                        size="sm"
+                        data-testid="bonus-done-avatar"
+                      />
+                    }
+                  </span>
+                  {{ row.resultKey | transloco: row.resultParams }}
+                </td>
+                <td class="num points">
+                  {{
+                    "bonus.points"
+                      | transloco: { points: formatPoints(row.task.points) }
+                  }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  } @else if (cards().length === 0) {
+    <app-empty-state
+      data-testid="bonus-empty"
+      titleKey="bonus.empty.title"
+      bodyKey="bonus.empty.body"
+    >
+      <a class="btn primary empty-cta" routerLink="/bonus/new">{{
+        "bonus.empty.cta" | transloco
+      }}</a>
+    </app-empty-state>
+  } @else {
+    <ul class="bn-rows" role="list">
+      @for (card of cards(); track card.task.id) {
+        <li
+          class="card bn-row"
+          [attr.data-testid]="'bonus-card-' + card.task.id"
+        >
+          <div class="bn-head">
+            <span class="ico material-icons" aria-hidden="true">redeem</span>
+            <div class="grow">
+              <span class="bn-tag">{{ "bonus.tag" | transloco }}</span>
+              <h2 class="title">{{ card.task.title }}</h2>
+              <p class="bn-when" data-testid="bonus-when">
+                <span class="material-icons" aria-hidden="true">schedule</span>
+                <span>{{ dayLabel(card.task.day) }}</span>
+                <span aria-hidden="true">·</span>
+                @if (card.task.show_from) {
+                  <span>{{
+                    "bonus.window.range"
+                      | transloco
+                        : {
+                            from: time(card.task.show_from),
+                            to: time(card.task.ends_at),
+                          }
+                  }}</span>
+                } @else {
+                  <span>{{
+                    untilLabel(card.task).key
+                      | transloco: untilLabel(card.task).params
+                  }}</span>
+                }
+              </p>
+              @if (card.task.description) {
+                <p class="muted desc">{{ card.task.description }}</p>
+              }
+              <div class="chips">
+                <span class="chip-t">{{
+                  "bonus.mode." + card.task.claim_mode | transloco
+                }}</span>
+                <span class="chip-t">{{
+                  "bonus.state." + card.task.state | transloco
+                }}</span>
+                <span class="chip-t good">{{
+                  "bonus.noPenalty" | transloco
+                }}</span>
+              </div>
+            </div>
+            <div class="bn-side">
+              <span class="bn-pts">{{
+                "bonus.points"
+                  | transloco: { points: formatPoints(card.task.points) }
+              }}</span>
+              @if (card.task.editable) {
+                <div class="row-acts">
+                  <button
+                    type="button"
+                    class="btn ghost sm"
+                    [disabled]="busy() !== null"
+                    (click)="openEdit(card.task)"
+                    [attr.data-testid]="'bonus-edit-' + card.task.id"
+                  >
+                    {{ "bonus.action.edit" | transloco }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn danger sm"
+                    [disabled]="busy() !== null"
+                    (click)="openEdit(card.task, 'cancel')"
+                    [attr.data-testid]="'bonus-cancel-' + card.task.id"
+                  >
+                    {{ "bonus.action.delete" | transloco }}
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="rows">
+            @if (
+              card.task.claim_mode === "first_come" && card.rows.length === 0
+            ) {
+              <p class="muted small" data-testid="bonus-nobody">
+                {{ "bonus.nobodyYet" | transloco }}
+              </p>
+            }
+
+            @for (row of card.rows; track row.memberId) {
+              <div
+                class="kid-row"
+                [attr.data-testid]="
+                  'bonus-row-' + card.task.id + '-' + row.memberId
+                "
+              >
+                @if (row.member; as m) {
+                  <app-avatar
+                    [name]="m.display_name"
+                    [colour]="m.colour"
+                    [avatarId]="m.avatar_id"
+                  />
+                }
+                <div class="kid-main">
+                  <div class="bold">{{ row.name }}</div>
+                  <div class="muted small">
+                    {{ row.detailKey | transloco: row.detailParams }}
+                  </div>
+                </div>
+                <span
+                  class="badge"
+                  [class.ok]="row.claim?.status === 'approved'"
+                  [class.amber]="row.claim?.status === 'submitted'"
+                  [class.err]="row.claim?.status === 'rejected'"
+                  >{{ row.statusKey | transloco }}</span
+                >
+                @if (
+                  row.claim &&
+                  (row.claim.status === "claimed" ||
+                    row.claim.status === "rejected")
+                ) {
+                  <div class="row-acts">
+                    <button
+                      type="button"
+                      class="btn ghost sm"
+                      [disabled]="busy() !== null"
+                      (click)="unassign(row, card.task.title)"
+                      data-testid="bonus-unassign"
+                    >
+                      {{ "bonus.action.unassign" | transloco }}
+                    </button>
+                  </div>
+                }
+                @if (
+                  row.claim?.status === "submitted" &&
+                  sendBackFor() !== row.claim?.id
+                ) {
+                  <div class="row-acts">
+                    <button
+                      type="button"
+                      class="btn primary sm"
+                      [disabled]="busy() !== null"
+                      (click)="approve(row, card.task.title)"
+                      data-testid="bonus-approve"
+                    >
+                      {{ "bonus.approve" | transloco }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn ghost sm"
+                      [disabled]="busy() !== null"
+                      (click)="openSendBack(row)"
+                      data-testid="bonus-send-back"
+                    >
+                      {{ "bonus.sendBack" | transloco }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn ghost sm"
+                      [disabled]="busy() !== null"
+                      (click)="unassign(row, card.task.title)"
+                      data-testid="bonus-unassign"
+                    >
+                      {{ "bonus.action.unassign" | transloco }}
+                    </button>
+                  </div>
+                }
+              </div>
+
+              @if (
+                row.claim?.status === "submitted" &&
+                sendBackFor() === row.claim?.id
+              ) {
+                <form
+                  class="sendback"
+                  (ngSubmit)="submitSendBack(row, card.task.title)"
+                >
+                  <label
+                    class="field-label"
+                    [attr.for]="'note-' + row.claim?.id"
+                    >{{ "bonus.sendBackNote" | transloco }}</label
+                  >
+                  <textarea
+                    class="note"
+                    [attr.id]="'note-' + row.claim?.id"
+                    name="note"
+                    rows="2"
+                    [ngModel]="sendBackNote()"
+                    (ngModelChange)="sendBackNote.set($event)"
+                    [attr.aria-describedby]="'note-hint-' + row.claim?.id"
+                    data-testid="bonus-send-back-note"
+                  ></textarea>
+                  <p
+                    class="muted small"
+                    [attr.id]="'note-hint-' + row.claim?.id"
+                  >
+                    {{ "bonus.noteHint" | transloco: { max: maxNote } }}
+                  </p>
+                  @if (sendBackError(); as se) {
+                    <p class="err-text" role="alert">{{ se | transloco }}</p>
+                  }
+                  <div class="row-acts">
+                    <button
+                      type="submit"
+                      class="btn danger sm"
+                      [disabled]="busy() !== null"
+                      data-testid="bonus-send-back-confirm"
+                    >
+                      {{ "bonus.sendBackConfirm" | transloco }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn ghost sm"
+                      [disabled]="busy() !== null"
+                      (click)="closeSendBack()"
+                    >
+                      {{ "common.cancel" | transloco }}
+                    </button>
+                  </div>
+                </form>
+              }
+            }
+          </div>
+
+          @if (editing()?.id === card.task.id) {
+            <ng-container *ngTemplateOutlet="editPanel" />
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+<ng-template #editPanel>
+  @if (editing(); as t) {
+    <section
+      class="card edit-panel"
+      aria-labelledby="bonus-edit-heading"
+      data-testid="bonus-edit-panel"
+    >
+      @if (editMode() === "cancel") {
+        <h2 id="bonus-edit-heading" class="title">
+          {{ "bonus.edit.cancelTitle" | transloco: { title: t.title } }}
+        </h2>
+        <p class="desc">{{ "bonus.edit.cancelBody" | transloco }}</p>
+        @if (editError(); as e) {
+          <p class="err-text" role="alert" data-testid="bonus-edit-error">
+            {{ e | transloco }}
+          </p>
+        }
+        <div class="actions">
+          <button
+            type="button"
+            class="btn danger"
+            [disabled]="busy() !== null"
+            (click)="cancelTask(t)"
+            data-testid="bonus-cancel-confirm"
+          >
+            {{ "bonus.edit.cancelConfirm" | transloco }}
+          </button>
+          <button
+            type="button"
+            class="btn ghost"
+            [disabled]="busy() !== null"
+            (click)="editMode.set('edit')"
+            data-testid="bonus-cancel-back"
+          >
+            {{ "bonus.edit.back" | transloco }}
+          </button>
+        </div>
+      } @else {
+        <form
+          class="edit-form"
+          novalidate
+          (ngSubmit)="saveEdit()"
+          data-testid="bonus-edit-form"
+        >
+          <h2 id="bonus-edit-heading" class="title">
+            {{ "bonus.edit.title" | transloco }}
+          </h2>
+          <p class="desc">{{ "bonus.edit.hint" | transloco }}</p>
+
+          <div class="edit-field">
+            <label class="field-label" for="bonus-edit-title">{{
+              "bonus.new.titleLabel" | transloco
+            }}</label>
+            <input
+              id="bonus-edit-title"
+              class="edit-input"
+              type="text"
+              name="editTitle"
+              autocomplete="off"
+              [maxLength]="titleMax"
+              [ngModel]="editTitle()"
+              (ngModelChange)="editTitle.set($event)"
+              data-testid="bonus-edit-title"
+            />
+          </div>
+
+          <div class="edit-field">
+            <label class="field-label" for="bonus-edit-description">
+              {{ "bonus.new.descriptionLabel" | transloco }}
+            </label>
+            <textarea
+              id="bonus-edit-description"
+              class="note"
+              name="editDescription"
+              rows="3"
+              [maxLength]="descriptionMax"
+              [ngModel]="editDescription()"
+              (ngModelChange)="editDescription.set($event)"
+              data-testid="bonus-edit-description"
+            ></textarea>
+          </div>
+
+          <div class="edit-field">
+            <label class="field-label" for="bonus-edit-points">{{
+              "bonus.new.pointsLabel" | transloco
+            }}</label>
+            <input
+              id="bonus-edit-points"
+              class="edit-input"
+              type="number"
+              name="editPoints"
+              inputmode="numeric"
+              step="1"
+              [min]="pointsMin"
+              [max]="pointsMax"
+              [ngModel]="editPoints()"
+              (ngModelChange)="editPoints.set($event)"
+              data-testid="bonus-edit-points"
+            />
+          </div>
+
+          <div class="edit-field">
+            <label class="field-label" for="bonus-edit-day">{{
+              "bonus.edit.dayLabel" | transloco
+            }}</label>
+            <input
+              id="bonus-edit-day"
+              class="edit-input"
+              type="date"
+              name="editDay"
+              [ngModel]="editDay()"
+              (ngModelChange)="editDay.set($event)"
+              data-testid="bonus-edit-day"
+            />
+            <p class="desc small">{{ "bonus.edit.dayHint" | transloco }}</p>
+          </div>
+
+          @if (editError(); as e) {
+            <p class="err-text" role="alert" data-testid="bonus-edit-error">
+              {{ e | transloco }}
+            </p>
+          }
+
+          <div class="actions">
+            <button
+              type="submit"
+              class="btn primary"
+              [disabled]="busy() !== null"
+              data-testid="bonus-edit-save"
+            >
+              {{ "bonus.edit.save" | transloco }}
+            </button>
+            <button
+              type="button"
+              class="btn ghost"
+              [disabled]="busy() !== null"
+              (click)="closeEdit()"
+              data-testid="bonus-edit-close"
+            >
+              {{ "common.cancel" | transloco }}
+            </button>
+            <button
+              type="button"
+              class="btn danger"
+              [disabled]="busy() !== null"
+              (click)="editMode.set('cancel')"
+              data-testid="bonus-edit-cancel-task"
+            >
+              {{ "bonus.edit.cancelTask" | transloco }}
+            </button>
+          </div>
+        </form>
+      }
+    </section>
+  }
+</ng-template>

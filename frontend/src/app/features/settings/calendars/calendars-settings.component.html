@@ -1,0 +1,253 @@
+@if (!permsReady()) {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (!canManage()) {
+  <app-banner tone="info">{{ 'settings.calendars.no_permission' | transloco }}</app-banner>
+} @else if (loadState() === 'loading') {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (loadState() === 'error') {
+  <app-load-error [error]="loadError()" (retry)="load()" />
+} @else {
+  <section class="card mt">
+    <div class="section-head">
+      <div>
+        <h2>{{ 'settings.calendars.list_title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.calendars.list_hint' | transloco }}</p>
+      </div>
+      <button type="button" class="btn primary sm right" (click)="openNew()">
+        <span class="material-icons" aria-hidden="true">add</span>{{ 'settings.calendars.new' | transloco }}
+      </button>
+    </div>
+
+    @if (notice(); as msg) {
+      <p class="saved" role="status">{{ msg }}</p>
+    }
+    @if (actionError(); as key) {
+      <app-banner tone="error">{{ key | transloco }}</app-banner>
+    }
+
+    @for (src of sources(); track src.id) {
+      <div class="item" data-testid="manual-calendar">
+        <span class="bar" aria-hidden="true" [style.--c]="src.colour"></span>
+        <span class="item-body">
+          <span class="title-line">
+            <span class="name">{{ src.name }}</span>
+            <span class="badge teal" data-testid="type-chip">{{ 'calendar.types.personal' | transloco }}</span>
+          </span>
+          <span class="meta">
+            <span class="badge teal">{{ 'settings.calendars.events' | transloco: { count: src.event_count } }}</span>
+          </span>
+        </span>
+        <div class="row-actions">
+          <button type="button" class="icon-btn" [attr.aria-label]="('settings.common.edit' | transloco) + ' ' + src.name" [title]="'settings.common.edit' | transloco" (click)="openEditSource(src)">
+            <span class="material-icons" aria-hidden="true">edit</span>
+          </button>
+          <button type="button" class="icon-btn danger" [disabled]="!canDeleteSource()" [attr.aria-label]="('settings.common.delete' | transloco) + ' ' + src.name" [title]="(canDeleteSource() ? 'settings.common.delete' : 'settings.calendars.last_calendar_hint') | transloco" (click)="askDelete(src)">
+            <span class="material-icons" aria-hidden="true">delete</span>
+          </button>
+        </div>
+      </div>
+      @if (confirmingId() === src.id) {
+        <div class="confirm row wrap">
+          <p class="grow hint">{{ 'settings.calendars.delete_manual_confirm' | transloco: { name: src.name } }}</p>
+          <button type="button" class="btn ghost sm" (click)="cancelDelete()">{{ 'settings.common.cancel' | transloco }}</button>
+          <button type="button" class="btn danger sm" [disabled]="deletingId() === src.id" (click)="removeSource(src)">{{ 'settings.calendars.delete_yes' | transloco }}</button>
+        </div>
+      }
+    }
+
+    @if (sources().length === 0 && imports().length === 0) {
+      <p class="nw-empty-note">{{ 'settings.calendars.empty' | transloco }}</p>
+    }
+
+    @for (imp of imports(); track imp.id) {
+      <div class="item">
+        <span class="bar" aria-hidden="true" [style.--c]="imp.colour"></span>
+        <span class="item-body">
+          <span class="title-line">
+            <span class="name">{{ imp.name }}</span>
+            @if (imp.kind === 'link') {
+              <span class="badge amber" data-testid="type-chip">{{ 'calendar.types.linked' | transloco }}</span>
+            } @else {
+              <span class="badge" data-testid="type-chip">{{ 'calendar.types.imported' | transloco }}</span>
+            }
+          </span>
+          <span class="meta">
+            @if (imp.audience === 'parents') {
+              <span class="badge amber">{{ audienceLabel(imp) }}</span>
+            } @else {
+              <span>{{ audienceLabel(imp) }}</span>
+            }
+            @if (imp.kind === 'link') {
+              @if (imp.paused) {
+                <span class="badge">{{ 'settings.calendars.paused' | transloco }}</span>
+              } @else if (imp.last_sync_error) {
+                <span class="badge err">{{ 'settings.calendars.sync_failed' | transloco: { reason: syncErrorReason(imp.last_sync_error) } }}</span>
+              } @else if (syncedLabel(imp)) {
+                <span class="badge ok">{{ syncedLabel(imp) }}</span>
+              }
+            }
+            <span class="badge teal">{{ 'settings.calendars.events' | transloco: { count: imp.event_count } }}</span>
+            @if (imp.skipped_count > 0) {
+              <span class="badge amber">{{ 'settings.calendars.skipped' | transloco: { count: imp.skipped_count } }}</span>
+            }
+            @if (!imp.show_on_wall) {
+              <span class="badge">{{ 'settings.calendars.hidden_from_wall' | transloco }}</span>
+            }
+            @if (imp.file_name) {
+              <span>{{ imp.file_name }}</span>
+            }
+          </span>
+        </span>
+        <div class="row-actions">
+          @if (imp.kind === 'link') {
+            @if (imp.paused) {
+              <button type="button" class="btn ghost sm" [disabled]="busyId() !== null" (click)="resume(imp)">{{ 'settings.calendars.resume' | transloco }}</button>
+            } @else if (imp.last_sync_error) {
+              <button type="button" class="btn soft sm" [disabled]="busyId() !== null" (click)="syncNow(imp)">
+                <span class="material-icons" aria-hidden="true">refresh</span>{{ 'settings.calendars.retry_sync' | transloco }}
+              </button>
+            } @else {
+              <button type="button" class="btn ghost sm" [disabled]="busyId() !== null" (click)="syncNow(imp)">
+                <span class="material-icons" aria-hidden="true">refresh</span>{{ 'settings.calendars.sync_now' | transloco }}
+              </button>
+            }
+          }
+          <button type="button" class="icon-btn" [attr.aria-label]="('settings.common.edit' | transloco) + ' ' + imp.name" [title]="'settings.common.edit' | transloco" (click)="openEdit(imp)">
+            <span class="material-icons" aria-hidden="true">edit</span>
+          </button>
+          <button type="button" class="icon-btn danger" [attr.aria-label]="('settings.common.delete' | transloco) + ' ' + imp.name" [title]="'settings.common.delete' | transloco" (click)="askDelete(imp)">
+            <span class="material-icons" aria-hidden="true">delete</span>
+          </button>
+        </div>
+      </div>
+      @if (confirmingId() === imp.id) {
+        <div class="confirm row wrap">
+          <p class="grow hint">{{ 'settings.calendars.delete_confirm' | transloco: { name: imp.name, count: imp.event_count } }}</p>
+          <button type="button" class="btn ghost sm" (click)="cancelDelete()">{{ 'settings.common.cancel' | transloco }}</button>
+          <button type="button" class="btn danger sm" [disabled]="deletingId() === imp.id" (click)="remove(imp)">{{ 'settings.calendars.delete_yes' | transloco }}</button>
+        </div>
+      }
+    }
+
+    <p class="hint mt-s">{{ 'settings.calendars.banner' | transloco }}</p>
+  </section>
+}
+
+@if (modalOpen()) {
+  <div class="modal-bg" (click)="closeOnBackdrop($event)">
+    <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="(isEditing() ? 'settings.calendars.edit_title' : 'settings.calendars.new_title') | transloco">
+        <h2>{{ (isEditing() ? 'settings.calendars.edit_title' : 'settings.calendars.new_title') | transloco }}</h2>
+
+      <div class="field">
+        <label class="field-label" for="imp-name">{{ 'settings.calendars.name' | transloco }}</label>
+        <input id="imp-name" class="input" maxlength="80" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+      </div>
+
+      @if (isEditing()) {
+        <p class="hint">{{ 'settings.calendars.edit_hint' | transloco }}</p>
+      }
+
+      @if (!isEditing()) {
+      <div class="field">
+        <span class="field-label">{{ 'settings.calendars.kind' | transloco }}</span>
+        <div class="seg" role="group" [attr.aria-label]="'settings.calendars.kind' | transloco">
+          <button type="button" data-testid="kind-manual" [class.on]="isManual()" [attr.aria-pressed]="isManual()" (click)="setKind('manual')">{{ 'settings.calendars.manual' | transloco }}</button>
+          <button type="button" data-testid="kind-import" [class.on]="!isManual()" [attr.aria-pressed]="!isManual()" (click)="setKind('import')">{{ 'settings.calendars.import' | transloco }}</button>
+        </div>
+      </div>
+      }
+
+      @if (!isEditing() && !isManual()) {
+      <div class="field">
+        <span class="field-label">{{ 'settings.calendars.source' | transloco }}</span>
+        <div class="seg" role="group" [attr.aria-label]="'settings.calendars.source' | transloco">
+          <button type="button" [class.on]="source() === 'file'" [attr.aria-pressed]="source() === 'file'" (click)="setSource('file')">{{ 'settings.calendars.source_file' | transloco }}</button>
+          <button type="button" [class.on]="source() === 'link'" [attr.aria-pressed]="source() === 'link'" (click)="setSource('link')">{{ 'settings.calendars.source_link' | transloco }}</button>
+        </div>
+      </div>
+
+      @if (source() === 'file') {
+      <div class="field">
+        <label class="field-label" for="imp-file">{{ 'settings.calendars.file' | transloco }}</label>
+        <input id="imp-file" class="file-input" type="file" accept=".ics,text/calendar" (change)="onFileChosen($event)" />
+      </div>
+      } @else {
+      <div class="field">
+        <label class="field-label" for="imp-url">{{ 'settings.calendars.link' | transloco }}</label>
+        <input id="imp-url" class="input mono" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://" [ngModel]="url()" (ngModelChange)="url.set($event)" />
+        <span class="hint">{{ 'settings.calendars.link_hint' | transloco }}</span>
+      </div>
+      }
+      }
+
+      <div class="field">
+        <span class="field-label">{{ 'settings.calendars.colour' | transloco }}</span>
+        <app-colour-picker [label]="'settings.calendars.colour' | transloco" [checkContrast]="true" [ngModel]="colour()" (ngModelChange)="colour.set($event)" />
+      </div>
+
+      @if (!isManual()) {
+      <div class="field">
+        <span class="field-label">{{ 'settings.calendars.audience' | transloco }}</span>
+        <div class="seg audience-seg" role="group" [attr.aria-label]="'settings.calendars.audience' | transloco">
+          <button type="button" [class.on]="audience() === 'everyone'" [attr.aria-pressed]="audience() === 'everyone'" (click)="setAudience('everyone')">{{ 'settings.calendars.option_everyone' | transloco }}</button>
+          <button type="button" [class.on]="audience() === 'specific'" [attr.aria-pressed]="audience() === 'specific'" (click)="setAudience('specific')">{{ 'settings.calendars.option_specific' | transloco }}</button>
+          <button type="button" [class.on]="audience() === 'parents'" [attr.aria-pressed]="audience() === 'parents'" (click)="setAudience('parents')">{{ 'settings.calendars.option_parents' | transloco }}</button>
+        </div>
+        @if (audience() === 'specific') {
+          <div class="chips mt-s" role="group" [attr.aria-label]="'settings.calendars.people' | transloco">
+            @for (m of members(); track m.id) {
+              <button type="button" class="chip" [class.on]="isMemberPicked(m.id)" [attr.aria-pressed]="isMemberPicked(m.id)" (click)="toggleMember(m.id)">
+                <span class="sw" aria-hidden="true" [style.--c]="m.colour"></span>{{ m.display_name }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="setting dialog-setting">
+        <div class="grow">
+          <span class="t" id="imp-wall-label">{{ 'settings.calendars.show_on_wall' | transloco }}</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" role="switch" name="show-on-wall" aria-labelledby="imp-wall-label" [ngModel]="showOnWall()" (ngModelChange)="showOnWall.set($event)" />
+          <span class="track" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      }
+
+      @if (editingLink()) {
+      <div class="setting dialog-setting">
+        <div class="grow">
+          <span class="t" id="imp-sync-label">{{ 'settings.calendars.sync_on' | transloco }}</span>
+          <span class="hint">{{ 'settings.calendars.sync_on_hint' | transloco }}</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" role="switch" name="sync-on" aria-labelledby="imp-sync-label" [ngModel]="syncOn()" (ngModelChange)="syncOn.set($event)" />
+          <span class="track" aria-hidden="true"></span>
+        </label>
+      </div>
+      }
+
+      @if (showsRefresh()) {
+      <div class="field">
+        <label class="field-label" for="imp-refresh">{{ 'settings.calendars.refresh' | transloco }}</label>
+        <select id="imp-refresh" class="input" [ngModel]="refreshMinutes()" (ngModelChange)="refreshMinutes.set($event)">
+          @for (m of refreshChoices; track m) {
+            <option [ngValue]="m">{{ 'settings.calendars.refresh_' + m | transloco }}</option>
+          }
+        </select>
+      </div>
+      }
+
+      @if (modalError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+
+      <div class="foot">
+        <button type="button" class="btn ghost" (click)="closeModal()">{{ 'settings.common.cancel' | transloco }}</button>
+        <button type="button" class="btn primary" [disabled]="saving()" (click)="save()">{{ (isEditing() ? 'settings.common.save' : 'settings.calendars.add') | transloco }}</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,2990 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "colour_custom": "Pick any colour",
+    "colour_contrast_hint": "Contrast checked for light and dark themes.",
+    "colour_low_contrast": "Hard to see on light or dark cards. Pick a darker or brighter colour.",
+    "please_wait": "Please wait…",
+    "save_failed": "The change was not saved. Check the message and try again.",
+    "unsaved_title": "Redirect without saving?",
+    "unsaved_body": "Your changes have not been saved. If you redirect now, they will be lost.",
+    "unsaved_stay": "Cancel",
+    "unsaved_leave": "Redirect"
+  },
+  "loading": {
+    "default": "Loading...",
+    "logo_alt": "Nesty, loading"
+  },
+  "errors": {
+    "page": {
+      "code": "ERROR {{ code }}",
+      "reference": "Reference: {{ reference }}"
+    },
+    "actions": {
+      "home": "Go to home",
+      "back": "Go back",
+      "try_again": "Try again"
+    },
+    "load": {
+      "network": { "title": "Can't reach NestWall", "body": "Check your internet connection, then try again." },
+      "forbidden": { "title": "You don't have access", "body": "Your account can't view this page. Ask a parent if you think this is wrong." },
+      "not_found": { "title": "Not found", "body": "This page or item no longer exists." },
+      "server": { "title": "Something went wrong on our side", "body": "The server couldn't finish the request. Try again in a moment." },
+      "generic": { "title": "We couldn't load this page", "body": "Something unexpected happened while loading. Try again." }
+    },
+    "forbidden": {
+      "title": "You don't have access to this page",
+      "body": "Only a parent can open this. Ask a parent to give you access, or go back to where you were."
+    },
+    "not_found": {
+      "title": "We can't find that page",
+      "body": "The link may be old, or the page has moved. Check the address, or head back home."
+    },
+    "server": {
+      "title": "Something went wrong on our side",
+      "body": "Sorry about that. If you were saving something, it may not have been saved. Try again in a moment."
+    },
+    "messages": {
+      "forbidden": "You don't have permission to do that.",
+      "not_found": "We couldn't find that.",
+      "conflict": "This changed while you were editing. Reload and try again.",
+      "session": "Please sign in again.",
+      "network": "Check your connection, then try again.",
+      "generic": "Something went wrong. Try again."
+    }
+  },
+  "today": {
+    "greeting": {
+      "morning": "Good morning, {{name}}!",
+      "afternoon": "Good afternoon, {{name}}!",
+      "evening": "Good evening, {{name}}!"
+    },
+    "greeting_plain": {
+      "morning": "Good morning!",
+      "afternoon": "Good afternoon!",
+      "evening": "Good evening!"
+    },
+    "streak": "{{days}} day streak",
+    "badges": {
+      "one": "1 badge",
+      "many": "{{ count }} badges",
+      "of": "of {{ total }}"
+    },
+    "error": "We could not load your day.",
+    "retry": "Try again",
+    "loading": "Loading your day...",
+    "hero": {
+      "label": "Today's progress",
+      "progress": "{{done}} of {{total}} done today",
+      "done": "done",
+      "none": "Nothing due today",
+      "all_done": "All done!",
+      "left": "{{count}} to go",
+      "sub": "Finish today to keep your streak.",
+      "streak_safe": "Streak safe. See you tomorrow!",
+      "everything_done": "Everything done",
+      "badge": {
+        "next": "Next badge: {{days}} day streak",
+        "more": "{{count}} more days",
+        "more_one": "1 more day"
+      }
+    },
+    "points_chip": "{{ count }} points",
+    "points_today": "{{ count }} points today",
+    "reward": {
+      "title": "Next reward",
+      "eyebrow": "Next reward",
+      "to_go": "{{ count }} to go",
+      "keep_going": "Keep going, you're getting close!",
+      "every": "You can get every reward!",
+      "none": "No rewards to save for yet.",
+      "see": "See rewards",
+      "share": "Share"
+    },
+    "weather": {
+      "title": "Weather"
+    },
+    "calendar": {
+      "title": "Today's calendar",
+      "open": "Open calendar"
+    },
+    "week": {
+      "title": "This week"
+    },
+    "soon": "Coming soon",
+    "next": "Next: {{title}}",
+    "catch_up": "Catch up",
+    "catch_up_count": "{{count}} past due",
+    "my_tasks": "My tasks",
+    "empty": "Nothing else due today.",
+    "card": {
+      "complete": "Mark {{title}} as done",
+      "steps_all": "All done",
+      "confirm_heading": "Mark as done?",
+      "confirm_message": "“{{title}}” goes to a parent to check. Your points arrive once they approve it.",
+      "confirm_yes": "Mark as done",
+      "confirm_steps_left": "Some steps are still not done. You can still send it to a parent to check."
+    },
+    "all_done": {
+      "title": "All done for today!",
+      "body": "Every task is finished. Great job, {{name}}!"
+    }
+  },
+  "kidBonus": {
+    "heading": "Bonus tasks",
+    "upForGrabs": "{{ count }} up for grabs",
+    "allTaken": "All taken",
+    "loading": "Loading bonus tasks...",
+    "loadError": "We could not load bonus tasks.",
+    "retry": "Try again",
+    "mode": {
+      "first_come": "First come, first served",
+      "everyone_once": "Everyone can do it once"
+    },
+    "until": "Ends today {{ time }}",
+    "untilEndOfDay": "Until the end of the day",
+    "grab": "Grab it",
+    "doOnce": "I'll do it",
+    "finish": "Mark as done",
+    "giveBack": "Give back",
+    "taken": "Taken by another child",
+    "hintOnce": "Do it once today. Then it is done.",
+    "hintMine": "It's yours! Others can't take it now.",
+    "doneWaiting": "Done today. Waiting for a parent. Back tomorrow!",
+    "doneApproved": "Done today. Points added. Back tomorrow!",
+    "error": {
+      "taken": "Another child already has this task.",
+      "closed": "This task is no longer open.",
+      "changed": "This task changed. The list is up to date now.",
+      "network": "No connection. Check your network and try again.",
+      "generic": "Something went wrong. Try again."
+    },
+    "detail": {
+      "missing": {
+        "title": "Bonus task not found",
+        "body": "It may have ended or been taken off the list."
+      },
+      "noDescription": "No extra details for this bonus task."
+    }
+  },
+  "myTasks": {
+    "title": "Tasks",
+    "kicker": "All my tasks",
+    "error": "We could not load your tasks.",
+    "page_error": "We could not load these tasks.",
+    "pager": {
+      "label": "Task pages"
+    },
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {{ page }}",
+    "retry": "Try again",
+    "loading": "Loading your tasks...",
+    "tabs": {
+      "label": "Task views",
+      "today": "Today",
+      "past_due": "Past due",
+      "coming": "Coming up",
+      "bonus": "Bonus ✨",
+      "waiting": "Waiting",
+      "expired": "Missed",
+      "done": "Done"
+    },
+    "waiting_note": "A parent will check these. Points arrive once they are approved.",
+    "expired_note": "These ran out of time, so you cannot change them any more.",
+    "expired_badge": "Missed",
+    "steps_progress": "{{done}} of {{total}} steps",
+    "waiting_badge": "A parent is checking",
+    "undo": "Move to to-do",
+    "empty": {
+      "today": {
+        "title": "Nothing due today",
+        "body": "Tasks due today show here. Check Coming up for what is next."
+      },
+      "past_due": {
+        "title": "Nothing past due",
+        "body": "Well done! You are all caught up."
+      },
+      "coming": {
+        "title": "Nothing coming up",
+        "body": "Tasks due in the next 7 days show here."
+      },
+      "waiting": {
+        "title": "Nothing waiting for a parent",
+        "body": "Tasks you send in show here until a parent checks them."
+      },
+      "expired": {
+        "title": "Nothing missed",
+        "body": "Tasks you missed without finishing show here."
+      },
+      "done": {
+        "title": "No finished tasks yet",
+        "body": "Tasks a parent approves show here with their points."
+      }
+    },
+    "day": {
+      "tomorrow": "Tomorrow · {{day}}"
+    },
+    "bonus": {
+      "intro": "Extra tasks you can grab for bonus points. Skipping one has no penalty.",
+      "empty": "No bonus tasks today. Check back later."
+    },
+    "meta": {
+      "past_due": "Was due {{time}}",
+      "due": "Due {{time}}",
+      "submitted_today": "Submitted today {{time}}",
+      "submitted_on": "Submitted {{day}} {{time}}",
+      "approved_by": "Approved by {{name}} on {{when}}",
+      "approved_on": "Approved {{when}}"
+    },
+    "part": {
+      "morning": "Morning",
+      "after_school": "After school",
+      "anytime": "Anytime",
+      "evening": "Evening"
+    },
+    "points": "{{points}} points"
+  },
+  "myTask": {
+    "back": "Back",
+    "loading": "Loading task...",
+    "missing": {
+      "title": "Task not found",
+      "body": "It may have been removed or belong to someone else."
+    },
+    "error": "We could not load this task.",
+    "retry": "Try again",
+    "points": "{{points}} points",
+    "due": "Due {{time}}",
+    "submitted": "Sent to a parent. They will check it.",
+    "approved": "Well done! Points added.",
+    "rejected": "A parent asked you to try again. Finish the steps and send it once more.",
+    "skipped": "This one was skipped for today.",
+    "steps": "Steps",
+    "progress": "{{done}} of {{total}} steps",
+    "no_steps": "No steps for this one.",
+    "finish": "I'm done!",
+    "note": "A parent will check it, then your points arrive.",
+    "not_due": "This task opens on {{day}}. You can finish it then."
+  },
+  "shell": {
+    "nav": {
+      "home": "Home",
+      "dashboard": "Dashboard",
+      "today": "Today",
+      "tasks": "Tasks",
+      "bonus": "Bonus tasks",
+      "approvals": "Approvals",
+      "calendar": "Calendar",
+      "rewards": "Rewards",
+      "points": "Points",
+      "family": "Family",
+      "settings": "Settings",
+      "me": "Profile",
+      "more": "More"
+    },
+    "placeholder": "This screen is part of a later milestone and is not built yet.",
+    "logo_alt": "NestWall logo",
+    "logout": "Sign Out",
+    "open_profile": "Open profile",
+    "notif": {
+      "open": "Notifications",
+      "title": "Notifications",
+      "unread": "{{ count }} unread",
+      "empty": "No notifications yet.",
+      "loading": "Loading notifications…",
+      "error": "Could not load notifications.",
+      "settings": "Notification settings",
+      "approvals": "Go to approvals",
+      "clear": "Clear all",
+      "browser_title": "NestWall",
+      "enable_alerts": "Enable browser alerts",
+      "new": "New",
+      "kind": {
+        "other": "Notification",
+        "task_submitted": "Task sent for approval",
+        "task_approved": "Task approved",
+        "task_rejected": "Task rejected",
+        "bonus_submitted": "Bonus sent for approval",
+        "bonus_approved": "Bonus approved",
+        "bonus_rejected": "Bonus rejected",
+        "redemption_requested": "Reward requested",
+        "redemption_approved": "Reward approved",
+        "redemption_rejected": "Reward rejected",
+        "points_shared": "Points shared",
+        "points_share_pending": "Points share waiting",
+        "points_share_declined": "Points share declined",
+        "badge_earned": "Badge earned",
+        "badge_awarded": "Badge awarded",
+        "backup_failed": "Backup failed",
+        "backup_stale": "Backup overdue",
+        "password_reset_request": "Password reset requested"
+      }
+    },
+    "toggle_theme": "Toggle theme"
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out"
+  },
+  "pwa": {
+    "install_title": "Install NestWall",
+    "install_body": "Add NestWall to your home screen for quick access.",
+    "install": "Install",
+    "install_dismiss": "Not now",
+    "update_title": "A new version is ready",
+    "update_body": "Reload to get the latest changes.",
+    "update": "Reload",
+    "dismiss": "Dismiss"
+  },
+  "wall": {
+    "pair": {
+      "title": "Pair this display",
+      "instructions": "Ask a parent to open Settings \u2192 Wall devices \u2192 Add device, then type the key shown.",
+      "slots_label": "Pairing key",
+      "slot_label": "Key character {{n}}",
+      "submit": "Pair display",
+      "back_to_login": "Back to sign in",
+      "error": {
+        "network": "Could not reach NestWall. Check the connection and try again.",
+        "invalid_key": "That key is not valid or has expired. Check the key and try again.",
+        "rate_limited": "Too many attempts. Wait a few minutes and try again.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "display": {
+      "greeting": {
+        "morning": "Good morning, {{family}}",
+        "afternoon": "Good afternoon, {{family}}",
+        "evening": "Good evening, {{family}}"
+      },
+      "sub_day": "{{date}} · {{tasks}} tasks to go · {{events}} events still to come",
+      "sub_weather": "Tomorrow: {{condition}}, high {{high}}°.",
+      "sub_done": "{{name}} finished everything today. Great job! 🎉",
+      "sub_tomorrow_event": "{{title}} is tomorrow at {{time}}",
+      "sub_tomorrow_all_day": "{{title}} is tomorrow",
+      "weather_today": "TODAY",
+      "weather_tomorrow": "TOMORROW",
+      "feels": "feels {{temp}}°",
+      "high": "H {{temp}}°",
+      "low": "L {{temp}}°",
+      "count_done": "{{done}} of {{total}} done",
+      "count_all_done": "All done today!",
+      "count_no_tasks": "No tasks today",
+      "count_points": "{{count}} · {{points}} pts",
+      "todo_heading": "To do · {{count}}",
+      "done_heading": "Done · {{count}}",
+      "more_done": "+{{count}} more done",
+      "late": "was due {{when}}",
+      "cheer": "there. Keep going! 💪",
+      "celebrate_title": "Great job, {{name}}!",
+      "celebrate_body": "Everything is done. Enjoy your day.",
+      "bonus_title": "BONUS TIME!",
+      "bonus_sub": "Extra points up for grabs. Grab one on your tablet!",
+      "bonus_mode": {
+        "first_come": "First come, first served",
+        "everyone_once": "Everyone can do it once"
+      },
+      "bonus_meta": "{{mode}} · until {{time}}",
+      "agenda_heading": "Agenda",
+      "everyone": "EVERYONE",
+      "day_today": "Today",
+      "day_tomorrow": "Tomorrow",
+      "day_later": "Later this week",
+      "no_events_today": "No events today",
+      "all_day": "All day",
+      "in_hours": "in {{hours}} h {{minutes}} min",
+      "in_minutes": "in {{minutes}} min",
+      "status_live": "Live · updated {{time}}",
+      "status_offline": "Offline · last updated {{time}}",
+      "offline_empty": "Can't reach NestWall. Trying again?",
+      "exit": {
+        "open_label": "Exit wall mode (parents only)",
+        "title": "Parents only",
+        "subtitle": "Enter the exit code",
+        "delete": "Delete digit",
+        "submit": "Check code",
+        "cancel": "Cancel",
+        "wrong_code": "Wrong code. {{count}} tries left.",
+        "wrong_code_last": "Wrong code. 1 try left.",
+        "locked": "Too many tries. Locked for {{minutes}} min.",
+        "error": "Something went wrong. Please try again.",
+        "unlocked_title": "Unlocked",
+        "unlocked_subtitle": "What would you like to do?",
+        "exit_wall": "Exit wall mode",
+        "unpair": "Unpair this device",
+        "stay": "Stay on the wall"
+      }
+    }
+  },
+  "login": {
+    "title": "NestWall",
+    "subtitle": "Sign in to your family planner",
+    "nesty_alt": "Nesty, the NestWall bird",
+    "user_id": {
+      "label": "User ID",
+      "error": "Please enter your user ID"
+    },
+    "password": {
+      "label": "Password",
+      "error": "Please enter your password"
+    },
+    "submit": "Sign In",
+    "forgot": "Forgot password?",
+    "no_signup": "Accounts are created by a parent. Self-registration is not available.",
+    "pair_link": "Set up a wall display",
+    "error": {
+      "invalid_credentials": "That user ID or password isn't right. Try again, or ask a parent.",
+      "rate_limited": "Too many sign-in attempts. Wait a few minutes and try again.",
+      "network": "Cannot reach NestWall. Check your connection and try again.",
+      "generic": "Sign in failed. Please try again."
+    },
+    "forgot_dialog": {
+      "heading": "Forgot password?",
+      "ask_intro": "Enter your user ID. Then we will tell you how to get back in.",
+      "continue": "Continue",
+      "cancel": "Cancel",
+      "ask_parent_heading": "Only a parent can reset this password",
+      "ask_parent_body": "A parent can set a new password for you from Family.",
+      "tell_parents_hint": "Tap Tell my parents to let every parent know you need a new password.",
+      "tell_parents": "Tell my parents",
+      "notified_heading": "Your parents know",
+      "notified_body": "A parent will set a new password for you. Then sign in with that password.",
+      "back_to_sign_in": "Back to sign in",
+      "parent_email_option": "I am a parent: reset with my email",
+      "email_heading": "Reset with email",
+      "email_intro": "Enter the email address saved on your parent account.",
+      "email_label": "Email address",
+      "email_error": "Enter a valid email address.",
+      "email_submit": "Send",
+      "back": "Back",
+      "email_sent_heading": "Check your email",
+      "email_sent_body": "If a parent account uses that address, a reset link is on its way. The link works once and expires in 30 minutes.",
+      "email_not_set_up_heading": "Email is not set up yet",
+      "email_not_set_up_body": "No reset link can be sent yet. Ask another parent to set a new password for you from Family.",
+      "error": {
+        "rate_limited": "Too many requests. Wait a few minutes and try again.",
+        "network": "Cannot reach NestWall. Check your connection and try again.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "change_password": {
+      "heading": "Choose a new password",
+      "intro": "A parent gave you a temporary password. Choose your own to continue.",
+      "current_label": "Temporary password",
+      "new_label": "New password",
+      "confirm_label": "Confirm new password",
+      "hint": "At least {{ min }} characters.",
+      "submit": "Save password",
+      "error": {
+        "required": "Enter your temporary password and a new password.",
+        "too_short": "Use at least 8 characters.",
+        "mismatch": "The new passwords do not match.",
+        "invalid_credentials": "The temporary password is not right. Try again.",
+        "same_password": "Choose a password that is different from the temporary one.",
+        "rate_limited": "Too many attempts. Wait a few minutes and try again.",
+        "network": "Cannot reach NestWall. Check your connection and try again.",
+        "generic": "Something went wrong. Please try again."
+      }
+    }
+  },
+  "setup": {
+    "step_label": "Step {{ current }} of {{ total }}",
+    "hero": {
+      "title": "Let's set up your nest.",
+      "intro": "Three quick steps. You can change everything later in Settings.",
+      "first_run": "First run · no parent account yet"
+    },
+    "welcome": {
+      "heading": "Welcome to NestWall",
+      "intro": "We will set up your family planner and the first parent account. You can change everything later in Settings.",
+      "start": "Get started",
+      "restore": "Restore from a backup"
+    },
+    "restore": {
+      "heading": "Restore from a backup",
+      "intro": "Use a NestWall backup archive (.zip) to bring back your family, settings and photos. This replaces the current data, which is empty on a fresh install.",
+      "file": {
+        "label": "Backup archive",
+        "hint": "A .zip file created by NestWall, for example from Settings > Data > Backups.",
+        "required": "Choose a backup archive to restore."
+      },
+      "passphrase": {
+        "label": "Backup passphrase",
+        "hint": "Only needed if the backup was encrypted. Leave empty otherwise."
+      },
+      "submit": "Restore backup",
+      "restoring": "Restoring your backup. This can take a few minutes.",
+      "restarting": "Backup restored. Restarting NestWall…",
+      "error": {
+        "unreadable": "This file is not a valid NestWall backup.",
+        "passphrase_required": "This backup is encrypted. Enter its passphrase and try again.",
+        "generic": "The backup could not be restored. Check the file and try again."
+      }
+    },
+    "family_name": {
+      "label": "Family name",
+      "hint": "e.g. The Rivera Family",
+      "error": "Enter a family name of up to 80 characters"
+    },
+    "timezone": {
+      "label": "Time zone"
+    },
+    "account": {
+      "heading": "Create your parent account",
+      "intro": "Parents are the family admins. They manage everyone else and can add more parents later."
+    },
+    "display_name": {
+      "label": "Your name",
+      "error": "Enter your name of up to 80 characters"
+    },
+    "email": {
+      "label": "Email",
+      "hint": "Required for the parent account. Used to reset a forgotten password.",
+      "required": "Enter an email address for the parent account.",
+      "error": "Enter a valid email address."
+    },
+    "user_id": {
+      "label": "User ID",
+      "hint": "3-32 characters: letters, numbers, dots, hyphens, underscores",
+      "error": "User ID must be 3-32 characters using only letters, numbers, . - _"
+    },
+    "password": {
+      "label": "Password",
+      "hint": "Use at least 8 characters.",
+      "error": "Password must be 8-256 characters",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "confirm": {
+      "label": "Confirm password",
+      "error": "Passwords do not match"
+    },
+    "back": "Back",
+    "create": "Create account",
+    "success": {
+      "heading": "You're all set!",
+      "message": "Your family and parent account have been created. Sign in to continue.",
+      "cta": "Go to sign in"
+    },
+    "error": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Cannot reach NestWall. Check your connection and try again.",
+      "validation": "Please check the details you entered and try again.",
+      "user_id_taken": "That user ID is already taken. Choose another.",
+      "email_taken": "That email address is already used by another member. Use a different email.",
+      "setup_complete": "Setup has already been completed. Please sign in."
+    }
+  },
+  "reset_password": {
+    "title": "Choose a new password",
+    "nesty_alt": "Nesty, the NestWall bird",
+    "intro": "This link works once and expires in 30 minutes.",
+    "new_label": "New password",
+    "new_hint": "Use at least 8 characters.",
+    "repeat_label": "Repeat it",
+    "signed_out_notice": "Every device will be signed out, including this one.",
+    "submit": "Save password",
+    "done_heading": "Password changed",
+    "done_body": "Sign in with your new password.",
+    "invalid_heading": "This link is no longer valid",
+    "invalid_body": "This reset link is invalid or has expired. Ask for a new one.",
+    "back_to_sign_in": "Back to sign in",
+    "go_to_sign_in": "Go to sign in",
+    "error": {
+      "mismatch": "Passwords do not match",
+      "password": "Password must be 8-256 characters",
+      "rate_limited": "Too many requests. Wait a few minutes and try again.",
+      "network": "Cannot reach NestWall. Check your connection and try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "sessions": {
+    "heading": "Sign-in sessions",
+    "member_heading": "Sign-in sessions for {{ name }}",
+    "intro_own": "Devices where you are signed in to NestWall.",
+    "intro_member": "Devices where {{ name }} is signed in. Ending them signs {{ name }} out everywhere.",
+    "loading": "Loading sessions…",
+    "empty": "No active sessions.",
+    "unknown_device": "Unknown device",
+    "current": "This device",
+    "signed_in": "Signed in {{ time }}",
+    "expires": "Expires {{ time }}",
+    "sign_out_one": "Sign out this device",
+    "sign_out_others": "Sign out other devices",
+    "sign_out_everywhere": "Sign out everywhere",
+    "confirm_own": "You will be signed out on this device too.",
+    "confirm_member": "End every session for {{ name }}? They will need to sign in again.",
+    "error": {
+      "load": "Sessions could not be loaded. Try again.",
+      "network": "Cannot reach NestWall. Check your connection and try again.",
+      "action": "That did not work. Please try again."
+    }
+  },
+  "calendar": {
+    "page": {
+      "sub": "Family events, school and chores in one view"
+    },
+    "today": "Today",
+    "month": {
+      "prev": "Previous month",
+      "next": "Next month",
+      "more": "+{{ count }} more"
+    },
+    "view": {
+      "label": "Calendar view",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "empty_day": "Nothing planned for this day.",
+    "loading": "Loading events",
+    "picker": {
+      "label": "Choose month and year",
+      "prev_year": "Previous year",
+      "next_year": "Next year",
+      "close": "Close"
+    },
+    "load_failed": "The calendar could not be loaded.",
+    "retry": "Try again",
+    "export": {
+      "button": "Export calendar",
+      "failed": "The calendar could not be exported."
+    },
+    "calendars": {
+      "title": "Calendars",
+      "tasks": "Show task deadlines"
+    },
+    "types": {
+      "personal": "Personal",
+      "imported": "Imported",
+      "linked": "Linked"
+    },
+    "people": {
+      "title": "Filter by person",
+      "filtered": "Some people are hidden"
+    },
+    "event": {
+      "new": "New event",
+      "edit": "Edit event",
+      "title": "Title",
+      "location": "Location",
+      "date": "Date",
+      "time": "Time",
+      "start": "Start",
+      "end": "End",
+      "all_day": "All day",
+      "calendar": "Calendar",
+      "calendar_family": "Default",
+      "people": "People",
+      "people_hint": "Nobody picked means the whole family.",
+      "people_from_calendar": "People come from this calendar's audience.",
+      "repeat": "Repeat",
+      "repeat_custom_hint": "This event uses a repeat rule the builder cannot show. It will be saved unchanged.",
+      "repeat_stop": "Stop repeating",
+      "scope": "Apply changes to",
+      "scope_occurrence": "This occurrence",
+      "scope_series": "Whole series",
+      "scope_occurrence_hint": "Only the title, date and time change. People and repeat stay as they are.",
+      "reminders": "Reminders",
+      "reminders_hint": "The people on this event get an in-app reminder before it starts.",
+      "reminders_past": "Some reminders are already past for this start time. They will not be sent.",
+      "reminders_occurrence_hint": "Reminders belong to the whole event. Change them from the whole series.",
+      "reminder_at_start": "At start",
+      "reminder_minutes": "{{ count }} min before",
+      "reminder_hours": "{{ count }} h before",
+      "reminder_days": "{{ count }} d before",
+      "reminder_amount": "Amount",
+      "reminder_unit": "Unit",
+      "reminder_unit_minutes": "minutes",
+      "reminder_unit_hours": "hours",
+      "reminder_unit_days": "days",
+      "cancel": "Cancel",
+      "save": "Save event",
+      "saving": "Saving...",
+      "errors": {
+        "title": "Enter a title for the event.",
+        "date": "Choose a valid date.",
+        "time": "Choose a start and end time.",
+        "end_before_start": "The end must be after the start.",
+        "repeat": "These repeat settings are not valid.",
+        "people": "Choose valid people for this event.",
+        "calendar": "Choose a calendar for this event.",
+        "reminders": "Choose valid reminders.",
+        "conflict": "This event was changed elsewhere. Close it and open it again.",
+        "not_found": "This event no longer exists.",
+        "failed": "The event could not be saved. Try again."
+      }
+    },
+    "band": {
+      "label": "Today and coming up",
+      "today": "Today · {{ day }}",
+      "coming_up": "Coming up",
+      "count_one": "{{ count }} event",
+      "count_other": "{{ count }} events",
+      "loading": "Loading...",
+      "error": "Calendar events could not be loaded.",
+      "today_empty": "No events today.",
+      "coming_empty": "Nothing else in the next 7 days.",
+      "all_day": "All day",
+      "everyone": "Everyone",
+      "in_hours": "in {{ hours }} h {{ minutes }} min",
+      "in_minutes": "in {{ minutes }} min",
+      "more": "More ({{ count }})",
+      "filter": {
+        "person": "Filter by person",
+        "person_all": "Everyone",
+        "calendar": "Filter by calendar",
+        "calendar_all": "All calendars"
+      },
+      "filtered_empty": "No events match these filters."
+    },
+    "day": {
+      "close": "Close"
+    },
+    "detail": {
+      "kind_event": "Event",
+      "kind_task": "Task deadline",
+      "close": "Close",
+      "edit": "Edit",
+      "open_task": "Open task",
+      "all_day": "All day",
+      "edited": "Edited",
+      "repeating": "Repeating event",
+      "synced": "Synced from this calendar. Change it at its source.",
+      "delete": "Delete",
+      "delete_heading": "Delete this event?",
+      "delete_message": "This removes the event. This cannot be undone.",
+      "delete_recurring_heading": "Delete recurring event",
+      "delete_this": "This event",
+      "delete_all": "All events",
+      "cancel": "Cancel",
+      "delete_failed": "The event could not be deleted. Try again.",
+      "status": {
+        "scheduled": "Scheduled",
+        "past_due": "Past due",
+        "missed": "Missed"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "quick_add": "Quick add task",
+    "calendar": "Calendar",
+    "greeting": {
+      "morning": "Good morning, {{ name }}",
+      "afternoon": "Good afternoon, {{ name }}",
+      "evening": "Good evening, {{ name }}"
+    },
+    "summary": "{{ day }} · {{ done }} of {{ total }} tasks done today",
+    "loading": "Loading your dashboard...",
+    "error": "The dashboard could not be loaded. Try again.",
+    "retry": "Try again",
+    "stats": {
+      "done_today": "Done today",
+      "overdue": "Overdue",
+      "overdue_none": "Nothing overdue",
+      "overdue_person": "{{ name }} ({{ count }} due)",
+      "waiting": "Waiting for approval",
+      "waiting_sub_tasks": "Task ({{ count }})",
+      "waiting_sub_rewards": "Rewards ({{ count }})",
+      "points_week": "Points earned this week",
+      "points_none": "No points yet. Finished tasks earn points."
+    },
+    "people": {
+      "title": "Today by person",
+      "scope_label": "Show counts for",
+      "scope_today": "Today",
+      "scope_week": "This week",
+      "count": "{{ done }} of {{ total }} done",
+      "nothing": "Nothing due today",
+      "nothing_week": "Nothing due this week",
+      "points_label": "{{ points }} points this week",
+      "empty": "Add family members to see their progress."
+    },
+    "tablet": {
+      "empty": "No kitchen tablet is paired yet."
+    },
+    "approvals": {
+      "title": "Needs your approval",
+      "approve": "Approve",
+      "approve_label": "Approve {{ title }} for {{ name }}",
+      "submitted_at": "Submitted {{ time }}",
+      "late": "Late",
+      "reward": "Reward: {{ name }}",
+      "reward_meta": "{{ cost }} points",
+      "review": "Review",
+      "review_label": "Review {{ name }} for {{ member }}",
+      "see_all": "See all {{ count }}",
+      "empty": "Nothing is waiting for approval."
+    },
+    "bonus": {
+      "title": "Bonus tasks today",
+      "manage": "Manage",
+      "publish": "Publish a bonus task",
+      "line": "{{ title }} · +{{ points }}",
+      "toApprove": "{{ count }} to approve",
+      "appearsAt": "Appears at {{ time }}",
+      "doneBy": "{{ names }} done",
+      "empty": "No bonus tasks today.",
+      "error": "Bonus tasks could not load."
+    },
+    "activity": {
+      "title": "Recent activity",
+      "completed": "finished",
+      "approved": "approved",
+      "rejected": "sent back",
+      "skipped": "skipped",
+      "view_ledger": "View ledger",
+      "pill": {
+        "waiting": "Waiting",
+        "approved": "Approved",
+        "missed": "Missed",
+        "rejected": "Not approved"
+      },
+      "empty": "No activity yet."
+    },
+    "status": {
+      "submitted": "Waiting",
+      "approved": "Done",
+      "overdue": "Overdue",
+      "on_track": "All on track",
+      "done_today": "Done for today",
+      "overdue_count": "{{ count }} overdue"
+    }
+  },
+  "bonus": {
+    "tag": "BONUS",
+    "title": "Bonus tasks",
+    "sub": "Extra points for kids, for one day. Nothing is taken away if a bonus is missed.",
+    "newLink": "New bonus task",
+    "templatesLink": "Bonus templates",
+    "loading": "Loading bonus tasks...",
+    "loadError": "Bonus tasks could not load.",
+    "retry": "Try again",
+    "points": "{{ points }} points",
+    "until": "Until {{ time }}",
+    "noPenalty": "No penalty",
+    "nobodyYet": "Nobody has taken it yet",
+    "approve": "Approve",
+    "sendBack": "Send back",
+    "sendBackNote": "Note for the child (optional)",
+    "sendBackConfirm": "Send back",
+    "action": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "unassign": "Unassign"
+    },
+    "edit": {
+      "title": "Edit bonus task",
+      "hint": "Only the fields you change are saved.",
+      "dayLabel": "Day",
+      "dayHint": "Pick today or a later day.",
+      "save": "Save changes",
+      "back": "Back",
+      "cancelTask": "Delete",
+      "cancelTitle": "Delete {{ title }}?",
+      "cancelBody": "The task leaves the schedule and shows in Past as cancelled. No points are posted.",
+      "cancelConfirm": "Delete"
+    },
+    "noteHint": "Up to {{ max }} characters. The child sees it.",
+    "notice": {
+      "approved": "Approved {{ title }} for {{ name }}.",
+      "sentBack": "Sent {{ title }} back to {{ name }}.",
+      "edited": "Saved changes to {{ title }}.",
+      "cancelled": "Cancelled {{ title }}.",
+      "unassigned": "Took {{ title }} back from {{ name }}. It is open again."
+    },
+    "mode": {
+      "first_come": "First come, first served",
+      "everyone_once": "Everyone, once each"
+    },
+    "state": {
+      "scheduled": "Scheduled",
+      "open": "Open",
+      "expired": "Ended",
+      "cancelled": "Cancelled"
+    },
+    "tabs": {
+      "today": "Today",
+      "scheduled": "Scheduled",
+      "past": "Past"
+    },
+    "table": {
+      "day": "Day",
+      "task": "Task",
+      "mode": "Mode",
+      "window": "Window",
+      "points": "Points",
+      "result": "Result",
+      "actions": "Actions"
+    },
+    "window": {
+      "range": "{{ from }} to {{ to }}",
+      "from": "From {{ from }}"
+    },
+    "result": {
+      "cancelled": "Cancelled",
+      "done": "Done by {{ names }}",
+      "nobody": "Nobody took it",
+      "notDone": "Not approved"
+    },
+    "scopeEmpty": {
+      "scheduled": {
+        "title": "Nothing scheduled",
+        "body": "Bonus tasks for a later day or time show here."
+      },
+      "past": {
+        "title": "No past tasks",
+        "body": "Bonus tasks that have ended show here with their result."
+      }
+    },
+    "status": {
+      "none": "Not yet",
+      "claimed": "In progress",
+      "submitted": "Waiting for approval",
+      "approved": "Approved",
+      "rejected": "Sent back",
+      "released": "Given back"
+    },
+    "row": {
+      "notYet": "Nothing sent in yet today",
+      "grabbedAt": "Grabbed at {{ when }}",
+      "doneAt": "Done at {{ when }}",
+      "approvedAt": "Approved at {{ when }}",
+      "sentBack": "Sent back. They can try again.",
+      "givenBack": "Given back. Open again."
+    },
+    "empty": {
+      "title": "No bonus tasks today",
+      "body": "Add a bonus task for a child to grab. It ends at the end of the day.",
+      "cta": "New bonus task"
+    },
+    "error": {
+      "network": "No connection. Check your network and try again.",
+      "forbidden": "You do not have permission to do that.",
+      "changed": "This changed while you were looking. The list has been reloaded.",
+      "generic": "Something went wrong. Try again.",
+      "noteTooLong": "The note is too long. Keep it to 200 characters.",
+      "hasClaims": "Someone has already taken this task, so it cannot change. The list has been reloaded.",
+      "wrongState": "This task can no longer change. The list has been reloaded.",
+      "expired": "This task has ended, so it cannot change."
+    },
+    "new": {
+      "back": "Back to bonus tasks",
+      "title": "New bonus task",
+      "sub": "Publish a task for one day. Kids can grab it from their Today screen while it is open.",
+      "titleLabel": "Title",
+      "titleHint": "Up to {{ max }} characters.",
+      "descriptionLabel": "Description (optional)",
+      "descriptionHint": "Up to {{ max }} characters.",
+      "pointsLabel": "Points",
+      "pointsHint": "Between {{ min }} and {{ max }} points.",
+      "kidsLabel": "Who can take it",
+      "kidsLoading": "Loading children...",
+      "kidsError": "Children could not load.",
+      "noKids": "Add a child in Family first.",
+      "modeLabel": "How kids take it",
+      "modeFirstComeHint": "The first child to grab it owns it. Others see that it is taken.",
+      "modeEveryoneOnceHint": "Each chosen child can do it once today.",
+      "approvalLabel": "Ask me to approve",
+      "approvalHint": "When on, a finished task waits for your approval before points are added.",
+      "publish": "Publish",
+      "publishing": "Publishing...",
+      "previewFor": "What {{ name }} will see",
+      "previewAnyKid": "What a child will see",
+      "previewTitle": "Bonus task title",
+      "dayLabel": "Day",
+      "dayHint": "One day only. Kids can see it while it is open.",
+      "dayToday": "Today",
+      "dayTomorrow": "Tomorrow",
+      "dayPick": "Pick a day",
+      "showLabel": "Shows up at",
+      "showHint": "Leave empty to show it as soon as it is published.",
+      "endsLabel": "Ends",
+      "endsHint": "Leave empty to end at the end of the day.",
+      "windowEndOfDay": "Until the end of the day",
+      "zoneError": "The family time zone could not load. Reload the page to try again.",
+      "previewNote": "This is a preview. Points are added when the task is done, after approval if you ask for it.",
+      "saveTemplate": "Save as bonus template",
+      "savingTemplate": "Saving template...",
+      "templateSaved": "Saved as a bonus template. Nothing was published.",
+      "templatePick": "Start from a bonus template",
+      "templateMore": "+ More",
+      "templateHint": "Only the fields the template sets are filled in. Everything stays editable.",
+      "templateTooLong": "This title is too long to save as a template. Use 80 characters or less.",
+      "error": {
+        "titleRequired": "Add a title.",
+        "titleTooLong": "The title is too long.",
+        "descriptionTooLong": "The description is too long.",
+        "pointsInvalid": "Enter a whole number of points.",
+        "pointsRange": "Points must be between {{ min }} and {{ max }}.",
+        "kidsRequired": "Choose at least one child.",
+        "dayInvalid": "Pick a day.",
+        "dayPast": "Pick today or a later day.",
+        "endsTooEarly": "Pick a later end time.",
+        "endsPast": "That end time has already passed.",
+        "invalid": "Check the form and try again."
+      }
+    }
+  },
+  "approvals": {
+    "title": "Approvals",
+    "sub": "Review finished tasks and reward requests.",
+    "loading": "Loading...",
+    "retry": "Try again",
+    "tabs": {
+      "tasks": "Task completions",
+      "requests": "Reward requests",
+      "history": "History"
+    },
+    "filter": {
+      "member": "Filter by person",
+      "everyone": "Everyone"
+    },
+    "checklist": {
+      "progress": "{{ done }} of {{ total }} steps done"
+    },
+    "tasks": {
+      "intro": "{{ count }} task completions are waiting. Reward requests always need a separate review.",
+      "approveAll": "Approve all {{ count }}",
+      "approve": "Approve",
+      "approveWith": "Approve +{{ count }}",
+      "approveLabel": "Approve {{ title }} for {{ name }}",
+      "sendBack": "Send back",
+      "sendBackLabel": "Send back {{ title }} for {{ name }}",
+      "due": "Due {{ when }}",
+      "points": "+{{ count }}",
+      "more": "Showing the first 200 completions. Approve these to see the rest. Approve all is off until then.",
+      "empty": {
+        "title": "Nothing to approve",
+        "body": "When someone finishes a task, it shows up here."
+      }
+    },
+    "requests": {
+      "intro": "Approving a request spends the points. Declining returns them.",
+      "by": "Requested by {{ name }} · {{ count }} points",
+      "cost": "{{ count }} pts",
+      "approve": "Approve",
+      "approveLabel": "Approve {{ reward }} for {{ name }}",
+      "decline": "Decline",
+      "declineLabel": "Decline {{ reward }} for {{ name }}",
+      "empty": {
+        "title": "No requests waiting",
+        "body": "Reward requests from your children show up here."
+      }
+    },
+    "history": {
+      "item": "Item",
+      "who": "Who",
+      "decision": "Decision",
+      "by": "By",
+      "when": "When",
+      "approved": "Approved +{{ cost }}",
+      "declined": "Declined",
+      "more": "Load more",
+      "empty": {
+        "title": "No decisions yet",
+        "body": "Approved and declined reward requests appear here."
+      }
+    },
+    "confirmAll": {
+      "title": "Approve {{ count }} completions?",
+      "body": "Points are awarded to each child now. You can still reverse any of them from the points ledger.",
+      "cancel": "Cancel"
+    },
+    "sendBack": {
+      "title": "Send back {{ title }}",
+      "note": "Note for the child",
+      "hint": "Explain what needs fixing. Up to 500 characters.",
+      "cancel": "Cancel",
+      "submit": "Send back"
+    },
+    "decline": {
+      "title": "Decline {{ reward }}?",
+      "body": "{{ name }} gets {{ count }} points back.",
+      "reason": "Reason",
+      "hint": "Say why, so the child knows what to do next. Up to 200 characters.",
+      "cancel": "Cancel",
+      "submit": "Decline"
+    },
+    "bonus": {
+      "chip": "BONUS",
+      "approve": "Approve +{{ count }}",
+      "meta": "{{ name }} · submitted {{ when }}",
+      "note": "Bonus task: no penalty applies, and sending it back lets {{ name }} try again today.",
+      "sendBackHint": "Optional. Up to 200 characters."
+    },
+    "notice": {
+      "taskApproved": "Approved {{ title }}.",
+      "sentBack": "Sent {{ title }} back.",
+      "allApproved": "Approved {{ count }} completions.",
+      "requestApproved": "Approved the {{ name }} request.",
+      "requestDeclined": "Declined the {{ name }} request.",
+      "bonusApproved": "Approved bonus {{ title }} for {{ name }}.",
+      "bonusSentBack": "Sent bonus {{ title }} back to {{ name }}."
+    },
+    "error": {
+      "load": "Could not load this list.",
+      "network": "No connection. Check your network and try again.",
+      "forbidden": "You do not have permission to do that.",
+      "changed": "This item changed. The list has been refreshed.",
+      "generic": "Something went wrong. Try again.",
+      "someFailed": "Some completions could not be approved. The list has been refreshed.",
+      "noteRequired": "Add a note so the child knows what to fix.",
+      "noteTooLong": "Keep the note to 500 characters or fewer.",
+      "reasonRequired": "Add a reason.",
+      "reasonTooLong": "Keep the reason to 200 characters or fewer.",
+      "bonusNoteTooLong": "Keep the note to 200 characters or fewer."
+    }
+  },
+  "avatar": {
+    "alt": "Profile picture of {{ name }}",
+    "upload": "Upload a picture",
+    "take_photo": "Take a photo",
+    "hint_dialog": "Drag to move · JPG or PNG, up to 5 MB",
+    "cancel": "Cancel",
+    "zoom": "Zoom",
+    "move_across": "Move left and right",
+    "move_down": "Move up and down",
+    "save": "Save picture",
+    "preview_alt": "Preview of the picture",
+    "error": {
+      "type": "Choose a JPG or PNG picture.",
+      "too_large": "That picture is larger than 5 MB. Choose a smaller one.",
+      "animated": "Animated pictures are not supported. Choose a still photo.",
+      "dimensions": "That picture is too large or too small. Choose a different one.",
+      "invalid_image": "We could not read that picture. Choose a different one.",
+      "locked": "This picture is locked. Ask a parent to change it.",
+      "forbidden": "You do not have permission to change this picture.",
+      "network": "Cannot reach NestWall. Check your connection and try again.",
+      "generic": "The picture could not be saved. Please try again."
+    }
+  },
+  "rewards": {
+    "kicker": "Rewards",
+    "title": "Rewards",
+    "kid": {
+      "kicker": "My rewards",
+      "title": "Spend your points"
+    },
+    "retry": "Try again",
+    "loading": "Loading rewards…",
+    "error": {
+      "load": "We could not load your rewards.",
+      "generic": "That did not work. Please try again.",
+      "insufficient_points": "You do not have enough points for this reward yet.",
+      "outside_window": "This reward is not available right now.",
+      "limit_reached": "You have reached the limit for this reward.",
+      "reward_unavailable": "This reward is no longer available.",
+      "not_pending": "This request can no longer be cancelled."
+    },
+    "hero": {
+      "label": "You have",
+      "points": "points"
+    },
+    "goal": {
+      "label": "Progress to your next reward",
+      "next": "Next: {{ name }}",
+      "to_go": "{{ count }} more points to go",
+      "none": "You can afford every reward right now"
+    },
+    "requests": {
+      "heading": "Your requests",
+      "waiting": "Waiting",
+      "cancel": "Cancel",
+      "approved": "Approved",
+      "rejected": "Not approved",
+      "cancelled": "Cancelled",
+      "empty": "You have no requests yet.",
+      "note": "Requests that need approval wait for a parent. Points are held until then.",
+      "all": "See all requests",
+      "all_title": "All your requests",
+      "back": "Back to rewards",
+      "page": "Page {{ page }}",
+      "prev": "Previous",
+      "next": "Next",
+      "pager": "Request history pages"
+    },
+    "filter": {
+      "label": "Filter rewards",
+      "all": "All",
+      "now": "Can get now",
+      "saving": "Saving up"
+    },
+    "empty": {
+      "rewards": "No rewards are available yet.",
+      "filter": "No rewards match this filter."
+    },
+    "card": {
+      "cost": "{{ count }} points",
+      "requested": "Requested · waiting for a parent",
+      "not_today": "Not today",
+      "request": "Request",
+      "more": "{{ count }} more to go"
+    },
+    "cancel": {
+      "title": "Cancel this request?",
+      "body": "Cancel your request for {{ name }}? The {{ count }} points will go back to your balance.",
+      "keep": "Keep it",
+      "confirm": "Cancel request",
+      "done": "Request cancelled. {{ count }} points returned."
+    },
+    "request": {
+      "sent": "Request sent."
+    },
+    "parent": {
+      "soon": "Parent rewards are coming soon."
+    },
+    "entry": {
+      "task_award": "Task completed",
+      "bonus_task_award": "Bonus task completed",
+      "bonus": "Bonus",
+      "penalty": "Penalty",
+      "redemption": "Reward requested",
+      "redemption_reversal": "Request reversed",
+      "reversal": "Reversal",
+      "adjustment": "Adjustment",
+      "transfer_out": "Shared",
+      "transfer_in": "Shared"
+    },
+    "admin": {
+      "sub": "Set what points can be spent on",
+      "add": "Add reward",
+      "loading": "Loading rewards…",
+      "retry": "Try again",
+      "error": {
+        "load": "We could not load the rewards.",
+        "name": "Give the reward a name.",
+        "icon": "Add an icon of up to 16 characters.",
+        "cost": "Cost must be a whole number from 1 to 100,000.",
+        "limit": "A limit needs a whole number from 1 to 1,000.",
+        "window": "The start date must be on or before the end date.",
+        "stale": "This reward changed while you were editing. Close the form, check it and try again.",
+        "invalid": "Check the highlighted details and try again.",
+        "generic": "That did not work. Please try again."
+      },
+      "empty": {
+        "title": "No rewards yet",
+        "body": "Add a reward that children can ask for with their points."
+      },
+      "newCard": "New reward",
+      "sort": {
+        "label": "Sort by",
+        "name": "Name (A to Z)",
+        "points-asc": "Points (low to high)",
+        "points-desc": "Points (high to low)"
+      },
+      "edit": "Edit",
+      "status": {
+        "active": "Active",
+        "approval": "Needs approval",
+        "paused": "Paused"
+      },
+      "limit": {
+        "none": "No limit",
+        "day": "{{ count }} a day",
+        "week": "{{ count }} a week",
+        "total": "{{ count }} in total"
+      },
+      "period": {
+        "day": "Per day",
+        "week": "Per week",
+        "total": "Total"
+      },
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun",
+        "every": "Every day"
+      },
+      "eligible": {
+        "all": "Every child"
+      },
+      "form": {
+        "new": "New reward",
+        "edit": "Edit reward",
+        "name": "Name",
+        "icon": "Icon",
+        "cost": "Cost (points)",
+        "description": "Description",
+        "status": "Status",
+        "approval": "Needs approval",
+        "limit": "Limit",
+        "limitPeriod": "Limit period",
+        "limitCount": "Times",
+        "from": "Available from",
+        "until": "Available until",
+        "days": "Days",
+        "daysHint": "Leave every day off to make it available every day.",
+        "children": "Who can ask",
+        "childrenHint": "Leave everyone off to make it available to every child."
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "saved": "Reward saved.",
+      "created": "Reward added.",
+      "delete": "Delete",
+      "deleteTitle": "Delete “{{name}}”?",
+      "deleteConfirm": "It leaves the catalogue. Past requests keep their history.",
+      "deleted": "Reward deleted."
+    }
+  },
+  "points": {
+    "title": "Points",
+    "sub": "Every point is recorded. Nothing is edited, only corrected.",
+    "add": "Bonus or penalty",
+    "ledger": "Ledger",
+    "col": {
+      "when": "When",
+      "who": "Who",
+      "entry": "Entry",
+      "reason": "Reason",
+      "points": "Points",
+      "actions": "Actions"
+    },
+    "balance": {
+      "title": "Balances",
+      "goal": "{{ percent }}% to {{ reward }} ({{ cost }})",
+      "allReachable": "Every reward is within reach",
+      "reserved": "Reserved: {{ points }} (pending)"
+    },
+    "loading": "Loading points…",
+    "retry": "Try again",
+    "loadMore": "Load more",
+    "cancel": "Cancel",
+    "save": "Save",
+    "notice": {
+      "saved": "Points recorded.",
+      "replayed": "This change was already recorded.",
+      "reversed": "Penalty reversed."
+    },
+    "filter": {
+      "member": "Filter by member",
+      "allMembers": "All members",
+      "type": "Filter by type",
+      "allTypes": "All types"
+    },
+    "type": {
+      "task_award": "Task award",
+      "bonus_task_award": "Bonus task",
+      "bonus": "Bonus",
+      "penalty": "Penalty",
+      "redemption": "Reward requested",
+      "redemption_reversal": "Request reversed",
+      "reversal": "Reversal",
+      "adjustment": "Correction",
+      "transfer_out": "Shared",
+      "transfer_in": "Shared"
+    },
+    "manual": {
+      "title": "Bonus or penalty",
+      "type": "Kind of change",
+      "who": "Who",
+      "bonus": "Bonus",
+      "penalty": "Penalty",
+      "adjustment": "Correction",
+      "points": "Points",
+      "reason": "Reason (required)",
+      "hint": {
+        "signed": "Enter a whole number of points, from 1 to 100,000.",
+        "adjustment": "Use a minus sign to take points away. Zero is not allowed."
+      }
+    },
+    "reverse": {
+      "action": "Reverse",
+      "title": "Reverse this penalty?",
+      "body": "The points go back to the child's balance. A penalty can be reversed once.",
+      "reason": "Reason (required)",
+      "confirm": "Reverse penalty"
+    },
+    "empty": {
+      "title": "No points yet",
+      "body": "Points appear here after a task is completed or a change is made."
+    },
+    "error": {
+      "load": "We could not load the points ledger.",
+      "more": "We could not load more entries.",
+      "member": "Choose a child.",
+      "memberNotFound": "That child is no longer in the family.",
+      "points": "Enter a whole number of points from 1 to 100,000.",
+      "adjust": "Enter a correction of up to 100,000 points, either way. Zero is not allowed.",
+      "reason": "Enter a reason of up to 200 characters.",
+      "nothing": "The balance is zero, so there is nothing to take.",
+      "conflict": "This change clashes with an earlier one. Close the form and try again.",
+      "invalid": "Check the details and try again.",
+      "generic": "That did not work. Please try again.",
+      "alreadyReversed": "This penalty was already reversed.",
+      "notPenalty": "Only a penalty can be reversed.",
+      "notFound": "That entry could not be found.",
+      "balances": "We could not load the balances."
+    }
+  },
+  "account": {
+    "password": {
+      "open": "Change password",
+      "heading": "Password",
+      "intro": "Change the password you use to sign in.",
+      "saved": "Your password is updated.",
+      "current_label": "Current password",
+      "error": {
+        "required": "Enter your current password and a new password.",
+        "invalid_credentials": "Your current password is not correct."
+      }
+    }
+  },
+  "me": {
+    "title_parent": "Profile",
+    "profile": {
+      "family": "{{ name }} family",
+      "loading": "Loading your profile…",
+      "streak_label": "day streak"
+    },
+    "settings": {
+      "heading": "Settings",
+      "dark_mode": "Dark mode"
+    },
+    "points": {
+      "heading": "My points",
+      "balance": "Points balance",
+      "points": "points",
+      "reserved": "{{ count }} points waiting for parent approval",
+      "streak": "{{ count }} day streak",
+      "week": "This week",
+      "week_total_label": "points earned this week",
+      "recent": "Recent points",
+      "tasks_heading": "Tasks this week",
+      "stats": {
+        "done": "tasks done",
+        "missed": "tasks missed",
+        "bonus": "bonus tasks"
+      },
+      "empty": "No points yet. Finish a task to earn your first points.",
+      "loading": "Loading your points…",
+      "error": "We could not load your points.",
+      "retry": "Try again"
+    },
+    "picture": {
+      "heading": "Profile picture",
+      "intro": "This picture appears next to your name in NestWall.",
+      "open": "Edit picture",
+      "dialog_title": "My picture",
+      "dialog_intro": "Pick any photo or picture. Your family can see it.",
+      "use_letter": "Use my letter instead"
+    },
+    "details": {
+      "heading": "My details",
+      "intro": "Keep your name, birthday and gender up to date.",
+      "save": "Save details",
+      "saved": "Your details are saved."
+    },
+    "badges": {
+      "heading": "My badges",
+      "back": "Back to me",
+      "catch": "Badges are earned automatically when you do great things. Parents can also give you special ones.",
+      "count": "{{ earned }} of {{ total }}",
+      "count_line": "{{ earned }} earned · {{ total }} to collect",
+      "group_count": "{{ earned }} of {{ total }}",
+      "see_all": "See all {{ count }} badges",
+      "from_parents": "From my parents",
+      "from": "From {{ name }}",
+      "earned": "Earned",
+      "progress": "{{ cur }} of {{ target }}",
+      "loading": "Loading your badges…",
+      "error": "We could not load your badges.",
+      "card_error": "We could not load your badges.",
+      "retry": "Try again",
+      "empty": "No badges to show yet. Finish a task to earn your first one.",
+      "card_empty": "Finish a task to earn your first badge.",
+      "off": "Badges are switched off for your family.",
+      "desc": {
+        "s3": "Finish every task 3 days in a row",
+        "s7": "Finish every task 7 days in a row",
+        "s14": "Finish every task 14 days in a row",
+        "s30": "Finish every task 30 days in a row",
+        "s100": "Finish every task 100 days in a row",
+        "p100": "Earn 100 points",
+        "p250": "Earn 250 points",
+        "p500": "Earn 500 points",
+        "p1000": "Earn 1000 points",
+        "p_reward": "Get your first reward",
+        "t1": "Finish your first task",
+        "t10": "Finish 10 tasks",
+        "t50": "Finish 50 tasks",
+        "t100": "Finish 100 tasks",
+        "k_tidy": "Finish 20 chores",
+        "k_hw": "Finish 20 homework tasks",
+        "k_pet": "Finish 20 pet tasks",
+        "k_green": "Finish 20 outdoor tasks",
+        "e_early": "Finish 10 tasks before they are due",
+        "e_week": "Finish every task for a whole week",
+        "e_month": "Finish every task for a whole month",
+        "e_back": "Finish 5 past-due tasks",
+        "k_share": "Share points for the first time",
+        "k_help": "Get 3 bonus points from parents"
+      }
+    }
+  },
+  "family": {
+    "title": "Family",
+    "member_count": "{{ count }} members",
+    "name_edit": {
+      "label": "Family name",
+      "edit": "Edit family name",
+      "save": "Save family name",
+      "cancel": "Cancel",
+      "required": "Enter a family name.",
+      "error": "The family name could not be saved. Try again."
+    },
+    "tabs": {
+      "members": "Members",
+      "roles": "Roles",
+      "sessions": "Sessions"
+    },
+    "add_member": {
+      "open": "Add Family Member",
+      "heading": "Add a family member",
+      "intro": "Choose a role, then set a username and password. Children also get a quick PIN.",
+      "role": {
+        "label": "Role",
+        "placeholder": "Choose a role",
+        "error": "Choose a role."
+      },
+      "display_name": {
+        "label": "Name",
+        "error": "Enter a name of up to 80 characters"
+      },
+      "user_id": {
+        "label": "Username",
+        "error": "Username must be 3-32 characters using only letters, numbers, . - _"
+      },
+      "password": {
+        "label": "Password",
+        "error": "Password must be 8-256 characters"
+      },
+      "pin": {
+        "label": "Quick PIN (optional)",
+        "hint": "4 to 8 digits for fast switching on shared devices.",
+        "error": "PIN must be 4 to 8 digits"
+      },
+      "email": {
+        "label": "Email",
+        "hint_parent": "Required for parents. Used to reset a forgotten password.",
+        "hint_optional": "Optional.",
+        "required": "Parents need an email address.",
+        "error": "Enter a valid email address."
+      },
+      "birth_date": {
+        "label": "Date of birth (optional)",
+        "hint": "Used for birthday events on the calendar.",
+        "error": "Enter a date between 1900 and today."
+      },
+      "gender": {
+        "label": "Gender (optional)",
+        "not_set": "Not set",
+        "female": "Female",
+        "male": "Male",
+        "prefer_not_to_say": "Prefer not to say"
+      },
+      "submit": "Add member",
+      "error": {
+        "user_id_taken": "That username is already taken. Choose another.",
+        "email_taken": "That email is already used by another family member.",
+        "validation": "Please check the details you entered and try again."
+      }
+    },
+    "loading": "Loading family members…",
+    "email_prompt": {
+      "heading": "Add your email address",
+      "body": "Your email lets you reset your password if you forget it. Add it now so you can always get back in.",
+      "set": "Set email",
+      "later": "Later"
+    },
+    "edit": {
+      "back": "Back to family",
+      "loading": "Loading member…",
+      "heading": "Edit {{ name }}",
+      "not_found": "This family member could not be found.",
+      "read_only": "Only parents can change member details. You can still change your own photo and password.",
+      "section": {
+        "profile": "Profile",
+        "account": "Account",
+        "contact": "Contact",
+        "personal": "Personal",
+        "security": "Security"
+      },
+      "photo": {
+        "change": "Change photo",
+        "heading": "Profile photo",
+        "done": "Done",
+        "intro": "Pick any photo or picture for this family member.",
+        "use_letter": "Use the letter instead"
+      },
+      "name": {
+        "label": "Name",
+        "error": "Enter a name up to 80 characters."
+      },
+      "colour": {
+        "label": "Colour"
+      },
+      "username": {
+        "label": "Username",
+        "error": "Use 3 to 32 letters, numbers, dots, dashes or underscores."
+      },
+      "role": {
+        "label": "Role",
+        "locked": "Parent is the family admin role and cannot be changed."
+      },
+      "active": {
+        "label": "Active",
+        "hint": "Inactive members cannot sign in.",
+        "self": "You cannot deactivate your own account."
+      },
+      "email": {
+        "label": "Email",
+        "hint_parent": "Required for parents. Used to reset a forgotten password.",
+        "hint_optional": "Optional.",
+        "required": "Parents need an email address.",
+        "error": "Enter a valid email address."
+      },
+      "birth_date": {
+        "label": "Date of birth",
+        "hint": "Optional. Used for birthday events on the calendar.",
+        "error": "Enter a date between 1900 and today."
+      },
+      "gender": {
+        "label": "Gender",
+        "not_set": "Not set",
+        "female": "Female",
+        "male": "Male",
+        "prefer_not_to_say": "Prefer not to say"
+      },
+      "pin": {
+        "label": "Quick PIN",
+        "hint": "4 to 8 digits. Leave blank to keep the current PIN.",
+        "error": "Use 4 to 8 digits."
+      },
+      "password": {
+        "label": "New password",
+        "hint": "Leave blank to keep the current password. Minimum 8 characters.",
+        "error": "Use 8 to 256 characters."
+      },
+      "own_password": {
+        "hint": "Change your own password from here.",
+        "open": "Change my password",
+        "heading": "Change my password"
+      },
+      "changes_pending": "Unsaved changes",
+      "no_changes": "No changes yet",
+      "save": "Save changes",
+      "error": {
+        "invalid": "Some details are not valid. Check the form and try again.",
+        "user_id_taken": "That username is already taken.",
+        "email_taken": "That email is already used by another family member.",
+        "cannot_deactivate_self": "You cannot deactivate your own account.",
+        "invalid_target": "That change does not apply to this member."
+      }
+    },
+    "username": "Username: {{ user_id }}",
+    "badge": {
+      "child": "Child"
+    },
+    "status": {
+      "inactive": "Inactive",
+      "removed": "Removed"
+    },
+    "error": {
+      "network": "Cannot reach NestWall. Check your connection and try again.",
+      "forbidden": "You do not have permission to do that.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "delete": {
+      "heading": "Delete {{ name }}?",
+      "intro": "{{ name }} will be removed from the family.",
+      "warning": "This permanently deletes their points, rewards, badges and task history. It cannot be undone.",
+      "confirm": "Delete permanently",
+      "error": {
+        "self": "You cannot delete your own account.",
+        "last_parent": "The family must keep at least one active parent."
+      }
+    },
+    "member_actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "permissions": {
+      "heading": "Roles and permissions",
+      "intro": "Parents are the family admins and always have full access. For every other role you decide what is allowed. The values shown are only starting defaults.",
+      "loading": "Loading permissions…",
+      "add_role": "Add role",
+      "reset_defaults": "Reset to defaults",
+      "discard": "Discard changes",
+      "save": "Save changes",
+      "saved": "Changes saved. They apply on the next request.",
+      "editing": "Editing",
+      "role_defaults": "Role defaults",
+      "custom_roles": "Custom roles",
+      "role_limit_hint": "You can have up to {{ max }} custom roles. Delete one to add another.",
+      "not_for_role": "Not available for this role type",
+      "delete_role": {
+        "button": "Delete",
+        "heading": "Delete the role \"{{ name }}\"?",
+        "body": "Members must not use this role.",
+        "submit": "Delete role",
+        "cancel": "Cancel",
+        "error": {
+          "in_use": "This role is still used by a family member (including removed members).",
+          "built_in": "Built-in roles cannot be deleted.",
+          "conflict": "This role was changed by someone else. Reload and try again."
+        }
+      },
+      "override_count": "{{ count }} override",
+      "changed_from_defaults_one": "{{ count }} change from defaults",
+      "changed_from_defaults_other": "{{ count }} changes from defaults",
+      "overrides_one": "{{ count }} override",
+      "overrides_other": "{{ count }} overrides",
+      "no_members": "Add a family member to set per-person overrides.",
+      "column_permission": "What they can do",
+      "parent": "Parent (admin)",
+      "column_role_default": "Role default",
+      "column_override": "Override",
+      "inherit": "Use role setting",
+      "footer": "Changes are recorded in the audit log. The Parent role can never be reduced.",
+      "groups": {
+        "tasks": "Tasks",
+        "rewards": "Points and rewards",
+        "calendar": "Calendar",
+        "family": "Family and settings"
+      },
+      "levels": {
+        "denied": "No access",
+        "allowed": "Allowed",
+        "view": "View only",
+        "own": "Own items",
+        "request": "Can request",
+        "full": "Full access"
+      },
+      "codes": {
+        "family_manage": "Manage family profile and settings",
+        "family_view": "View family profile and settings",
+        "members_manage": "Add, remove and edit members",
+        "members_view": "View member list and profiles",
+        "roles_manage": "Edit roles and the permission matrix",
+        "roles_view": "View roles and permissions",
+        "tasks_manage": "Create, edit and delete any task",
+        "tasks_view": "View all tasks",
+        "tasks_own_manage": "Create and edit own tasks",
+        "tasks_own_view": "View own tasks",
+        "tasks_approve": "Approve task completions",
+        "tasks_complete": "Mark tasks as complete",
+        "calendar_manage": "Manage all calendar events",
+        "calendar_view": "View all calendar events",
+        "calendar_own_manage": "Manage own calendar events",
+        "calendar_own_view": "View own calendar events",
+        "rewards_manage": "Manage the reward catalogue and policies",
+        "rewards_view": "View rewards",
+        "rewards_redeem": "Redeem rewards",
+        "rewards_own_view": "View own points and rewards",
+        "rewards_approve": "Approve or reject reward redemptions and point shares",
+        "points_share": "Share points with a sibling",
+        "bonus_manage": "Publish and decide bonus tasks",
+        "bonus_grab": "Claim, release and complete bonus tasks",
+        "audit_view": "View the audit log",
+        "settings_manage": "Change all settings, including email",
+        "settings_view": "View settings",
+        "settings_theme": "Change personal theme",
+        "profile_avatar_change": "Change profile picture",
+        "profile_manage": "Edit own profile",
+        "sessions_manage": "Manage sessions",
+        "sessions_view": "View sessions",
+        "backup_manage": "Run and download backups",
+        "backup_restore": "Restore from backup",
+        "data_reset": "Reset family data"
+      },
+      "new_role": {
+        "heading": "Add a role",
+        "type": {
+          "label": "Role type",
+          "child": "Child",
+          "co_parent": "Co-parent",
+          "hint": "A child role can only hold child permissions. A co-parent role can also hold co-parent permissions."
+        },
+        "name": {
+          "label": "Role name",
+          "error": "Enter a name of up to 40 characters"
+        },
+        "description": {
+          "label": "Description (optional)"
+        },
+        "submit": "Create role",
+        "cancel": "Cancel",
+        "error": {
+          "name_taken": "A role with that name already exists.",
+          "limit": "You already have the maximum number of custom roles. Delete one to add another."
+        }
+      },
+      "error": {
+        "network": "Cannot reach NestWall. Check your connection and try again.",
+        "forbidden": "You do not have permission to change roles.",
+        "parent_locked": "The Parent role cannot be changed.",
+        "conflict": "These permissions were changed by someone else while you were editing. Reload to see the latest version. Your unsaved changes will be lost.",
+        "reload": "Reload",
+        "validation": "One of the permissions could not be saved. Reload and try again.",
+        "generic": "Something went wrong. Please try again."
+      }
+    }
+  },
+  "share": {
+    "title": "Sharing is caring",
+    "back": "Back",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "hero_button": "Share points",
+    "me_title": "Sharing is caring",
+    "me_body": "Give some of your points to a brother or sister.",
+    "hero_label": "You have",
+    "points": "points",
+    "who": "Who gets them?",
+    "how_many": "How many?",
+    "less": "Share fewer points",
+    "more": "Share more points",
+    "quick": "Quick amounts",
+    "note_heading": "Add a note",
+    "note_optional": "Optional",
+    "note_label": "Note",
+    "note": {
+      "thank_you": "Thank you!",
+      "happy_birthday": "Happy birthday!",
+      "good_job": "Good job!",
+      "just_because": "Just because",
+      "own": "Write your own"
+    },
+    "note_own_label": "Your own note",
+    "note_own_placeholder": "Write a short note…",
+    "note_own_count": "{{ count }} of {{ max }} characters",
+    "left": "You'll have left",
+    "shared_today": "Shared today",
+    "of_limit": "{{ used }} of {{ limit }}",
+    "keep": "You always keep at least {{ min }} points. Parents can see shared points.",
+    "cta": "Share {{ count }} points with {{ name }}",
+    "done_title": "Shared!",
+    "done_body": "{{ count }} points went to {{ name }}. You have {{ left }} points left.",
+    "pending_body": "{{ name }} gets {{ count }} points once a parent approves. You have {{ left }} points left.",
+    "back_rewards": "Back to rewards",
+    "finish": "Done",
+    "parent_only": "Sharing is for children. Parents set the limits in Settings.",
+    "off": "Sharing is turned off for your family.",
+    "no_siblings": "There is no one else to share with yet.",
+    "daily_done": "You have shared your daily limit. Try again tomorrow.",
+    "not_enough": "You need more points before you can share.",
+    "range": "Send between {{ min }} and {{ max }} points.",
+    "error": {
+      "load": "We could not load sharing.",
+      "daily": "You have reached today's sharing limit.",
+      "minimum": "This would take you below the points you keep.",
+      "disabled": "Sharing is turned off.",
+      "conflict": "This share was already sent or changed. Check your balance and try again.",
+      "recipient": "Pick someone to share with.",
+      "amount": "Enter a valid amount.",
+      "note": "Keep your note to 200 characters or fewer.",
+      "network": "Can't reach the server. Check your connection and try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "hub": {
+      "admin": "Templates, categories, points and badges",
+      "setup": "Configuration",
+      "tools": "System",
+      "soon": "Coming soon"
+    },
+    "close": "Close",
+    "kind": {
+      "label": "Template type",
+      "regular": "Regular",
+      "bonus": "Bonus"
+    },
+    "kicker": "Settings",
+    "diagnostics": {
+      "title": "Diagnostics",
+      "no_permission": "You need permission to view settings to see diagnostics.",
+      "error": "Could not load diagnostics. Try again.",
+      "retry": "Try again",
+      "never": "Never",
+      "unknown": "Unknown",
+      "none": "None",
+      "status": {
+        "ok": "OK",
+        "warn": "Check",
+        "bad": "Problem"
+      },
+      "app": {
+        "title": "App",
+        "version": "Version",
+        "migrations": "Database migrations",
+        "migrations_value": "{{ applied }} applied, latest {{ latest }}",
+        "uptime": "Uptime",
+        "uptime_value": "{{ days }} d {{ hours }} h {{ minutes }} min",
+        "database": "Database size"
+      },
+      "backups": {
+        "title": "Backups",
+        "last_run": "Last run",
+        "last_success": "Last successful backup",
+        "stale": "No successful backup in the last 7 days. Check the backup settings."
+      },
+      "sync": {
+        "title": "Calendar sync",
+        "linked": "Linked calendars",
+        "paused": "Paused",
+        "failing": "Failing",
+        "last_synced": "Last synced"
+      },
+      "email": {
+        "title": "Email",
+        "pending": "Waiting to send",
+        "failed": "Failed (given up)",
+        "sent": "Sent in the last 24 hours"
+      },
+      "wall": {
+        "title": "Wall devices",
+        "active": "Paired and active",
+        "last_seen": "Last seen"
+      },
+      "errors": {
+        "title": "Server errors",
+        "note": "Counted since the server last started, not over the last 24 hours.",
+        "count": "Server errors (5xx)",
+        "last": "Last error"
+      },
+      "events": {
+        "title": "Recent events",
+        "note": "Keeps the newest {{ max }} events. Each one stores only a short code and the time, never error text from calendars, mail servers or requests.",
+        "see_below": "Details are listed under Recent events below.",
+        "empty": "No recent events.",
+        "error": "Could not update recent events. Try again.",
+        "clear": "Clear",
+        "clear_yes": "Yes, clear events",
+        "kinds": {
+          "server_error": "Server error",
+          "calendar_sync": "Calendar sync",
+          "email": "Email"
+        },
+        "server_error": "HTTP {{ status }}",
+        "codes": {
+          "invalid_url": "Calendar link is not a valid URL",
+          "link_not_allowed": "Calendar link host is not allowed",
+          "too_large": "Calendar file is too large",
+          "invalid_ics": "Calendar file could not be read",
+          "too_many_events": "Calendar has too many events",
+          "unavailable": "Calendar could not be fetched",
+          "no_events": "Calendar had no events",
+          "send_failed": "Email gave up after several tries"
+        }
+      }
+    },
+    "nav": {
+      "label": "Settings sections",
+      "templates": "Task templates",
+      "bonus": "Bonus templates",
+      "categories": "Task categories",
+      "calendars": "Calendars",
+      "notifications": "Notifications",
+      "email": "Email (SMTP)",
+      "wall": "Wall devices",
+      "integrations": "Integrations",
+      "data": "Data and backups",
+      "points": "Points and rewards",
+      "badges": "Badges",
+      "general": "General",
+      "diagnostics": "Diagnostics"
+    },
+    "sub": {
+      "templates": "Task templates and defaults",
+      "categories": "Task categories and parts of day",
+      "points": "Points and rewards",
+      "badges": "Badges",
+      "calendars": "Calendars",
+      "general": "Location and units",
+      "wall": "Wall devices",
+      "notifications": "Notification options and quiet hours",
+      "email": "Mail server for emailed notifications",
+      "integrations": "Integrations",
+      "data": "Data and backups",
+      "diagnostics": "Version, backups and calendar sync health"
+    },
+    "email": {
+      "title": "Email (SMTP)",
+      "test": "Send test email",
+      "save": "Save changes",
+      "enable_title": "Email notifications",
+      "enable_hint": "Send notifications through your own mail account. Optional: NestWall works fully without it.",
+      "ready": "Ready",
+      "not_ready": "Not set up",
+      "server_title": "Mail server",
+      "provider": "Provider",
+      "provider_gmail": "Gmail",
+      "provider_microsoft": "Microsoft 365",
+      "provider_custom": "Custom",
+      "host": "Server",
+      "port": "Port",
+      "security": "Security",
+      "security_starttls": "STARTTLS",
+      "security_tls": "SSL/TLS",
+      "security_hint": "Certificate verification is on.",
+      "username": "Username",
+      "password": "App password",
+      "password_stored": "Stored encrypted. It can't be shown again once saved.",
+      "password_replace": "Replace",
+      "password_remove": "Remove",
+      "password_cancel": "Cancel",
+      "password_undo": "Undo",
+      "password_clear_pending": "The saved password will be removed when you save.",
+      "sender_title": "Sender",
+      "from_name": "From name",
+      "from_address": "From address",
+      "send_limit": "Send limit",
+      "send_limit_hint": "Emails per hour (1 to 1000).",
+      "gmail_title": "Using Gmail",
+      "gmail_step_1": "Turn on 2-Step Verification for the Google account.",
+      "gmail_step_2": "Open Security, then App passwords, and create one named NestWall.",
+      "gmail_step_3": "Paste the 16-character password here. Don't use your normal password.",
+      "gmail_step_4": "Press Send test email.",
+      "gmail_note": "Some Workspace accounts don't allow app passwords. Use another provider or an SMTP relay.",
+      "privacy": "The password is encrypted at rest, never sent back to the browser and never written to logs.",
+      "test_sent": "Sent. Check your inbox. It can take a minute.",
+      "error": {
+        "smtp_not_ready": "Save a server and a from address with email on before sending a test.",
+        "no_email": "Your account has no email address.",
+        "send_failed": "The test email could not be sent."
+      }
+    },
+    "notifications": {
+      "save": "Save",
+      "saved": "Saved",
+      "no_permission": "Only parents can change the family's notification settings. Everyone receives notices in the bell icon.",
+      "in_app": {
+        "label": "In-app notices",
+        "hint": "Shown in the bell icon in the header."
+      },
+      "browser": {
+        "label": "Browser notifications",
+        "hint": "Shown as a system notice while NestWall is open in a browser that allows it."
+      },
+      "email": {
+        "label": "Email",
+        "hint": "Sent to parents who have an email address.",
+        "not_ready": "Email is not set up yet. Set up the mail server in Settings > Email first."
+      },
+      "digest": {
+        "label": "Group emails into a digest",
+        "hint": "On: one email per parent, listing the notices, sent at most once per interval below. Off (default): one email per notice.",
+        "interval_label": "Send a digest every",
+        "interval_unit": "minutes",
+        "interval_hint": "Whole minutes, from 1 to 1440. Notices that arrive in between wait for the next digest."
+      },
+      "template": {
+        "title": "Email template",
+        "lead": "The HTML that wraps every notification email. It includes the logo, a link to the app and a basic layout.",
+        "label": "HTML template",
+        "placeholders": "Placeholders",
+        "preview": "Preview",
+        "reset": "Reset to default",
+        "preview_title": "Email preview"
+      },
+      "error": {
+        "body": "The template must include the body placeholder, where the notices go.",
+        "digest_minutes": "The digest interval must be a whole number from 1 to 1440 minutes.",
+        "long": "The template is too long.",
+        "smtp": "Set up the mail server in Settings > Email before turning on email.",
+        "preview": "The preview could not be loaded."
+      }
+    },
+    "data": {
+      "no_permission": "Only parents can export data.",
+      "export": {
+        "title": "Export for reading",
+        "lead": "Spreadsheet-friendly copies to keep or share: tasks, points history and members as CSV, the calendar as .ics.",
+        "not_backup": "This is not a backup",
+        "rest": "and cannot be restored. Use backups for that. Contains no passwords.",
+        "button": "Export CSV and calendar",
+        "hint": "The files download one after another. If your browser asks, allow multiple downloads.",
+        "failed": "The export failed. Try again."
+      },
+      "backups": {
+        "title": "Backups",
+        "lead": "Your whole family's data, saved automatically and checked after every run.",
+        "health_ok": "Last backup OK · verified",
+        "health_none": "No backup yet",
+        "run_now": "Back up now",
+        "running": "Backing up…",
+        "run_ok": "Backup saved and checked.",
+        "run_failed": "The backup failed. It is listed in the history below.",
+        "last": "Last backup",
+        "none_yet": "None yet",
+        "next": "Next backup",
+        "daily": "Daily",
+        "kept": "Kept",
+        "kept_count": "{{count}} backups",
+        "kept_detail": "Keeping the newest {{count}}",
+        "schedule": "Schedule",
+        "schedule_desc": "Runs on the server at a quiet time, with no one needing to remember.",
+        "schedule_value": "Daily at {{time}}",
+        "keep": "Keep",
+        "keep_desc": "Older backups are removed automatically.",
+        "keep_count": "Keep the newest {{count}}",
+        "keep_unit": "backups",
+        "schedule_form_hour": "Daily backup time",
+        "schedule_form_keep": "Backups to keep",
+        "schedule_save": "Save schedule",
+        "schedule_change": "Change",
+        "encrypt": "Encrypt backups",
+        "encrypt_desc": "Protect the files with a passphrase you choose. Keep it safe: without it a backup cannot be restored.",
+        "passphrase_label": "Passphrase",
+        "passphrase_hint": "At least {{min}} characters.",
+        "passphrase_save": "Save passphrase",
+        "passphrase_change": "Change passphrase",
+        "location": "Saved to",
+        "location_desc": "Set by BACKUP_DIR in deploy/compose.yaml. The folder is database/backups in the project, mounted into the API container.",
+        "history_title": "Backup history",
+        "history_hint": "Download needs your password",
+        "history_empty": "No backups yet.",
+        "col_when": "When",
+        "col_type": "Type",
+        "col_size": "Size",
+        "col_status": "Status",
+        "kind_scheduled": "Scheduled",
+        "kind_manual": "Manual",
+        "kind_before_reset": "Before factory reset",
+        "status_verified": "Verified",
+        "status_failed": "Failed",
+        "status_running": "Running",
+        "download": "Download",
+        "download_prompt": "Enter your password to download",
+        "restore": "Restore",
+        "restore_title": "Restore this backup?",
+        "restore_desc": "Your current data will be replaced with the backup from {{when}}. Anything entered since then will be lost.",
+        "restore_warning": "A copy of your current data is saved first, so you can undo this. The app restarts after the restore.",
+        "restore_password": "Your password",
+        "restore_type": "Type {{word}} to confirm",
+        "restoring": "Restoring your backup. Please keep this page open.",
+        "restarting": "Restarting NestWall. This page reloads when it is back.",
+        "upload": "Restore from a file",
+        "upload_hint": "Have a backup zip saved elsewhere? Pick it here to restore from it.",
+        "restore_desc_file": "Your current data will be replaced with the contents of {{name}}. Anything entered since that backup was made will be lost.",
+        "error": {
+          "load_failed": "Backups could not be loaded. Try again.",
+          "save_failed": "The change was not saved. Try again.",
+          "download_failed": "The download failed. Try again.",
+          "restore_failed": "The restore did not run. Nothing was changed. Try again.",
+          "password_incorrect": "That password is not right.",
+          "passphrase_required": "Enter a passphrase to turn on encryption.",
+          "passphrase_too_short": "The passphrase needs at least 8 characters.",
+          "invalid_schedule": "Pick an hour from the list. Keep between 1 and 60 backups.",
+          "backup_missing": "This backup file is no longer on the NAS.",
+          "backup_not_found": "This backup is no longer in the history. Refresh the page.",
+          "backup_newer_version": "This backup was made by a newer version of NestWall. Update NestWall before you restore it.",
+          "restore_unreadable": "This backup could not be opened. Check the backup passphrase and that the file is not damaged.",
+          "restore_in_progress": "A restore is already running. Wait for it to finish."
+        }
+      },
+      "reset": {
+        "title": "Reset data",
+        "intro": "Only parents can do this. You will confirm with your password and a typed word. A backup is taken first and kept for 30 days.",
+        "factory_title": "Factory reset",
+        "factory_desc": "Deletes everything, including members, pictures and settings, and returns to the first-run setup.",
+        "open": "Factory reset...",
+        "dialog_title": "Factory reset NestWall?",
+        "dialog_desc": "Everything is deleted: members, pictures, tasks, points, events, wall devices, sign-in tokens and settings. NestWall returns to the first-run setup.",
+        "counting": "Counting what will be removed...",
+        "counts": "This will delete {{members}} members (including {{children}} children), {{tasks}} tasks, {{points}} points entries, {{events}} events, {{avatars}} pictures, {{devices}} wall devices and {{tokens}} sign-in tokens.",
+        "warning": "Your data cannot be brought back from this screen. The backup taken first stays in the backup history for 30 days, and you can restore it from there. The backup schedule and keep count go back to their defaults.",
+        "keep_backup": "A backup is taken first and kept for 30 days. If backup encryption was on, the same passphrase opens that copy.",
+        "type": "Type {{word}} to confirm",
+        "password": "Your password",
+        "confirm": "Factory reset",
+        "working": "Resetting NestWall. This page reloads when it is done.",
+        "error": {
+          "preview_failed": "The counts could not be loaded. Try again.",
+          "password_incorrect": "That password is not right.",
+          "confirm_incorrect": "Type DELETE EVERYTHING exactly to confirm.",
+          "reset_backup_failed": "The backup before the reset failed, so nothing was removed. The reason is in the history.",
+          "restore_in_progress": "A restore or reset is already running. Wait for it to finish.",
+          "reset_failed": "The reset did not run. Nothing was changed. Try again."
+        }
+      }
+    },
+    "integrations": {
+      "no_permission": "You do not have permission to view API tokens.",
+      "guide": {
+        "title": "Home Assistant",
+        "badge": "Guide",
+        "intro": "Add this to configuration.yaml. Then add a secret named nestwall_bearer to secrets.yaml with the value Bearer followed by your token.",
+        "scopes": "The sensor needs the tasks:read and calendar:read scopes.",
+        "host_note": "The address below is the one you are using now. Change it if Home Assistant reaches NestWall another way."
+      },
+      "tokens": {
+        "title": "API tokens",
+        "hint": "Let other tools such as Home Assistant read family data. Tokens never exceed your own permissions.",
+        "create": "Create token",
+        "empty": "No API tokens yet.",
+        "col_name": "Name",
+        "col_scopes": "Scopes",
+        "col_last_used": "Last used",
+        "col_expires": "Expires",
+        "col_actions": "Actions",
+        "never": "Never",
+        "revoke": "Revoke",
+        "revoke_yes": "Yes, revoke",
+        "revoke_confirm": "Revoke {name}? Anything using this token will stop working straight away.",
+        "revoked": "Revoked {name}.",
+        "limit": "Each token has only the scopes you choose and expires automatically. Revoking a token cuts off its access at once."
+      },
+      "modal": {
+        "title": "Create API token",
+        "name": "Name",
+        "name_placeholder": "For example, Home Assistant",
+        "scopes": "Scopes",
+        "scopes_hint": "A token can only read what your account can already see.",
+        "expires": "Expires",
+        "create": "Create token",
+        "once_title": "Your new token",
+        "once_intro": "Use this token in the app that will connect to NestWall.",
+        "copy_warning": "Copy it now. You won't see it again.",
+        "copy": "Copy token",
+        "copied": "Copied",
+        "done": "Done"
+      },
+      "expiry": {
+        "days": "{days} days",
+        "year": "1 year"
+      }
+    },
+    "wall": {
+      "no_permission": "You don't have permission to manage wall devices.",
+      "list_title": "Paired devices",
+      "list_hint": "Tablets and displays that show the family wall. Each device has its own exit code.",
+      "add": "Add wall device",
+      "empty": "No wall devices yet. Add one, then open the pair page on the tablet.",
+      "status": {
+        "online": "Online",
+        "offline": "Offline",
+        "pending": "Waiting for pairing"
+      },
+      "paired_on": "Paired {{ date }}",
+      "last_seen": {
+        "label": "Last seen {{ when }}",
+        "never": "never",
+        "now": "just now",
+        "seconds": "{{ count }} seconds ago",
+        "minutes": "{{ count }} minutes ago",
+        "hours": "{{ count }} hours ago",
+        "days": "{{ count }} days ago"
+      },
+      "configure": "Configure",
+      "revoke": "Revoke",
+      "revoke_confirm": "Revoke {{ name }}? The tablet stops showing the wall until you pair it again with a new key.",
+      "revoke_yes": "Revoke device",
+      "revoked": "Device revoked.",
+      "banner": "A revoked device can be paired again with a new key.",
+      "exit": {
+        "title": "Exit code",
+        "hint": "4 to 6 digits. Needed to exit wall mode or unpair the tablet: press and hold the bottom-left corner for 2.5 seconds. Five wrong tries lock the keypad for 5 minutes. It is separate from every login password.",
+        "keep": "Leave blank to keep the current code",
+        "digits": "(4 to 6 digits)",
+        "new_hint": "Parents type it to exit or unpair this tablet. Kids never see it."
+      },
+      "saved": "Device saved.",
+      "configure_title": "Configure device",
+      "name": "Device name",
+      "new_title": "Pair a wall device",
+      "new_intro": "Name the tablet and set its exit code. You will get a pairing key next.",
+      "create_key": "Create key",
+      "key_rules": "Keys expire after 10 minutes and work once.",
+      "key_title": "Your pairing key",
+      "key_intro": "On the tablet open {{ host }}/pair and type this key.",
+      "expires_in": "Expires in {{ time }}",
+      "single_use": "Single use",
+      "key_once": "This key is shown once. Close this window and it is gone.",
+      "key_expired": "This key has expired. Close this window and create a new one.",
+      "done": "Done",
+      "error": {
+        "exit_code": "Enter an exit code of 4 to 6 digits."
+      }
+    },
+    "calendars": {
+      "list_title": "Calendars",
+      "list_hint": "Manual calendars hold the events you add in NestWall. Imported calendars are copies from a file or link, which refresh from their source.",
+      "new": "Add calendar",
+      "manual": "Manual",
+      "import": "Import",
+      "kind": "Type",
+      "manual_added": "Calendar added.",
+      "delete_manual_confirm": "Delete {{ name }} and all of its events?",
+      "last_calendar_hint": "Keep at least one manual calendar",
+      "empty": "No calendars yet.",
+      "banner": "Removing a calendar deletes all of its events from NestWall.",
+      "events": "{{ count }} events",
+      "skipped": "{{ count }} skipped",
+      "sync_now": "Sync now",
+      "retry_sync": "Retry",
+      "resume": "Resume",
+      "resumed": "Sync resumed.",
+      "paused": "Paused",
+      "sync_done": "Calendar synced.",
+      "synced_now": "Synced just now",
+      "synced_minutes": "Synced {{ count }} min ago",
+      "synced_hours": "Synced {{ count }} h ago",
+      "synced_days": "Synced {{ count }} d ago",
+      "sync_failed": "Last sync failed: {{ reason }}",
+      "sync_error": {
+        "unavailable": "unreachable",
+        "too_large": "too large",
+        "invalid_url": "invalid link",
+        "link_not_allowed": "private address",
+        "invalid_ics": "not a calendar",
+        "too_many_events": "too many events"
+      },
+      "sync_on": "Sync from link",
+      "sync_on_hint": "Turn off to stop fetching this link. Events stay until you remove the calendar.",
+      "refresh": "Refresh every",
+      "refresh_15": "15 minutes",
+      "refresh_30": "30 minutes",
+      "refresh_60": "1 hour",
+      "refresh_360": "6 hours",
+      "refresh_1440": "1 day",
+      "audience_everyone": "Shared with everyone",
+      "audience_specific": "Shared with {{ people }}",
+      "audience_parents": "Parents only",
+      "delete_confirm": "Delete {{ name }} and its {{ count }} events?",
+      "delete_yes": "Delete calendar",
+      "deleted": "Calendar deleted.",
+      "imported": "Imported {{ count }} events.",
+      "imported_skipped": "Imported {{ count }} events. {{ skipped }} could not be read and were skipped.",
+      "no_permission": "You need permission to manage calendars to import them.",
+      "new_title": "Add a calendar",
+      "edit_title": "Edit calendar",
+      "edit_hint": "Changes apply to all of its events. Synced events are read-only.",
+      "updated": "Calendar updated.",
+      "name": "Name",
+      "source": "Source",
+      "source_file": "File",
+      "source_link": "Link",
+      "file": "ICS file",
+      "link": "ICS link",
+      "link_hint": "Stored encrypted and never shown in full.",
+      "colour": "Colour",
+      "audience": "Who can see it",
+      "option_everyone": "Everyone",
+      "option_specific": "Specific people",
+      "option_parents": "Parents only",
+      "show_on_wall": "Show on wall display",
+      "hidden_from_wall": "Hidden from wall",
+      "people": "People",
+      "add": "Test and add",
+      "error": {
+        "file_required": "Choose an ICS file to import.",
+        "url_required": "Paste an ICS link to import.",
+        "invalid_url": "Enter a full web address that starts with http:// or https://.",
+        "link_not_allowed": "That address points to a private network, so it cannot be used.",
+        "link_unavailable": "Could not read a calendar from that link. Check it and try again.",
+        "too_large": "That calendar is too large to import.",
+        "invalid_ics": "That is not a valid calendar (.ics) file.",
+        "people_required": "Pick at least one person.",
+        "sync_too_soon": "Wait a minute before syncing this calendar again.",
+        "last_calendar": "Keep at least one calendar. This is the last one, so it cannot be deleted."
+      }
+    },
+    "common": {
+      "loading": "Loading…",
+      "retry": "Try again",
+      "saved": "Saved",
+      "points": "Points",
+      "no_default": "No default",
+      "points_badge": "{{ points }} pts",
+      "load_more": "Load more",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "approval_required": "Required",
+      "approval_not_required": "Not required",
+      "save": "Save",
+      "reload": "Reload",
+      "back": "Back"
+    },
+    "unit": {
+      "days": "days",
+      "weeks": "weeks",
+      "months": "months",
+      "hours": "hours",
+      "percent": "%",
+      "points": "points"
+    },
+    "templates": {
+      "defaults_title": "Regular task defaults",
+      "defaults_hint": "New templates start from these values. Each template can override them.",
+      "missed_after": "Missed after",
+      "missed_never": "Never",
+      "missed_hint": "Leave empty so tasks never expire.",
+      "missed_unit": "Missed after unit",
+      "approval": "Approval",
+      "approval_hint": "Whether completed tasks need a parent to approve them.",
+      "approval_unset": "Not set",
+      "save_defaults": "Save defaults",
+      "list_title": "Templates",
+      "new": "New template",
+      "empty": "No templates yet.",
+      "no_points": "No points",
+      "no_category": "No category",
+      "new_title": "New template",
+      "name": "Name",
+      "category": "Category",
+      "title_field": "Task title",
+      "description": "Description",
+      "due_time": "Due time",
+      "penalty": "Penalty for missing it",
+      "penalty_unit": "Penalty unit",
+      "reminder": "Reminder",
+      "reminder_none": "No reminder",
+      "reminder_minutes": "{{ minutes }} minutes before",
+      "expires_after": "Can still be done for",
+      "expires_unit": "Expiry unit",
+      "late_points": "Points when done late (%)",
+      "assignees": "Default people",
+      "prefill": "Prefills {{ count }} of {{ total }} fields",
+      "prefill_banner": "Only the fields you fill in are prefilled. Empty fields stay blank on the new task form.",
+      "pick": "Pick a template to edit, or add a new one.",
+      "save": "Save template"
+    },
+    "bonus": {
+      "list_title": "Bonus templates",
+      "new": "New bonus template",
+      "empty": "No bonus templates yet.",
+      "pick": "Pick a bonus template to edit, or add a new one.",
+      "new_title": "New bonus template",
+      "rules": "Bonus tasks never have a penalty. Nothing is taken away if a bonus is missed.",
+      "changes_note": "Changing a template never changes bonus tasks already published.",
+      "points": "Bonus points",
+      "defaults_title": "Bonus task defaults",
+      "defaults_hint": "Used when you publish a bonus task. A template overrides these where it sets a value. Every field is optional.",
+      "mode": "Mode",
+      "mode_first_come": "First come",
+      "mode_everyone_once": "Everyone once",
+      "show_from": "Shows up at",
+      "ends": "Ends",
+      "ends_end_of_day": "End of day",
+      "ends_8pm": "8:00 pm",
+      "save_defaults": "Save defaults"
+    },
+    "categories": {
+      "list_title": "Categories",
+      "list_hint": "Each category sets the colour and defaults for its tasks.",
+      "new": "New category",
+      "empty": "No categories yet.",
+      "expires_badge": "Expires after {{ amount }}",
+      "badge_chip": "Badge: {{ name }}",
+      "skill_badge": "Earns skill badge",
+      "skill_badge_none": "None",
+      "part_title": "Parts of day",
+      "part_hint": "Each part starts at the time you set. Times must go in order.",
+      "morning": "Morning",
+      "after_school": "After school",
+      "evening": "Evening",
+      "part_save": "Save parts of day",
+      "edit_title": "Edit category",
+      "new_title": "New category",
+      "name": "Name",
+      "emoji": "Picture",
+      "emoji_custom": "Or type your own",
+      "emoji_custom_hint": "Type one emoji, for example a skin tone or a flag.",
+      "colour": "Colour",
+      "defaults_hint": "Optional defaults for tasks in this category.",
+      "approval": "Approval",
+      "expires_after": "Expires after",
+      "expires_unit": "Expiry unit",
+      "save_changes": "Save changes",
+      "add": "Add category"
+    },
+    "points": {
+      "share_title": "Sharing",
+      "share_body": "Let children share some of their points with a brother or sister.",
+      "share_enabled": "Allow sharing",
+      "min_per_share": "Fewest points per share",
+      "error_range": "The fewest points per share can't be more than the most.",
+      "max_per_share": "Most points per share",
+      "daily_limit": "Daily limit per child",
+      "min_balance": "Keep at least",
+      "approval": "Approval",
+      "approval_hint": "Choose when a parent must approve a share.",
+      "mode_never": "Never",
+      "mode_above": "Above {{ count }} points",
+      "mode_always": "Always",
+      "approval_above": "Approve shares above",
+      "notify_recipient": "Tell the recipient",
+      "notify_recipient_hint": "Send a notification when points arrive.",
+      "notify_parents": "Tell parents",
+      "notify_parents_hint": "Send a notification for each share.",
+      "permission_note": "Children need the points share permission to send points. Manage it in Family.",
+      "permission_link": "Open Family",
+      "spending_title": "Spending points",
+      "reward_approval": "Rewards need approval by default",
+      "reward_approval_hint": "Each reward can override this."
+    },
+    "badges": {
+      "award": "Award a badge",
+      "create": "Create custom badge",
+      "create_action": "Create badge",
+      "award_action": "Award badge",
+      "master_title": "Badges",
+      "master_body": "NestWall ships 24 badges that children earn automatically from real task, points and streak records. You can switch groups off and add your own.",
+      "show_kid": "Show badges on the kid dashboard",
+      "show_kid_hint": "A small showcase of recent badges next to their name.",
+      "show_wall": "Show badges on the wall display",
+      "notify_child": "Tell the child when they earn a badge",
+      "groups_title": "Built-in badge groups",
+      "group_count": "{{ count }} badges",
+      "kindness_hint": "The sharing star needs Sharing is caring to be on in Points and rewards.",
+      "custom_title": "Custom badges",
+      "custom_hint": "You decide who earns them",
+      "custom_empty": "No custom badges yet.",
+      "given": "Given {{ count }} times",
+      "given_one": "Given 1 time",
+      "off": "Off",
+      "new_title": "Create a custom badge",
+      "edit_title": "Edit custom badge",
+      "picture": "Picture",
+      "emoji_custom": "Or type your own",
+      "emoji_custom_hint": "Type one emoji, for example a skin tone or a flag.",
+      "name": "Name",
+      "description": "Description",
+      "optional": "Optional",
+      "description_placeholder": "What is it for?",
+      "by_hand": "Custom badges are awarded by hand from a parent's account.",
+      "enabled": "Enabled",
+      "enabled_hint": "A switched-off badge cannot be awarded until it is switched back on.",
+      "award_title": "Award a badge",
+      "who": "Who",
+      "no_children": "No children in this family yet.",
+      "badge": "Badge",
+      "pick_badge": "Choose a badge",
+      "no_custom": "Create a custom badge first.",
+      "why": "Why",
+      "why_hint": "(the child sees this)",
+      "why_placeholder": "Helped a sibling with homework",
+      "group": {
+        "streaks": "Streaks",
+        "points": "Points",
+        "tasks": "Tasks",
+        "skills": "Skills",
+        "timing": "Timing",
+        "kindness": "Kindness"
+      },
+      "builtin": {
+        "s3": "3 day streak",
+        "s7": "7 day streak",
+        "s14": "14 day streak",
+        "s30": "30 day streak",
+        "s100": "100 day streak",
+        "p100": "100 points",
+        "p250": "250 points",
+        "p500": "500 points",
+        "p1000": "1000 points",
+        "p_reward": "First reward",
+        "t1": "First task",
+        "t10": "10 tasks",
+        "t50": "50 tasks",
+        "t100": "100 tasks",
+        "k_tidy": "Tidy pro",
+        "k_hw": "Homework hero",
+        "k_pet": "Pet pal",
+        "k_green": "Green thumb",
+        "e_early": "Early bird",
+        "e_week": "Perfect week",
+        "e_month": "Perfect month",
+        "e_back": "Comeback kid",
+        "k_share": "Sharing star",
+        "k_help": "Helper"
+      },
+      "error": {
+        "emoji": "Choose a picture.",
+        "child": "Choose a child.",
+        "badge": "Choose a badge.",
+        "note": "Add a short reason (up to 200 characters).",
+        "badge_disabled": "This badge is switched off.",
+        "badges_off": "Badges are switched off for the family.",
+        "idempotency_conflict": "This award was already sent with different details. Close and try again."
+      }
+    },
+    "error": {
+      "network": "Can't reach the server. Check your connection and try again.",
+      "forbidden": "You don't have permission to change these settings.",
+      "not_found": "This item no longer exists. Reload and try again.",
+      "stale": "These settings were changed by someone else. Reload to see the latest version.",
+      "generic": "Something went wrong. Please try again.",
+      "validation": "Some values are not valid. Check the highlighted fields.",
+      "out_of_order": "Each part of the day must start after the one before it.",
+      "name_taken": "A category with this name already exists.",
+      "category_in_use": "This category is used by tasks or templates.",
+      "template_in_use": "This template is used by tasks.",
+      "required": "This field is required.",
+      "number": "Enter a whole number in range.",
+      "expiry": "Enter a number of days or hours.",
+      "too_long": "This text is too long.",
+      "emoji_invalid": "Enter one emoji only.",
+      "emoji_too_long": "The picture is too long. Use fewer characters.",
+      "time_required": "Set a time for each part of the day."
+    },
+    "general": {
+      "family_title": "Family",
+      "family_hint": "The family name shown in the app.",
+      "family_save": "Save family name",
+      "weather_title": "Weather",
+      "weather_hint": "The forecast on Today and the parent dashboard, and on the wall display, uses this location.",
+      "place": "Place name",
+      "place_hint": "Optional. Shown under the forecast, for example Toronto.",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "coords_hint": "Use decimal degrees, for example 43.65 and -79.38.",
+      "unit": "Temperature unit",
+      "unit_c": "°C",
+      "unit_f": "°F",
+      "animation": "Animation",
+      "animation_calm": "Calm",
+      "animation_live": "Live",
+      "animation_hint": "Live moves the weather scene more. Calm is the default.",
+      "remove": "Remove location",
+      "detect": "Detect",
+      "detecting": "Detecting...",
+      "detect_error": {
+        "unsupported": "This browser can't read your location. Enter the coordinates instead.",
+        "denied": "Location access was blocked. Allow it in the browser settings, or enter the coordinates.",
+        "timeout": "Finding your location took too long. Try again, or enter the coordinates.",
+        "unavailable": "Your location isn't available right now. Enter the coordinates instead."
+      },
+      "error": {
+        "invalid_location": "Enter both latitude and longitude, or clear both.",
+        "coords_pair": "Enter both latitude and longitude, or clear both.",
+        "invalid_latitude": "Latitude must be between -90 and 90.",
+        "invalid_longitude": "Longitude must be between -180 and 180.",
+        "invalid_location_name": "The place name must be 80 characters or fewer.",
+        "invalid_temperature_unit": "Choose °C or °F.",
+        "invalid_animation": "Choose Calm or Live."
+      }
+    }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "Everything assigned across the family.",
+    "back": "Back to tasks",
+    "new": "New task",
+    "retry": "Try again",
+    "no_permission": "You do not have permission for this action.",
+    "tabs": {
+      "overdue": "Overdue",
+      "today": "Today",
+      "upcoming": "Upcoming",
+      "submitted": "Waiting approval",
+      "approved": "Done",
+      "expired": "Missed",
+      "archived": "Archived"
+    },
+    "filter": {
+      "member": "Filter by person",
+      "everyone": "Everyone",
+      "category": "Filter by category",
+      "category_all": "All categories"
+    },
+    "status": {
+      "to_do": "To do",
+      "submitted": "Waiting approval",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "skipped": "Skipped",
+      "overdue": "Overdue",
+      "expired": "Missed"
+    },
+    "list": {
+      "loading": "Loading tasks…",
+      "empty": "No tasks yet.",
+      "empty_filtered": "No tasks match these filters.",
+      "pager": "Task pages",
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {{ page }}",
+      "penalty_percent": "−{{value}}% ({{points}} pts) if missed",
+      "penalty_points": "−{{points}} pts if missed"
+    },
+    "group": {
+      "overdue": "Overdue",
+      "earlier": "Earlier",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "later": "Later"
+    },
+    "day": {
+      "yesterday": "Yesterday",
+      "today": "Today",
+      "tomorrow": "Tomorrow"
+    },
+    "row": {
+      "complete": "Mark “{{title}}” as done",
+      "view": "View “{{title}}”",
+      "edit": "Edit “{{title}}”",
+      "delete": "Delete “{{title}}”",
+      "delete_permanent": "Delete “{{title}}” permanently",
+      "restore": "Restore “{{title}}”",
+      "restore_hint": "Put this task back on the list",
+      "archived_on": "Archived {{date}}"
+    },
+    "expires_in": "Expires in {{time}}",
+    "duration": {
+      "days_hours": "{{days}} d {{hours}} h",
+      "hours": "{{hours}} h",
+      "minutes": "{{minutes}} min"
+    },
+    "error": {
+      "network": "Cannot reach NestWall. Check your connection and try again.",
+      "validation": "Check the task details and try again.",
+      "forbidden": "You do not have permission to do that.",
+      "not_found": "This task could not be found.",
+      "conflict": "This task was changed by someone else. Reload to see the latest version.",
+      "stale": "This task changed while you were editing. Reload to see the latest version.",
+      "generic": "Something went wrong. Please try again.",
+      "archived": "This task has been archived.",
+      "missed": "This task has expired and can no longer be done.",
+      "checklist_locked": "Checklist items can't change after someone has started this task.",
+      "not_due": "This task is not due yet. You can finish it on its due day.",
+      "repeat_edit": "Editing a repeating series isn't available yet.",
+      "not_archived": "Only an archived task can be deleted permanently. Archive it first.",
+      "not_restorable": "This task was archived together with its repeating series, so it can't be restored."
+    },
+    "confirm": {
+      "cancel": "Cancel"
+    },
+    "complete": {
+      "heading": "Mark as done?",
+      "message": "Mark “{{title}}” as done for {{name}}?",
+      "confirm": "Mark as done"
+    },
+    "delete_permanent": {
+      "heading": "Delete “{{title}}” permanently?",
+      "message": "The task and every person's copy, including every repeat, will be deleted. Points already earned are kept. This cannot be undone.",
+      "confirm": "Delete permanently"
+    },
+    "remove": {
+      "heading": "Remove “{{title}}”?",
+      "for": "Remove for",
+      "scope": "Which copies",
+      "scope_this": "This day",
+      "scope_all": "All repeats",
+      "message_one": "Only {{name}}'s copy is removed. Everyone else keeps the task. History is kept.",
+      "message_series": "{{name}}'s copies from today on are removed, and new repeats stop for them. Everyone else keeps the task. Past copies stay in history.",
+      "message_last": "This is the last person on the task, so the task is archived for everyone. History is kept.",
+      "confirm": "Remove"
+    },
+    "skip": {
+      "heading": "Skip today?",
+      "message": "This copy will be marked as skipped and no points are awarded.",
+      "confirm": "Skip"
+    },
+    "detail": {
+      "loading": "Loading task…",
+      "error": "Could not load this task.",
+      "repeats": "Repeats",
+      "assigned_to": "Assigned to",
+      "due": "Due",
+      "points": "Points",
+      "approval": "Approval",
+      "approval_parent": "Parent approves",
+      "approval_none": "No approval needed",
+      "penalty_percent": "−{{value}}% ({{points}} pts) if missed",
+      "penalty_points": "−{{points}} pts if missed",
+      "checklist": "Checklist {{done}} of {{total}}",
+      "skip": "Skip today"
+    },
+    "priority": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High"
+    },
+    "part": {
+      "anytime": "Anytime",
+      "morning": "Morning",
+      "after_school": "After school",
+      "evening": "Evening"
+    },
+    "repeat": {
+      "label": "Repeat",
+      "freq": {
+        "none": "Never",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      },
+      "every": "Every",
+      "interval": "Interval",
+      "unit": {
+        "daily": "day(s)",
+        "weekly": "week(s)",
+        "monthly": "month(s)",
+        "yearly": "year(s)"
+      },
+      "on_days": "On these days",
+      "presets": {
+        "weekdays": "Weekdays",
+        "weekends": "Weekends",
+        "every_day": "Every day"
+      },
+      "monthly": {
+        "on_day": "On day",
+        "day": "Day of the month",
+        "of_month": "of the month",
+        "on_the": "On the",
+        "nth": "Which week",
+        "weekday": "Day of the week",
+        "nths": {
+          "1": "first",
+          "2": "second",
+          "3": "third",
+          "4": "fourth",
+          "5": "last"
+        },
+        "last_day": "On the last day of the month"
+      },
+      "ends": {
+        "label": "Ends",
+        "never": "Never",
+        "on": "On",
+        "date": "End date",
+        "after": "After",
+        "count": "Number of occurrences",
+        "occurrences": "occurrences"
+      },
+      "next": "Next",
+      "problem": {
+        "interval": "Enter an interval of at least 1.",
+        "weekdays": "Choose at least one day.",
+        "month_day": "Enter a day between 1 and 31.",
+        "end_date": "Choose an end date after the first occurrence.",
+        "end_count": "Enter at least 1 occurrence."
+      }
+    },
+    "form": {
+      "new_title": "New task",
+      "edit_title": "Edit task",
+      "new_sub": "Set who does it, when, and what happens if it is late.",
+      "edit_sub": "Changes apply to this task.",
+      "save_template": "Save as template",
+      "template_pick": "Start from a template",
+      "template_more": "+ More",
+      "template_hint": "Only the fields a template defines are pre-filled; everything else stays empty. All of it remains editable. Manage templates in Settings.",
+      "cancel": "Cancel",
+      "create": "Create task",
+      "save": "Save changes",
+      "loading": "Loading…",
+      "load_error": "Could not load this task.",
+      "title": "Title",
+      "description": "Description",
+      "optional": "(optional)",
+      "category": "Category",
+      "category_none": "No category",
+      "category_hint": "Category sets the default points and rules.",
+      "priority": "Priority",
+      "part_of_day": "Part of day",
+      "assign": "Assign to",
+      "assign_hint": "Every selected person gets their own copy to do.",
+      "bonus_link": "Create a bonus task",
+      "bonus_later": "bonus tasks are not available yet",
+      "when": "When",
+      "date": "Date",
+      "due_time": "Due time",
+      "repeat": "Repeat",
+      "repeat_hint": "One occurrence is created for each date in the rule.",
+      "repeat_edit_note": "Repeats can only be set when the task is created.",
+      "repeat_locked": "This task is part of a repeating series. Editing a series isn't available yet, so saving is turned off.",
+      "past_due": "If it isn't done on time",
+      "past_due_badge": "Past due rules",
+      "past_due_intro": "After the due time the task becomes past due. The child sees how long is left and what happens if they miss it.",
+      "expiry": "Can still be done for",
+      "expiry_hint": "Then it expires: missed.",
+      "late_points": "Late points",
+      "percent_of_points": "% of points",
+      "late_points_hint": "Done after the due time.",
+      "penalty": "Penalty when it expires",
+      "penalty_hint": "Leave empty for no penalty.",
+      "units": {
+        "days": "days",
+        "hours": "hours"
+      },
+      "penalty_units": {
+        "percent": "% of points",
+        "points": "points"
+      },
+      "checklist": "Checklist",
+      "checklist_placeholder": "Add a checklist item",
+      "checklist_add": "Add item",
+      "checklist_remove": "Remove item",
+      "checklist_locked": "Items can't change after someone has started this task.",
+      "checklist_repeat_note": "Checklist items can't be added to a repeating task yet.",
+      "checklist_partial": "The task was saved, but some checklist items could not be added. Add them again below.",
+      "points_rules": "Points and rules",
+      "points": "Points",
+      "points_minus": "Decrease points",
+      "points_plus": "Increase points",
+      "approval": "Parent approves",
+      "approval_hint": "Points are awarded after approval.",
+      "template_title": "Save as template",
+      "template_name": "Template name",
+      "template_save": "Save template",
+      "template_saved": "Template saved.",
+      "preview": "Preview",
+      "preview_for": "Preview for {{name}}",
+      "preview_title": "Untitled task",
+      "steps": "{{count}} steps",
+      "error": {
+        "invalid": "Check the highlighted fields.",
+        "title_required": "Enter a title.",
+        "assignee_required": "Choose at least one person.",
+        "points_required": "Enter the points for this task.",
+        "points_range": "Use 0 to 1000 points.",
+        "checklist_repeat": "Checklist items can't be saved with a repeating task yet. Remove them or turn off Repeat."
+      }
+    }
+  },
+  "weather": {
+    "title": "Weather",
+    "loading": "Loading weather…",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "feels_like": "Feels like {{ temp }}°",
+    "high_low": "High {{ high }}° · Low {{ low }}°",
+    "precip": "{{ percent }}% rain",
+    "stale": "Showing the last forecast. Live data is unavailable right now.",
+    "unconfigured_title": "Weather isn't set up yet",
+    "unconfigured_parent": "Add your location in Settings to show the forecast here.",
+    "unconfigured_kid": "Ask a parent to set up the weather.",
+    "set_up": "Set up weather",
+    "error": "Weather is unavailable right now.",
+    "condition": {
+      "clear": "Clear",
+      "partly_cloudy": "Partly cloudy",
+      "cloudy": "Cloudy",
+      "fog": "Fog",
+      "drizzle": "Drizzle",
+      "rain": "Rain",
+      "snow": "Snow",
+      "storm": "Storm",
+      "unknown": "Unknown"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+<div class="modal-bg" role="presentation" (click)="cancelled.emit()">
+  <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="remove-person-title" data-testid="remove-person" (click)="$event.stopPropagation()">
+    <h2 id="remove-person-title">{{ 'tasks.remove.heading' | transloco: { title: title() } }}</h2>
+
+    @if (people().length > 1) {
+      <div class="scope" role="radiogroup" [attr.aria-label]="'tasks.remove.for' | transloco" data-testid="remove-person-picker">
+        <p class="label">{{ 'tasks.remove.for' | transloco }}</p>
+        @for (m of people(); track m.id) {
+          <label class="opt">
+            <input type="radio" name="remove-person-for" [value]="m.id" [checked]="picked() === m.id" (change)="pick(m.id)" />
+            <app-avatar size="xs" [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />
+            <span>{{ m.display_name }}</span>
+          </label>
+        }
+      </div>
+    }
+
+    @if (task()?.repeats) {
+      <div class="scope" role="radiogroup" [attr.aria-label]="'tasks.remove.scope' | transloco" data-testid="remove-scope">
+        <label class="opt">
+          <input type="radio" name="remove-scope" value="occurrence" data-testid="remove-scope-occurrence" [checked]="scope() === 'occurrence'" (change)="scope.set('occurrence')" />
+          <span>{{ 'tasks.remove.scope_this' | transloco }}</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="remove-scope" value="series" data-testid="remove-scope-series" [checked]="scope() === 'series'" (change)="scope.set('series')" />
+          <span>{{ 'tasks.remove.scope_all' | transloco }}</span>
+        </label>
+      </div>
+    }
+
+    @if (loadFailed()) {
+      <p class="error" role="alert" data-testid="remove-person-load-error">{{ 'tasks.detail.error' | transloco }}</p>
+    } @else if (task()) {
+      <p class="muted" data-testid="remove-person-message">{{ message().key | transloco: message().params }}</p>
+    }
+
+    @if (error(); as key) {
+      <p class="error" role="alert" data-testid="remove-person-error">{{ key | transloco }}</p>
+    }
+
+    <div class="confirm-actions">
+      <button type="button" class="btn ghost" data-testid="remove-person-cancel" [disabled]="busy()" (click)="cancelled.emit()">
+        {{ 'tasks.confirm.cancel' | transloco }}
+      </button>
+      <button type="button" class="btn primary" data-testid="remove-person-ok" [disabled]="busy() || !task()" (click)="confirm()">
+        {{ 'tasks.remove.confirm' | transloco }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+@if (!permsReady()) {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (!canBackup() && !canExport()) {
+  <app-banner tone="info">{{ 'settings.data.no_permission' | transloco }}</app-banner>
+} @else {
+  @if (canBackup()) {
+    <app-backups-card />
+  }
+  @if (canExport()) {
+  <section class="card mt">
+    <div class="section-head">
+      <h2>{{ 'settings.data.export.title' | transloco }}</h2>
+    </div>
+    <p class="small muted">
+      {{ 'settings.data.export.lead' | transloco }}
+      <b>{{ 'settings.data.export.not_backup' | transloco }}</b>
+      {{ 'settings.data.export.rest' | transloco }}
+    </p>
+    @if (exportError(); as key) {
+      <app-banner tone="error">{{ key | transloco }}</app-banner>
+    }
+    <div class="row mt-s">
+      <button type="button" class="btn ghost" [disabled]="exporting()" (click)="exportAll()">
+        <app-icon name="download" [size]="18" />
+        {{ 'settings.data.export.button' | transloco }}
+      </button>
+    </div>
+    <p class="tiny muted mt-s">{{ 'settings.data.export.hint' | transloco }}</p>
+  </section>
+  }
+}

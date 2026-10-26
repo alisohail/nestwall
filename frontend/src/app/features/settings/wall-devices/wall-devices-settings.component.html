@@ -1,0 +1,173 @@
+@if (!permsReady()) {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (!canManage()) {
+  <app-banner tone="info">{{ 'settings.wall.no_permission' | transloco }}</app-banner>
+} @else if (loadState() === 'loading') {
+  <app-loading variant="full" labelKey="settings.common.loading" />
+} @else if (loadState() === 'error') {
+  <app-load-error [error]="loadApiError()" (retry)="load()" />
+} @else {
+  <section class="card mt">
+    <div class="section-head">
+      <div>
+        <h2>{{ 'settings.wall.list_title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.wall.list_hint' | transloco }}</p>
+      </div>
+      <button type="button" class="btn primary sm right" (click)="openNew()">
+        <span class="material-icons" aria-hidden="true">add</span>{{ 'settings.wall.add' | transloco }}
+      </button>
+    </div>
+
+    @if (notice(); as msg) {
+      <p class="saved" role="status">{{ msg }}</p>
+    }
+    @if (actionError(); as key) {
+      <app-banner tone="error">{{ key | transloco }}</app-banner>
+    }
+
+    @if (devices().length === 0) {
+      <p class="nw-empty-note">{{ 'settings.wall.empty' | transloco }}</p>
+    }
+
+    @for (device of devices(); track device.id) {
+      <div class="item">
+        <span class="material-icons device-icon" aria-hidden="true">monitor</span>
+        <span class="item-body">
+          <span class="name">{{ device.name }}</span>
+          <span class="meta">
+            @switch (device.status) {
+              @case ('online') { <span class="badge ok">{{ 'settings.wall.status.online' | transloco }}</span> }
+              @case ('pending') { <span class="badge amber">{{ 'settings.wall.status.pending' | transloco }}</span> }
+              @default { <span class="badge">{{ 'settings.wall.status.offline' | transloco }}</span> }
+            }
+            @if (device.paired_at) {
+              <span>{{ 'settings.wall.paired_on' | transloco: { date: device.paired_at | date: 'd MMM' } }}</span>
+            }
+            <span>{{ 'settings.wall.last_seen.label' | transloco: { when: lastSeenLabel(device) } }}</span>
+          </span>
+        </span>
+        <div class="row-actions">
+          <button type="button" class="btn ghost sm" (click)="openEdit(device)">
+            {{ 'settings.wall.configure' | transloco }}
+          </button>
+          <button type="button" class="btn danger sm" [disabled]="revokingId() !== null" (click)="askRevoke(device)">
+            {{ 'settings.wall.revoke' | transloco }}
+          </button>
+        </div>
+      </div>
+      @if (confirmingRevokeId() === device.id) {
+        <div class="confirm row wrap">
+          <p class="grow hint">{{ 'settings.wall.revoke_confirm' | transloco: { name: device.name } }}</p>
+          <button type="button" class="btn ghost sm" (click)="cancelRevoke()">{{ 'settings.common.cancel' | transloco }}</button>
+          <button type="button" class="btn danger sm" [disabled]="revokingId() === device.id" (click)="revoke(device)">{{ 'settings.wall.revoke_yes' | transloco }}</button>
+        </div>
+      }
+    }
+
+    <p class="hint mt-s">{{ 'settings.wall.banner' | transloco }}</p>
+  </section>
+}
+
+@if (modalOpen()) {
+  <div class="modal-bg" (click)="closeOnBackdrop($event)">
+    <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="'settings.wall.new_title' | transloco">
+      @if (!created()) {
+        <h2>{{ 'settings.wall.new_title' | transloco }}</h2>
+        <p class="muted mt-s">{{ 'settings.wall.new_intro' | transloco }}</p>
+
+        <div class="field mt">
+          <label class="field-label" for="wall-name">{{ 'settings.wall.name' | transloco }}</label>
+          <input id="wall-name" class="input" maxlength="60" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+        </div>
+
+        <div class="field mt-s">
+          <label class="field-label" for="wall-new-exit">
+            {{ 'settings.wall.exit.title' | transloco }} <span class="muted field-note">{{ 'settings.wall.exit.digits' | transloco }}</span>
+          </label>
+          <input
+            id="wall-new-exit"
+            class="input"
+            type="password"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="6"
+            [ngModel]="newExitCode()"
+            (ngModelChange)="newExitCode.set($event)"
+          />
+          <span class="hint">{{ 'settings.wall.exit.new_hint' | transloco }}</span>
+        </div>
+
+        <p class="hint mt-s">{{ 'settings.wall.key_rules' | transloco }}</p>
+
+        @if (modalError(); as key) {
+          <app-banner tone="error">{{ key | transloco }}</app-banner>
+        }
+
+        <div class="foot">
+          <button type="button" class="btn ghost" (click)="closeModal()" [disabled]="creating()">{{ 'settings.common.cancel' | transloco }}</button>
+          <button type="button" class="btn primary" (click)="create()" [disabled]="creating()">{{ 'settings.wall.create_key' | transloco }}</button>
+        </div>
+      } @else if (created()) {
+        <h2>{{ 'settings.wall.key_title' | transloco }}</h2>
+        <p class="muted mt-s">{{ 'settings.wall.key_intro' | transloco: { host: pairHost } }}</p>
+
+        <div class="pair-key mt" role="status">{{ created()?.pairing_key }}</div>
+        <div class="row spread mt-s small muted">
+          <span class="row"><span class="material-icons" aria-hidden="true">schedule</span>{{ 'settings.wall.expires_in' | transloco: { time: countdownLabel() } }}</span>
+          <span>{{ 'settings.wall.single_use' | transloco }}</span>
+        </div>
+
+        @if (secondsLeft() === 0) {
+          <app-banner tone="warning">{{ 'settings.wall.key_expired' | transloco }}</app-banner>
+        } @else {
+          <app-banner tone="info">{{ 'settings.wall.key_once' | transloco }}</app-banner>
+        }
+
+        <div class="foot">
+          <button type="button" class="btn primary" (click)="closeModal()">{{ 'settings.wall.done' | transloco }}</button>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (editing(); as device) {
+  <div class="modal-bg" (click)="closeEditOnBackdrop($event)">
+    <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="'settings.wall.configure_title' | transloco">
+      <h2>{{ 'settings.wall.configure_title' | transloco }}</h2>
+      <p class="muted mt-s">{{ device.name }}</p>
+
+      <div class="field mt">
+        <label class="field-label" for="wall-edit-name">{{ 'settings.wall.name' | transloco }}</label>
+        <input id="wall-edit-name" class="input" maxlength="60" [ngModel]="editName()" (ngModelChange)="editName.set($event)" />
+      </div>
+
+      <div class="field mt-s">
+        <label class="field-label" for="wall-edit-exit">
+          {{ 'settings.wall.exit.title' | transloco }} <span class="muted field-note">{{ 'settings.wall.exit.digits' | transloco }}</span>
+        </label>
+        <input
+          id="wall-edit-exit"
+          class="input"
+          type="password"
+          inputmode="numeric"
+          autocomplete="off"
+          maxlength="6"
+          [placeholder]="'settings.wall.exit.keep' | transloco"
+          [ngModel]="editExitCode()"
+          (ngModelChange)="editExitCode.set($event)"
+        />
+        <span class="hint">{{ 'settings.wall.exit.hint' | transloco }}</span>
+      </div>
+
+      @if (editError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+
+      <div class="foot">
+        <button type="button" class="btn ghost" (click)="closeEdit()" [disabled]="editSaving()">{{ 'settings.common.cancel' | transloco }}</button>
+        <button type="button" class="btn primary" (click)="saveEdit()" [disabled]="editSaving()">{{ 'settings.common.save' | transloco }}</button>
+      </div>
+    </div>
+  </div>
+}

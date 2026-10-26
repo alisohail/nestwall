@@ -1,0 +1,11 @@
+<app-error-page
+  icon="error_outline"
+  tone="danger"
+  code="500"
+  titleKey="errors.server.title"
+  bodyKey="errors.server.body"
+  reference="500 internal_error"
+>
+  <button type="button" class="btn primary" (click)="tryAgain()">{{ 'errors.actions.try_again' | transloco }}</button>
+  <a class="btn ghost" routerLink="/">{{ 'errors.actions.home' | transloco }}</a>
+</app-error-page>

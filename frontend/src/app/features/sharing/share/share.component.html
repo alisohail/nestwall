@@ -1,0 +1,211 @@
+<section class="share" aria-labelledby="share-title" data-testid="share-kid">
+  @if (!auth.isChild()) {
+    <app-empty-state data-testid="share-parent" icon="lock" titleKey="share.parent_only" />
+  } @else {
+    @if (sent(); as done) {
+    <div class="done" data-testid="share-done">
+      <div class="done-icon" aria-hidden="true"><span class="material-icons">favorite</span></div>
+      <h1 id="share-title">{{ 'share.done_title' | transloco }}</h1>
+      <p class="muted">
+        {{ (done.pending ? 'share.pending_body' : 'share.done_body') | transloco: { name: done.name, count: done.amount, left: done.left } }}
+      </p>
+      @if (done.noteKey || done.noteText) {
+      <div class="card note-card">
+        <div class="label">{{ 'share.note_label' | transloco }}</div>
+        @if (done.noteKey; as key) {
+          <div class="bold">{{ noteIcon(key) }} {{ 'share.note.' + key | transloco }}</div>
+        } @else {
+          <div class="bold note-own" data-testid="share-done-note">{{ done.noteText }}</div>
+        }
+      </div>
+      }
+      <a class="btn primary lg block" routerLink="/rewards" data-testid="share-back-rewards">{{ 'share.back_rewards' | transloco }}</a>
+      <a class="btn ghost block" routerLink="/me" data-testid="share-finish">{{ 'share.finish' | transloco }}</a>
+    </div>
+    } @else {
+    <header class="top">
+      <a class="icon-btn back" [routerLink]="backRoute()" data-testid="share-back" [attr.aria-label]="'share.back' | transloco">
+        <span class="material-icons" aria-hidden="true">arrow_back</span>
+      </a>
+      <h1 id="share-title">
+        {{ 'share.title' | transloco }}
+        <span class="heart" aria-hidden="true">💛</span>
+      </h1>
+      <span class="spacer" aria-hidden="true"></span>
+    </header>
+
+    @if (loadState() === 'loading') {
+      <app-loading variant="full" labelKey="share.loading" data-testid="share-loading" />
+    } @else if (loadState() === 'error') {
+      <app-load-error [error]="loadError()" (retry)="load()" />
+    } @else {
+      @if (summary(); as s) {
+      @if (!s.enabled) {
+        <app-banner tone="info" data-testid="share-off">{{ 'share.off' | transloco }}</app-banner>
+      } @else {
+      <div class="hero">
+        <p class="hero-label">{{ 'share.hero_label' | transloco }}</p>
+        <p class="hero-points">
+          <span data-testid="share-balance">{{ s.balance }}</span>
+          <span class="hero-unit">{{ 'share.points' | transloco }}</span>
+        </p>
+      </div>
+
+      <section class="block" aria-labelledby="share-who">
+        <h2 id="share-who">{{ 'share.who' | transloco }}</h2>
+        @if (s.recipients.length) {
+          <div class="picks" role="group" [attr.aria-label]="'share.who' | transloco">
+            @for (r of s.recipients; track r.member_id) {
+              <button
+                type="button"
+                class="pick"
+                [class.on]="toId() === r.member_id"
+                [attr.aria-pressed]="toId() === r.member_id"
+                [attr.data-testid]="'share-to-' + r.member_id"
+                (click)="pick(r.member_id)"
+              >
+                <app-avatar size="md" [name]="r.name" [colour]="r.colour" [avatarId]="r.avatar_id" />
+                <span class="pick-name">{{ r.name }}</span>
+              </button>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="block" aria-labelledby="share-how">
+        <h2 id="share-how">{{ 'share.how_many' | transloco }}</h2>
+        <div class="amount">
+          <button
+            type="button"
+            class="icon-btn round"
+            [attr.aria-label]="'share.less' | transloco"
+            [disabled]="shown() <= floor() || !canSend()"
+            (click)="step(-1)"
+          >
+            <span class="material-icons" aria-hidden="true">remove</span>
+          </button>
+          <input
+            #amountBox
+            type="number"
+            class="amount-input"
+            step="1"
+            inputmode="numeric"
+            [min]="floor()"
+            [max]="cap()"
+            data-testid="share-amount"
+            aria-labelledby="share-how"
+            [value]="amountInput()"
+            (input)="typeAmount(amountBox.value)"
+            (blur)="commitAmount(amountBox)"
+          />
+          <button
+            type="button"
+            class="icon-btn round"
+            [attr.aria-label]="'share.more' | transloco"
+            [disabled]="shown() >= cap()"
+            (click)="step(1)"
+          >
+            <span class="material-icons" aria-hidden="true">add</span>
+          </button>
+        </div>
+        <p class="amount-range" data-testid="share-range">
+          {{ 'share.range' | transloco: { min: floor(), max: maxShare() } }}
+        </p>
+        <div class="chips quick" role="group" [attr.aria-label]="'share.quick' | transloco">
+          @for (q of quick(); track q) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="shown() === q"
+              [attr.aria-pressed]="shown() === q"
+              [disabled]="q > cap()"
+              (click)="setAmount(q)"
+            >{{ q }}</button>
+          }
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="share-note">
+        <h2 id="share-note">
+          {{ 'share.note_heading' | transloco }}
+          <span class="muted optional">{{ 'share.note_optional' | transloco }}</span>
+        </h2>
+        <div class="chips" role="group" [attr.aria-label]="'share.note_heading' | transloco">
+          @for (n of notes; track n.key) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="noteMode() === 'preset' && noteKey() === n.key"
+              [attr.aria-pressed]="noteMode() === 'preset' && noteKey() === n.key"
+              [attr.data-testid]="'share-note-' + n.key"
+              (click)="pickNote(n.key)"
+            >
+              <span aria-hidden="true">{{ n.icon }}</span>
+              {{ 'share.note.' + n.key | transloco }}
+            </button>
+          }
+          <button
+            type="button"
+            class="chip"
+            [class.on]="noteMode() === 'own'"
+            [attr.aria-pressed]="noteMode() === 'own'"
+            data-testid="share-note-own"
+            (click)="pickOwnNote()"
+          >
+            <span class="material-icons chip-icon" aria-hidden="true">edit</span>
+            {{ 'share.note.own' | transloco }}
+          </button>
+        </div>
+        @if (noteMode() === 'own') {
+          <textarea
+            #noteBox
+            class="own-input"
+            rows="2"
+            maxlength="200"
+            data-testid="share-note-text"
+            [attr.aria-label]="'share.note_own_label' | transloco"
+            [placeholder]="'share.note_own_placeholder' | transloco"
+            [value]="noteText()"
+            (input)="setNoteText(noteBox.value)"
+          ></textarea>
+          <p class="tiny muted own-count" data-testid="share-note-count">
+            {{ 'share.note_own_count' | transloco: { count: noteText().length, max: 200 } }}
+          </p>
+        }
+      </section>
+
+      <div class="card summary">
+        <div class="row spread">
+          <span class="muted">{{ 'share.left' | transloco }}</span>
+          <b data-testid="share-left">{{ left() }} {{ 'share.points' | transloco }}</b>
+        </div>
+        <div class="row spread">
+          <span class="muted">{{ 'share.shared_today' | transloco }}</span>
+          <b>{{ 'share.of_limit' | transloco: { used: s.shared_today, limit: s.daily_limit } }}</b>
+        </div>
+        <p class="tiny muted">{{ 'share.keep' | transloco: { min: s.min_balance } }}</p>
+      </div>
+
+      @if (notice(); as key) {
+        <app-banner tone="info" data-testid="share-notice">{{ key | transloco }}</app-banner>
+      }
+      @if (error(); as key) {
+        <app-banner tone="error" data-testid="share-action-error">{{ key | transloco }}</app-banner>
+      }
+
+      <button
+        type="button"
+        class="btn amber lg block"
+        data-testid="share-submit"
+        [disabled]="!canSend() || busy()"
+        (click)="send()"
+      >
+        <span class="material-icons" aria-hidden="true">redeem</span>
+        {{ 'share.cta' | transloco: { count: shown(), name: chosen()?.name ?? '' } }}
+      </button>
+      }
+      }
+    }
+    }
+  }
+</section>

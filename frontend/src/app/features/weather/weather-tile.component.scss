@@ -1,0 +1,494 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wx-card {
+  flex: 1 1 auto;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+  background: linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
+  border-color: transparent;
+  color: var(--nw-color-on-weather);
+
+  p {
+    margin: 0;
+  }
+
+  > :not(.wx-scene) {
+    position: relative;
+  }
+}
+
+/* Condition scene behind the content. Decorative only, so it is hidden from assistive tech. */
+.wx-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  span {
+    position: absolute;
+    display: none;
+  }
+}
+
+.wx-scene[data-scene='sun'] {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--nw-color-weather-sun) 22%, transparent), transparent 70%);
+}
+
+.wx-scene[data-scene='cloud'] {
+  background: linear-gradient(170deg, color-mix(in srgb, var(--nw-color-weather-cloud) 14%, transparent), transparent 75%);
+}
+
+.wx-scene[data-scene='rain'] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nw-color-weather-cool) 16%, transparent), color-mix(in srgb, var(--nw-color-weather-cool) 6%, transparent));
+}
+
+.wx-scene[data-scene='drizzle'] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nw-color-weather-cool) 10%, transparent), transparent 85%);
+}
+
+/* Dawn and dusk warm the sky, and night gets a darker sky with light text. */
+.wx-card[data-part='dawn'] {
+  background: linear-gradient(170deg, color-mix(in srgb, #ffb38a 38%, transparent), transparent 65%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
+}
+
+.wx-card[data-part='dusk'] {
+  background: linear-gradient(170deg, color-mix(in srgb, #ff7a59 30%, transparent), color-mix(in srgb, #6a3fa0 22%, transparent) 75%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
+}
+
+.wx-card[data-part='night'] {
+  --nw-color-on-weather: #eef3ff;
+  background: linear-gradient(160deg, #1d2a57, #2a2150 80%);
+}
+
+.wx-scene[data-scene='storm'] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nw-color-weather-cool) 26%, transparent), color-mix(in srgb, var(--nw-color-weather-cool) 8%, transparent));
+}
+
+.wx-scene[data-scene='snow'] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nw-color-weather-snow) 30%, transparent), transparent 80%);
+}
+
+.wx-scene[data-scene='fog'] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nw-color-weather-mist) 35%, transparent), color-mix(in srgb, var(--nw-color-weather-mist) 15%, transparent));
+}
+
+.wx-scene[data-scene='sun'] .wx-sun {
+  display: block;
+  top: -56px;
+  right: -40px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--nw-color-weather-sun) 45%, transparent) 0%, transparent 68%);
+  animation: wxs-glow 7s ease-in-out infinite;
+}
+
+.wx-rays {
+  top: -110px;
+  right: -110px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, transparent 0deg 12deg, color-mix(in srgb, var(--nw-color-weather-sun) 16%, transparent) 12deg 18deg);
+  -webkit-mask: radial-gradient(circle, #000 20%, transparent 70%);
+  mask: radial-gradient(circle, #000 20%, transparent 70%);
+  animation: wxs-spin 60s linear infinite;
+}
+
+.wx-scene[data-scene='sun'] .wx-rays {
+  display: block;
+}
+
+.wx-scene[data-scene='sun'][data-part='night'] .wx-sun {
+  background: radial-gradient(circle, rgba(235, 242, 255, 0.5) 0%, rgba(235, 242, 255, 0.5) 22%, transparent 66%);
+}
+
+.wx-scene[data-scene='sun'][data-part='night'] .wx-rays {
+  display: none;
+}
+
+.wx-cloud {
+  height: 34px;
+  border-radius: 999px;
+  background: var(--nw-color-on-weather);
+  opacity: 0.12;
+  filter: blur(2px);
+}
+
+.wx-cloud::before,
+.wx-cloud::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.wx-cloud::before {
+  width: 46%;
+  height: 150%;
+  left: 18%;
+  top: -60%;
+}
+
+.wx-cloud::after {
+  width: 36%;
+  height: 120%;
+  left: 52%;
+  top: -40%;
+}
+
+.wx-cloud-a {
+  width: 120px;
+  top: 10%;
+  left: -30%;
+  animation: wxs-drift 42s linear infinite;
+}
+
+.wx-cloud-b {
+  width: 96px;
+  top: 46%;
+  left: -20%;
+  animation: wxs-drift 56s linear infinite;
+  animation-delay: -20s;
+}
+
+.wx-scene[data-scene='cloud'] .wx-cloud,
+.wx-scene[data-scene='drizzle'] .wx-cloud,
+.wx-scene[data-scene='rain'] .wx-cloud,
+.wx-scene[data-scene='storm'] .wx-cloud,
+.wx-scene[data-scene='snow'] .wx-cloud {
+  display: block;
+}
+
+.wx-band {
+  left: -10%;
+  right: -10%;
+  top: 30%;
+  height: 36px;
+  background: linear-gradient(90deg, transparent, var(--nw-color-on-weather) 50%, transparent);
+  opacity: 0.12;
+  filter: blur(4px);
+  animation: wxs-fog 16s ease-in-out infinite alternate;
+}
+
+.wx-scene[data-scene='fog'] .wx-band {
+  display: block;
+}
+
+.wx-band-b {
+  top: 62%;
+  height: 28px;
+  opacity: 0.08;
+  animation-duration: 20s;
+  animation-direction: alternate-reverse;
+  animation-delay: -8s;
+}
+
+.wx-scene[data-scene='fog'] .wx-band-b {
+  display: block;
+}
+
+.wx-flash {
+  inset: 0;
+  background: var(--nw-color-on-weather);
+  opacity: 0;
+}
+
+.wx-scene[data-scene='storm'] .wx-flash {
+  display: block;
+  animation: wxs-flash 9s steps(1) infinite;
+}
+
+.wx-particle {
+  top: -20px;
+  border-radius: 999px;
+  background: var(--nw-color-on-weather);
+}
+
+.wx-scene[data-scene='rain'] .wx-particle,
+.wx-scene[data-scene='storm'] .wx-particle,
+.wx-scene[data-scene='drizzle'] .wx-particle {
+  display: block;
+  width: 1.5px;
+  height: var(--len, 14px);
+  opacity: 0.2;
+  animation-name: wxs-rain;
+  animation-duration: calc(var(--base, 1.2s) * var(--speed, 1));
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.wx-scene[data-scene='drizzle'] .wx-particle {
+  width: 1px;
+  height: 7px;
+  opacity: 0.3;
+}
+
+.wx-scene[data-scene='snow'] .wx-particle {
+  display: block;
+  width: var(--size, 5px);
+  height: var(--size, 5px);
+  opacity: 0.5;
+  animation-name: wxs-snow;
+  animation-duration: calc(var(--base, 7s) * var(--speed, 1));
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes wxs-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes wxs-drift {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(340px);
+  }
+}
+
+@keyframes wxs-fog {
+  from {
+    transform: translateX(-8%);
+  }
+
+  to {
+    transform: translateX(8%);
+  }
+}
+
+@keyframes wxs-rain {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(220px);
+  }
+}
+
+@keyframes wxs-snow {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(var(--sway, 8px), 110px, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 230px, 0);
+  }
+}
+
+@keyframes wxs-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wxs-glow-live {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.24);
+    opacity: 1;
+  }
+}
+
+@keyframes wxs-bob {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: 0 -7px;
+  }
+}
+
+@keyframes wxs-flash {
+  0%,
+  91%,
+  93.5%,
+  100% {
+    opacity: 0;
+  }
+
+  92% {
+    opacity: 0.22;
+  }
+
+  93% {
+    opacity: 0;
+  }
+
+  94% {
+    opacity: 0.14;
+  }
+}
+
+/* Live: a livelier version of the same scene. Each selector adds [data-motion] so it outranks the calm rule. */
+.wx-scene[data-motion='live'][data-scene='sun'] .wx-sun {
+  animation: wxs-glow-live 2.4s ease-in-out infinite;
+}
+
+.wx-scene[data-motion='live'][data-scene='sun'] .wx-rays {
+  animation-duration: 20s;
+}
+
+/* Clouds bob with the `translate` property so they still drift with `transform`. */
+.wx-scene[data-motion='live'] .wx-cloud-a {
+  animation: wxs-drift 11s linear infinite, wxs-bob 2.6s ease-in-out infinite alternate;
+}
+
+.wx-scene[data-motion='live'] .wx-cloud-b {
+  animation: wxs-drift 15s linear infinite, wxs-bob 3.4s ease-in-out infinite alternate;
+  animation-delay: -6s, -1s;
+}
+
+.wx-scene[data-motion='live'][data-scene='fog'] .wx-band {
+  animation-duration: 5s;
+}
+
+.wx-scene[data-motion='live'][data-scene='storm'] .wx-flash {
+  animation-duration: 3s;
+}
+
+.wx-scene[data-motion='live'] {
+  --speed: 0.4;
+}
+
+.wx-scene[data-motion='live'][data-scene='rain'] .wx-particle {
+  opacity: 0.35;
+}
+
+.wx-scene[data-motion='live'][data-scene='drizzle'] .wx-particle {
+  opacity: 0.45;
+}
+
+.wx-scene[data-motion='live'][data-scene='storm'] .wx-particle {
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wx-scene * {
+    animation: none !important;
+  }
+
+  .wx-scene .wx-particle,
+  .wx-scene .wx-flash {
+    display: none !important;
+  }
+}
+
+.wx-d {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+}
+
+.wx-d.tom {
+  padding-top: var(--nw-space-2);
+  border-top: 1px solid var(--nw-color-outline);
+}
+
+.lab {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  opacity: 0.7;
+}
+
+.deg {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.deg.s {
+  font-size: 1.875rem;
+}
+
+.meta {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.wx-place {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.wx-stale {
+  opacity: 0.7;
+}
+
+.wx-empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+}
+
+.wx-card.compact {
+  gap: var(--nw-space-2);
+
+  .deg {
+    font-size: 2rem;
+  }
+}
+
+/* Compact: today and tomorrow side by side, stacked on narrow screens. */
+.wx-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--nw-space-4);
+
+  .wx-d.tom {
+    padding-top: 0;
+    border-top: 0;
+    padding-left: var(--nw-space-4);
+    border-left: 1px solid var(--nw-color-outline);
+  }
+}
+
+@media (max-width: 560px) {
+  .wx-pair {
+    grid-template-columns: minmax(0, 1fr);
+
+    .wx-d.tom {
+      padding-left: 0;
+      padding-top: var(--nw-space-2);
+      border-left: 0;
+      border-top: 1px solid var(--nw-color-outline);
+    }
+  }
+}

@@ -1,0 +1,858 @@
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nw-space-3);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+}
+
+.seg {
+  display: flex;
+  gap: var(--nw-space-1);
+  padding: var(--nw-space-1);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  flex: none;
+
+  button {
+    min-height: 44px;
+    padding: 0 var(--nw-space-3);
+    border: 0;
+    border-radius: var(--nw-radius-full);
+    background: transparent;
+    color: var(--nw-color-on-surface-variant);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &.on {
+      background: var(--nw-color-surface);
+      color: var(--nw-color-on-surface);
+      box-shadow: var(--nw-shadow);
+    }
+  }
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-3);
+  margin-bottom: var(--nw-space-4);
+  padding: var(--nw-space-3) var(--nw-space-4);
+  border-radius: var(--nw-card-radius);
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-error);
+}
+
+.title-wrap {
+  position: relative;
+  display: block;
+}
+
+.title-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-1);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  app-icon {
+    color: var(--nw-color-on-surface-variant);
+    transition: transform 0.15s ease;
+  }
+
+  &[aria-expanded='true'] app-icon {
+    transform: rotate(180deg);
+  }
+}
+
+.picker-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nw-z-raised);
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.picker {
+  position: absolute;
+  top: calc(100% + var(--nw-space-2));
+  left: 0;
+  z-index: calc(var(--nw-z-raised) + 1);
+  width: 264px;
+  padding: var(--nw-space-3);
+  border-radius: var(--nw-card-radius);
+  background: var(--nw-color-surface);
+  box-shadow: var(--nw-shadow-lg);
+}
+
+.picker-year {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--nw-space-3);
+}
+
+.picker-yr {
+  font-weight: 700;
+  color: var(--nw-color-on-surface);
+}
+
+.picker-months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--nw-space-2);
+
+  button {
+    min-height: 44px;
+    border: 0;
+    border-radius: var(--nw-radius-md);
+    background: var(--nw-color-surface-variant);
+    color: var(--nw-color-on-surface);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    &.on {
+      background: var(--nw-color-primary);
+      color: var(--nw-color-on-primary);
+    }
+  }
+}
+
+.page-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+  min-width: 0;
+}
+
+$dock-width: 52px;
+
+.cal-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+  min-width: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--nw-space-3);
+}
+
+.page-head .actions {
+  margin-left: auto;
+}
+
+@media (max-width: 600px) {
+  .page-head .actions {
+    margin-left: 0;
+  }
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 2.75rem;
+  height: 1.5rem;
+}
+
+.switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  border: 1px solid var(--nw-color-outline);
+  transition: background 0.15s ease;
+}
+
+.track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-on-surface-variant);
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + .track {
+  background: var(--nw-color-primary);
+  border-color: var(--nw-color-primary);
+}
+
+.switch input:checked + .track::after {
+  transform: translateX(1.25rem);
+  background: var(--nw-color-on-primary);
+}
+
+.switch input:focus-visible + .track {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.cal-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+/* Kids have no people dock, so only parents reserve room for it. The dock sits to the left of the calendar, and the filter row is indented to line up with the calendar. */
+.has-dock .cal-wrap {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--nw-space-2);
+}
+
+.has-dock .people-dock {
+  order: -1;
+}
+
+.has-dock .filters {
+  margin-left: calc($dock-width + var(--nw-space-2));
+}
+
+/* Calendar chips and the tasks toggle, aligned with the calendar above */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2) var(--nw-space-3);
+  min-width: 0;
+}
+
+.chips {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+  min-width: 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  min-height: 2.5rem;
+  max-width: 100%;
+  padding: 0 var(--nw-space-3);
+  border: 1px solid var(--c);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  font: inherit;
+  font-size: var(--nw-text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip .dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.chip.off {
+  border-style: dashed;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.chip.off .dot {
+  background: transparent;
+  border: 2px solid var(--c);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.tasks-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+  flex: none;
+  margin-left: auto;
+  font-size: var(--nw-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .has-dock .cal-wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .has-dock .filters {
+    margin-left: 0;
+  }
+
+  .chips {
+    flex: 1 1 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .chip {
+    min-height: 2.75rem;
+  }
+}
+
+.people-dock {
+  position: sticky;
+  top: var(--nw-space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nw-space-2);
+  width: $dock-width;
+  box-sizing: border-box;
+  padding: 6px;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface);
+  border: 1px solid var(--nw-color-outline);
+  box-shadow: var(--nw-shadow);
+}
+
+.dock-toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--nw-color-primary);
+  color: var(--nw-color-on-primary);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--nw-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* Shown when some members are hidden, so the filter is visibly narrowing the calendar. */
+.dock-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--nw-color-surface);
+  color: var(--nw-color-primary);
+  border: 1.5px solid var(--nw-color-primary);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.people-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+.person {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 4px solid var(--c);
+  border-radius: 50%;
+  background: var(--c);
+  cursor: pointer;
+
+  &.off {
+    border-style: dashed;
+    border-color: var(--nw-color-outline);
+    background: transparent;
+
+    app-avatar {
+      filter: grayscale(1);
+      opacity: 0.5;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--nw-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* Loading skeleton: same grid as the real views, with shimmering placeholders in place of events */
+.cal-skeleton {
+  position: relative;
+}
+
+.cal-skeleton__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.sk {
+  display: block;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--nw-color-surface-variant) 25%, var(--nw-color-outline) 50%, var(--nw-color-surface-variant) 75%);
+  background-size: 200% 100%;
+  animation: nw-cal-shimmer 1.4s linear infinite;
+}
+
+.sk-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.sk-pill {
+  width: 100%;
+  height: 22px;
+  border-radius: 7px;
+}
+
+.sk-day-row {
+  display: grid;
+  grid-template-columns: 84px 4px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-3) var(--nw-space-4);
+  border-bottom: 1px solid var(--nw-color-outline);
+}
+
+.sk-time {
+  width: 60%;
+  height: 0.75rem;
+}
+
+.sk-bar {
+  width: 4px;
+  height: 2rem;
+  border-radius: 2px;
+}
+
+.sk-title {
+  width: 55%;
+  height: 0.9rem;
+}
+
+@keyframes nw-cal-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk {
+    animation: none;
+  }
+}
+
+/* Month grid, as in the mock */
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-card-radius);
+  overflow: hidden;
+  background: var(--nw-color-surface);
+}
+
+.dow {
+  padding: var(--nw-space-3);
+  font-size: var(--nw-text-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nw-color-on-surface-variant);
+  background: var(--nw-color-surface-variant);
+  border-bottom: 1px solid var(--nw-color-outline);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  min-height: 118px;
+  padding: var(--nw-space-2);
+  border-right: 1px solid var(--nw-color-outline);
+  border-bottom: 1px solid var(--nw-color-outline);
+}
+
+.day:nth-child(7n) {
+  border-right: 0;
+}
+
+.day.out {
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-faint);
+}
+
+.day .n {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+}
+
+.day.today .n {
+  background: var(--nw-color-primary);
+  color: var(--nw-color-on-primary);
+}
+
+.ev-pill,
+.slot {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 24px;
+  padding: 2px 7px;
+  overflow: hidden;
+  border: 0;
+  border-left: 3px solid var(--c);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--c) 18%, var(--nw-color-surface));
+  color: var(--nw-color-on-surface);
+  font-family: inherit;
+  font-size: var(--nw-text-2xs);
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.ev-pill.task,
+.slot.task {
+  border: 1px dashed var(--c);
+  border-left: 3px solid var(--c);
+  background: transparent;
+}
+
+.ev-pill:focus-visible,
+.slot:focus-visible {
+  outline: 2px solid var(--c);
+  outline-offset: 1px;
+}
+
+.ev-pill:hover,
+.slot:hover {
+  background: color-mix(in srgb, var(--c) 40%, var(--nw-color-surface));
+  box-shadow: var(--nw-shadow);
+}
+
+.ev-pill.task:hover,
+.slot.task:hover {
+  background: color-mix(in srgb, var(--c) 22%, var(--nw-color-surface));
+}
+
+.day-row:hover {
+  background: var(--nw-color-surface-variant);
+}
+
+.slot {
+  font-size: var(--nw-text-xs);
+  padding: 4px 8px;
+}
+
+.week,
+.day-view {
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-card-radius);
+  overflow: hidden;
+  background: var(--nw-color-surface);
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.wday {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  min-height: 260px;
+  padding: var(--nw-space-2);
+  border-right: 1px solid var(--nw-color-outline);
+}
+
+.wday:last-child {
+  border-right: 0;
+}
+
+.wh {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  padding: 0 2px 4px;
+}
+
+.wname {
+  font-size: var(--nw-text-2xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.wnum {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+}
+
+.wday.today .wnum {
+  background: var(--nw-color-primary);
+  color: var(--nw-color-on-primary);
+}
+
+.day-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-row {
+  display: grid;
+  grid-template-columns: 84px 4px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--nw-space-3);
+  width: 100%;
+  padding: var(--nw-space-3) var(--nw-space-4);
+  border: 0;
+  border-bottom: 1px solid var(--nw-color-outline);
+  background: none;
+  color: var(--nw-color-on-surface);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.day-row:last-child {
+  border-bottom: 0;
+}
+
+.day-row:focus-visible {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: -2px;
+}
+
+.day-row .time {
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+  color: var(--nw-color-on-surface-variant);
+  white-space: nowrap;
+}
+
+.day-row .bar {
+  align-self: stretch;
+  min-height: 24px;
+  border-radius: 2px;
+  background: var(--c);
+}
+
+.day-row.task .bar {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--c);
+}
+
+.day-row .title {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 0;
+  padding: var(--nw-space-6) var(--nw-space-4);
+  text-align: center;
+  font-size: var(--nw-text-sm);
+  color: var(--nw-color-on-surface-variant);
+}
+
+.more {
+  min-height: 24px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--nw-color-on-surface-variant);
+  font-family: inherit;
+  font-size: var(--nw-text-2xs);
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.more:hover,
+.more:focus-visible {
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface);
+}
+
+@media (max-width: 900px) {
+  .day {
+    min-height: 80px;
+  }
+}
+
+/* Phone: dots instead of pills, as in the mock */
+@media (max-width: 600px) {
+  .cal-wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Floats above the bottom nav (72px, see styles.scss) so the calendar takes the full width */
+  .people-dock {
+    position: fixed;
+    top: auto;
+    right: var(--nw-space-3);
+    bottom: calc(72px + var(--nw-space-3));
+    z-index: var(--nw-z-raised);
+    flex-direction: column-reverse;
+  }
+
+  .dow {
+    padding: 6px 2px;
+    font-size: var(--nw-text-2xs);
+    letter-spacing: 0;
+    text-align: center;
+  }
+
+  .day {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    justify-content: center;
+    min-height: 58px;
+    padding: 4px 2px;
+    gap: 3px;
+  }
+
+  .day .n {
+    width: 100%;
+    height: 24px;
+    font-size: var(--nw-text-xs);
+  }
+
+  .day.today .n {
+    background: none;
+    color: var(--nw-color-primary);
+    font-weight: 800;
+    border-radius: 0;
+    box-shadow: inset 0 -3px 0 var(--nw-color-primary);
+  }
+
+  .ev-pill {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--c);
+    font-size: 0;
+  }
+
+  .ev-pill.task {
+    border: 1.5px solid var(--c);
+    background: transparent;
+  }
+
+  .week {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wday {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--nw-color-outline);
+  }
+
+  .wday:last-child {
+    border-bottom: 0;
+  }
+
+  .day-row {
+    grid-template-columns: 64px 4px minmax(0, 1fr);
+    padding: var(--nw-space-2) var(--nw-space-3);
+  }
+
+  .sk-day-row {
+    grid-template-columns: 64px 4px minmax(0, 1fr);
+    padding: var(--nw-space-2) var(--nw-space-3);
+  }
+
+  .day .sk-num {
+    width: 100%;
+    height: 24px;
+  }
+
+  .day .sk-pill {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .more {
+    width: 100%;
+    padding: 0;
+    font-size: var(--nw-text-2xs);
+    text-align: center;
+  }
+}

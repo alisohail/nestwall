@@ -1,0 +1,218 @@
+<main class="auth" role="main">
+  <section class="hero">
+    <div class="hero-brand">
+      <img src="assets/images/logo.svg" width="46" height="46" alt="">
+      <span>Nest<b>Wall</b></span>
+    </div>
+    <div>
+      <h1 class="hero-title">{{ 'setup.hero.title' | transloco }}</h1>
+      <p class="hero-intro">{{ 'setup.hero.intro' | transloco }}</p>
+    </div>
+    <p class="hero-note">{{ 'setup.hero.first_run' | transloco }}</p>
+  </section>
+
+  <section class="form">
+    <div class="box">
+      @if (!restoreMode()) {
+        <div class="steps" aria-hidden="true">
+          @for (i of [1, 2, 3]; track i) {
+            <i [class.on]="i <= step()"></i>
+          }
+        </div>
+      }
+
+  @if (step() === 1 && !restoreMode()) {
+    <section aria-labelledby="step1-heading">
+      <p class="step-label">{{ 'setup.step_label' | transloco: { current: 1, total: 3 } }}</p>
+      <h2 id="step1-heading">{{ 'setup.welcome.heading' | transloco }}</h2>
+      <p class="step-intro">{{ 'setup.welcome.intro' | transloco }}</p>
+      <div class="button-row">
+        <button type="button" class="btn-ghost" (click)="openRestore()" data-testid="setup-restore-open">{{ 'setup.welcome.restore' | transloco }}</button>
+        <button type="button" class="btn-primary" (click)="start()">{{ 'setup.welcome.start' | transloco }}</button>
+      </div>
+    </section>
+  }
+
+  @if (restoreMode()) {
+    <section class="restore" aria-labelledby="restore-heading">
+      <h2 id="restore-heading">{{ 'setup.restore.heading' | transloco }}</h2>
+      <p class="step-intro">{{ 'setup.restore.intro' | transloco }}</p>
+      <form (ngSubmit)="submitRestore()">
+        <div class="form-field">
+          <label for="restore-file">{{ 'setup.restore.file.label' | transloco }}</label>
+          <input
+            id="restore-file"
+            type="file"
+            class="file-input"
+            accept=".zip,application/zip"
+            aria-describedby="restore-file-hint"
+            [attr.aria-invalid]="restoreFileMissing()"
+            (change)="chooseRestoreFile($event)">
+          <p id="restore-file-hint" class="hint">{{ 'setup.restore.file.hint' | transloco }}</p>
+          @if (restoreFileMissing()) {
+            <p class="field-error" role="alert">{{ 'setup.restore.file.required' | transloco }}</p>
+          }
+        </div>
+        <div class="form-field">
+          <label for="restore-passphrase">{{ 'setup.restore.passphrase.label' | transloco }}</label>
+          <input
+            id="restore-passphrase"
+            type="password"
+            autocomplete="off"
+            aria-describedby="restore-passphrase-hint"
+            [value]="restorePassphrase()"
+            (input)="restorePassphrase.set($any($event.target).value)">
+          <p id="restore-passphrase-hint" class="hint">{{ 'setup.restore.passphrase.hint' | transloco }}</p>
+        </div>
+        @if (restoreError(); as message) {
+          <app-banner tone="error" class="server-banner" data-testid="setup-restore-error">{{ message | transloco }}</app-banner>
+        }
+        <div class="button-row">
+          <button type="button" class="btn-ghost" (click)="closeRestore()" [disabled]="restoreBusy()">{{ 'setup.back' | transloco }}</button>
+          <button type="submit" class="btn-primary" [disabled]="restoreBusy()" data-testid="setup-restore-submit">
+            @if (restoreBusy()) { <app-loading variant="spinner" /> }
+            @else { {{ 'setup.restore.submit' | transloco }} }
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+
+  @if (step() === 2) {
+    <section aria-labelledby="step2-heading">
+      <p class="step-label">{{ 'setup.step_label' | transloco: { current: 2, total: 3 } }}</p>
+      <h2 id="step2-heading">{{ 'setup.account.heading' | transloco }}</h2>
+      <p class="step-intro">{{ 'setup.account.intro' | transloco }}</p>
+      <form [formGroup]="accountForm" (ngSubmit)="submit()">
+        <div class="form-field">
+          <label for="display_name">{{ 'setup.display_name.label' | transloco }}</label>
+          <input id="display_name" type="text" formControlName="display_name" autocomplete="name">
+          @if (accountForm.get('display_name')?.invalid && accountForm.get('display_name')?.touched) {
+            <p class="field-error" role="alert">{{ 'setup.display_name.error' | transloco }}</p>
+          }
+        </div>
+        <div class="form-field">
+          <label for="email">{{ 'setup.email.label' | transloco }}</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            aria-describedby="email-hint"
+            [attr.aria-invalid]="accountForm.get('email')?.invalid && accountForm.get('email')?.touched">
+          <p id="email-hint" class="hint">{{ 'setup.email.hint' | transloco }}</p>
+          @if (accountForm.get('email')?.invalid && accountForm.get('email')?.touched) {
+            <p class="field-error" role="alert">
+              {{ (accountForm.get('email')?.hasError('required') ? 'setup.email.required' : 'setup.email.error') | transloco }}
+            </p>
+          }
+        </div>
+        <div class="form-field">
+          <label for="user_id">{{ 'setup.user_id.label' | transloco }}</label>
+          <input
+            id="user_id"
+            type="text"
+            formControlName="user_id"
+            autocomplete="username"
+            aria-describedby="user_id-hint">
+          <p id="user_id-hint" class="hint">{{ 'setup.user_id.hint' | transloco }}</p>
+          @if (accountForm.get('user_id')?.invalid && accountForm.get('user_id')?.touched) {
+            <p class="field-error" role="alert">{{ 'setup.user_id.error' | transloco }}</p>
+          }
+        </div>
+        <div class="form-field">
+          <label for="setup-password">{{ 'setup.password.label' | transloco }}</label>
+          <input
+            id="setup-password"
+            type="password"
+            formControlName="password"
+            autocomplete="new-password"
+            aria-describedby="pw-strength-desc">
+          <div class="strength-bar" aria-hidden="true">
+            @for (i of [0,1,2,3]; track i) {
+              <span class="strength-segment" [class.filled]="i < passwordStrength()"></span>
+            }
+          </div>
+          <p id="pw-strength-desc" class="hint" aria-live="polite">
+            @if (strengthKey()) { {{ strengthKey() | transloco }}. }
+            {{ 'setup.password.hint' | transloco }}
+          </p>
+          @if (accountForm.get('password')?.invalid && accountForm.get('password')?.touched) {
+            <p class="field-error" role="alert">{{ 'setup.password.error' | transloco }}</p>
+          }
+        </div>
+        <div class="form-field">
+          <label for="confirm">{{ 'setup.confirm.label' | transloco }}</label>
+          <input
+            id="confirm"
+            type="password"
+            formControlName="confirm"
+            autocomplete="new-password"
+            [attr.aria-invalid]="accountForm.errors?.['mismatch'] && accountForm.get('confirm')?.touched">
+          @if (accountForm.errors?.['mismatch'] && accountForm.get('confirm')?.touched) {
+            <p class="field-error" role="alert">{{ 'setup.confirm.error' | transloco }}</p>
+          }
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="family_name">{{ 'setup.family_name.label' | transloco }}</label>
+            <input
+              id="family_name"
+              type="text"
+              formControlName="family_name"
+              autocomplete="organization"
+              aria-describedby="family_name-hint"
+              [attr.aria-invalid]="accountForm.get('family_name')?.invalid && accountForm.get('family_name')?.touched">
+            <p id="family_name-hint" class="hint">{{ 'setup.family_name.hint' | transloco }}</p>
+            @if (accountForm.get('family_name')?.invalid && accountForm.get('family_name')?.touched) {
+              <p class="field-error" role="alert">{{ 'setup.family_name.error' | transloco }}</p>
+            }
+          </div>
+          <div class="form-field">
+            <label for="timezone">{{ 'setup.timezone.label' | transloco }}</label>
+            <select id="timezone" formControlName="timezone">
+              @for (tz of timezones; track tz) {
+                <option [value]="tz">{{ tz }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        @if (serverError(); as message) {
+          <app-banner tone="error" class="server-banner" data-testid="setup-error">{{ message | transloco }}</app-banner>
+        }
+        <div class="button-row">
+          <button type="button" class="btn-ghost" (click)="prevStep()">{{ 'setup.back' | transloco }}</button>
+          <button type="submit" class="btn-primary" [disabled]="loading()">
+            @if (loading()) { <app-loading variant="spinner" /> }
+            @else { {{ 'setup.create' | transloco }} }
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+
+  @if (step() === 3 && !restoreMode()) {
+    <section class="success" aria-labelledby="step3-heading">
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h2 id="step3-heading">{{ 'setup.success.heading' | transloco }}</h2>
+      <p>{{ 'setup.success.message' | transloco }}</p>
+      <button class="btn-primary" (click)="goToLogin()">{{ 'setup.success.cta' | transloco }}</button>
+    </section>
+  }
+    </div>
+  </section>
+</main>
+
+@if (restarting()) {
+  <div class="restart-overlay" role="status" aria-live="polite" data-testid="setup-restarting">
+    <app-loading variant="spinner" />
+    <p>{{ 'setup.restore.restarting' | transloco }}</p>
+  </div>
+}
+@if (restoreBusy()) {
+  <div class="restart-overlay" role="status" aria-live="polite" data-testid="setup-restoring">
+    <app-loading variant="spinner" />
+    <p>{{ 'setup.restore.restoring' | transloco }}</p>
+  </div>
+}
+

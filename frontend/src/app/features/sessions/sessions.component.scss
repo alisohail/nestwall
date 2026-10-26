@@ -1,0 +1,97 @@
+:host {
+  display: block;
+}
+
+.sessions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+}
+
+.sessions-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-1);
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-lg);
+  }
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.session-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-3);
+  padding-block: var(--nw-space-2);
+  border-bottom: 1px solid var(--nw-color-outline);
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-1);
+  flex: 1 1 16rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.session-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2);
+  font-weight: 600;
+}
+
+.sessions-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+.sessions-actions .small {
+  flex: 1 1 100%;
+  margin: 0;
+}
+
+.session-row .btn,
+.sessions-actions .btn {
+  min-height: 44px;
+}
+
+.small {
+  font-size: var(--nw-text-xs);
+}
+
+.error {
+  color: var(--nw-color-error);
+  font-size: var(--nw-text-sm);
+}
+
+@media (max-width: 640px) {
+  .session-row {
+    align-items: flex-start;
+  }
+
+  .sessions-actions {
+    flex-direction: column;
+    align-items: stretch;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,146 @@
+<section class="my-task" aria-labelledby="task-title">
+  <a
+    class="icon-btn back"
+    [routerLink]="backRoute()"
+    [queryParams]="backQuery()"
+    [attr.aria-label]="'myTask.back' | transloco"
+    data-testid="task-back"
+  >
+    <span class="material-icons" aria-hidden="true">arrow_back</span>
+  </a>
+
+  @if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="myTask.loading" data-testid="task-loading" />
+  } @else if (loadState() === 'missing') {
+    <div class="muted" data-testid="task-missing">
+      <h1>{{ 'myTask.missing.title' | transloco }}</h1>
+      <p>{{ 'myTask.missing.body' | transloco }}</p>
+    </div>
+  } @else if (loadState() === 'error') {
+    <div data-testid="task-error">
+      <app-load-error [error]="loadError()" (retry)="retry()" />
+    </div>
+  } @else {
+    @if (task(); as t) {
+    <header class="head">
+      <span class="emoji" aria-hidden="true">
+        <span class="material-icons">task_alt</span>
+      </span>
+      <div class="grow">
+        <h1 id="task-title">{{ t.title }}</h1>
+        <div class="chips">
+          <span class="chip points"><span class="material-icons" aria-hidden="true">star</span>{{ 'myTask.points' | transloco: { points: t.points ?? 0 } }}</span>
+          <span class="chip"><span class="material-icons" aria-hidden="true">schedule</span>{{ 'myTask.due' | transloco: { time: dueLabel(t.due_at) } }}</span>
+        </div>
+      </div>
+    </header>
+
+    @if (t.description) {
+      <p class="desc">{{ t.description }}</p>
+    }
+
+    @if (actionError(); as key) {
+      <app-banner tone="error" data-testid="task-action-error">{{ key | transloco }}</app-banner>
+    }
+
+    @switch (ownStatus()) {
+      @case ('submitted') {
+        <div class="notice info" data-testid="task-submitted">{{ 'myTask.submitted' | transloco }}</div>
+      }
+      @case ('approved') {
+        <div class="notice ok" data-testid="task-approved">{{ 'myTask.approved' | transloco }}</div>
+      }
+      @case ('rejected') {
+        <div class="notice err" data-testid="task-rejected">{{ 'myTask.rejected' | transloco }}</div>
+      }
+      @case ('skipped') {
+        <div class="notice info" data-testid="task-skipped">{{ 'myTask.skipped' | transloco }}</div>
+      }
+    }
+
+    @if (ownStatus() === 'submitted') {
+      <section class="action-card" data-testid="task-undo-card">
+        <p>{{ 'myTasks.waiting_note' | transloco }}</p>
+        <div class="action-card__buttons">
+          <button
+            type="button"
+            class="btn ghost undo"
+            [disabled]="undoing()"
+            (click)="undo()"
+            data-testid="task-undo"
+          >
+            {{ 'myTasks.undo' | transloco }}
+          </button>
+        </div>
+      </section>
+    }
+
+    <section class="card steps" aria-labelledby="steps-title">
+      <div class="steps-head">
+        <h2 id="steps-title">{{ 'myTask.steps' | transloco }}</h2>
+        @if (steps().length) {
+          <span class="muted" data-testid="task-progress-label">{{ 'myTask.progress' | transloco: { done: doneCount(), total: steps().length } }}</span>
+        }
+      </div>
+
+      @if (steps().length) {
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="pct()">
+          <span [style.width.%]="pct()"></span>
+        </div>
+
+        <ul class="step-list">
+          @for (step of steps(); track step.id) {
+            <li>
+              <button
+                type="button"
+                class="step"
+                [class.done]="step.done"
+                [disabled]="!canEdit() || !open() || pendingStep() !== null"
+                [attr.aria-pressed]="step.done"
+                [attr.data-testid]="'step-' + step.id"
+                (click)="toggle(step)"
+              >
+                <span class="box material-icons" aria-hidden="true">{{ step.done ? 'check_box' : 'check_box_outline_blank' }}</span>
+                <span class="text">{{ step.text }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="muted">{{ 'myTask.no_steps' | transloco }}</p>
+      }
+    </section>
+
+    @if (canEdit()) {
+      @if (open()) {
+        <section class="action-card" data-testid="task-action">
+          <p>{{ 'myTask.note' | transloco }}</p>
+          <div class="action-card__buttons">
+            <button
+              type="button"
+              class="btn primary"
+              [disabled]="!canFinish()"
+              (click)="confirming.set(true)"
+              data-testid="task-finish"
+            >
+              {{ 'myTask.finish' | transloco }}
+            </button>
+          </div>
+        </section>
+        @if (confirming() && task(); as t) {
+          <app-task-confirm
+            [heading]="'today.card.confirm_heading' | transloco"
+            [message]="stepsLeft() ? ('today.card.confirm_steps_left' | transloco) : ('today.card.confirm_message' | transloco: { title: t.title })"
+            [confirmLabel]="'today.card.confirm_yes' | transloco"
+            [busy]="finishing()"
+            (confirmed)="confirming.set(false); finish()"
+            (cancelled)="confirming.set(false)"
+          />
+        }
+      } @else {
+        <p class="muted note" data-testid="task-not-due">{{ 'myTask.not_due' | transloco: { day: dueDay() } }}</p>
+      }
+    }
+    }
+  }
+</section>

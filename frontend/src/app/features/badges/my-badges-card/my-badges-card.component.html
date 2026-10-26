@@ -1,0 +1,45 @@
+<section class="card flat my-badges-card" data-testid="me-badges">
+  @if (loadState() === 'loading') {
+    <div role="status" data-testid="me-badges-loading">
+      <span class="nw-sr-only">{{ 'me.badges.loading' | transloco }}</span>
+      <app-skeleton [rows]="2" />
+    </div>
+  } @else if (loadState() === 'error') {
+    <app-banner tone="error" data-testid="me-badges-error">
+      <span>{{ 'me.badges.card_error' | transloco }}</span>
+      <button type="button" class="btn ghost" (click)="load()">{{ 'me.badges.retry' | transloco }}</button>
+    </app-banner>
+  } @else {
+    @if (data(); as d) {
+      @if (d.enabled) {
+        <header class="head">
+          <h2>{{ 'me.badges.heading' | transloco }}</h2>
+          <span class="badge amber" data-testid="me-badges-count">
+            {{ 'me.badges.count' | transloco: { earned: d.earned_count, total: builtInTotal } }}
+          </span>
+        </header>
+
+        @if (tiles().length) {
+          <ul class="grid" data-testid="me-badges-tiles">
+            @for (tile of tiles(); track tile.id) {
+              <li class="tile">
+                <span class="em" aria-hidden="true">{{ tile.emoji }}</span>
+                @if (tile.builtInKey; as key) {
+                  <span class="name">{{ 'settings.badges.builtin.' + key | transloco }}</span>
+                } @else {
+                  <span class="name">{{ tile.name }}</span>
+                }
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted" data-testid="me-badges-empty">{{ 'me.badges.card_empty' | transloco }}</p>
+        }
+
+        <a class="btn ghost block" routerLink="/me/badges" data-testid="me-badges-all">
+          {{ 'me.badges.see_all' | transloco: { count: builtInTotal } }}
+        </a>
+      }
+    }
+  }
+</section>

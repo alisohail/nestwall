@@ -1,0 +1,1245 @@
+:host {
+  display: block;
+}
+
+/* Everything scales with the viewport width through em units (mock: wall stylesheet). */
+.kiosk {
+  --ink: var(--nw-wall-ink);
+  --mute: var(--nw-wall-mute);
+  --card: color-mix(in srgb, white 7%, transparent);
+  --line: color-mix(in srgb, white 12%, transparent);
+
+  position: relative;
+  height: 100vh;
+  min-height: 620px;
+  overflow: hidden;
+  color: var(--ink);
+  font: 500 clamp(13px, 1.15vw, 26px) / 1.3 Inter, 'Segoe UI', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3em;
+  padding: 1.6em 1.9em;
+  background: linear-gradient(160deg, var(--nw-wall-bg-start) 0%, var(--nw-wall-bg-mid) 50%, var(--nw-wall-bg-end) 100%);
+  transition: filter .8s ease;
+  --emoji: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+/* Night dimming (mock: wall stylesheet .kiosk.dim). Automatic, no control on the wall. */
+.kiosk.dim {
+  filter: brightness(.4) saturate(.7);
+}
+
+/* Animated background */
+.bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  animation: wall-drift 24s ease-in-out infinite alternate;
+}
+
+.o1 {
+  width: 40em;
+  height: 40em;
+  left: -12em;
+  top: -16em;
+  background: color-mix(in srgb, var(--nw-wall-amber) 30%, transparent);
+}
+
+.o2 {
+  width: 36em;
+  height: 36em;
+  right: -10em;
+  top: 6em;
+  background: color-mix(in srgb, var(--nw-wall-teal) 28%, transparent);
+  animation-duration: 30s;
+}
+
+.o3 {
+  width: 34em;
+  height: 34em;
+  left: 30%;
+  bottom: -20em;
+  background: color-mix(in srgb, var(--nw-wall-indigo) 28%, transparent);
+  animation-duration: 36s;
+}
+
+@keyframes wall-drift {
+  to {
+    transform: translate(7em, 4em) scale(1.18);
+  }
+}
+
+.top,
+.body {
+  position: relative;
+  z-index: var(--nw-z-raised);
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 1.6em;
+  backdrop-filter: blur(12px);
+}
+
+.rise {
+  animation: wall-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes wall-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.2em);
+  }
+}
+
+.waiting {
+  position: relative;
+  z-index: var(--nw-z-raised);
+  flex: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--mute);
+  font-weight: 700;
+  font-size: 1.4em;
+}
+
+/* Header */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 1.6em;
+}
+
+.hello {
+  flex: 1;
+  min-width: 0;
+}
+
+.greet {
+  font-family: var(--font-brand, Fredoka, sans-serif);
+  font-size: 1.95em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.wave {
+  display: inline-block;
+  font-family: var(--emoji);
+  transform-origin: 70% 70%;
+  animation: wall-wave 3.2s ease-in-out infinite;
+}
+
+@keyframes wall-wave {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0);
+  }
+  10%,
+  30% {
+    transform: rotate(14deg);
+  }
+  20%,
+  40% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+.sub {
+  margin-top: 0.35em;
+  min-height: 1.4em;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--mute);
+  transition: opacity 0.6s;
+}
+
+.sub.fade {
+  opacity: 0;
+}
+
+.wxduo {
+  display: flex;
+  gap: 0.8em;
+}
+
+.wx {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  min-width: 12.5em;
+  padding: 0.6em 1em;
+}
+
+.wx app-weather-icon {
+  flex: none;
+}
+
+.wx .lab {
+  font-size: 0.68em;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+
+.wx .deg {
+  font-size: 2.3em;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.wx .deg small {
+  margin-left: 0.35em;
+  font-size: 0.42em;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--mute);
+}
+
+.wx .meta {
+  margin-top: 0.15em;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--mute);
+}
+
+.wx .meta b {
+  font-weight: 700;
+  color: var(--nw-wall-gold);
+}
+
+.wx.rain {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--nw-wall-blue) 22%, transparent), var(--card));
+}
+
+.clockbox {
+  text-align: right;
+}
+
+.time {
+  font-size: 3.9em;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.time small {
+  margin-left: 0.3em;
+  font-size: 0.3em;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--mute);
+}
+
+.colon {
+  animation: wall-blink 2s steps(1) infinite;
+}
+
+@keyframes wall-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.date {
+  margin-top: 0.3em;
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--mute);
+}
+
+/* Layout */
+.body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24em;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 1.3em;
+  min-height: 0;
+}
+
+/* Three kids fill the row. A fourth onwards scrolls sideways with touch swipes; scrollbars stay hidden. */
+.kids {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 2.6em) / 3);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 1.3em;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.kids::-webkit-scrollbar {
+  display: none;
+}
+
+/* Kid cards */
+.kid {
+  position: relative;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  min-height: 0;
+  padding: 1.1em 1.2em 1em;
+  overflow: hidden;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 18%, transparent), var(--card) 46%);
+}
+
+.kid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 0.35em;
+  background: var(--c);
+}
+
+.kh {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+}
+
+.kid-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.5em;
+  height: 3.5em;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--c);
+  box-shadow: 0 0 0 0.16em var(--c, white);
+  font-weight: 800;
+  color: white;
+}
+
+.kh-text {
+  min-width: 0;
+}
+
+.nm {
+  font-size: 1.6em;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.cnt {
+  font-size: 0.95em;
+  font-weight: 600;
+  color: var(--mute);
+}
+
+.bar {
+  height: 0.55em;
+  overflow: hidden;
+  border-radius: 9em;
+  background: color-mix(in srgb, black 28%, transparent);
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  width: var(--w);
+  border-radius: inherit;
+  background: var(--c);
+  animation: wall-grow 1.4s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes wall-grow {
+  from {
+    width: 0;
+  }
+}
+
+.sechead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7em;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.pend {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.pend::-webkit-scrollbar {
+  display: none;
+}
+
+/* The celebration and its confetti must stay inside the card. */
+.pend.celebrate {
+  overflow: hidden;
+}
+
+/*
+ * Gentle cue at the bottom edge of a vertical list while more is hidden below.
+ * The sticky element stays at the visible bottom edge; the directive sets data-more.
+ */
+.scroll-cue {
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 2.4em;
+  margin-top: -2.4em;
+  background: linear-gradient(to bottom, transparent, var(--card) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.scroll-cue::after {
+  content: '';
+  position: absolute;
+  bottom: 0.7em;
+  left: calc(50% - 0.35em);
+  width: 0.7em;
+  height: 0.7em;
+  border-right: 0.18em solid var(--mute);
+  border-bottom: 0.18em solid var(--mute);
+  transform: rotate(45deg);
+}
+
+/* Right edge of a horizontal list: a sticky fade and a right-pointing chevron. */
+.scroll-cue.is-x {
+  right: 0;
+  bottom: auto;
+  flex: none;
+  width: 2.4em;
+  height: auto;
+  margin-top: 0;
+  margin-left: -2.4em;
+  background: linear-gradient(to right, transparent, color-mix(in srgb, white 95%, transparent) 70%);
+}
+
+.scroll-cue.is-x::after {
+  top: 50%;
+  bottom: auto;
+  left: calc(50% - 0.35em);
+  margin-top: -0.35em;
+  border-right: 0.18em solid var(--mute);
+  border-bottom: 0;
+  border-top: 0.18em solid var(--mute);
+  transform: rotate(45deg);
+}
+
+[data-more] > .scroll-cue {
+  opacity: 1;
+}
+
+[data-more] > .scroll-cue::after {
+  animation: scroll-cue-nudge 1.8s ease-in-out infinite;
+}
+
+[data-more] > .scroll-cue.is-x::after {
+  animation-name: scroll-cue-nudge-x;
+}
+
+@keyframes scroll-cue-nudge {
+  0%,
+  100% {
+    translate: 0 -0.15em;
+    opacity: 0.35;
+  }
+
+  50% {
+    translate: 0 0.25em;
+    opacity: 1;
+  }
+}
+
+@keyframes scroll-cue-nudge-x {
+  0%,
+  100% {
+    translate: -0.15em 0;
+    opacity: 0.35;
+  }
+
+  50% {
+    translate: 0.25em 0;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-more] > .scroll-cue::after,
+  [data-more] > .scroll-cue.is-x::after {
+    animation: none;
+  }
+}
+
+.t {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.62em 0.8em;
+  margin-bottom: 0.5em;
+  border-radius: 1em;
+  background: color-mix(in srgb, white 7%, transparent);
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.t .b {
+  flex: none;
+  width: 1.4em;
+  height: 1.4em;
+  border: 0.15em solid color-mix(in srgb, white 38%, transparent);
+  border-radius: 0.5em;
+}
+
+.t .ttl {
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.t .lt {
+  display: block;
+  margin-top: 0.1em;
+  font-size: 0.68em;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--nw-wall-rose);
+}
+
+.t .due {
+  margin-left: auto;
+  font-size: 0.78em;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--mute);
+}
+
+.t.late {
+  background: color-mix(in srgb, var(--nw-wall-coral) 14%, transparent);
+  box-shadow: inset 0.22em 0 0 var(--nw-wall-coral);
+}
+
+.cheer {
+  padding: 0.5em;
+  text-align: center;
+  font-weight: 700;
+  color: var(--mute);
+}
+
+.cheer b {
+  color: var(--c);
+}
+
+.done {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  padding-top: 0.55em;
+  border-top: 1px dashed var(--line);
+}
+
+.d {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.12em 0.2em;
+  font-size: 0.92em;
+  color: var(--mute);
+}
+
+.d .ck {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--nw-wall-cheer-ink);
+}
+
+.d .ck svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: none;
+  stroke: var(--nw-wall-check-ink);
+  stroke-width: 3.4;
+}
+
+.d .dt {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d .tm {
+  margin-left: auto;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.d.more {
+  padding-left: 1.7em;
+  font-size: 0.78em;
+  color: var(--mute);
+}
+
+.cele {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 0.2em;
+  text-align: center;
+}
+
+.cele .em {
+  font-family: var(--emoji);
+  font-size: 4.2em;
+  animation: wall-pop 2.2s ease-in-out infinite;
+}
+
+.cele b {
+  font-size: 1.7em;
+  color: var(--c);
+}
+
+.cele span {
+  font-weight: 600;
+  color: var(--mute);
+}
+
+@keyframes wall-pop {
+  50% {
+    transform: scale(1.14) rotate(-4deg);
+  }
+}
+
+.conf {
+  position: absolute;
+  top: -1em;
+  width: 0.5em;
+  height: 0.9em;
+  border-radius: 0.12em;
+  opacity: 0.9;
+  animation: wall-confetti linear infinite;
+}
+
+@keyframes wall-confetti {
+  to {
+    transform: translateY(32em) rotate(600deg);
+    opacity: 0;
+  }
+}
+
+/* Agenda */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  min-height: 0;
+  padding: 1.1em 1.1em 0.9em;
+}
+
+.side .sechead {
+  font-size: 0.75em;
+}
+
+.agenda {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.agenda::-webkit-scrollbar {
+  display: none;
+}
+
+.ev {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-bottom: 0.5em;
+  padding: 0.6em 0.8em;
+  border-left: 0.3em solid var(--line);
+  border-radius: 1em;
+  background: color-mix(in srgb, white 7%, transparent);
+}
+
+.ev .tm {
+  min-width: 4.3em;
+  font-size: 0.95em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ev .tt {
+  min-width: 0;
+  font-size: 1.05em;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.ev .loc {
+  display: block;
+  margin-top: 0.1em;
+  font-size: 0.7em;
+  font-weight: 600;
+  color: var(--mute);
+}
+
+.ev .in {
+  display: block;
+  margin-top: 0.1em;
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--nw-wall-gold);
+}
+
+.ev.past {
+  opacity: 0.42;
+}
+
+.ev.next {
+  background: color-mix(in srgb, var(--nw-wall-amber) 16%, transparent);
+  animation: wall-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes wall-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 0 0.25em color-mix(in srgb, var(--nw-wall-amber) 28%, transparent);
+  }
+}
+
+.dayhead {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3em 0.2em 0.1em;
+  font-size: 0.72em;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.dayhead.tom {
+  margin-top: 0.3em;
+}
+
+/* Bonus time band (mock: wall stylesheet) */
+.bonusband {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1.4em;
+  padding: 0.75em 1.2em;
+  border-radius: 1.7em;
+  overflow: hidden;
+  color: white;
+  background: linear-gradient(100deg, var(--nw-wall-amber) 0%, var(--nw-wall-rose-bright) 55%, var(--nw-wall-violet) 100%);
+  box-shadow:
+    0 0.5em 2em color-mix(in srgb, var(--nw-wall-rose-bright) 35%, transparent),
+    inset 0 0 0 0.14em color-mix(in srgb, white 35%, transparent);
+}
+
+.bonusband::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, color-mix(in srgb, white 38%, transparent) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: wall-shine 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes wall-shine {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+.bonusband .sp {
+  position: absolute;
+  color: white;
+  pointer-events: none;
+  animation: wall-twinkle 3s ease-in-out infinite;
+}
+
+.bonusband .s1 {
+  top: 14%;
+  left: 22%;
+  font-size: 1.1em;
+}
+
+.bonusband .s2 {
+  bottom: 10%;
+  left: 48%;
+  font-size: 0.9em;
+  animation-delay: 0.7s;
+}
+
+.bonusband .s3 {
+  bottom: 14%;
+  left: 8%;
+  font-size: 0.8em;
+  animation-delay: 1.3s;
+}
+
+@keyframes wall-twinkle {
+  0%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.95;
+  }
+}
+
+.bb-flag,
+.bb-list {
+  position: relative;
+}
+
+.bb-flag {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.7em;
+}
+
+.bb-star {
+  display: inline-block;
+  font-family: var(--emoji);
+  font-size: 2.6em;
+  line-height: 1;
+  filter: drop-shadow(0 0.1em 0.2em color-mix(in srgb, black 25%, transparent));
+  animation: wall-bounce 1.6s ease-in-out infinite;
+}
+
+@keyframes wall-bounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-0.25em) rotate(8deg) scale(1.08);
+  }
+}
+
+.bb-t {
+  font-family: var(--font-brand, Fredoka, sans-serif);
+  font-size: 1.9em;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0.06em 0.18em color-mix(in srgb, black 30%, transparent);
+}
+
+.bb-s {
+  margin-top: 0.25em;
+  font-size: 0.85em;
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.bb-list {
+  display: flex;
+  flex: 1;
+  gap: 0.9em;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.bb-list::-webkit-scrollbar {
+  display: none;
+}
+
+/* Pushes the cards to the right edge while they fit, and starts at the left edge once they overflow. */
+.bb-list > :first-child {
+  margin-left: auto;
+}
+
+.bb-card {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.7em;
+  min-width: 0;
+  padding: 0.5em 0.9em;
+  border-radius: 1.2em;
+  color: var(--nw-wall-plum);
+  background: color-mix(in srgb, white 95%, transparent);
+  box-shadow: 0 0.25em 0.8em color-mix(in srgb, black 18%, transparent);
+}
+
+.bb-em {
+  flex: none;
+  font-family: var(--emoji);
+  font-size: 2em;
+  line-height: 1;
+}
+
+.bb-m {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.bb-m b {
+  overflow: hidden;
+  font-size: 1.2em;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bb-m small {
+  font-size: 0.72em;
+  font-weight: 700;
+  color: var(--nw-wall-purple);
+  white-space: nowrap;
+}
+
+.bb-pts {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0.1em 0.5em;
+  border-radius: 0.7em;
+  font-size: 1.7em;
+  font-weight: 800;
+  color: var(--nw-wall-amber-ink);
+  background: var(--nw-wall-cream);
+  animation: wall-pop 2.4s ease-in-out infinite;
+}
+
+.bb-pts i {
+  font-family: var(--emoji);
+  font-size: 0.75em;
+  font-style: normal;
+}
+
+/* Avatars (mock: .avatar.sm in the agenda's who group) */
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--c);
+  color: white;
+  font-size: 0.75em;
+  font-weight: 800;
+}
+
+.ev .who {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-left: auto;
+}
+
+.ev .who .avatar {
+  margin-left: -0.5em;
+  border: 0.12em solid var(--nw-wall-bg-mid);
+}
+
+.ev .who .avatar:first-child {
+  margin-left: 0;
+}
+
+.ev .who .all {
+  font-size: 0.7em;
+  font-weight: 800;
+  color: var(--mute);
+}
+
+.status {
+  position: absolute;
+  right: 1.2em;
+  bottom: 0.5em;
+  z-index: calc(var(--nw-z-raised) + 1);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.62em;
+  color: var(--mute);
+}
+
+.status i {
+  display: inline-block;
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: var(--nw-wall-mint);
+  animation: wall-blink 2.4s infinite;
+}
+
+.status i.off {
+  background: var(--nw-wall-coral);
+}
+
+/* Exit: a visible X (top right), a hidden hold zone (bottom left, 2.5 s) and the parents-only keypad. */
+.exit-x,
+.exit-hot {
+  position: absolute;
+  z-index: calc(var(--nw-z-raised) + 1);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.exit-x {
+  top: 0.5em;
+  right: 0.5em;
+  width: 2.1em;
+  height: 2.1em;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--mute);
+  cursor: pointer;
+}
+
+.exit-x svg {
+  width: 1em;
+  height: 1em;
+  stroke-width: 2.4;
+}
+
+.exit-hot {
+  left: 0;
+  bottom: 0;
+  width: 5em;
+  height: 4em;
+  cursor: default;
+}
+
+.pin-bg {
+  position: absolute;
+  inset: 0;
+  z-index: var(--nw-z-dialog);
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, black 78%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.pin {
+  width: 21em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1.4em;
+  border: 0.08em solid var(--line);
+  border-radius: 1.2em;
+  background: color-mix(in srgb, var(--nw-wall-bg-start) 95%, transparent);
+}
+
+.pin-h {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+}
+
+.pin-h img,
+.pin-lock {
+  width: 3em;
+  height: 3em;
+  flex: 0 0 auto;
+}
+
+.pin-lock {
+  display: grid;
+  place-items: center;
+  font-size: 2.2em;
+  line-height: 1;
+  font-family: var(--emoji);
+}
+
+.pin-h b {
+  display: block;
+  font-family: var(--font-brand, Fredoka, sans-serif);
+  font-size: 1.3em;
+}
+
+.pin-h small {
+  color: var(--mute);
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.pin-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.8em;
+  padding: 0.3em 0;
+}
+
+.pin-dots i {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  border: 0.13em solid color-mix(in srgb, white 45%, transparent);
+}
+
+.pin-dots i.on {
+  background: var(--nw-wall-mint);
+  border-color: var(--nw-wall-mint);
+}
+
+.pin-dots.shake {
+  animation: pin-shake 0.45s;
+}
+
+@keyframes pin-shake {
+  20%,
+  60% {
+    transform: translateX(-0.5em);
+  }
+
+  40%,
+  80% {
+    transform: translateX(0.5em);
+  }
+}
+
+.pin-msg {
+  min-height: 1.2em;
+  text-align: center;
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--mute);
+}
+
+.pin-msg.err {
+  color: var(--nw-wall-coral);
+}
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6em;
+}
+
+.pin-pad button {
+  padding: 0.8em 0;
+  font: 800 1.5em/1 Inter, 'Segoe UI', system-ui, sans-serif;
+  color: var(--ink);
+  background: color-mix(in srgb, white 10%, transparent);
+  border: 0.08em solid var(--line);
+  border-radius: 1em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pin-pad button:active {
+  background: color-mix(in srgb, var(--nw-wall-mint) 30%, transparent);
+}
+
+.pin-pad button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pin-x {
+  padding: 0.4em;
+  border: 0;
+  background: transparent;
+  color: var(--mute);
+  font: 700 1em Inter, 'Segoe UI', system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.pin-btn {
+  display: block;
+  width: 100%;
+  padding: 0.9em;
+  border: 0;
+  border-radius: 1em;
+  background: var(--nw-wall-mint);
+  color: var(--nw-wall-bg-start);
+  font: 800 1.1em/1.3 Inter, 'Segoe UI', system-ui, sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.pin-btn.alt {
+  background: color-mix(in srgb, white 12%, transparent);
+  color: var(--ink);
+}
+
+.pin-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kiosk *,
+  .kiosk *::before,
+  .kiosk *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

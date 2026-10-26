@@ -1,0 +1,471 @@
+<div class="page-head">
+  <div>
+    <h1>{{ "tasks.title" | transloco }}</h1>
+  </div>
+  <div class="actions">
+    @if (auth.can("tasks.manage")) {
+      <a class="btn primary" routerLink="/tasks/new">
+        <span class="material-icons">add</span>{{ "tasks.new" | transloco }}
+      </a>
+    }
+  </div>
+</div>
+
+@if (lookupError(); as key) {
+  <app-error-state
+    [messageKey]="key"
+    retryKey="tasks.retry"
+    (retry)="loadLookups()"
+  />
+}
+
+<div class="tabs" role="tablist" [attr.aria-label]="'tasks.title' | transloco">
+  @for (t of tabs; track t) {
+    <button
+      type="button"
+      role="tab"
+      class="tab"
+      [id]="'tasks-tab-' + t"
+      [attr.aria-selected]="tab() === t"
+      [attr.tabindex]="tab() === t ? 0 : -1"
+      [attr.data-testid]="'tasks-tab-' + t"
+      (click)="setTab(t)"
+    >
+      {{ "tasks.tabs." + t | transloco }}
+    </button>
+  }
+</div>
+
+<div
+  class="filters"
+  role="group"
+  [attr.aria-label]="'tasks.filter.member' | transloco"
+>
+  <button
+    type="button"
+    class="chip"
+    [class.on]="memberFilter() === ''"
+    [attr.aria-pressed]="memberFilter() === ''"
+    (click)="setMember('')"
+  >
+    <span class="sw" aria-hidden="true"></span
+    >{{ "tasks.filter.everyone" | transloco }}
+  </button>
+  @for (m of activeMembers(); track m.id) {
+    <button
+      type="button"
+      class="chip"
+      [class.on]="memberFilter() === m.id"
+      [attr.aria-pressed]="memberFilter() === m.id"
+      (click)="setMember(m.id)"
+    >
+      <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" size="sm" />{{ m.display_name }}
+    </button>
+  }
+
+  <div class="filter-selects">
+    <select
+      class="select"
+      [attr.aria-label]="'tasks.filter.category' | transloco"
+      (change)="setCategory($any($event.target).value)"
+    >
+      <option value="" [selected]="categoryFilter() === ''">
+        {{ "tasks.filter.category_all" | transloco }}
+      </option>
+      @for (c of categories(); track c.id) {
+        <option [value]="c.id" [selected]="categoryFilter() === c.id">
+          {{ c.name }}
+        </option>
+      }
+    </select>
+  </div>
+</div>
+
+<div class="list-col">
+  @if (actionError(); as key) {
+    <app-banner tone="error">{{ key | transloco }}</app-banner>
+  }
+
+  @if (loadState() === "loading") {
+    <app-loading
+      class="state"
+      variant="full"
+      labelKey="tasks.list.loading"
+      data-testid="tasks-loading"
+    />
+  } @else if (loadState() === "error") {
+    <app-error-state
+      data-testid="tasks-error"
+      [messageKey]="listError() ?? 'tasks.error.generic'"
+      retryKey="tasks.retry"
+      (retry)="refresh()"
+    />
+  } @else if (visible().length === 0 && !nextCursor()) {
+    <app-empty-state
+      data-testid="tasks-empty"
+      icon="task_alt"
+      [titleKey]="
+        memberFilter() || tab() !== 'today' || categoryFilter()
+          ? 'tasks.list.empty_filtered'
+          : 'tasks.list.empty'
+      "
+    />
+  } @else {
+    @for (group of groups(); track group.key) {
+      @if (group.key) {
+        <div class="section-label" [class.bad]="group.key === 'overdue'">
+          {{ "tasks.group." + group.key | transloco }} &middot;
+          {{ group.items.length }}
+        </div>
+      }
+      @for (item of group.items; track item.id + item.member_id) {
+        <div
+          class="task-row"
+          [class.done]="item.status === 'approved'"
+          data-testid="task-row"
+        >
+          @if (item.status === "to_do" && !item.archived && tab() !== "expired" && auth.can('tasks.complete')) {
+            <button
+              type="button"
+              class="check"
+              data-testid="task-complete"
+              [attr.aria-label]="
+                'tasks.row.complete' | transloco: { title: item.title }
+              "
+              (click)="askComplete(item)"
+            >
+              <span class="box"></span>
+            </button>
+          } @else {
+            <span class="check" aria-hidden="true">
+              <span
+                class="box"
+                [class.on]="item.status === 'approved'"
+                [class.pending]="item.status === 'submitted'"
+              >
+                @if (item.archived) {
+                  <span class="material-icons">archive</span>
+                } @else if (statusIcon(item.status)) {
+                  <span class="material-icons">{{
+                    statusIcon(item.status)
+                  }}</span>
+                }
+              </span>
+            </span>
+          }
+
+          <div class="row-main">
+            <span class="bold ttl">{{ item.title }}</span>
+            <span class="meta">
+              @if (categoryOf(item); as cat) {
+                <span class="cat"
+                  ><i class="dot" [style.background]="cat.colour"></i
+                  >{{ cat.name }}</span
+                >
+              }
+              @if (item.archived) {
+                <span>
+                  <span
+                    class="material-icons"
+                    style="font-size: 13px"
+                    aria-hidden="true"
+                    >archive</span
+                  >
+                  {{
+                    "tasks.row.archived_on"
+                      | transloco: { date: archivedDate(item) ?? "" }
+                  }}
+                </span>
+              } @else {
+              <span>
+                <span
+                  class="material-icons"
+                  style="font-size: 13px"
+                  aria-hidden="true"
+                  >schedule</span
+                >
+                @if (dayWord(item); as word) {
+                  {{ "tasks.day." + word | transloco }}
+                } @else {
+                  {{ formatDay(item.due_date) }}
+                }
+                @if (item.due_time) {
+                  {{ formatTime(item.due_time) }}
+                }
+              </span>
+              @if (tab() === "expired") {
+                <span class="badge err" data-testid="task-expired-tag">{{
+                  "tasks.status.expired" | transloco
+                }}</span>
+              } @else if (isOverdue(item)) {
+                <span class="badge err">{{
+                  "tasks.status.overdue" | transloco
+                }}</span>
+              }
+              @if (item.status === "submitted") {
+                <span class="badge amber">{{
+                  "tasks.status.submitted" | transloco
+                }}</span>
+              }
+              @if (item.status === "rejected") {
+                <span class="badge err">{{
+                  "tasks.status.rejected" | transloco
+                }}</span>
+              }
+              }
+              @if (item.status === "skipped") {
+                <span class="badge">{{
+                  "tasks.status.skipped" | transloco
+                }}</span>
+              }
+              @if (expiresIn(item); as left) {
+                <span class="badge amber">{{
+                  "tasks.expires_in"
+                    | transloco: { time: (left.key | transloco: left.params) }
+                }}</span>
+              }
+              @if (penaltyText(item); as p) {
+                <span class="badge">{{ p.key | transloco: p.params }}</span>
+              }
+              @if (item.repeats) {
+                <span class="badge repeat" data-testid="task-repeat-chip"
+                  ><span class="material-icons" aria-hidden="true">repeat</span
+                  >{{ "tasks.detail.repeats" | transloco }}</span
+                >
+              }
+            </span>
+            @if (item.checklist?.length) {
+              <div class="steps" data-testid="task-checklist">
+                <div class="steps-bar" aria-hidden="true">
+                  <span [style.width.%]="stepPct(item)"></span>
+                </div>
+                <ul>
+                  @for (c of item.checklist; track c.id) {
+                    <li>
+                      @if (canTickStep(item)) {
+                        <button
+                          type="button"
+                          class="step-toggle"
+                          [disabled]="pendingStep() !== null"
+                          [attr.aria-pressed]="c.done"
+                          [attr.data-testid]="'list-step-' + c.id"
+                          (click)="toggleStep(item, c)"
+                        >
+                          <span
+                            class="step-mark"
+                            [class.on]="c.done"
+                            aria-hidden="true"
+                          >
+                            @if (c.done) {
+                              <span class="material-icons">check</span>
+                            }
+                          </span>
+                          <span [class.struck]="c.done">{{ c.text }}</span>
+                        </button>
+                      } @else {
+                        <span class="step-toggle static" [attr.data-testid]="'list-step-' + c.id">
+                          <span
+                            class="step-mark"
+                            [class.on]="c.done"
+                            aria-hidden="true"
+                          >
+                            @if (c.done) {
+                              <span class="material-icons">check</span>
+                            }
+                          </span>
+                          <span [class.struck]="c.done">{{ c.text }}</span>
+                        </span>
+                      }
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+
+          <div class="row-side">
+            @if (memberOf(item); as m) {
+              <app-avatar
+                size="xs"
+                [name]="m.display_name"
+                [colour]="m.colour"
+                [avatarId]="m.avatar_id"
+              />
+            }
+            <span class="pts"
+              ><span
+                class="material-icons"
+                style="font-size: 12px"
+                aria-hidden="true"
+                >star</span
+              >{{ item.points ?? 0 }}</span
+            >
+            <div class="row-actions">
+              <button
+                type="button"
+                class="icon-btn sm"
+                data-testid="task-view"
+                [attr.aria-label]="
+                  'tasks.row.view' | transloco: { title: item.title }
+                "
+                (click)="view(item)"
+              >
+                <span class="material-icons" aria-hidden="true"
+                  >visibility</span
+                >
+              </button>
+              @if (!item.archived) {
+                @if (auth.can("tasks.manage")) {
+                  <a
+                    class="icon-btn sm"
+                    data-testid="task-edit"
+                    [routerLink]="['/tasks', item.id, 'edit']"
+                    [queryParams]="{ member: item.member_id, tab: tab() }"
+                    [attr.aria-label]="
+                      'tasks.row.edit' | transloco: { title: item.title }
+                    "
+                  >
+                    <span class="material-icons" aria-hidden="true">edit</span>
+                  </a>
+                }
+              }
+              @if (item.archived) {
+                @if (auth.can("tasks.manage")) {
+                  <button
+                    type="button"
+                    class="icon-btn sm"
+                    data-testid="task-restore"
+                    [disabled]="restoringId() === item.id"
+                    [attr.aria-label]="
+                      'tasks.row.restore' | transloco: { title: item.title }
+                    "
+                    [attr.title]="'tasks.row.restore_hint' | transloco"
+                    (click)="restore(item)"
+                  >
+                    <span class="material-icons" aria-hidden="true">restore</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-btn sm danger"
+                    data-testid="task-delete-permanent"
+                    [attr.aria-label]="
+                      'tasks.row.delete_permanent' | transloco: { title: item.title }
+                    "
+                    (click)="askDelete(item)"
+                  >
+                    <span class="material-icons" aria-hidden="true"
+                      >delete_forever</span
+                    >
+                  </button>
+                }
+              } @else {
+                @if (auth.can("tasks.manage")) {
+                  <button
+                    type="button"
+                    class="icon-btn sm"
+                    data-testid="task-delete"
+                    [attr.aria-label]="
+                      'tasks.row.delete' | transloco: { title: item.title }
+                    "
+                    (click)="askArchive(item)"
+                  >
+                    <span class="material-icons" aria-hidden="true">delete</span>
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    @if (nextCursor() || pageIndex() > 0) {
+      <nav
+        class="pager"
+        [attr.aria-label]="'tasks.list.pager' | transloco"
+        data-testid="tasks-pager"
+      >
+        <button
+          type="button"
+          class="btn ghost"
+          data-testid="tasks-prev"
+          [disabled]="pageIndex() === 0"
+          (click)="prevPage()"
+        >
+          {{ "tasks.list.prev" | transloco }}
+        </button>
+        <span class="pager-label" aria-live="polite" data-testid="tasks-page">
+          {{ "tasks.list.page" | transloco: { page: pageIndex() + 1 } }}
+        </span>
+        <button
+          type="button"
+          class="btn ghost"
+          data-testid="tasks-next"
+          [disabled]="!nextCursor()"
+          (click)="nextPage()"
+        >
+          {{ "tasks.list.next" | transloco }}
+        </button>
+      </nav>
+    }
+  }
+</div>
+
+@if (auth.can("tasks.manage")) {
+  <a
+    class="fab"
+    routerLink="/tasks/new"
+    [attr.aria-label]="'tasks.new' | transloco"
+  >
+    <span class="material-icons">add</span>
+  </a>
+}
+
+@if (viewing(); as v) {
+  <app-task-detail
+    [taskId]="v.taskId"
+    [memberId]="v.memberId"
+    [members]="members()"
+    [categories]="categories()"
+    (changed)="reload()"
+    (closed)="closeView()"
+  />
+}
+
+@if (pendingComplete(); as item) {
+  <app-task-confirm
+    [heading]="'tasks.complete.heading' | transloco"
+    [message]="
+      'tasks.complete.message'
+        | transloco
+          : { title: item.title, name: memberOf(item)?.display_name ?? '' }
+    "
+    [confirmLabel]="'tasks.complete.confirm' | transloco"
+    [busy]="completing()"
+    (confirmed)="confirmComplete()"
+    (cancelled)="pendingComplete.set(null)"
+  />
+}
+
+@if (pendingDelete(); as item) {
+  <app-task-confirm
+    [heading]="'tasks.delete_permanent.heading' | transloco: { title: item.title }"
+    [message]="'tasks.delete_permanent.message' | transloco"
+    [confirmLabel]="'tasks.delete_permanent.confirm' | transloco"
+    [busy]="deleting()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="pendingDelete.set(null)"
+  />
+}
+
+@if (pendingArchive(); as item) {
+  @if (memberOf(item); as m) {
+    <app-remove-person-confirm
+      [taskId]="item.id"
+      [title]="item.title"
+      [people]="[m]"
+      (removed)="onRemoved()"
+      (cancelled)="pendingArchive.set(null)"
+    />
+  }
+}

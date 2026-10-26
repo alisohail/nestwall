@@ -1,0 +1,69 @@
+<main class="pair-page" role="main">
+  <div class="pair-box">
+    <div class="pair-brand">
+      <img src="assets/images/nesty.svg" width="56" height="56" alt="" />
+      <span>Nest<b>Wall</b></span>
+    </div>
+
+    <header class="pair-header">
+      <h1>{{ "wall.pair.title" | transloco }}</h1>
+      <p>{{ "wall.pair.instructions" | transloco }}</p>
+    </header>
+
+    <form class="pair-form" (submit)="$event.preventDefault(); submit()">
+      <div
+        class="pair-slots"
+        role="group"
+        [attr.aria-label]="'wall.pair.slots_label' | transloco"
+        data-testid="pair-slots"
+      >
+        @for (i of slots; track i) {
+          @if (i === 4) {
+            <span class="pair-dash" aria-hidden="true">&ndash;</span>
+          }
+          <input
+            #slot
+            class="pair-slot"
+            type="text"
+            inputmode="text"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            maxlength="2"
+            [attr.aria-label]="'wall.pair.slot_label' | transloco: { n: i + 1 }"
+            [attr.data-testid]="'pair-slot-' + i"
+            [value]="chars()[i]"
+            [disabled]="loading() || !!paired()"
+            (input)="onInput(i, $event)"
+            (keydown)="onKeydown(i, $event)"
+            (paste)="onPaste(i, $event)"
+            (focus)="$any($event.target).select()"
+          />
+        }
+      </div>
+
+      @if (error(); as message) {
+        <app-banner tone="error" data-testid="pair-error">{{
+          message | transloco
+        }}</app-banner>
+      }
+
+      <button
+        type="submit"
+        class="btn-primary pair-submit"
+        data-testid="pair-submit"
+        [disabled]="!complete() || loading()"
+      >
+        @if (loading()) {
+          <app-loading variant="spinner" />
+        } @else {
+          {{ "wall.pair.submit" | transloco }}
+        }
+      </button>
+    </form>
+
+    <a class="pair-back" routerLink="/login" data-testid="pair-back">{{
+      "wall.pair.back_to_login" | transloco
+    }}</a>
+  </div>
+</main>

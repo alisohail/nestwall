@@ -1,0 +1,47 @@
+.pwa-prompt {
+  position: fixed;
+  left: var(--nw-space-4);
+  right: var(--nw-space-4);
+  bottom: calc(var(--nw-space-4) + env(safe-area-inset-bottom));
+  z-index: var(--nw-z-dialog);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-3);
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: var(--nw-space-4);
+  border-radius: var(--nw-radius-xl);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  box-shadow: var(--nw-shadow-lg);
+
+  // Centre on the content column, beside the 252px desktop sidebar (styles.scss .app).
+  @media (min-width: 1101px) {
+    left: calc(252px + var(--nw-space-4));
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: var(--nw-space-1) 0 0;
+  }
+}
+
+.text {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+
+  .btn {
+    min-height: 44px;
+  }
+}

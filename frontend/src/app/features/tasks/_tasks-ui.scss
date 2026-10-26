@@ -1,0 +1,393 @@
+@use '../../../styles/components/task-card' as tc;
+
+// Task UI rules ported from the mock stylesheet. Included by each tasks component so the
+// classes stay scoped to that component's template.
+@mixin base {
+  .row {
+    display: flex;
+    align-items: center;
+    gap: var(--nw-space-3);
+  }
+
+  .row.wrap {
+    flex-wrap: wrap;
+  }
+
+  .grow {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .right {
+    margin-left: auto;
+  }
+
+  .mt {
+    margin-top: var(--nw-space-6);
+  }
+
+  .mt-s {
+    margin-top: var(--nw-space-3);
+  }
+
+  .bold {
+    font-weight: 700;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--nw-color-on-surface-variant);
+  }
+
+  .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--nw-color-primary);
+    flex: none;
+  }
+
+  .notice {
+    display: flex;
+    align-items: center;
+    gap: var(--nw-space-2);
+    margin: var(--nw-space-3) 0 0;
+    padding: var(--nw-space-2) var(--nw-space-3);
+    border-radius: var(--nw-radius-lg);
+    background: var(--nw-color-surface-variant);
+    color: var(--nw-color-on-surface-variant);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .notice .material-icons {
+    font-size: var(--nw-text-lg);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--nw-space-2);
+    min-height: 44px;
+    padding: 0 var(--nw-space-3);
+    border-radius: var(--nw-radius-full);
+    border: 1px solid var(--nw-color-outline);
+    background: var(--nw-color-surface);
+    color: var(--nw-color-on-surface);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .chip.on {
+    background: var(--nw-color-primary-container);
+    border-color: var(--nw-color-primary);
+    color: var(--nw-color-on-primary-container);
+  }
+
+  .chip .sw {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c, var(--nw-color-primary));
+  }
+
+  /* 44px hit area around the visual box. */
+  .check {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin: -9px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    flex: none;
+  }
+
+  .check:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .box {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 9px;
+    border: 2px solid var(--nw-color-outline);
+    background: var(--nw-color-surface);
+    color: var(--nw-color-on-surface-variant);
+    flex: none;
+  }
+
+  .box .material-icons {
+    font-size: var(--nw-text-lg);
+  }
+
+  .box.on {
+    background: var(--nw-color-success);
+    border-color: var(--nw-color-success);
+    color: var(--nw-color-surface);
+  }
+
+  .box.pending {
+    border-color: var(--nw-color-warning);
+    background: var(--nw-color-warning-container);
+    color: var(--nw-color-on-warning-container);
+  }
+
+  .task-row {
+    --title-line: 24px;
+    display: flex;
+    align-items: center;
+    gap: var(--nw-space-3);
+    padding: 12px 14px;
+    margin-bottom: var(--nw-space-2);
+    border: 1px solid var(--nw-color-outline);
+    border-radius: 14px;
+    background: var(--nw-color-surface);
+
+    @include tc.task-card-hover;
+  }
+
+  .task-row.done .ttl {
+    text-decoration: line-through;
+    color: var(--nw-color-faint);
+  }
+
+  /* Pinned to the top so the title sits on the same line as the check, even when the avatar makes the row taller. */
+  .row-main {
+    flex: 1;
+    align-self: flex-start;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8125rem;
+    color: var(--nw-color-on-surface-variant);
+  }
+
+  .cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cat .dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .checklist {
+    margin: 0;
+    padding: 0;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    list-style: none;
+  }
+
+  .checklist .box {
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .checklist .box:disabled {
+    cursor: default;
+  }
+
+  .steps {
+    display: grid;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--nw-color-surface-variant);
+  }
+
+  .steps-bar {
+    height: 4px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--nw-color-surface);
+  }
+
+  .steps-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--nw-color-success);
+  }
+
+  .steps ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  .steps li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 0.875rem;
+    list-style: none;
+  }
+
+  .steps .step-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .steps .step-toggle:disabled {
+    cursor: default;
+  }
+
+  .steps .step-toggle:focus-visible {
+    outline: 3px solid var(--nw-color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .steps .step-mark {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--nw-color-outline);
+    border-radius: 50%;
+    background: var(--nw-color-surface);
+    color: var(--nw-color-surface);
+  }
+
+  .steps .step-mark.on {
+    border-color: var(--nw-color-success);
+    background: var(--nw-color-success);
+  }
+
+  .steps .step-mark .material-icons {
+    font-size: 0.75rem;
+  }
+
+  /* The title keeps a fixed line box, so the 44px check is centred on its first line at any font size. */
+  .task-row > .check {
+    align-self: flex-start;
+    margin-top: calc((var(--title-line) - 44px) / 2);
+  }
+
+  .task-row .ttl {
+    line-height: var(--title-line);
+  }
+
+  .row-side {
+    display: flex;
+    align-items: center;
+    gap: var(--nw-space-3);
+    flex: none;
+  }
+
+  .badge.repeat .material-icons {
+    font-size: 0.8125rem;
+    margin-right: 3px;
+    vertical-align: -2px;
+  }
+
+  .struck {
+    text-decoration: line-through;
+    color: var(--nw-color-faint);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--nw-space-3);
+    margin-top: var(--nw-space-4);
+  }
+
+  .fact-val {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--nw-space-2);
+    margin-top: 6px;
+  }
+
+  .title {
+    margin-top: var(--nw-space-3);
+    font-size: 1.375rem;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--nw-color-primary);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 600px) {
+    .facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* On phones the title gets the full width; avatar, points and actions drop to their own line. */
+    .task-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .task-row > .row-main {
+      grid-column: 2;
+    }
+
+    .task-row > .row-side {
+      grid-column: 2;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .task-row .meta {
+      width: 100%;
+    }
+  }
+}

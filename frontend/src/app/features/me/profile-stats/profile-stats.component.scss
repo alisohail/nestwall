@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nw-space-3);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nw-space-1);
+  padding: var(--nw-space-3) var(--nw-space-1);
+  border-radius: var(--nw-radius-md);
+  background: var(--nw-color-surface-variant);
+}
+
+.value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.label {
+  font-size: var(--nw-text-xs);
+  font-weight: 700;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--nw-text-sm);
+  color: var(--nw-color-on-surface-variant);
+}

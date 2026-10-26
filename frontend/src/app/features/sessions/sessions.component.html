@@ -1,0 +1,71 @@
+<section class="card sessions" [attr.data-testid]="isOwn ? 'sessions-own' : 'sessions-' + memberId" [attr.aria-labelledby]="headingId">
+  <header class="sessions-head">
+    <h2 [id]="headingId">
+      @if (isOwn) {
+        {{ 'sessions.heading' | transloco }}
+      } @else {
+        {{ 'sessions.member_heading' | transloco: { name: memberName } }}
+      }
+    </h2>
+    <p class="muted">
+      {{ (isOwn ? 'sessions.intro_own' : 'sessions.intro_member') | transloco: { name: memberName } }}
+    </p>
+  </header>
+
+  @if (loadError(); as err) {
+    <app-load-error [error]="err" (retry)="load()" />
+  } @else if (loading()) {
+    <app-loading variant="full" labelKey="sessions.loading" data-testid="sessions-loading" />
+  } @else if (list().length === 0) {
+    <p class="nw-empty-note" data-testid="sessions-empty">{{ 'sessions.empty' | transloco }}</p>
+  } @else {
+    <ul class="session-list" data-testid="session-list">
+      @for (session of list(); track session.id) {
+        <li class="session-row" [attr.data-testid]="'session-' + session.id">
+          <div class="session-info">
+            <div class="session-name">
+              {{ session.user_agent || ('sessions.unknown_device' | transloco) }}
+              @if (session.current) {
+                <span class="badge teal">{{ 'sessions.current' | transloco }}</span>
+              }
+            </div>
+            <div class="small muted">{{ 'sessions.signed_in' | transloco: { time: (session.created_at | date: 'medium') } }}</div>
+            <div class="small muted">{{ 'sessions.expires' | transloco: { time: (session.expires_at | date: 'medium') } }}</div>
+          </div>
+          @if (isOwn && !session.current) {
+            <button type="button" class="btn ghost sm" [disabled]="busy()" [attr.data-testid]="'revoke-' + session.id" (click)="revoke(session)">
+              {{ 'sessions.sign_out_one' | transloco }}
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  @if (actionError(); as errorKey) {
+    <p class="error" role="alert">{{ errorKey | transloco }}</p>
+  }
+
+  <div class="sessions-actions">
+    @if (isOwn) {
+      <button type="button" class="btn ghost" data-testid="sign-out-others" [disabled]="busy() || loading()" (click)="signOutOthers()">
+        {{ 'sessions.sign_out_others' | transloco }}
+      </button>
+    }
+    @if (!confirmingAll()) {
+      <button type="button" class="btn ghost" data-testid="sign-out-everywhere" [disabled]="busy() || loading()" (click)="confirmingAll.set(true)">
+        {{ 'sessions.sign_out_everywhere' | transloco }}
+      </button>
+    } @else {
+      <p class="small" data-testid="sign-out-confirm">
+        {{ (isOwn ? 'sessions.confirm_own' : 'sessions.confirm_member') | transloco: { name: memberName } }}
+      </p>
+      <button type="button" class="btn primary" data-testid="confirm-sign-out-everywhere" [disabled]="busy()" (click)="signOutEverywhere()">
+        {{ 'sessions.sign_out_everywhere' | transloco }}
+      </button>
+      <button type="button" class="btn ghost" data-testid="cancel-sign-out-everywhere" [disabled]="busy()" (click)="confirmingAll.set(false)">
+        {{ 'common.cancel' | transloco }}
+      </button>
+    }
+  </div>
+</section>

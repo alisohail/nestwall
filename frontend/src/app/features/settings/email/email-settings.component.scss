@@ -1,0 +1,68 @@
+@use '../settings-ui' as ui;
+
+@include ui.base;
+
+:host {
+  display: grid;
+  gap: var(--nw-space-3);
+}
+
+/* The form is the main column and the Gmail steps sit beside it. The shared split puts its narrow column first. */
+.split {
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+.split.single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 760px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.reset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  min-inline-size: 0;
+}
+
+.reset:disabled {
+  opacity: 0.7;
+}
+
+.field .seg {
+  align-self: flex-start;
+}
+
+.divider {
+  height: 1px;
+  background: var(--nw-color-outline);
+  margin: var(--nw-space-1) 0;
+}
+
+.tint {
+  background: var(--nw-color-primary-container);
+  border-color: transparent;
+  align-self: start;
+}
+
+.tint h3 {
+  color: var(--nw-color-primary);
+}
+
+.steps {
+  margin: var(--nw-space-2) 0 0;
+  padding-left: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+}
+
+.tiny {
+  font-size: 0.75rem;
+  margin: var(--nw-space-2) 0 0;
+}

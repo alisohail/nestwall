@@ -1,0 +1,283 @@
+<section class="admin" aria-labelledby="admin-title" data-testid="rewards-admin">
+  <header class="page-head">
+    <div>
+      <h1 id="admin-title">{{ 'rewards.title' | transloco }}</h1>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn primary" data-testid="reward-add" (click)="openNew()">
+        {{ 'rewards.admin.add' | transloco }}
+      </button>
+    </div>
+  </header>
+
+  @if (notice(); as n) {
+    <app-banner tone="info" data-testid="admin-notice">{{ n | transloco }}</app-banner>
+  }
+
+  @if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="rewards.admin.loading" data-testid="admin-loading" />
+  } @else if (loadState() === 'error') {
+    <div data-testid="admin-error">
+      <app-load-error [error]="loadError()" (retry)="load()" />
+    </div>
+  } @else {
+    @if (rewards().length === 0) {
+      <app-empty-state
+        data-testid="admin-empty"
+        titleKey="rewards.admin.empty.title"
+        bodyKey="rewards.admin.empty.body"
+      />
+    }
+
+    @if (rewards().length > 0) {
+      <div class="toolbar">
+        <label class="sort">
+          <span>{{ 'rewards.admin.sort.label' | transloco }}</span>
+          <select class="select" data-testid="admin-sort" [value]="sort()" (change)="setSort($event)">
+            @for (option of sorts; track option) {
+              <option [value]="option">{{ 'rewards.admin.sort.' + option | transloco }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    }
+
+    <ul class="cards" data-testid="admin-list">
+      @for (reward of sortedRewards(); track reward.id) {
+        <li class="card reward" [attr.data-testid]="'admin-reward-' + reward.id">
+          <div class="reward-top">
+            <div class="ico" aria-hidden="true">{{ reward.icon }}</div>
+            <span class="badge right" [class.ok]="statusBadge(reward).cls === 'ok'" [class.amber]="statusBadge(reward).cls === 'amber'">
+              {{ statusBadge(reward).key | transloco }}
+            </span>
+          </div>
+          <div>
+            <div class="bold reward-name">{{ reward.name }}</div>
+            @if (reward.description) {
+              <div class="sub">{{ reward.description }}</div>
+            }
+          </div>
+          <div class="reward-meta">
+            <span class="pts">{{ 'rewards.card.cost' | transloco: { count: reward.cost } }}</span>
+            <span class="muted small">{{ limitText(reward) || daysText(reward) }}</span>
+          </div>
+          <p class="muted small summary">
+            {{ childrenText(reward) }}
+          </p>
+          <div class="card-actions">
+            <button
+              type="button"
+              class="btn ghost sm grow"
+              [attr.aria-label]="('rewards.admin.edit' | transloco) + ': ' + reward.name"
+              data-testid="reward-edit"
+              (click)="openEdit(reward)"
+            >
+              {{ 'rewards.admin.edit' | transloco }}
+            </button>
+            <button
+              type="button"
+              class="btn danger soft sm"
+              [attr.aria-label]="('rewards.admin.delete' | transloco) + ': ' + reward.name"
+              data-testid="reward-delete"
+              (click)="askDelete(reward)"
+            >
+              {{ 'rewards.admin.delete' | transloco }}
+            </button>
+          </div>
+        </li>
+      }
+      <li>
+        <button type="button" class="card new-card" data-testid="reward-new-card" (click)="openNew()">
+          <span class="plus" aria-hidden="true">+</span>
+          <b>{{ 'rewards.admin.newCard' | transloco }}</b>
+        </button>
+      </li>
+    </ul>
+  }
+
+  @if (deleteTarget(); as target) {
+    <div class="modal-bg" role="presentation" (click)="cancelDelete()">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="reward-delete-title" data-testid="reward-delete-dialog" (click)="$event.stopPropagation()">
+      <h2 id="reward-delete-title">{{ 'rewards.admin.deleteTitle' | transloco: { name: target.name } }}</h2>
+      <p class="sub">{{ 'rewards.admin.deleteConfirm' | transloco }}</p>
+
+      @if (deleteError(); as de) {
+        <p class="hint err" role="alert" data-testid="reward-delete-error">{{ de | transloco }}</p>
+      }
+
+      <div class="modal-foot">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" data-testid="reward-delete-cancel" (click)="cancelDelete()" [disabled]="busy()">
+          {{ 'rewards.admin.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn danger" data-testid="reward-delete-confirm" (click)="confirmDelete()" [disabled]="busy()">
+          {{ 'rewards.admin.delete' | transloco }}
+        </button>
+      </div>
+    </section>
+    </div>
+  }
+
+  @if (formOpen()) {
+    <div class="modal-bg" role="presentation" (click)="closeForm()">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="reward-form-title" data-testid="reward-form" (click)="$event.stopPropagation()">
+      <h2 id="reward-form-title">
+        {{ (formTarget() ? 'rewards.admin.form.edit' : 'rewards.admin.form.new') | transloco }}
+      </h2>
+
+      @if (formError(); as fe) {
+        <p class="hint err" role="alert" data-testid="reward-form-error">{{ fe | transloco }}</p>
+      }
+
+      <div class="field">
+        <label for="reward-name">{{ 'rewards.admin.form.name' | transloco }}</label>
+        <input
+          id="reward-name"
+          class="input"
+          type="text"
+          maxlength="80"
+          [ngModel]="draft.name"
+          (ngModelChange)="setField('name', $event)"
+          data-testid="reward-name"
+        />
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="reward-icon">{{ 'rewards.admin.form.icon' | transloco }}</label>
+          <input
+            id="reward-icon"
+            class="input"
+            type="text"
+            maxlength="16"
+            [ngModel]="draft.icon"
+            (ngModelChange)="setField('icon', $event)"
+            data-testid="reward-icon"
+          />
+        </div>
+        <div class="field">
+          <label for="reward-cost">{{ 'rewards.admin.form.cost' | transloco }}</label>
+          <input
+            id="reward-cost"
+            class="input"
+            type="number"
+            min="1"
+            max="100000"
+            [(ngModel)]="draft.cost"
+            data-testid="reward-cost"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="reward-description">{{ 'rewards.admin.form.description' | transloco }}</label>
+        <textarea
+          id="reward-description"
+          class="textarea"
+          rows="2"
+          maxlength="200"
+          [ngModel]="draft.description"
+          (ngModelChange)="setField('description', $event)"
+        ></textarea>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="reward-status">{{ 'rewards.admin.form.status' | transloco }}</label>
+          <select id="reward-status" class="select" [(ngModel)]="draft.status" data-testid="reward-status">
+            @for (s of statuses; track s) {
+              <option [value]="s">{{ (s === 'active' ? 'rewards.admin.status.active' : 'rewards.admin.status.paused') | transloco }}</option>
+            }
+          </select>
+        </div>
+        <label class="check">
+          <input type="checkbox" [(ngModel)]="draft.approval" data-testid="reward-approval" />
+          <span>{{ 'rewards.admin.form.approval' | transloco }}</span>
+        </label>
+      </div>
+
+      <fieldset class="field">
+        <legend>{{ 'rewards.admin.form.limit' | transloco }}</legend>
+        <div class="row-2">
+          <select
+            class="select"
+            [attr.aria-label]="'rewards.admin.form.limitPeriod' | transloco"
+            [(ngModel)]="draft.limitPeriod"
+            data-testid="reward-limit-period"
+          >
+            <option value="">{{ 'rewards.admin.limit.none' | transloco }}</option>
+            @for (p of periods; track p) {
+              <option [value]="p">{{ 'rewards.admin.period.' + p | transloco }}</option>
+            }
+          </select>
+          <input
+            class="input"
+            type="number"
+            min="1"
+            max="1000"
+            [attr.aria-label]="'rewards.admin.form.limitCount' | transloco"
+            [disabled]="!draft.limitPeriod"
+            [(ngModel)]="draft.limitCount"
+            data-testid="reward-limit-count"
+          />
+        </div>
+      </fieldset>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="reward-from">{{ 'rewards.admin.form.from' | transloco }}</label>
+          <input id="reward-from" class="input" type="date" [(ngModel)]="draft.from" />
+        </div>
+        <div class="field">
+          <label for="reward-until">{{ 'rewards.admin.form.until' | transloco }}</label>
+          <input id="reward-until" class="input" type="date" [(ngModel)]="draft.until" />
+        </div>
+      </div>
+
+      <fieldset class="field">
+        <legend>{{ 'rewards.admin.form.days' | transloco }}</legend>
+        <p class="hint">{{ 'rewards.admin.form.daysHint' | transloco }}</p>
+        <div class="chips">
+          @for (d of dayKeys; track d) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="isDayOn(d)"
+              [attr.aria-pressed]="isDayOn(d)"
+              (click)="toggleDay(d)"
+            >{{ 'rewards.admin.days.' + d | transloco }}</button>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>{{ 'rewards.admin.form.children' | transloco }}</legend>
+        <p class="hint">{{ 'rewards.admin.form.childrenHint' | transloco }}</p>
+        <div class="chips">
+          @for (child of children(); track child.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="isChildOn(child.id)"
+              [attr.aria-pressed]="isChildOn(child.id)"
+              (click)="toggleChild(child.id)"
+            >
+              <app-avatar [name]="child.display_name" [colour]="child.colour" [avatarId]="child.avatar_id" size="sm" />{{ child.display_name }}
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <div class="modal-foot">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" (click)="closeForm()" [disabled]="busy()">
+          {{ 'rewards.admin.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="reward-save" (click)="save()" [disabled]="busy()">
+          {{ 'rewards.admin.save' | transloco }}
+        </button>
+      </div>
+    </section>
+    </div>
+  }
+</section>

@@ -1,0 +1,218 @@
+<div class="family-page">
+  <header class="page-head">
+    <div>
+      <h1>{{ 'family.title' | transloco }}</h1>
+      <div class="family-meta" data-testid="family-subtitle">
+        @if (familyNameEditing()) {
+          <form class="family-name-form" [formGroup]="familyNameForm" (ngSubmit)="saveFamilyName()" data-testid="family-name-form">
+            <input
+              #familyNameInput
+              class="family-name-input"
+              type="text"
+              formControlName="family_name"
+              maxlength="80"
+              data-testid="family-name-input"
+              [attr.aria-label]="'family.name_edit.label' | transloco"
+              (keydown.escape)="cancelFamilyNameEdit()"
+            />
+            <button type="submit" class="icon-btn icon-btn-primary" data-testid="family-name-save" [disabled]="familyNameSaving()" [attr.aria-label]="'family.name_edit.save' | transloco" [title]="'family.name_edit.save' | transloco"><app-icon name="check" [size]="16" /></button>
+            <button type="button" class="icon-btn" data-testid="family-name-cancel" [disabled]="familyNameSaving()" [attr.aria-label]="'family.name_edit.cancel' | transloco" [title]="'family.name_edit.cancel' | transloco" (click)="cancelFamilyNameEdit()"><app-icon name="close" [size]="16" /></button>
+          </form>
+          @if (familyNameForm.controls.family_name.invalid && familyNameForm.controls.family_name.touched) {
+            <p class="field-error" data-testid="family-name-required">{{ 'family.name_edit.required' | transloco }}</p>
+          }
+          @if (familyNameError()) {
+            <p class="error" role="alert">{{ familyNameError()! | transloco }}</p>
+          }
+        } @else {
+          <span class="family-name" data-testid="family-name">{{ familyName() }}</span>
+          @if (canManageFamily()) {
+            <button type="button" class="icon-btn" data-testid="family-name-edit" [attr.aria-label]="'family.name_edit.edit' | transloco" [title]="'family.name_edit.edit' | transloco" (click)="startFamilyNameEdit()"><app-icon name="pencil" [size]="16" /></button>
+          }
+          <span class="muted">· {{ 'family.member_count' | transloco: { count: activeCount() } }}</span>
+        }
+      </div>
+
+    </div>
+    <div class="actions">
+      <button type="button" class="btn primary" data-testid="add-member" (click)="openAddMember()"><app-icon name="plus" [size]="14" />{{ 'family.add_member.open' | transloco }}</button>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist" [attr.aria-label]="'family.title' | transloco">
+    @for (t of tabs; track t) {
+      <button
+        type="button"
+        role="tab"
+        class="tab"
+        [id]="'family-tab-' + t"
+        [attr.aria-selected]="tab() === t"
+        [attr.tabindex]="tab() === t ? 0 : -1"
+        [attr.data-testid]="'family-tab-' + t"
+        (click)="setTab(t)"
+      >
+        {{ 'family.tabs.' + t | transloco }}
+      </button>
+    }
+  </div>
+
+  @if (tab() === 'members') {
+  @if (loadError(); as err) {
+    <div data-testid="family-load-error">
+      <app-load-error [error]="err" (retry)="reload()" />
+    </div>
+  } @else if (loading()) {
+    <app-loading variant="full" labelKey="family.loading" data-testid="family-loading" />
+  } @else {
+    <div class="member-grid" data-testid="members-grid">
+      @for (member of members(); track member.id) {
+        <article class="card member" [attr.data-testid]="'member-' + member.id">
+          <div class="top">
+            <app-avatar [name]="member.display_name" [colour]="member.colour" [avatarId]="member.avatar_id" />
+            <div>
+              <div class="name">{{ member.display_name }}</div>
+              <span class="badge" [class.child]="member.is_child">
+                {{ member.is_child ? ('family.badge.child' | transloco) : member.role_name }}
+              </span>
+            </div>
+          </div>
+          <div class="small muted">
+            @if (member.email) {
+              <div>{{ member.email }}</div>
+            }
+            {{ 'family.username' | transloco: { user_id: member.user_id } }}
+            @if (member.status !== 'active') {
+              <br />{{ 'family.status.' + member.status | transloco }}
+            }
+          </div>
+          <div class="member-actions">
+            <a class="btn ghost small" [routerLink]="['/family', 'members', member.id]" [attr.data-testid]="'edit-member-' + member.id">{{ 'family.member_actions.edit' | transloco }}</a>
+            @if (canDelete(member)) {
+              <button type="button" class="btn danger small" [attr.data-testid]="'delete-' + member.id" (click)="startDelete(member)">{{ 'family.member_actions.delete' | transloco }}</button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+  } @else if (tab() === 'roles') {
+    <div id="perm">
+      <app-permissions-editor />
+    </div>
+  } @else {
+    <div class="sessions-grid" data-testid="sessions-grid">
+      <app-sessions />
+      @for (child of childMembers(); track child.id) {
+        <app-sessions [memberId]="child.id" [memberName]="child.display_name" />
+      }
+    </div>
+  }
+
+  @if (showAddMember()) {
+    <div class="modal-bg" role="presentation">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="add-member-title" data-testid="add-member-dialog">
+        <h2 id="add-member-title">{{ 'family.add_member.heading' | transloco }}</h2>
+        <p class="muted">{{ 'family.add_member.intro' | transloco }}</p>
+        <form [formGroup]="addMemberForm" (ngSubmit)="submitAddMember()" novalidate>
+          <label class="field">
+            <span>{{ 'family.add_member.role.label' | transloco }}</span>
+            <select formControlName="role_id" data-testid="add-member-role">
+              <option value="" disabled>{{ 'family.add_member.role.placeholder' | transloco }}</option>
+              @for (role of allRoles(); track role.id) {
+                <option [value]="role.id">{{ role.name }}</option>
+              }
+            </select>
+            @if (addMemberForm.controls.role_id.touched && addMemberForm.controls.role_id.invalid) {
+              <span class="field-error">{{ 'family.add_member.role.error' | transloco }}</span>
+            }
+          </label>
+          <label class="field">
+            <span>{{ 'family.add_member.display_name.label' | transloco }}</span>
+            <input formControlName="display_name" autocomplete="off" />
+            @if (addMemberForm.controls.display_name.touched && addMemberForm.controls.display_name.invalid) {
+              <span class="field-error">{{ 'family.add_member.display_name.error' | transloco }}</span>
+            }
+          </label>
+          <label class="field">
+            <span>{{ 'family.add_member.user_id.label' | transloco }}</span>
+            <input formControlName="user_id" autocomplete="off" />
+            @if (addMemberForm.controls.user_id.touched && addMemberForm.controls.user_id.invalid) {
+              <span class="field-error">{{ 'family.add_member.user_id.error' | transloco }}</span>
+            }
+          </label>
+          <label class="field">
+            <span>{{ 'family.add_member.password.label' | transloco }}</span>
+            <input type="password" formControlName="password" autocomplete="new-password" />
+            @if (addMemberForm.controls.password.touched && addMemberForm.controls.password.invalid) {
+              <span class="field-error">{{ 'family.add_member.password.error' | transloco }}</span>
+            }
+          </label>
+          @if (isChildRole(addMemberForm.controls.role_id.value)) {
+            <label class="field">
+              <span>{{ 'family.add_member.pin.label' | transloco }}</span>
+              <input inputmode="numeric" formControlName="pin" autocomplete="off" />
+              <span class="hint">{{ 'family.add_member.pin.hint' | transloco }}</span>
+              @if (addMemberForm.controls.pin.touched && addMemberForm.controls.pin.invalid) {
+                <span class="field-error">{{ 'family.add_member.pin.error' | transloco }}</span>
+              }
+            </label>
+          }
+          <label class="field">
+            <span>{{ 'family.add_member.email.label' | transloco }}</span>
+            <input type="email" formControlName="email" autocomplete="off" data-testid="add-member-email" />
+            <span class="hint">{{ (isFixedRole(addMemberForm.controls.role_id.value) ? 'family.add_member.email.hint_parent' : 'family.add_member.email.hint_optional') | transloco }}</span>
+            @if (addMemberForm.controls.email.touched && addMemberForm.controls.email.invalid) {
+              <span class="field-error">{{ (addMemberForm.controls.email.hasError('required') ? 'family.add_member.email.required' : 'family.add_member.email.error') | transloco }}</span>
+            }
+          </label>
+          <label class="field">
+            <span>{{ 'family.add_member.birth_date.label' | transloco }}</span>
+            <input type="date" formControlName="date_of_birth" data-testid="add-member-birth-date" />
+            <span class="hint">{{ 'family.add_member.birth_date.hint' | transloco }}</span>
+            @if (addMemberForm.controls.date_of_birth.invalid) {
+              <span class="field-error">{{ 'family.add_member.birth_date.error' | transloco }}</span>
+            }
+          </label>
+          <label class="field">
+            <span>{{ 'family.add_member.gender.label' | transloco }}</span>
+            <select formControlName="gender" data-testid="add-member-gender">
+              <option value="">{{ 'family.add_member.gender.not_set' | transloco }}</option>
+              <option value="female">{{ 'family.add_member.gender.female' | transloco }}</option>
+              <option value="male">{{ 'family.add_member.gender.male' | transloco }}</option>
+              <option value="prefer_not_to_say">{{ 'family.add_member.gender.prefer_not_to_say' | transloco }}</option>
+            </select>
+          </label>
+          <div class="field">
+            <span>{{ 'family.edit.colour.label' | transloco }}</span>
+            <app-colour-picker formControlName="colour" [label]="'family.edit.colour.label' | transloco" />
+          </div>
+          @if (addMemberError(); as errorKey) {
+            <p class="error" role="alert">{{ errorKey | transloco }}</p>
+          }
+          <div class="foot">
+            <button type="button" class="btn ghost" (click)="closeAddMember()">{{ 'common.cancel' | transloco }}</button>
+            <button type="submit" class="btn primary" [disabled]="addMemberSaving()">{{ 'family.add_member.submit' | transloco }}</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  }
+
+  @if (deleteMember(); as member) {
+    <div class="modal-bg" role="presentation">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" data-testid="delete-dialog">
+        <h2 id="delete-title">{{ 'family.delete.heading' | transloco: { name: member.display_name } }}</h2>
+        <p class="muted">{{ 'family.delete.intro' | transloco: { name: member.display_name } }}</p>
+        <p class="muted">{{ 'family.delete.warning' | transloco }}</p>
+        @if (deleteError(); as errorKey) {
+          <p class="error" role="alert" data-testid="delete-error">{{ errorKey | transloco }}</p>
+        }
+        <div class="foot">
+          <button type="button" class="btn ghost" (click)="cancelDelete()">{{ 'common.cancel' | transloco }}</button>
+          <button type="button" class="btn danger" data-testid="confirm-delete" [disabled]="deleting()" (click)="confirmDelete()">{{ 'family.delete.confirm' | transloco }}</button>
+        </div>
+      </section>
+    </div>
+  }
+
+</div>

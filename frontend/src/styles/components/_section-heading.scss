@@ -1,0 +1,96 @@
+// Kid section cards: one card per section, with a head strip in its own tone and the
+// content directly below it. Set a tone class on the head: tone-primary, tone-danger,
+// tone-points or tone-neutral.
+
+@mixin section-tones {
+  .tone-primary {
+    --sh-bg: var(--nw-color-primary);
+    --sh-fg: var(--nw-color-on-primary);
+    --sh-chip: color-mix(in srgb, white 22%, transparent);
+    --sh-chip-fg: var(--nw-color-on-primary);
+  }
+
+  .tone-danger {
+    --sh-bg: var(--nw-color-error-container);
+    --sh-fg: var(--nw-color-on-surface);
+    --sh-chip: var(--nw-color-error);
+    --sh-chip-fg: var(--nw-color-on-error);
+  }
+
+  .tone-points {
+    --sh-bg: color-mix(in srgb, var(--nw-color-points) 24%, var(--nw-color-surface));
+    --sh-fg: var(--nw-color-on-surface);
+    --sh-chip: var(--nw-color-points);
+    --sh-chip-fg: var(--nw-color-on-points);
+  }
+
+  .tone-neutral {
+    --sh-bg: transparent;
+    --sh-fg: var(--nw-color-on-surface);
+    --sh-chip: var(--nw-color-primary-container);
+    --sh-chip-fg: var(--nw-color-on-primary-container);
+  }
+}
+
+@mixin section-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+@mixin section-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-4);
+}
+
+@mixin section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-2);
+  flex-wrap: wrap;
+  margin: 0;
+  padding: var(--nw-space-3) var(--nw-space-4);
+  background: var(--sh-bg);
+  color: var(--sh-fg);
+
+  .sh-title {
+    display: flex;
+    align-items: center;
+    gap: var(--nw-space-2);
+    min-width: 0;
+  }
+
+  .sh-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--nw-radius-md);
+    background: var(--sh-chip);
+    color: var(--sh-chip-fg);
+
+    .material-icons {
+      font-size: 1.25rem;
+    }
+  }
+
+  .sh-count {
+    padding: 0.125rem 0.625rem;
+    border-radius: var(--nw-radius-full);
+    background: var(--nw-color-surface);
+    color: var(--nw-color-on-surface);
+    font-size: var(--nw-text-sm);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-lg);
+    font-weight: 800;
+    color: inherit;
+  }
+}

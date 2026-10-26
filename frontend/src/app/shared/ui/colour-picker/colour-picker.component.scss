@@ -1,0 +1,71 @@
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+}
+
+.swatch {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: var(--c);
+  cursor: pointer;
+}
+
+.swatch[aria-pressed='true'],
+.custom.on {
+  border-color: var(--nw-color-on-surface);
+  box-shadow: inset 0 0 0 2px var(--nw-color-surface);
+}
+
+/* Declared after .swatch so the rainbow wins over the swatch's own background. */
+.custom {
+  background: var(--rainbow);
+}
+
+.custom.on {
+  background: var(--c);
+}
+
+.custom:focus-within {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+/* The native picker covers the cell so a click or keypress opens it. */
+.custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.swatch:disabled,
+.custom.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.custom.disabled input {
+  cursor: not-allowed;
+}
+
+.hint {
+  margin: var(--nw-space-2) 0 0;
+  font-size: 0.85rem;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.contrast-warning {
+  color: var(--nw-color-error);
+}

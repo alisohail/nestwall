@@ -1,0 +1,442 @@
+@switch (loadState()) {
+  @case ('loading') {
+    <div role="status">
+      <span class="nw-sr-only">{{ 'settings.common.loading' | transloco }}</span>
+      <app-skeleton [rows]="2" />
+    </div>
+  }
+  @case ('error') {
+    <section class="card mt">
+      <app-banner tone="error">{{ 'settings.data.backups.error.load_failed' | transloco }}</app-banner>
+      <div class="row mt-s">
+        <button type="button" class="btn ghost" (click)="load()">{{ 'settings.common.retry' | transloco }}</button>
+      </div>
+    </section>
+  }
+  @case ('ready') {
+    @if (status(); as s) {
+      <section class="card mt" data-testid="backups-card">
+        <div class="row wrap">
+          <div class="grow">
+            <h2>{{ 'settings.data.backups.title' | transloco }}</h2>
+            <p class="small muted">{{ 'settings.data.backups.lead' | transloco }}</p>
+          </div>
+          @if (s.last_good) {
+            <span class="badge ok" data-testid="backups-health">{{ 'settings.data.backups.health_ok' | transloco }}</span>
+          } @else {
+            <span class="badge amber" data-testid="backups-health">{{ 'settings.data.backups.health_none' | transloco }}</span>
+          }
+          <button type="button" class="btn primary" data-testid="backups-run" [disabled]="running()" (click)="runNow()">
+            <app-icon name="download" [size]="18" />
+            {{ (running() ? 'settings.data.backups.running' : 'settings.data.backups.run_now') | transloco }}
+          </button>
+        </div>
+
+        @if (runResult() === 'ok') {
+          <app-banner tone="success" data-testid="backups-run-ok">{{ 'settings.data.backups.run_ok' | transloco }}</app-banner>
+        } @else if (runResult() === 'failed') {
+          <app-banner tone="error" data-testid="backups-run-failed">{{ 'settings.data.backups.run_failed' | transloco }}</app-banner>
+        }
+
+        <div class="grid g3 mt-s">
+          <div class="stat">
+            <span class="l">{{ 'settings.data.backups.last' | transloco }}</span>
+            @if (s.last_good; as last) {
+              <span class="v" data-testid="backups-last">{{ last.started_at | date: 'EEE d MMM, h:mm a' }}</span>
+              <span class="small muted">{{ sizeLabel(last.size_bytes) }}</span>
+            } @else {
+              <span class="v">{{ 'settings.data.backups.none_yet' | transloco }}</span>
+            }
+          </div>
+          <div class="stat">
+            <span class="l">{{ 'settings.data.backups.next' | transloco }}</span>
+            <span class="v" data-testid="backups-next">{{ s.next_run_at | date: 'EEE d MMM, h:mm a' }}</span>
+            <span class="small muted">{{ 'settings.data.backups.daily' | transloco }}</span>
+          </div>
+          <div class="stat">
+            <span class="l">{{ 'settings.data.backups.kept' | transloco }}</span>
+            <span class="v" data-testid="backups-kept">{{ 'settings.data.backups.kept_count' | transloco: { count: keptCount() } }}</span>
+            <span class="small muted">{{ 'settings.data.backups.kept_detail' | transloco: { count: s.keep_count } }}</span>
+          </div>
+        </div>
+
+        <div class="setting mt-s">
+          <div class="grow">
+            <div class="t">{{ 'settings.data.backups.schedule' | transloco }}</div>
+            <div class="d">{{ 'settings.data.backups.schedule_desc' | transloco }}</div>
+          </div>
+          <select
+            class="select"
+            style="width: auto"
+            name="scheduleHour"
+            data-testid="backups-schedule-hour"
+            [attr.aria-label]="'settings.data.backups.schedule_form_hour' | transloco"
+            [ngModel]="s.schedule_hour"
+            (ngModelChange)="changeHour($event)"
+            [disabled]="scheduleBusy()"
+          >
+            @for (h of hours; track h) {
+              <option [ngValue]="h">{{ scheduleTime(h) | date: 'h:mm a' }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="setting">
+          <div class="grow">
+            <div class="t">{{ 'settings.data.backups.keep' | transloco }}</div>
+            <div class="d">{{ 'settings.data.backups.keep_desc' | transloco }}</div>
+          </div>
+          @if (scheduleOpen()) {
+            <form class="row wrap end" data-testid="backups-schedule-form" (ngSubmit)="saveSchedule()">
+              <label class="row" style="gap: 0.25rem">
+                <input class="input" type="number" name="keepCount" style="width: 5rem" [min]="limits.keep[0]" [max]="limits.keep[1]" [(ngModel)]="draftKeep" data-testid="backups-keep-count" [attr.aria-label]="'settings.data.backups.schedule_form_keep' | transloco" />
+                <span class="small muted">{{ 'settings.data.backups.keep_unit' | transloco }}</span>
+              </label>
+              <button type="button" class="btn ghost sm" data-testid="backups-schedule-cancel" (click)="closeSchedule()">{{ 'settings.common.cancel' | transloco }}</button>
+              <button type="submit" class="btn primary sm" data-testid="backups-schedule-save" [disabled]="scheduleBusy()">
+                {{ 'settings.data.backups.schedule_save' | transloco }}
+              </button>
+            </form>
+          } @else {
+            <div class="row wrap">
+              <span class="badge">{{ 'settings.data.backups.keep_count' | transloco: { count: s.keep_count } }}</span>
+              <button type="button" class="btn ghost sm" data-testid="backups-schedule-change" (click)="openSchedule()">
+                {{ 'settings.data.backups.schedule_change' | transloco }}
+              </button>
+            </div>
+          }
+        </div>
+        @if (scheduleError(); as key) {
+          <app-banner tone="error">{{ key | transloco }}</app-banner>
+        }
+
+        <div class="setting">
+          <div class="grow">
+            <div class="t">{{ 'settings.data.backups.encrypt' | transloco }}</div>
+            <div class="d">{{ 'settings.data.backups.encrypt_desc' | transloco }}</div>
+          </div>
+          <label class="switch">
+            <input
+              type="checkbox"
+              role="switch"
+              data-testid="backups-encrypt"
+              [attr.aria-label]="'settings.data.backups.encrypt' | transloco"
+              [checked]="s.encrypt"
+              [disabled]="encryptBusy()"
+              (change)="onEncryptToggle($event)"
+            />
+            <span class="track" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        @if (s.encrypt && s.passphrase_set && !passphraseOpen()) {
+          <div class="row end">
+            <button type="button" class="btn ghost sm" data-testid="backups-passphrase-change" (click)="openPassphrase()">
+              {{ 'settings.data.backups.passphrase_change' | transloco }}
+            </button>
+          </div>
+        }
+
+        @if (passphraseOpen()) {
+          <form class="mt-s" data-testid="backups-passphrase-form" (ngSubmit)="savePassphrase()">
+            <label class="field">
+              <span class="label">{{ 'settings.data.backups.passphrase_label' | transloco }}</span>
+              <input
+                class="input"
+                type="password"
+                name="passphrase"
+                autocomplete="new-password"
+                [(ngModel)]="passphrase"
+                data-testid="backups-passphrase"
+              />
+              <span class="tiny muted">{{ 'settings.data.backups.passphrase_hint' | transloco: { min: passphraseMin } }}</span>
+            </label>
+            @if (encryptError(); as key) {
+              <app-banner tone="error">{{ key | transloco }}</app-banner>
+            }
+            <div class="row end mt-s">
+              <button type="button" class="btn ghost" (click)="closePassphrase()">{{ 'settings.common.cancel' | transloco }}</button>
+              <button type="submit" class="btn primary" data-testid="backups-passphrase-save" [disabled]="encryptBusy()">
+                {{ 'settings.data.backups.passphrase_save' | transloco }}
+              </button>
+            </div>
+          </form>
+        } @else if (encryptError()) {
+          <app-banner tone="error">{{ encryptError() | transloco }}</app-banner>
+        }
+
+        <div class="setting">
+          <div class="grow">
+            <div class="t">{{ 'settings.data.backups.location' | transloco }}</div>
+            <div class="d">{{ 'settings.data.backups.location_desc' | transloco }}</div>
+            <div class="d path" data-testid="backups-location">{{ s.location }}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card mt" data-testid="backups-history">
+        <div class="row wrap">
+          <h2 class="grow">{{ 'settings.data.backups.history_title' | transloco }}</h2>
+          <span class="tiny muted">{{ 'settings.data.backups.history_hint' | transloco }}</span>
+        </div>
+        <div class="row wrap mt-s">
+          @if (canRestore) {
+          <p class="small muted grow">{{ 'settings.data.backups.upload_hint' | transloco }}</p>
+          <input #fileInput type="file" accept=".zip,application/zip" hidden data-testid="backups-upload-input" (change)="chooseRestoreFile(fileInput)" />
+          <button type="button" class="btn ghost" data-testid="backups-upload" [disabled]="restoreBusy()" (click)="fileInput.click()">
+            {{ 'settings.data.backups.upload' | transloco }}
+          </button>
+          }
+        </div>
+        @if (s.history.length === 0) {
+          <p class="small muted mt-s">{{ 'settings.data.backups.history_empty' | transloco }}</p>
+        } @else {
+          <table class="table mt-s">
+            <thead>
+              <tr>
+                <th>{{ 'settings.data.backups.col_when' | transloco }}</th>
+                <th>{{ 'settings.data.backups.col_type' | transloco }}</th>
+                <th>{{ 'settings.data.backups.col_size' | transloco }}</th>
+                <th>{{ 'settings.data.backups.col_status' | transloco }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (run of s.history; track run.id) {
+                <tr [attr.data-testid]="'backup-row-' + run.id">
+                  <td>{{ run.started_at | date: 'EEE d MMM, h:mm a' }}</td>
+                  <td>
+                    <span class="badge">
+                      {{ kindKey(run.kind) | transloco }}
+                    </span>
+                  </td>
+                  <td>{{ sizeLabel(run.size_bytes) }}</td>
+                  <td>
+                    @if (run.status === 'ok' && run.verified) {
+                      <span class="badge ok">{{ 'settings.data.backups.status_verified' | transloco }}</span>
+                    } @else if (run.status === 'failed') {
+                      <span class="badge err">{{ 'settings.data.backups.status_failed' | transloco }}</span>
+                    } @else {
+                      <span class="badge amber">{{ 'settings.data.backups.status_running' | transloco }}</span>
+                    }
+                  </td>
+                  <td class="actions-cell">
+                    <div class="row-actions">
+                      <button
+                        type="button"
+                        class="btn ghost sm"
+                        [disabled]="!run.downloadable || downloadingId() === run.id"
+                        (click)="startDownload(run)"
+                      >
+                        {{ 'settings.data.backups.download' | transloco }}
+                      </button>
+                      @if (canRestore) {
+                      <button
+                        type="button"
+                        class="btn ghost sm"
+                        [attr.data-testid]="'backup-restore-' + run.id"
+                        [disabled]="!run.downloadable || restarting()"
+                        (click)="openRestore(run)"
+                      >
+                        {{ 'settings.data.backups.restore' | transloco }}
+                      </button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+                @if (downloadingId() === run.id) {
+                  <tr>
+                    <td colspan="5">
+                      <form class="row wrap end" data-testid="backups-download-form" (ngSubmit)="confirmDownload(run)">
+                        <label class="grow">
+                          <span class="tiny muted">{{ 'settings.data.backups.download_prompt' | transloco }}</span>
+                          <input
+                            class="input"
+                            type="password"
+                            name="download-password"
+                            autocomplete="current-password"
+                            [(ngModel)]="downloadPassword"
+                            data-testid="backups-download-password"
+                          />
+                        </label>
+                        <button type="button" class="btn ghost" (click)="cancelDownload()">{{ 'settings.common.cancel' | transloco }}</button>
+                        <button type="submit" class="btn primary" data-testid="backups-download-confirm" [disabled]="downloadBusy() || downloadPassword === ''">
+                          {{ 'settings.data.backups.download' | transloco }}
+                        </button>
+                      </form>
+                      @if (downloadError(); as key) {
+                        <app-banner tone="error">{{ key | transloco }}</app-banner>
+                      }
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+
+      @if (canReset) {
+      <section class="card mt danger-card" data-testid="reset-card">
+        <h2 class="danger-title">{{ 'settings.data.reset.title' | transloco }}</h2>
+        <p class="small muted mt-s">{{ 'settings.data.reset.intro' | transloco }}</p>
+        <div class="row wrap mt-s">
+          <div class="grow">
+            <p class="small"><b>{{ 'settings.data.reset.factory_title' | transloco }}</b></p>
+            <p class="small muted">{{ 'settings.data.reset.factory_desc' | transloco }}</p>
+          </div>
+          <button type="button" class="btn danger" data-testid="reset-open" [disabled]="resetting() || restoreBusy()" (click)="openReset()">
+            {{ 'settings.data.reset.open' | transloco }}
+          </button>
+        </div>
+      </section>
+      }
+
+      @if (overlayVisible()) {
+        <div class="restore-overlay" role="status" aria-live="polite" data-testid="backups-restore-overlay">
+          <div class="restore-spinner" aria-hidden="true"></div>
+          <p class="restore-text">
+            {{ overlayKey() | transloco }}
+          </p>
+        </div>
+      }
+
+      @if (restoreOpen() && !overlayVisible()) {
+        <div class="modal-bg" role="presentation" (click)="closeRestore()">
+          <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="restore-title" data-testid="backups-restore-dialog" (click)="$event.stopPropagation()">
+            <h2 id="restore-title">{{ 'settings.data.backups.restore_title' | transloco }}</h2>
+            @if (restoreFile(); as file) {
+              <p class="muted" data-testid="backups-restore-message">
+                {{ 'settings.data.backups.restore_desc_file' | transloco: { name: file.name } }}
+              </p>
+            } @else {
+              @if (restoreTarget(); as target) {
+                <p class="muted" data-testid="backups-restore-message">
+                  {{ 'settings.data.backups.restore_desc' | transloco: { when: (target.started_at | date: 'EEE d MMM, h:mm a') } }}
+                </p>
+              }
+            }
+            <app-banner tone="warning">{{ 'settings.data.backups.restore_warning' | transloco }}</app-banner>
+
+            <label class="field">
+              <span class="label">{{ 'settings.data.backups.restore_password' | transloco }}</span>
+              <input
+                class="input"
+                type="password"
+                name="restore-password"
+                autocomplete="current-password"
+                [(ngModel)]="restorePassword"
+                data-testid="backups-restore-password"
+              />
+            </label>
+            <label class="field">
+              <span class="label">{{ 'settings.data.backups.restore_type' | transloco: { word: restoreWord } }}</span>
+              <input
+                class="input"
+                type="text"
+                name="restore-typed"
+                autocomplete="off"
+                [placeholder]="restoreWord"
+                [(ngModel)]="restoreTyped"
+                data-testid="backups-restore-typed"
+              />
+            </label>
+
+            @if (restoreError(); as key) {
+              <app-banner tone="error" data-testid="backups-restore-error">{{ key | transloco }}</app-banner>
+            }
+
+            <div class="confirm-actions">
+              <button type="button" class="btn ghost" data-testid="backups-restore-cancel" [disabled]="restoreBusy()" (click)="closeRestore()">
+                {{ 'settings.common.cancel' | transloco }}
+              </button>
+              <button
+                type="button"
+                class="btn danger"
+                data-testid="backups-restore-ok"
+                [disabled]="restoreBusy() || restoreTyped !== restoreWord || restorePassword === ''"
+                (click)="confirmRestore()"
+              >
+                {{ 'settings.data.backups.restore' | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (resetOpen() && !overlayVisible()) {
+        <div class="modal-bg" role="presentation" (click)="closeReset()">
+          <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="reset-title" data-testid="reset-dialog" (click)="$event.stopPropagation()">
+            <h2 id="reset-title">{{ 'settings.data.reset.dialog_title' | transloco }}</h2>
+            <p class="muted">{{ 'settings.data.reset.dialog_desc' | transloco }}</p>
+
+            @if (resetCounts(); as c) {
+              <p class="small" data-testid="reset-counts">
+                {{ 'settings.data.reset.counts' | transloco: {
+                  members: c.members,
+                  children: c.children,
+                  tasks: c.tasks,
+                  points: c.points_entries,
+                  events: c.events,
+                  avatars: c.avatars,
+                  devices: c.wall_devices,
+                  tokens: c.api_tokens
+                } }}
+              </p>
+            } @else if (resetCountsError()) {
+              <app-banner tone="error" data-testid="reset-preview-error">{{ 'settings.data.reset.error.preview_failed' | transloco }}</app-banner>
+            } @else {
+              <p class="small muted">{{ 'settings.data.reset.counting' | transloco }}</p>
+            }
+
+            <app-banner tone="warning">{{ 'settings.data.reset.warning' | transloco }}</app-banner>
+            <app-banner tone="info">{{ 'settings.data.reset.keep_backup' | transloco }}</app-banner>
+
+            <label class="field">
+              <span class="label">{{ 'settings.data.reset.type' | transloco: { word: resetWord } }}</span>
+              <input
+                class="input"
+                type="text"
+                name="reset-typed"
+                autocomplete="off"
+                [placeholder]="resetWord"
+                [(ngModel)]="resetTyped"
+                data-testid="reset-typed"
+              />
+            </label>
+            <label class="field">
+              <span class="label">{{ 'settings.data.reset.password' | transloco }}</span>
+              <input
+                class="input"
+                type="password"
+                name="reset-password"
+                autocomplete="current-password"
+                [(ngModel)]="resetPassword"
+                data-testid="reset-password"
+              />
+            </label>
+
+            @if (resetError(); as key) {
+              <app-banner tone="error" data-testid="reset-error">{{ key | transloco }}</app-banner>
+            }
+
+            <div class="confirm-actions">
+              <button type="button" class="btn ghost" data-testid="reset-cancel" [disabled]="resetting()" (click)="closeReset()">
+                {{ 'settings.common.cancel' | transloco }}
+              </button>
+              <button
+                type="button"
+                class="btn danger"
+                data-testid="reset-confirm"
+                [disabled]="resetting() || resetTyped !== resetWord || resetPassword === ''"
+                (click)="confirmReset()"
+              >
+                {{ 'settings.data.reset.confirm' | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  }
+}

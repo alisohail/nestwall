@@ -1,0 +1,13 @@
+@if (auth.emailPromptPending()) {
+  <div class="modal-bg" role="presentation">
+    <section class="modal email-prompt" role="dialog" aria-modal="true" aria-labelledby="email-prompt-title" data-testid="email-prompt">
+      <span class="icon-circle" aria-hidden="true"><app-icon name="user" [size]="22" /></span>
+      <h2 id="email-prompt-title">{{ 'family.email_prompt.heading' | transloco }}</h2>
+      <p class="muted">{{ 'family.email_prompt.body' | transloco }}</p>
+      <div class="foot">
+        <button type="button" class="btn ghost" data-testid="email-prompt-later" (click)="later()">{{ 'family.email_prompt.later' | transloco }}</button>
+        <button type="button" class="btn primary" data-testid="email-prompt-set" (click)="setEmail()">{{ 'family.email_prompt.set' | transloco }}</button>
+      </div>
+    </section>
+  </div>
+}

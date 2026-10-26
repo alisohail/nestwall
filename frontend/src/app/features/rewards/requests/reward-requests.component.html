@@ -1,0 +1,116 @@
+<section class="requests-page" aria-labelledby="requests-page-title" data-testid="requests-page">
+  <header class="page-head">
+    <a class="icon-btn back" routerLink="/rewards" data-testid="requests-back" [attr.aria-label]="'rewards.requests.back' | transloco">
+      <span class="material-icons" aria-hidden="true">arrow_back</span>
+    </a>
+    <div>
+      <h1 id="requests-page-title">{{ 'rewards.requests.all_title' | transloco }}</h1>
+    </div>
+  </header>
+
+  @if (actionError(); as errorKey) {
+    <app-banner tone="error" data-testid="requests-action-error">{{ errorKey | transloco }}</app-banner>
+  }
+
+  @if (loadState() === 'error') {
+    <div data-testid="requests-error">
+      <app-load-error [error]="loadError()" (retry)="fetch()" />
+    </div>
+  } @else if (loadState() === 'loading' && items().length === 0) {
+    <app-loading variant="full" labelKey="rewards.loading" data-testid="requests-loading" />
+  } @else {
+    <section class="card">
+
+      @if (items().length) {
+        <ul class="request-list" data-testid="requests-list">
+          @for (item of items(); track item.id) {
+            <li class="request-row" [attr.data-testid]="'request-' + item.id">
+              <span class="ico" aria-hidden="true">{{ item.reward_icon }}</span>
+              <div class="grow">
+                <div class="bold">{{ item.reward_name }}</div>
+                <div class="sub">
+                  {{ item.requested_at | date: 'mediumDate' }} · {{ 'rewards.card.cost' | transloco: { count: item.cost } }}
+                </div>
+                @if (item.status === 'rejected' && item.decision_reason) {
+                  <div class="sub">{{ item.decision_reason }}</div>
+                }
+              </div>
+              @switch (item.status) {
+                @case ('pending') {
+                  <span class="badge amber">{{ 'rewards.requests.waiting' | transloco }}</span>
+                  <button type="button" class="btn ghost sm" data-testid="request-cancel" (click)="openCancel(item)">
+                    {{ 'rewards.requests.cancel' | transloco }}
+                  </button>
+                }
+                @case ('approved') {
+                  <span class="badge ok">{{ 'rewards.requests.approved' | transloco }}</span>
+                }
+                @case ('rejected') {
+                  <span class="badge err">{{ 'rewards.requests.rejected' | transloco }}</span>
+                }
+                @case ('cancelled') {
+                  <span class="badge">{{ 'rewards.requests.cancelled' | transloco }}</span>
+                }
+              }
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="nw-empty-note" data-testid="requests-empty">{{ 'rewards.requests.empty' | transloco }}</p>
+      }
+    </section>
+
+    @if (nextCursor() || pageIndex() > 0) {
+      <nav class="pager" [attr.aria-label]="'rewards.requests.pager' | transloco" data-testid="requests-pager">
+        <button
+          type="button"
+          class="btn ghost"
+          data-testid="requests-prev"
+          [disabled]="pageIndex() === 0 || loadState() === 'loading'"
+          (click)="prevPage()"
+        >
+          {{ 'rewards.requests.prev' | transloco }}
+        </button>
+        <span class="pager-label" aria-live="polite" data-testid="requests-page">
+          {{ 'rewards.requests.page' | transloco: { page: pageIndex() + 1 } }}
+        </span>
+        <button
+          type="button"
+          class="btn ghost"
+          data-testid="requests-next"
+          [disabled]="!nextCursor() || loadState() === 'loading'"
+          (click)="nextPage()"
+        >
+          {{ 'rewards.requests.next' | transloco }}
+        </button>
+      </nav>
+    }
+  }
+
+  @if (cancelTarget(); as target) {
+    <div class="modal-bg" role="presentation">
+      <section class="modal cancel-modal" role="dialog" aria-modal="true" aria-labelledby="cancel-title" data-testid="cancel-dialog">
+        <div class="centre">
+          <div class="emoji" aria-hidden="true">🤔</div>
+          <h2 id="cancel-title">{{ 'rewards.cancel.title' | transloco }}</h2>
+          <p class="muted">{{ 'rewards.cancel.body' | transloco: { name: target.reward_name, count: target.cost } }}</p>
+        </div>
+        <div class="foot">
+          <button type="button" class="btn ghost" [disabled]="cancelBusy()" (click)="closeCancel()">
+            {{ 'rewards.cancel.keep' | transloco }}
+          </button>
+          <button type="button" class="btn danger" data-testid="cancel-confirm" [disabled]="cancelBusy()" (click)="confirmCancel()">
+            {{ 'rewards.cancel.confirm' | transloco }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (notice(); as n) {
+    <div class="toast" role="status" data-testid="requests-toast">
+      <span>{{ n.key | transloco: n.params }}</span>
+      <button type="button" class="btn ghost sm" (click)="dismissNotice()">{{ 'common.close' | transloco }}</button>
+    </div>
+  }
+</section>

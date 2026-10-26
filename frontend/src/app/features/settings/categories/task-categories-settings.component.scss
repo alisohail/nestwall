@@ -1,0 +1,29 @@
+@use '../settings-ui' as ui;
+
+:host {
+  display: block;
+}
+
+@include ui.base;
+
+.cat-dot {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: var(--nw-radius-full);
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  font-size: var(--nw-icon-size);
+}
+
+.emoji-row {
+  gap: 8px;
+}
+
+.field-label.sub {
+  font-weight: 500;
+  color: var(--nw-color-on-surface-variant);
+}

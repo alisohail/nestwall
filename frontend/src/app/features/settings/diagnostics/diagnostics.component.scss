@@ -1,0 +1,84 @@
+@use '../settings-ui' as ui;
+@include ui.base;
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-3);
+  flex-wrap: wrap;
+
+  h2 {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--nw-space-4);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: var(--nw-space-3);
+  border-radius: var(--nw-radius-lg);
+  background: var(--nw-color-surface-variant);
+
+  &.wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.stat .l {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.stat .v {
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--nw-color-on-surface);
+  overflow-wrap: anywhere;
+}
+
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+}
+
+.event {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--nw-space-2) var(--nw-space-3);
+  padding: var(--nw-space-3);
+  border-radius: var(--nw-radius-lg);
+  background: var(--nw-color-surface-variant);
+  font-size: 0.875rem;
+}
+
+.event .when {
+  color: var(--nw-color-on-surface-variant);
+  white-space: nowrap;
+}
+
+.event .what {
+  flex: 1;
+  min-width: 0;
+}
+
+.event .path {
+  overflow-wrap: anywhere;
+  color: var(--nw-color-on-surface-variant);
+}

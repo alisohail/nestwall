@@ -1,0 +1,531 @@
+<section class="approvals" aria-labelledby="approvals-title" data-testid="approvals">
+  <header class="page-head">
+    <div>
+      <h1 id="approvals-title">{{ 'approvals.title' | transloco }}</h1>
+    </div>
+  </header>
+
+  @if (notice(); as n) {
+    <app-banner tone="info" data-testid="approvals-notice">{{ n.key | transloco: n.params }}</app-banner>
+  }
+  @if (error(); as e) {
+    <app-banner tone="error" data-testid="approvals-error">{{ e | transloco }}</app-banner>
+  }
+
+  <div class="tabs" role="tablist" [attr.aria-label]="'approvals.title' | transloco">
+    <button
+      type="button"
+      role="tab"
+      id="tab-tasks"
+      class="tab"
+      aria-controls="panel-tasks"
+      [attr.aria-selected]="tab() === 'tasks'"
+      [attr.tabindex]="tab() === 'tasks' ? 0 : -1"
+      data-testid="tab-tasks"
+      (click)="setTab('tasks')"
+    >
+      {{ 'approvals.tabs.tasks' | transloco }}
+      @if (tasksState() === 'ready') {
+        <span class="badge amber" data-testid="count-tasks">{{ reviewCount() }}</span>
+      }
+    </button>
+    <button
+      type="button"
+      role="tab"
+      id="tab-requests"
+      class="tab"
+      aria-controls="panel-requests"
+      [attr.aria-selected]="tab() === 'requests'"
+      [attr.tabindex]="tab() === 'requests' ? 0 : -1"
+      data-testid="tab-requests"
+      (click)="setTab('requests')"
+    >
+      {{ 'approvals.tabs.requests' | transloco }}
+      @if (requestsState() === 'ready') {
+        <span class="badge amber" data-testid="count-requests">{{ requests().length }}</span>
+      }
+    </button>
+    <button
+      type="button"
+      role="tab"
+      id="tab-history"
+      class="tab"
+      aria-controls="panel-history"
+      [attr.aria-selected]="tab() === 'history'"
+      [attr.tabindex]="tab() === 'history' ? 0 : -1"
+      data-testid="tab-history"
+      (click)="setTab('history')"
+    >
+      {{ 'approvals.tabs.history' | transloco }}
+    </button>
+  </div>
+
+  <div class="member-filter" role="group" [attr.aria-label]="'approvals.filter.member' | transloco" data-testid="member-filter">
+    <button
+      type="button"
+      class="chip"
+      data-testid="member-chip-all"
+      [class.on]="memberFilter() === ''"
+      [attr.aria-pressed]="memberFilter() === ''"
+      (click)="setMember('')"
+    >
+      <span class="sw" aria-hidden="true"></span>{{ 'approvals.filter.everyone' | transloco }}
+    </button>
+    @for (m of activeMembers(); track m.id) {
+      <button
+        type="button"
+        class="chip"
+        [attr.data-testid]="'member-chip-' + m.id"
+        [class.on]="memberFilter() === m.id"
+        [attr.aria-pressed]="memberFilter() === m.id"
+        (click)="setMember(m.id)"
+      >
+        <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" size="sm" />{{ m.display_name }}
+      </button>
+    }
+  </div>
+
+  @if (tab() === 'tasks') {
+    <div role="tabpanel" id="panel-tasks" aria-labelledby="tab-tasks" data-testid="panel-tasks">
+      @if (tasksState() === 'loading') {
+        <div role="status" data-testid="tasks-loading">
+          <span class="nw-sr-only">{{ 'approvals.loading' | transloco }}</span>
+          <app-skeleton [rows]="3" />
+        </div>
+      } @else if (tasksState() === 'error') {
+        <app-error-state
+          data-testid="tasks-error"
+          messageKey="approvals.error.load"
+          retryKey="approvals.retry"
+          (retry)="loadTasks()"
+        />
+      } @else {
+        <div class="toolbar">
+          <p class="muted small grow">{{ 'approvals.tasks.intro' | transloco: { count: visibleCount() } }}</p>
+          <button
+            type="button"
+            class="btn ghost"
+            data-testid="approve-all"
+            [disabled]="!canApproveAll()"
+            (click)="confirmAllOpen.set(true)"
+          >
+            <app-icon name="check" [size]="18" />
+            {{ 'approvals.tasks.approveAll' | transloco: { count: visibleCount() } }}
+          </button>
+        </div>
+
+
+        @if (tasksHasMore()) {
+          <app-banner tone="info" data-testid="tasks-more">{{ 'approvals.tasks.more' | transloco }}</app-banner>
+        }
+
+        @if (bonusState() === 'error') {
+          <app-error-state
+            data-testid="bonus-error"
+            messageKey="approvals.error.load"
+            retryKey="approvals.retry"
+            (retry)="loadBonus()"
+          />
+        }
+
+        @if (visibleCount() === 0 && bonusState() !== 'loading') {
+          <app-empty-state
+            data-testid="tasks-empty"
+            icon="task_alt"
+            titleKey="approvals.tasks.empty.title"
+            bodyKey="approvals.tasks.empty.body"
+          />
+        } @else {
+          <ul class="cards" data-testid="task-list">
+            @for (item of visibleTasks(); track item.id + item.member_id) {
+              <li class="card review" [attr.data-testid]="'task-' + item.id + '-' + item.member_id">
+                <div class="head">
+                  @if (memberOf(item.member_id); as m) {
+                    <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />
+                  }
+                  <div class="grow">
+                    <div class="bold">{{ item.title }}</div>
+                    <div class="small muted">
+                      {{ memberName(item.member_id) }} &middot;
+                      {{ 'approvals.tasks.due' | transloco: { when: when(item.due_at) } }}
+                    </div>
+                  </div>
+                  @if (item.points !== null) {
+                    <span class="pts"><app-icon name="star" [size]="13" />{{ 'approvals.tasks.points' | transloco: { count: item.points } }}</span>
+                  }
+                </div>
+                @if (item.checklist?.length) {
+                  <p class="checklist-progress small muted" data-testid="task-checklist-progress">
+                    {{ 'approvals.checklist.progress' | transloco: { done: checklistDone(item), total: item.checklist?.length } }}
+                  </p>
+                  <ul class="checklist" data-testid="task-checklist">
+                    @for (c of item.checklist; track c.id) {
+                      <li>
+                        <span class="box" [class.on]="c.done" aria-hidden="true">
+                          @if (c.done) {
+                            <app-icon name="check" [size]="13" />
+                          }
+                        </span>
+                        <span [class.struck]="c.done">{{ c.text }}</span>
+                      </li>
+                    }
+                  </ul>
+                }
+                <div class="actions">
+                  <button
+                    type="button"
+                    class="btn primary"
+                    data-testid="task-approve"
+                    [disabled]="actionsDisabled()"
+                    [attr.aria-busy]="busy() === taskKey(item)"
+                    [attr.aria-label]="'approvals.tasks.approveLabel' | transloco: { title: item.title, name: memberName(item.member_id) }"
+                    (click)="approveTask(item)"
+                  >
+                    <app-icon name="check" [size]="18" />
+                    @if (item.points !== null) {
+                      {{ 'approvals.tasks.approveWith' | transloco: { count: item.points } }}
+                    } @else {
+                      {{ 'approvals.tasks.approve' | transloco }}
+                    }
+                  </button>
+                  <button
+                    type="button"
+                    class="btn ghost"
+                    data-testid="task-send-back"
+                    [disabled]="actionsDisabled()"
+                    [attr.aria-label]="'approvals.tasks.sendBackLabel' | transloco: { title: item.title, name: memberName(item.member_id) }"
+                    (click)="openSendBack(item)"
+                  >
+                    {{ 'approvals.tasks.sendBack' | transloco }}
+                  </button>
+                </div>
+              </li>
+            }
+            @for (item of visibleBonus(); track item.claim.id) {
+              <li class="card review bonus" [attr.data-testid]="'bonus-' + item.claim.id">
+                <div class="head">
+                  @if (memberOf(item.claim.family_member_id); as m) {
+                    <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />
+                  }
+                  <div class="grow">
+                    <div class="bold">
+                      {{ item.task.title }}
+                      <span class="chip-t" data-testid="bonus-chip"><span aria-hidden="true">&#10024;</span>{{ 'approvals.bonus.chip' | transloco }}</span>
+                    </div>
+                    <div class="small muted">
+                      {{
+                        'approvals.bonus.meta'
+                          | transloco
+                            : {
+                                name: memberName(item.claim.family_member_id),
+                                when: when(item.claim.completed_at ?? item.claim.claimed_at),
+                              }
+                      }}
+                    </div>
+                  </div>
+                  <span class="pts"><app-icon name="star" [size]="13" />{{ 'approvals.tasks.points' | transloco: { count: item.task.points } }}</span>
+                </div>
+                <app-banner tone="info" data-testid="bonus-note">
+                  {{ 'approvals.bonus.note' | transloco: { name: memberName(item.claim.family_member_id) } }}
+                </app-banner>
+                <div class="actions">
+                  <button
+                    type="button"
+                    class="btn primary"
+                    data-testid="bonus-approve"
+                    [disabled]="actionsDisabled()"
+                    [attr.aria-busy]="busy() === bonusKey(item)"
+                    [attr.aria-label]="'approvals.tasks.approveLabel' | transloco: { title: item.task.title, name: memberName(item.claim.family_member_id) }"
+                    (click)="approveBonus(item)"
+                  >
+                    <app-icon name="check" [size]="18" />
+                    {{ 'approvals.bonus.approve' | transloco: { count: item.task.points } }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn ghost"
+                    data-testid="bonus-send-back"
+                    [disabled]="actionsDisabled()"
+                    [attr.aria-label]="'approvals.tasks.sendBackLabel' | transloco: { title: item.task.title, name: memberName(item.claim.family_member_id) }"
+                    (click)="openSendBackBonus(item)"
+                  >
+                    {{ 'approvals.tasks.sendBack' | transloco }}
+                  </button>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      }
+    </div>
+  }
+
+  @if (tab() === 'requests') {
+    <div role="tabpanel" id="panel-requests" aria-labelledby="tab-requests" data-testid="panel-requests">
+      @if (requestsState() === 'loading') {
+        <div role="status" data-testid="requests-loading">
+          <span class="nw-sr-only">{{ 'approvals.loading' | transloco }}</span>
+          <app-skeleton [rows]="3" />
+        </div>
+      } @else if (requestsState() === 'error') {
+        <app-error-state
+          data-testid="requests-error"
+          messageKey="approvals.error.load"
+          retryKey="approvals.retry"
+          (retry)="loadRequests()"
+        />
+      } @else {
+        <p class="muted small">{{ 'approvals.requests.intro' | transloco }}</p>
+
+        @if (requests().length === 0) {
+          <app-empty-state
+            data-testid="requests-empty"
+            icon="redeem"
+            titleKey="approvals.requests.empty.title"
+            bodyKey="approvals.requests.empty.body"
+          />
+        } @else {
+          <ul class="cards" data-testid="request-list">
+            @for (item of requests(); track item.id) {
+              <li class="card review" [attr.data-testid]="'request-' + item.id">
+                <div class="head">
+                  <div class="reward-ico" aria-hidden="true">{{ item.reward_icon }}</div>
+                  <div class="grow">
+                    <div class="bold">{{ item.reward_name }}</div>
+                    <div class="small muted">
+                      {{ 'approvals.requests.by' | transloco: { name: item.member_name, count: item.cost } }}
+                    </div>
+                  </div>
+                  <span class="pts">{{ 'approvals.requests.cost' | transloco: { count: item.cost } }}</span>
+                </div>
+                <div class="actions">
+                  <button
+                    type="button"
+                    class="btn primary"
+                    data-testid="request-approve"
+                    [disabled]="actionsDisabled()"
+                    [attr.aria-busy]="busy() === requestKey(item)"
+                    [attr.aria-label]="'approvals.requests.approveLabel' | transloco: { reward: item.reward_name, name: item.member_name }"
+                    (click)="approveRequest(item)"
+                  >
+                    {{ 'approvals.requests.approve' | transloco }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn danger"
+                    data-testid="request-decline"
+                    [disabled]="actionsDisabled()"
+                    [attr.aria-label]="'approvals.requests.declineLabel' | transloco: { reward: item.reward_name, name: item.member_name }"
+                    (click)="openDecline(item)"
+                  >
+                    {{ 'approvals.requests.decline' | transloco }}
+                  </button>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      }
+    </div>
+  }
+
+  @if (tab() === 'history') {
+    <div role="tabpanel" id="panel-history" aria-labelledby="tab-history" data-testid="panel-history">
+      @if (historyState() === 'loading') {
+        <div role="status" data-testid="history-loading">
+          <span class="nw-sr-only">{{ 'approvals.loading' | transloco }}</span>
+          <app-skeleton [rows]="3" />
+        </div>
+      } @else if (historyState() === 'error') {
+        <app-error-state
+          data-testid="history-error"
+          messageKey="approvals.error.load"
+          retryKey="approvals.retry"
+          (retry)="loadHistory(true)"
+        />
+      } @else if (history().length === 0) {
+        <app-empty-state
+          data-testid="history-empty"
+          icon="history"
+          titleKey="approvals.history.empty.title"
+          bodyKey="approvals.history.empty.body"
+        />
+      } @else {
+        <div class="card table-card">
+          <table class="table" data-testid="history-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'approvals.history.item' | transloco }}</th>
+                <th scope="col">{{ 'approvals.history.who' | transloco }}</th>
+                <th scope="col">{{ 'approvals.history.decision' | transloco }}</th>
+                <th scope="col">{{ 'approvals.history.by' | transloco }}</th>
+                <th scope="col">{{ 'approvals.history.when' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of history(); track item.id) {
+                <tr [attr.data-testid]="'history-' + item.id">
+                  <td [attr.data-label]="'approvals.history.item' | transloco">
+                    <span aria-hidden="true">{{ item.reward_icon }}</span> {{ item.reward_name }}
+                  </td>
+                  <td [attr.data-label]="'approvals.history.who' | transloco">{{ item.member_name }}</td>
+                  <td [attr.data-label]="'approvals.history.decision' | transloco">
+                    @if (item.status === 'approved') {
+                      <span class="badge ok">{{ 'approvals.history.approved' | transloco: { cost: item.cost } }}</span>
+                    } @else {
+                      <span class="badge err">{{ 'approvals.history.declined' | transloco }}</span>
+                    }
+                  </td>
+                  <td [attr.data-label]="'approvals.history.by' | transloco">{{ memberName(item.decided_by_member_id ?? '') || '—' }}</td>
+                  <td [attr.data-label]="'approvals.history.when' | transloco">{{ item.decided_at ? when(item.decided_at) : '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (historyCursor()) {
+          <div class="more">
+            <button
+              type="button"
+              class="btn ghost"
+              data-testid="history-more"
+              [disabled]="historyMoreBusy()"
+              [attr.aria-busy]="historyMoreBusy()"
+              (click)="loadHistory(false)"
+            >
+              {{ 'approvals.history.more' | transloco }}
+            </button>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  @if (confirmAllOpen()) {
+    <div class="modal-bg" (click)="confirmAllOpen.set(false)">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="approve-all-title" data-testid="approve-all-dialog" (click)="$event.stopPropagation()">
+      <h2 id="approve-all-title">{{ 'approvals.confirmAll.title' | transloco: { count: visibleCount() } }}</h2>
+      <p class="muted">{{ 'approvals.confirmAll.body' | transloco }}</p>
+      <ul class="confirm-list" data-testid="confirm-list">
+        @for (item of visibleTasks(); track item.id + item.member_id) {
+          <li class="confirm-row">
+            @if (memberOf(item.member_id); as m) {
+              <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" size="xs" />
+            }
+            <span class="grow">
+              <span class="bold">{{ item.title }}</span>
+              <span class="small muted"> &middot; {{ memberName(item.member_id) }}</span>
+            </span>
+            @if (item.points !== null) {
+              <span class="pts"><app-icon name="star" [size]="13" />{{ 'approvals.tasks.points' | transloco: { count: item.points } }}</span>
+            }
+          </li>
+        }
+        @for (item of visibleBonus(); track item.claim.id) {
+          <li class="confirm-row">
+            @if (memberOf(item.claim.family_member_id); as m) {
+              <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" size="xs" />
+            }
+            <span class="grow">
+              <span class="bold">{{ item.task.title }}</span>
+              <span class="chip-t"><span aria-hidden="true">&#10024;</span>{{ 'approvals.bonus.chip' | transloco }}</span>
+              <span class="small muted"> &middot; {{ memberName(item.claim.family_member_id) }}</span>
+            </span>
+            <span class="pts"><app-icon name="star" [size]="13" />{{ 'approvals.tasks.points' | transloco: { count: item.task.points } }}</span>
+          </li>
+        }
+      </ul>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" data-testid="approve-all-cancel" (click)="confirmAllOpen.set(false)">
+          {{ 'approvals.confirmAll.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="approve-all-confirm" [disabled]="bulkBusy()" (click)="approveAll()">
+          {{ 'approvals.tasks.approveAll' | transloco: { count: visibleCount() } }}
+        </button>
+      </div>
+      </section>
+    </div>
+  }
+
+  @if (sendBackTitle(); as title) {
+    <div class="modal-bg" (click)="closeSendBack()">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="send-back-title" data-testid="send-back-dialog" (click)="$event.stopPropagation()">
+      <h2 id="send-back-title">{{ 'approvals.sendBack.title' | transloco: { title } }}</h2>
+      @if (sendBackError(); as se) {
+        <p class="hint err" role="alert" data-testid="send-back-error">{{ se | transloco }}</p>
+      }
+      <div class="field">
+        <label for="send-back-note">{{ 'approvals.sendBack.note' | transloco }}</label>
+        <textarea
+          id="send-back-note"
+          class="textarea"
+          rows="3"
+          [maxlength]="sendBackMax()"
+          [ngModel]="sendBackNote()"
+          (ngModelChange)="sendBackNote.set($event)"
+          data-testid="send-back-note"
+        ></textarea>
+        <p class="hint">
+          {{ (sendBackBonusFor() ? 'approvals.bonus.sendBackHint' : 'approvals.sendBack.hint') | transloco }}
+        </p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" data-testid="send-back-cancel" [disabled]="busy() !== null" (click)="closeSendBack()">
+          {{ 'approvals.sendBack.cancel' | transloco }}
+        </button>
+        <button
+          type="button"
+          class="btn primary"
+          data-testid="send-back-submit"
+          [disabled]="busy() !== null"
+          [attr.aria-busy]="busy() !== null"
+          (click)="submitSendBack()"
+        >
+          {{ 'approvals.sendBack.submit' | transloco }}
+        </button>
+      </div>
+      </section>
+    </div>
+  }
+
+  @if (declineFor(); as target) {
+    <div class="modal-bg" (click)="closeDecline()">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="decline-title" data-testid="decline-dialog" (click)="$event.stopPropagation()">
+      <h2 id="decline-title">{{ 'approvals.decline.title' | transloco: { reward: target.reward_name } }}</h2>
+      <p class="muted">{{ 'approvals.decline.body' | transloco: { name: target.member_name, count: target.cost } }}</p>
+      @if (declineError(); as de) {
+        <p class="hint err" role="alert" data-testid="decline-error">{{ de | transloco }}</p>
+      }
+      <div class="field">
+        <label for="decline-reason">{{ 'approvals.decline.reason' | transloco }}</label>
+        <textarea
+          id="decline-reason"
+          class="textarea"
+          rows="2"
+          [maxlength]="maxReason"
+          [ngModel]="declineReason()"
+          (ngModelChange)="declineReason.set($event)"
+          data-testid="decline-reason"
+        ></textarea>
+        <p class="hint">{{ 'approvals.decline.hint' | transloco }}</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" data-testid="decline-cancel" [disabled]="busy() !== null" (click)="closeDecline()">
+          {{ 'approvals.decline.cancel' | transloco }}
+        </button>
+        <button
+          type="button"
+          class="btn danger"
+          data-testid="decline-submit"
+          [disabled]="busy() !== null"
+          [attr.aria-busy]="busy() !== null"
+          (click)="submitDecline()"
+        >
+          {{ 'approvals.decline.submit' | transloco }}
+        </button>
+      </div>
+    </section>
+    </div>
+  }
+</section>

@@ -1,0 +1,11 @@
+<app-error-page
+  icon="shield"
+  tone="danger"
+  code="403"
+  titleKey="errors.forbidden.title"
+  bodyKey="errors.forbidden.body"
+  reference="403 forbidden"
+>
+  <a class="btn primary" routerLink="/">{{ 'errors.actions.home' | transloco }}</a>
+  <button type="button" class="btn ghost" (click)="goBack()">{{ 'errors.actions.back' | transloco }}</button>
+</app-error-page>

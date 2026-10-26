@@ -1,0 +1,53 @@
+.modal.confirm {
+  width: min(380px, 100%);
+  gap: var(--nw-space-4);
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-lg);
+    font-weight: 800;
+  }
+}
+
+.scope {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+}
+
+.label {
+  margin: 0;
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+}
+
+.opt {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+  color: var(--nw-color-on-surface);
+  font-size: var(--nw-text-base);
+  font-weight: 600;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--nw-color-primary);
+  }
+}
+
+.error {
+  margin: 0;
+  color: var(--nw-color-error);
+  font-size: var(--nw-text-sm);
+  font-weight: 600;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nw-space-2);
+}

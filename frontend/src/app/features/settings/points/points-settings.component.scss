@@ -1,0 +1,110 @@
+@use '../settings-ui' as ui;
+
+@include ui.base;
+
+:host {
+  display: grid;
+  gap: var(--nw-space-3);
+}
+
+/* Sharing rules card. Switch and option styles are local because the settings base has no toggle. */
+.head {
+  align-items: flex-start;
+}
+
+.emoji {
+  font-size: 1.875rem;
+  line-height: 1;
+}
+
+.head h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.head .hint {
+  margin: var(--nw-space-1) 0 0;
+}
+
+.opts {
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.15s ease;
+}
+
+/* On phones the approval options wrap below their label instead of squeezing it into a narrow column. */
+.opts .setting {
+  flex-wrap: wrap;
+}
+
+.opts .setting > .grow {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.opts.off {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 2.75rem;
+  height: 1.5rem;
+  margin-left: auto;
+}
+
+.switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  border: 1px solid var(--nw-color-outline);
+  transition: background 0.15s ease;
+}
+
+.track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-on-surface-variant);
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + .track {
+  background: var(--nw-color-primary);
+  border-color: var(--nw-color-primary);
+}
+
+.switch input:checked + .track::after {
+  transform: translateX(1.25rem);
+  background: var(--nw-color-on-primary);
+}
+
+.switch input:focus-visible + .track {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.foot {
+  align-items: center;
+}
+
+.foot .saved {
+  margin-right: auto;
+}

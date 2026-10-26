@@ -1,0 +1,12 @@
+<section class="nw-empty" data-testid="empty-state">
+  <div class="nw-empty__icon">
+    <span class="material-icons" aria-hidden="true">{{ icon() }}</span>
+  </div>
+  <h2 class="nw-empty__title">{{ titleKey() | transloco }}</h2>
+  @if (bodyKey(); as bodyKey) {
+    <p class="nw-empty__body">{{ bodyKey | transloco }}</p>
+  }
+  <div class="nw-empty__actions">
+    <ng-content />
+  </div>
+</section>

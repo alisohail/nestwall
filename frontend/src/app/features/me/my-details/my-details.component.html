@@ -1,0 +1,69 @@
+<section class="my-details" data-testid="my-details">
+  <h2>{{ 'me.details.heading' | transloco }}</h2>
+  <p class="intro">{{ 'me.details.intro' | transloco }}</p>
+
+  @if (error(); as message) {
+    <app-banner tone="error" data-testid="my-details-error">{{ message | transloco }}</app-banner>
+  }
+  @if (saved()) {
+    <p class="saved" role="status" data-testid="my-details-saved">{{ 'me.details.saved' | transloco }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate data-testid="my-details-form">
+    <div class="grid">
+      <label class="field-row wide">
+        <span class="label">{{ 'family.edit.name.label' | transloco }}</span>
+        <input class="input" formControlName="display_name" autocomplete="name" data-testid="my-details-name" />
+        @if (form.controls.display_name.touched && form.controls.display_name.invalid) {
+          <span class="field-error" role="alert">{{ 'family.edit.name.error' | transloco }}</span>
+        }
+      </label>
+
+      <label class="field-row wide">
+        <span class="label">{{ 'family.edit.email.label' | transloco }}</span>
+        <input type="email" class="input" formControlName="email" autocomplete="email" data-testid="my-details-email" />
+        <span class="hint">{{ (isParent ? 'family.edit.email.hint_parent' : 'family.edit.email.hint_optional') | transloco }}</span>
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <span class="field-error" role="alert">{{ 'family.edit.email.required' | transloco }}</span>
+        } @else if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="field-error" role="alert">{{ 'family.edit.email.error' | transloco }}</span>
+        }
+      </label>
+
+      <label class="field-row">
+        <span class="label">{{ 'family.edit.birth_date.label' | transloco }}</span>
+        <input
+          type="date"
+          class="input"
+          formControlName="date_of_birth"
+          [attr.min]="birthDateMin"
+          [attr.max]="today"
+          data-testid="my-details-birth-date" />
+        <span class="hint">{{ 'family.edit.birth_date.hint' | transloco }}</span>
+        @if (form.controls.date_of_birth.touched && form.controls.date_of_birth.invalid) {
+          <span class="field-error" role="alert">{{ 'family.edit.birth_date.error' | transloco }}</span>
+        }
+      </label>
+
+      <label class="field-row">
+        <span class="label">{{ 'family.edit.gender.label' | transloco }}</span>
+        <select class="input" formControlName="gender" data-testid="my-details-gender">
+          <option value="">{{ 'family.edit.gender.not_set' | transloco }}</option>
+          @for (g of genders; track g) {
+            <option [value]="g">{{ 'family.edit.gender.' + g | transloco }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="foot">
+      <button type="submit" class="btn primary" data-testid="my-details-save" [disabled]="loading() || !hasUnsavedChanges()">
+        @if (loading()) {
+          <app-loading variant="spinner" />
+        } @else {
+          {{ 'me.details.save' | transloco }}
+        }
+      </button>
+    </div>
+  </form>
+</section>

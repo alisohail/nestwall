@@ -1,0 +1,299 @@
+<header class="page-head">
+  <div>
+    <div class="title-wrap">
+      <h1>
+        <button type="button" class="title-btn" data-testid="cal-title" aria-haspopup="dialog" [attr.aria-expanded]="pickerOpen()" (click)="togglePicker()">
+          <span>{{ title() }}</span>
+          <app-icon name="down" [size]="22" />
+        </button>
+      </h1>
+      @if (pickerOpen()) {
+        <button type="button" class="picker-scrim" data-testid="cal-picker-scrim" [attr.aria-label]="'calendar.picker.close' | transloco" (click)="closePicker()"></button>
+        <div class="picker" role="dialog" data-testid="cal-picker" [attr.aria-label]="'calendar.picker.label' | transloco">
+          <div class="picker-year">
+            <button type="button" class="icon-btn" data-testid="cal-picker-prev-year" [attr.aria-label]="'calendar.picker.prev_year' | transloco" (click)="shiftPickerYear(-1)">
+              <app-icon name="left" [size]="18" />
+            </button>
+            <span class="picker-yr" data-testid="cal-picker-year">{{ pickerYear() }}</span>
+            <button type="button" class="icon-btn" data-testid="cal-picker-next-year" [attr.aria-label]="'calendar.picker.next_year' | transloco" (click)="shiftPickerYear(1)">
+              <app-icon name="right" [size]="18" />
+            </button>
+          </div>
+          <div class="picker-months">
+            @for (label of monthLabels; track $index; let m = $index) {
+              <button type="button" data-testid="cal-picker-month" [class.on]="pickerYear() === focus().year && m === focus().month" (click)="pickMonth(m)">{{ label }}</button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="actions">
+    @if (canExport()) {
+      <button type="button" class="btn ghost" data-testid="cal-export" [disabled]="exporting()" (click)="exportCalendar()">
+        <app-icon name="download" [size]="18" />
+        <span>{{ 'calendar.export.button' | transloco }}</span>
+      </button>
+    }
+    @if (canManage()) {
+      <button type="button" class="btn primary" data-testid="cal-new" (click)="openNew()">
+        <app-icon name="plus" [size]="18" />
+        <span>{{ 'calendar.event.new' | transloco }}</span>
+      </button>
+    }
+  </div>
+</header>
+
+@if (failed()) {
+  <div class="notice" role="alert" data-testid="cal-error">
+    <span>{{ 'calendar.load_failed' | transloco }}</span>
+    <button type="button" class="btn ghost sm" data-testid="cal-retry" (click)="retry()">{{ 'calendar.retry' | transloco }}</button>
+  </div>
+}
+
+@if (openError(); as key) {
+  <div class="notice" role="alert" data-testid="cal-open-error">
+    <span>{{ key | transloco }}</span>
+  </div>
+}
+
+@if (exportError(); as key) {
+  <div class="notice" role="alert" data-testid="cal-export-error">
+    <span>{{ key | transloco }}</span>
+  </div>
+}
+
+<div class="page-body">
+  <div class="cal-main" [class.has-dock]="!isChild()">
+    <div class="toolbar">
+      <div class="row">
+        <button type="button" class="icon-btn" data-testid="cal-prev" [attr.aria-label]="'calendar.month.prev' | transloco" (click)="move(-1)">
+          <app-icon name="left" [size]="18" />
+        </button>
+        <button type="button" class="btn ghost" data-testid="cal-today" (click)="goToday()">{{ 'calendar.today' | transloco }}</button>
+        <button type="button" class="icon-btn" data-testid="cal-next" [attr.aria-label]="'calendar.month.next' | transloco" (click)="move(1)">
+          <app-icon name="right" [size]="18" />
+        </button>
+      </div>
+      <div class="seg" role="group" [attr.aria-label]="'calendar.view.label' | transloco">
+        <button type="button" data-testid="cal-view-day" [class.on]="view() === 'day'" [attr.aria-pressed]="view() === 'day'" (click)="setView('day')">{{ 'calendar.view.day' | transloco }}</button>
+        <button type="button" data-testid="cal-view-week" [class.on]="view() === 'week'" [attr.aria-pressed]="view() === 'week'" (click)="setView('week')">{{ 'calendar.view.week' | transloco }}</button>
+        <button type="button" data-testid="cal-view-month" [class.on]="view() === 'month'" [attr.aria-pressed]="view() === 'month'" (click)="setView('month')">{{ 'calendar.view.month' | transloco }}</button>
+      </div>
+    </div>
+
+    <div class="filters">
+      @if (calendarList().length) {
+        <div class="chips" role="group" [attr.aria-label]="'calendar.calendars.title' | transloco">
+          @for (cal of calendarList(); track cal.id) {
+            <button
+              type="button"
+              class="chip"
+              data-testid="cal-calendar"
+              [class.off]="hiddenCalendars().has(cal.id)"
+              [style.--c]="cal.colour"
+              [attr.aria-pressed]="!hiddenCalendars().has(cal.id)"
+              (click)="toggleCalendar(cal.id)"
+            >
+              <span class="dot" aria-hidden="true"></span>{{ cal.name }}
+            </button>
+          }
+        </div>
+      }
+      <label class="tasks-toggle">
+        <span>{{ 'calendar.calendars.tasks' | transloco }}</span>
+        <span class="switch">
+          <input type="checkbox" data-testid="cal-tasks" [checked]="showTasks()" (change)="toggleTasks()" />
+          <span class="track"></span>
+        </span>
+      </label>
+    </div>
+    <div class="cal-wrap">
+      @if (loading()) {
+        <div class="cal-skeleton" data-testid="cal-skeleton" role="status">
+          <span class="cal-skeleton__label">{{ 'calendar.loading' | transloco }}</span>
+          @switch (view()) {
+            @case ('day') {
+              <div class="day-view" aria-hidden="true">
+                @for (row of range(4); track row) {
+                  <div class="sk-day-row">
+                    <span class="sk sk-time"></span>
+                    <span class="sk sk-bar"></span>
+                    <span class="sk sk-title"></span>
+                  </div>
+                }
+              </div>
+            }
+            @case ('week') {
+              <div class="week" aria-hidden="true">
+                @for (name of weekdays; track $index; let i = $index) {
+                  <div class="wday">
+                    <div class="wh">
+                      <span class="wname">{{ name }}</span>
+                      <span class="sk sk-num"></span>
+                    </div>
+                    @for (bar of range(skeletonWeekPills[i]); track bar) {
+                      <span class="sk sk-pill"></span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+            @default {
+              <div class="cal" aria-hidden="true">
+                @for (name of weekdays; track $index) {
+                  <div class="dow">{{ name }}</div>
+                }
+                @for (cell of cells(); track cell.iso; let i = $index) {
+                  <div class="day">
+                    <span class="sk sk-num"></span>
+                    @for (bar of range(skeletonMonthPills(i)); track bar) {
+                      <span class="sk sk-pill"></span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+      } @else {
+      @switch (view()) {
+        @case ('day') {
+          <div class="day-view" data-testid="cal-day">
+            @for (pill of dayItems(); track pill.key) {
+              <button
+                type="button"
+                class="day-row"
+                [class.task]="pill.task"
+                [attr.data-testid]="pill.task ? 'cal-task' : 'cal-event'"
+                [style.--c]="pill.colour"
+                (click)="openDetail(pill)"
+              >
+                <span class="time">{{ pill.item.all_day ? ('calendar.event.all_day' | transloco) : timeOf(pill) }}</span>
+                <span class="bar" aria-hidden="true"></span>
+                <span class="title">{{ pill.title }}</span>
+              </button>
+            } @empty {
+              <p class="nw-empty-note" data-testid="cal-day-empty">{{ 'calendar.empty_day' | transloco }}</p>
+            }
+          </div>
+        }
+        @case ('week') {
+          <div class="week" data-testid="cal-week">
+            @for (cell of weekCells(); track cell.iso; let i = $index) {
+              <div class="wday" [class.today]="cell.today" [attr.data-date]="cell.iso">
+                <div class="wh">
+                  <span class="wname">{{ weekdays[i] }}</span>
+                  <span class="wnum">{{ cell.day }}</span>
+                </div>
+                @for (pill of cell.pills; track pill.key) {
+                  <button
+                    type="button"
+                    class="slot"
+                    [class.task]="pill.task"
+                    [attr.data-testid]="pill.task ? 'cal-task' : 'cal-event'"
+                    [style.--c]="pill.colour"
+                    [title]="pill.title"
+                    (click)="openDetail(pill)"
+                  >{{ pill.title }}</button>
+                }
+                @if (cell.more > 0) {
+                  <button type="button" class="more" data-testid="cal-more" (click)="openDay(cell)">{{ 'calendar.month.more' | transloco: { count: cell.more } }}</button>
+                }
+              </div>
+            }
+          </div>
+        }
+        @default {
+      <div class="cal" data-testid="cal-grid">
+
+      @for (name of weekdays; track $index) {
+        <div class="dow">{{ name }}</div>
+      }
+      @for (cell of cells(); track cell.iso) {
+        <div class="day" [class.out]="!cell.inMonth" [class.today]="cell.today" [attr.data-date]="cell.iso">
+          <div class="n">{{ cell.day }}</div>
+          @for (pill of cell.pills; track pill.key) {
+            <button
+              type="button"
+              class="ev-pill"
+              [class.task]="pill.task"
+              [attr.data-testid]="pill.task ? 'cal-task' : 'cal-event'"
+              [style.--c]="pill.colour"
+              [title]="pill.title"
+              (click)="openDetail(pill)"
+            >{{ pill.title }}</button>
+          }
+          @if (cell.more > 0) {
+            <button type="button" class="more" data-testid="cal-more" (click)="openDay(cell)">{{ 'calendar.month.more' | transloco: { count: cell.more } }}</button>
+          }
+        </div>
+      }
+      </div>
+        }
+      }
+      }
+
+      @if (!isChild()) {
+        <div class="people-dock">
+
+          <button
+            type="button"
+            class="dock-toggle"
+            data-testid="cal-people-toggle"
+            [attr.aria-expanded]="peopleOpen()"
+            [class.filtered]="filtered()"
+            [attr.aria-label]="'calendar.people.title' | transloco"
+            [attr.title]="'calendar.people.title' | transloco"
+            (click)="peopleOpen.set(!peopleOpen())"
+          >
+            <app-icon name="filter" [size]="18" />
+            @if (filtered()) {
+              <span class="dock-badge" data-testid="cal-filter-active" [attr.title]="'calendar.people.filtered' | transloco" aria-hidden="true">
+                <app-icon name="close" [size]="10" />
+              </span>
+            }
+          </button>
+          @if (peopleOpen()) {
+            <div class="people-list" role="group" [attr.aria-label]="'calendar.people.title' | transloco">
+              @for (member of members(); track member.id) {
+                <button
+                  type="button"
+                  class="person"
+                  data-testid="cal-person"
+                  [class.off]="hidden().has(member.id)"
+                  [style.--c]="member.colour"
+                  [attr.aria-label]="member.display_name"
+                  [attr.title]="member.display_name"
+                  [attr.aria-pressed]="!hidden().has(member.id)"
+                  (click)="toggleMember(member.id)"
+                >
+                  <app-avatar size="sm" [name]="member.display_name" [colour]="member.colour" [avatarId]="member.avatar_id" />
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if (dayCell(); as day) {
+  <app-day-dialog [iso]="day.iso" [pills]="day.all" [zone]="zone()" (picked)="openDetail($event)" (closed)="closeDay()" />
+}
+
+@if (detail(); as d) {
+  <app-event-detail [pill]="d" [people]="detailPeople()" [viewOnly]="!canManage()" (edit)="editFromDetail(d)" (remove)="deleteEvent(d, $event)" (removed)="onTaskRemoved()" (closed)="closeDetail()" />
+}
+
+@if (dialogOpen()) {
+  <app-event-dialog
+    [event]="dialogEvent()"
+    [occurrence]="dialogOccurrence()"
+    [defaultDate]="dialogDate()"
+    [zone]="zone()"
+    (saved)="onSaved()"
+    (closed)="closeDialog()"
+  />
+}

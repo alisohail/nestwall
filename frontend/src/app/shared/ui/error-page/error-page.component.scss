@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+
+.nw-error-page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--nw-space-6) var(--nw-space-4);
+  box-sizing: border-box;
+  background: var(--nw-color-surface);
+}
+
+.nw-error-page__box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nw-space-3);
+  width: 100%;
+  max-width: 28rem;
+  text-align: center;
+  color: var(--nw-color-on-surface);
+}
+
+.nw-error-page__icon {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: var(--nw-radius-full);
+
+  .material-icons {
+    font-size: 2rem;
+  }
+}
+
+.nw-error-page__icon--danger {
+  background: var(--nw-color-error-container);
+  color: var(--nw-color-error);
+}
+
+.nw-error-page__icon--calm {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-primary);
+}
+
+.nw-error-page__icon--warm {
+  background: var(--nw-color-warning-container);
+  color: var(--nw-color-on-warning-container);
+}
+
+.nw-error-page__code {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.nw-error-page__title {
+  margin: 0;
+  font-family: var(--nw-font-brand);
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.nw-error-page__body {
+  margin: 0;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.nw-error-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--nw-space-2);
+  margin-top: var(--nw-space-2);
+}
+
+.nw-error-page__reference {
+  margin: var(--nw-space-4) 0 0;
+  font-size: 0.8125rem;
+  color: var(--nw-color-on-surface-variant);
+}

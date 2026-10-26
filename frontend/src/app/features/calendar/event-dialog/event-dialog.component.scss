@@ -1,0 +1,198 @@
+/* Form pieces the Month page also uses. Copied here because the dialog is its own component. */
+.event-dialog {
+  width: min(520px, 100%);
+  overflow: hidden;
+
+  > .head,
+  > .foot {
+    flex: none;
+  }
+
+  > .col {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: var(--nw-space-1);
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+}
+
+.mt {
+  margin-top: var(--nw-space-4);
+}
+
+.grid.g2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nw-space-3);
+  align-items: end;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-2);
+  margin: calc(var(--nw-space-1) * -1) calc(var(--nw-space-2) * -1) 0 0;
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-xl);
+    font-weight: 800;
+  }
+}
+
+.title-input {
+  font-size: var(--nw-text-md);
+  font-weight: 700;
+}
+
+.field-label {
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--nw-text-xs);
+  color: var(--nw-color-on-surface-variant);
+}
+
+.error {
+  margin: 0;
+  color: var(--nw-color-error);
+  font-size: var(--nw-text-sm);
+}
+
+.repeat-field {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    padding: 0;
+  }
+}
+
+.field.check {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--nw-space-2);
+  align-self: end;
+  font-weight: 700;
+
+  input {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin: 0;
+    accent-color: var(--nw-color-primary);
+  }
+}
+
+.seg {
+  display: flex;
+  gap: var(--nw-space-1);
+  padding: var(--nw-space-1);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  flex: none;
+
+  button {
+    min-height: 44px;
+    padding: 0 var(--nw-space-3);
+    border: 0;
+    border-radius: var(--nw-radius-full);
+    background: transparent;
+    color: var(--nw-color-on-surface-variant);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+
+    &.on {
+      background: var(--nw-color-surface);
+      color: var(--nw-color-on-surface);
+      box-shadow: var(--nw-shadow);
+    }
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}
+
+.reminder-add {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  min-height: 36px;
+  padding: 0 var(--nw-space-3);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-full);
+  background: transparent;
+  color: var(--nw-color-on-surface-variant);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.on {
+    background: var(--nw-color-primary-container);
+    border-color: var(--nw-color-primary-container);
+    color: var(--nw-color-on-primary-container);
+  }
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: var(--nw-space-2);
+  padding-top: var(--nw-space-3);
+  background: var(--nw-color-surface);
+}
+
+.foot-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+/* Phone: a bottom sheet, as in the mock. The footer stays in view while the form scrolls. */
+@media (max-width: 600px) {
+  .modal-bg {
+    place-items: end center;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: 90vh;
+    padding: var(--nw-space-5);
+    border-radius: 24px 24px 0 0;
+  }
+}

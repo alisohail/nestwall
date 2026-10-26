@@ -1,0 +1,188 @@
+<section class="card col" aria-labelledby="share-settings-title">
+  @if (loadState() === 'loading') {
+    <div role="status" data-testid="points-settings-loading">
+      <span class="nw-sr-only">{{ 'settings.common.loading' | transloco }}</span>
+      <app-skeleton [rows]="4" />
+    </div>
+  } @else if (loadState() === 'error') {
+    <div class="col">
+      @if (loadError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      <div class="row"><button type="button" class="btn soft" (click)="load()">{{ 'settings.common.retry' | transloco }}</button></div>
+    </div>
+  } @else {
+    <div class="row head">
+      <span class="emoji" aria-hidden="true">💛</span>
+      <div class="grow">
+        <h2 id="share-settings-title">{{ 'settings.points.share_title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.points.share_body' | transloco }}</p>
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          role="switch"
+          name="share-enabled"
+          [attr.aria-label]="'settings.points.share_enabled' | transloco"
+          [(ngModel)]="enabled"
+          data-testid="share-enabled"
+        />
+        <span class="track" aria-hidden="true"></span>
+      </label>
+    </div>
+
+    <div class="opts" [class.off]="!enabled" [attr.inert]="enabled ? null : ''">
+      <div class="grid mt-s">
+        <div class="field">
+          <label class="field-label" for="share-min-per-share">{{ 'settings.points.min_per_share' | transloco }}</label>
+          <div class="row">
+            <input id="share-min-per-share" class="input num" type="number" name="min-per-share" [min]="1" [max]="maxPoints" [(ngModel)]="minPerShare" data-testid="share-min-per-share" />
+            <span class="hint">{{ 'settings.common.points' | transloco }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="share-max">{{ 'settings.points.max_per_share' | transloco }}</label>
+          <div class="row">
+            <input id="share-max" class="input num" type="number" name="max-per-share" [min]="1" [max]="maxPoints" [(ngModel)]="maxPerShare" data-testid="share-max" />
+            <span class="hint">{{ 'settings.common.points' | transloco }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="share-daily">{{ 'settings.points.daily_limit' | transloco }}</label>
+          <div class="row">
+            <input id="share-daily" class="input num" type="number" name="daily-limit" [min]="1" [max]="maxPoints" [(ngModel)]="dailyLimit" data-testid="share-daily" />
+            <span class="hint">{{ 'settings.common.points' | transloco }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="share-min">{{ 'settings.points.min_balance' | transloco }}</label>
+          <div class="row">
+            <input id="share-min" class="input num" type="number" name="min-balance" [min]="0" [max]="maxPoints" [(ngModel)]="minBalance" data-testid="share-min" />
+            <span class="hint">{{ 'settings.common.points' | transloco }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="grow">
+          <div class="t" id="approval-label">{{ 'settings.points.approval' | transloco }}</div>
+          <div class="d">{{ 'settings.points.approval_hint' | transloco }}</div>
+        </div>
+        <div class="seg" role="group" aria-labelledby="approval-label">
+          @for (m of approvalModes; track m) {
+            <button
+              type="button"
+              [class.on]="approvalMode === m"
+              [attr.aria-pressed]="approvalMode === m"
+              [attr.data-testid]="'share-approval-' + m"
+              (click)="approvalMode = m"
+            >
+              {{ 'settings.points.mode_' + m | transloco: { count: approvalAbove ?? 0 } }}
+            </button>
+          }
+        </div>
+      </div>
+      @if (approvalMode === 'above') {
+        <div class="setting">
+          <div class="grow">
+            <div class="t" id="approval-above-label">{{ 'settings.points.approval_above' | transloco }}</div>
+          </div>
+          <div class="row">
+            <input class="input num" type="number" name="approval-above" aria-labelledby="approval-above-label" [min]="0" [max]="maxPoints" [(ngModel)]="approvalAbove" data-testid="share-approval-above" />
+            <span class="hint">{{ 'settings.common.points' | transloco }}</span>
+          </div>
+        </div>
+      }
+
+      <div class="setting">
+        <div class="grow">
+          <div class="t" id="notify-recipient-label">{{ 'settings.points.notify_recipient' | transloco }}</div>
+          <div class="d">{{ 'settings.points.notify_recipient_hint' | transloco }}</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" role="switch" name="notify-recipient" aria-labelledby="notify-recipient-label" [(ngModel)]="notifyRecipient" />
+          <span class="track" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <div class="setting">
+        <div class="grow">
+          <div class="t" id="notify-parents-label">{{ 'settings.points.notify_parents' | transloco }}</div>
+          <div class="d">{{ 'settings.points.notify_parents_hint' | transloco }}</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" role="switch" name="notify-parents" aria-labelledby="notify-parents-label" [(ngModel)]="notifyParents" />
+          <span class="track" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <app-banner tone="info" icon="group" class="mt-s">
+        {{ 'settings.points.permission_note' | transloco }}
+        <a routerLink="/family"><b>{{ 'settings.points.permission_link' | transloco }}</b></a>
+      </app-banner>
+    </div>
+
+    <div class="foot">
+      @if (saved()) {
+        <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+      }
+      @if (saveError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      @if (stale()) {
+        <button type="button" class="btn soft" (click)="load()">{{ 'settings.common.reload' | transloco }}</button>
+      }
+      <button type="button" class="btn primary" data-testid="share-save" [disabled]="busy() || !hasSharingChanges()" (click)="save()">
+        {{ 'settings.common.save' | transloco }}
+      </button>
+    </div>
+  }
+</section>
+
+<section class="card col" aria-labelledby="spend-settings-title">
+  @if (spendState() === 'loading') {
+    <div role="status" data-testid="points-spend-loading">
+      <span class="nw-sr-only">{{ 'settings.common.loading' | transloco }}</span>
+      <app-skeleton [rows]="2" />
+    </div>
+  } @else if (spendState() === 'error') {
+    <div class="col">
+      @if (spendError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      <div class="row"><button type="button" class="btn soft" (click)="loadSpending()">{{ 'settings.common.retry' | transloco }}</button></div>
+    </div>
+  } @else {
+    <h2 id="spend-settings-title">{{ 'settings.points.spending_title' | transloco }}</h2>
+
+    <div class="setting">
+      <div class="grow">
+        <div class="t" id="reward-approval-label">{{ 'settings.points.reward_approval' | transloco }}</div>
+        <div class="d">{{ 'settings.points.reward_approval_hint' | transloco }}</div>
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          role="switch"
+          name="reward-approval-default"
+          aria-labelledby="reward-approval-label"
+          [(ngModel)]="approvalDefault"
+          data-testid="reward-approval-default"
+        />
+        <span class="track" aria-hidden="true"></span>
+      </label>
+    </div>
+
+    <div class="foot">
+      @if (spendSaved()) {
+        <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+      }
+      @if (spendError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      <button type="button" class="btn primary" data-testid="reward-approval-save" [disabled]="spendBusy() || !hasSpendingChanges()" (click)="saveSpending()">
+        {{ 'settings.common.save' | transloco }}
+      </button>
+    </div>
+  }
+</section>

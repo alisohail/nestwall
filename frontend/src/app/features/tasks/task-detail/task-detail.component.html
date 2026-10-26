@@ -1,0 +1,130 @@
+<div class="modal-bg" (click)="closed.emit()">
+<section class="modal detail" role="dialog" aria-modal="true" aria-labelledby="task-view-title" aria-live="polite" data-testid="task-detail" (click)="$event.stopPropagation()">
+  <div class="close-row">
+    <button type="button" class="icon-btn" data-testid="task-view-close" [attr.aria-label]="'common.close' | transloco" (click)="closed.emit()">
+      <span class="material-icons" aria-hidden="true">close</span>
+    </button>
+  </div>
+  @if (task(); as task) {
+    <div class="row">
+      @if (category(); as cat) {
+        <span class="badge"><i class="dot" [style.background]="cat.colour"></i>{{ cat.emoji }} {{ cat.name }}</span>
+      }
+      @if (task.repeats) {
+        <span class="badge">{{ 'tasks.detail.repeats' | transloco }}</span>
+      }
+    </div>
+
+    <h2 id="task-view-title" class="title">{{ task.title }}</h2>
+    @if (task.description) {
+      <p class="muted">{{ task.description }}</p>
+    }
+
+    <div class="facts">
+      <div>
+        <div class="label">{{ 'tasks.detail.assigned_to' | transloco }}</div>
+        @if (member(); as m) {
+          <div class="fact-val">
+            <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" />
+            <span>{{ m.display_name }}</span>
+          </div>
+        }
+      </div>
+      <div>
+        <div class="label">{{ 'tasks.detail.due' | transloco }}</div>
+        <div class="fact-val">
+          @if (dayWord(task); as word) {
+            {{ 'tasks.day.' + word | transloco }}
+          } @else {
+            {{ formatDay(task.due_date) }}
+          }
+          @if (task.due_time) {
+            , {{ formatTime(task.due_time) }}
+          }
+        </div>
+      </div>
+      <div>
+        <div class="label">{{ 'tasks.detail.points' | transloco }}</div>
+        <div class="fact-val">
+          <span class="pts"><span class="material-icons" aria-hidden="true">star</span>{{ task.points ?? 0 }}</span>
+        </div>
+      </div>
+      <div>
+        <div class="label">{{ 'tasks.detail.approval' | transloco }}</div>
+        <div class="fact-val">
+          {{ (task.approval_required ? 'tasks.detail.approval_parent' : 'tasks.detail.approval_none') | transloco }}
+        </div>
+      </div>
+    </div>
+
+    @if (canSkip()) {
+      @if (expiresIn(task); as left) {
+        <p class="notice">
+          <span class="material-icons" aria-hidden="true">timer</span>
+          {{ 'tasks.expires_in' | transloco: { time: (left.key | transloco: left.params) } }}
+        </p>
+      }
+      @if (task.penalty_unit === 'percent' && penalty(task) !== null) {
+        <p class="notice">
+          {{ 'tasks.detail.penalty_percent' | transloco: { value: task.penalty_value, points: penalty(task) } }}
+        </p>
+      } @else if (task.penalty_unit === 'points' && penalty(task) !== null) {
+        <p class="notice">{{ 'tasks.detail.penalty_points' | transloco: { points: penalty(task) } }}</p>
+      }
+    }
+
+    @if (task.checklist; as list) {
+      @if (list.length) {
+        <div class="section-label">
+          {{ 'tasks.detail.checklist' | transloco: { done: checklistDone(task), total: list.length } }}
+        </div>
+        <ul class="checklist">
+          @for (c of list; track c.id) {
+            <li>
+              <span class="box" [class.on]="c.done" aria-hidden="true">
+                @if (c.done) {
+                  <span class="material-icons">check</span>
+                }
+              </span>
+              <span [class.struck]="c.done">{{ c.text }}</span>
+            </li>
+          }
+        </ul>
+      }
+    }
+
+    @if (actionError(); as key) {
+      <app-banner tone="error">{{ key | transloco }}</app-banner>
+    }
+
+    @if (canSkip() && auth.can('tasks.manage')) {
+      <div class="row mt">
+        <button
+          type="button"
+          class="btn ghost grow"
+          data-testid="task-skip"
+          [disabled]="busy()"
+          (click)="confirmSkip.set(true)"
+        >
+          {{ 'tasks.detail.skip' | transloco }}
+        </button>
+      </div>
+    }
+  } @else if (loadState() === 'error') {
+    <app-load-error [error]="loadError()" (retry)="reload()" />
+  } @else {
+    <app-loading variant="full" labelKey="tasks.detail.loading" />
+  }
+</section>
+</div>
+
+@if (confirmSkip()) {
+  <app-task-confirm
+    [heading]="'tasks.skip.heading' | transloco"
+    [message]="'tasks.skip.message' | transloco"
+    [confirmLabel]="'tasks.skip.confirm' | transloco"
+    [busy]="busy()"
+    (confirmed)="skipToday()"
+    (cancelled)="confirmSkip.set(false)"
+  />
+}

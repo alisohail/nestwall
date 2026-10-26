@@ -1,0 +1,228 @@
+@use '../../../../styles/components/task-card' as tc;
+
+:host {
+  display: block;
+}
+
+.card-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--nw-space-2) var(--nw-space-3);
+  padding: var(--nw-space-3);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-card-radius);
+
+  @include tc.task-card-hover;
+}
+
+.ico {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  font-size: var(--nw-text-2xl);
+  background: color-mix(in srgb, var(--row-colour) 18%, var(--nw-color-surface));
+}
+
+.grow {
+  min-width: 0;
+}
+
+/* Stretched link: the ::after covers the whole card so a tap anywhere opens the task. Controls sit above it. */
+.title {
+  display: block;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::after {
+      outline: 3px solid var(--nw-color-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.meta {
+  font-size: var(--nw-text-sm);
+  color: var(--nw-color-on-surface-variant);
+
+  .late & {
+    color: var(--nw-color-error);
+    font-weight: 700;
+  }
+}
+
+.pts {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: 800;
+  color: var(--nw-color-on-surface);
+
+  .material-icons {
+    font-size: var(--nw-text-base);
+    color: var(--nw-color-points);
+  }
+}
+
+.check {
+  position: relative;
+  z-index: var(--nw-z-raised);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 2px solid var(--nw-color-outline);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-success);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--nw-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.steps-block {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: var(--nw-z-raised);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+}
+
+.steps-head {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+.meter {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+
+  i {
+    flex: 1;
+    height: 5px;
+    border-radius: 9px;
+    background: var(--nw-color-outline);
+  }
+
+  i.on {
+    background: var(--nw-color-primary);
+  }
+}
+
+.count {
+  padding: var(--nw-space-1) var(--nw-space-2);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-on-primary-container);
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--nw-color-surface-variant);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  min-height: 40px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--nw-color-outline);
+  background: var(--nw-color-surface);
+  color: inherit;
+  font: inherit;
+  font-size: var(--nw-text-sm);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--nw-color-primary);
+    outline-offset: 2px;
+  }
+
+  &.done .text {
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
+
+  &.done .box {
+    background: var(--nw-color-success);
+    border-color: var(--nw-color-success);
+    color: var(--nw-color-on-success);
+  }
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.box {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 2px solid var(--nw-color-outline);
+  background: var(--nw-color-surface);
+
+  .material-icons {
+    font-size: var(--nw-text-md);
+  }
+}
+
+.finish {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-1);
+  align-self: flex-start;
+}
+
+.error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--nw-text-sm);
+  color: var(--nw-color-error);
+}

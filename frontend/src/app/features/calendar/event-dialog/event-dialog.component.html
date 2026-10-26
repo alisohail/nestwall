@@ -1,0 +1,176 @@
+<div class="modal-bg" role="presentation" (click)="onBackdrop($event)">
+  <form class="modal event-dialog" role="dialog" aria-modal="true" aria-labelledby="event-dialog-title" data-testid="event-dialog" (submit)="onSubmit($event)">
+    <div class="head">
+      <h2 id="event-dialog-title">{{ (isEdit() ? 'calendar.event.edit' : 'calendar.event.new') | transloco }}</h2>
+      <button type="button" class="icon-btn" data-testid="event-close" [disabled]="saving()" [attr.aria-label]="'calendar.event.cancel' | transloco" (click)="close()">
+        <app-icon name="close" [size]="18" />
+      </button>
+    </div>
+
+    <div class="col mt">
+      @if (showScope()) {
+        <div class="field">
+          <span class="field-label">{{ 'calendar.event.scope' | transloco }}</span>
+          <div class="seg" role="radiogroup" [attr.aria-label]="'calendar.event.scope' | transloco">
+            <button type="button" role="radio" data-testid="event-scope-occurrence" [attr.aria-checked]="scope() === 'occurrence'" [class.on]="scope() === 'occurrence'" (click)="chooseScope('occurrence')">{{ 'calendar.event.scope_occurrence' | transloco }}</button>
+            <button type="button" role="radio" data-testid="event-scope-series" [attr.aria-checked]="scope() === 'series'" [class.on]="scope() === 'series'" (click)="chooseScope('series')">{{ 'calendar.event.scope_series' | transloco }}</button>
+          </div>
+          @if (occurrenceMode()) {
+            <p class="hint">{{ 'calendar.event.scope_occurrence_hint' | transloco }}</p>
+          }
+        </div>
+      }
+
+      <label class="field">
+        <span class="field-label">{{ 'calendar.event.title' | transloco }}</span>
+        <input #titleInput class="input title-input" name="title" data-testid="event-title" autocomplete="off" maxlength="200" [value]="title()" (input)="onTitle($event)" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">{{ 'calendar.event.location' | transloco }}</span>
+        <input class="input" name="location" data-testid="event-location" autocomplete="off" maxlength="200" [value]="location()" (input)="onLocation($event)" />
+      </label>
+
+      <div class="grid g2">
+        <label class="field">
+          <span class="field-label">{{ 'calendar.event.date' | transloco }}</span>
+          <input class="input" type="date" name="date" data-testid="event-date" [value]="date()" (input)="onDate($event)" />
+        </label>
+        <label class="field check">
+          <input type="checkbox" name="all_day" data-testid="event-all-day" [checked]="allDay()" [disabled]="occurrenceMode()" (change)="onAllDay($event)" />
+          <span>{{ 'calendar.event.all_day' | transloco }}</span>
+        </label>
+      </div>
+
+      @if (!allDay()) {
+        <div class="grid g2">
+          <label class="field">
+            <span class="field-label">{{ 'calendar.event.start' | transloco }}</span>
+            <input class="input" type="time" name="start_time" data-testid="event-start" [value]="startTime()" (input)="onStart($event)" />
+          </label>
+          <label class="field">
+            <span class="field-label">{{ 'calendar.event.end' | transloco }}</span>
+            <input class="input" type="time" name="end_time" data-testid="event-end" [value]="endTime()" (input)="onEnd($event)" />
+          </label>
+        </div>
+      }
+
+      <label class="field">
+        <span class="field-label">{{ 'calendar.event.calendar' | transloco }}</span>
+        <select class="select" name="calendar" data-testid="event-calendar" [disabled]="occurrenceMode()" (change)="onCalendar($event)">
+          @if (calendars().length) {
+            <optgroup [label]="'calendar.types.personal' | transloco">
+              @for (c of calendars(); track c.id) {
+                <option [value]="c.id" [selected]="c.id === calendarId()" [style.color]="c.colour">● {{ c.name }}</option>
+              }
+            </optgroup>
+          }
+          @if (fileImports().length) {
+            <optgroup [label]="'calendar.types.imported' | transloco">
+              @for (i of fileImports(); track i.id) {
+                <option [value]="i.id" [selected]="i.id === calendarId()" [style.color]="i.colour">● {{ i.name }}</option>
+              }
+            </optgroup>
+          }
+          @if (linkedImports().length) {
+            <optgroup [label]="'calendar.types.linked' | transloco">
+              @for (i of linkedImports(); track i.id) {
+                <option [value]="i.id" [selected]="i.id === calendarId()" [style.color]="i.colour">● {{ i.name }}</option>
+              }
+            </optgroup>
+          }
+        </select>
+      </label>
+
+      <div class="field">
+        <span class="field-label">{{ 'calendar.event.people' | transloco }}</span>
+        <div class="chips" [class.disabled]="occurrenceMode() || !!selectedImport()">
+          @for (m of members(); track m.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="isPicked(m.id)"
+              [attr.aria-pressed]="isPicked(m.id)"
+              [disabled]="occurrenceMode() || !!selectedImport()"
+              [attr.data-testid]="'event-person-' + m.id"
+              (click)="togglePerson(m.id)"
+            >
+              <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" size="sm" />{{ m.display_name }}
+            </button>
+          }
+        </div>
+        @if (selectedImport()) {
+          <p class="hint" data-testid="event-people-locked">{{ 'calendar.event.people_from_calendar' | transloco }}</p>
+        } @else if (!occurrenceMode()) {
+          <p class="hint">{{ 'calendar.event.people_hint' | transloco }}</p>
+        }
+      </div>
+
+      <fieldset class="field repeat-field" data-testid="event-repeat" [disabled]="occurrenceMode()">
+        <legend class="field-label">{{ 'calendar.event.repeat' | transloco }}</legend>
+        @if (customRule() === null) {
+          <app-repeat-builder [(state)]="repeatState" [startDate]="anchor()" />
+        } @else {
+          <p class="hint" data-testid="event-repeat-custom">{{ 'calendar.event.repeat_custom_hint' | transloco }}</p>
+          <button type="button" class="btn ghost" data-testid="event-repeat-stop" (click)="stopRepeat()">
+            {{ 'calendar.event.repeat_stop' | transloco }}
+          </button>
+        }
+      </fieldset>
+
+      <fieldset class="field reminder-field" data-testid="event-reminders" [disabled]="occurrenceMode()">
+        <legend class="field-label">{{ 'calendar.event.reminders' | transloco }}</legend>
+        <div class="chips">
+          @for (m of reminderPresets; track m) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="reminder() === m && !customActive()"
+              [attr.aria-pressed]="reminder() === m && !customActive()"
+              [attr.data-testid]="'event-reminder-preset-' + m"
+              (click)="togglePreset(m)"
+            >
+              {{ reminderLabel(m) }}
+            </button>
+          }
+        </div>
+        <div class="reminder-add">
+          <input
+            class="input"
+            type="number"
+            min="1"
+            name="reminder_amount"
+            data-testid="event-reminder-amount"
+            [attr.aria-label]="'calendar.event.reminder_amount' | transloco"
+            [value]="customAmount()"
+            (input)="onCustomAmount($event)"
+          />
+          <select class="select" name="reminder_unit" data-testid="event-reminder-unit" [attr.aria-label]="'calendar.event.reminder_unit' | transloco" (change)="onCustomUnit($event)">
+            @for (u of reminderUnits; track u) {
+              <option [value]="u" [selected]="u === customUnit()">{{ 'calendar.event.reminder_unit_' + u | transloco }}</option>
+            }
+          </select>
+        </div>
+        @if (occurrenceMode()) {
+          <p class="hint">{{ 'calendar.event.reminders_occurrence_hint' | transloco }}</p>
+        } @else if (reminderIsPast()) {
+          <p class="hint" data-testid="event-reminders-past">{{ 'calendar.event.reminders_past' | transloco }}</p>
+        } @else {
+          <p class="hint">{{ 'calendar.event.reminders_hint' | transloco }}</p>
+        }
+      </fieldset>
+    </div>
+
+    <div class="foot">
+      @if (error(); as key) {
+        <p class="error" role="alert" data-testid="event-error">{{ key | transloco }}</p>
+      }
+      <div class="foot-actions">
+        <button type="button" class="btn ghost" data-testid="event-cancel" [disabled]="saving()" (click)="close()">{{ 'calendar.event.cancel' | transloco }}</button>
+        <button type="submit" class="btn primary" data-testid="event-save" [disabled]="saving()">
+          {{ (saving() ? 'calendar.event.saving' : 'calendar.event.save') | transloco }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

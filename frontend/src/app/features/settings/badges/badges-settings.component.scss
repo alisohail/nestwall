@@ -1,0 +1,183 @@
+@use '../settings-ui' as ui;
+
+:host {
+  display: block;
+}
+
+@include ui.base;
+
+.head {
+  align-items: flex-start;
+}
+
+.emoji {
+  font-size: 1.875rem;
+  line-height: 1;
+}
+
+.head h2,
+.section-head h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.head .hint,
+.section-head .hint {
+  margin: var(--nw-space-1) 0 0;
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nw-space-1);
+}
+
+/* Title on the left, the short hint on the right, as in the mock card header. */
+.section-head.split {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+}
+
+.section-head.split .hint {
+  margin: 0;
+  text-align: right;
+}
+
+/* Each group row wraps its chips under the label on phones and keeps the switch at the end. */
+.group {
+  align-items: flex-start;
+}
+
+.group .t {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+  margin-top: var(--nw-space-2);
+}
+
+.chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nw-space-1);
+}
+
+/* A switched-off badge stays visible in the group but is muted. */
+.chip-badge.off {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.group .hint {
+  margin: var(--nw-space-2) 0 0;
+}
+
+.pic {
+  flex: 0 0 auto;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.item {
+  align-items: center;
+}
+
+.item .item-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.item .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nw-space-2);
+}
+
+.optional {
+  margin-left: var(--nw-space-2);
+  padding: 1px var(--nw-space-2);
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface-variant);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.right {
+  justify-content: flex-end;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 2.75rem;
+  height: 1.5rem;
+  margin-left: auto;
+}
+
+.switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switch input:disabled {
+  cursor: default;
+}
+
+.track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-surface-variant);
+  border: 1px solid var(--nw-color-outline);
+  transition: background 0.15s ease;
+}
+
+.track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: var(--nw-radius-full);
+  background: var(--nw-color-on-surface-variant);
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + .track {
+  background: var(--nw-color-primary);
+  border-color: var(--nw-color-primary);
+}
+
+.switch input:checked + .track::after {
+  transform: translateX(1.25rem);
+  background: var(--nw-color-on-primary);
+}
+
+.switch input:focus-visible + .track {
+  outline: 2px solid var(--nw-color-primary);
+  outline-offset: 2px;
+}
+
+.switch input:disabled + .track {
+  opacity: 0.5;
+}

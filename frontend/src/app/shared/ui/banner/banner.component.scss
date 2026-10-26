@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.nw-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-3) var(--nw-space-4);
+  border-radius: var(--nw-radius-xl);
+  font-weight: 600;
+  line-height: 1.25rem;
+  background: var(--nw-color-warning-container);
+  color: var(--nw-color-on-warning-container);
+}
+
+.nw-banner--info {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-on-primary-container);
+}
+
+.nw-banner--success {
+  background: var(--nw-color-success-container);
+  color: var(--nw-color-on-success-container);
+}
+
+.nw-banner--error {
+  background: var(--nw-color-error-container);
+  color: var(--nw-color-on-surface);
+  box-shadow: inset 4px 0 0 var(--nw-color-error);
+}
+
+.nw-banner--error .nw-banner__icon {
+  color: var(--nw-color-error);
+}
+
+.nw-banner__icon {
+  flex: none;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
+}
+
+.nw-banner__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--nw-space-1);
+  min-width: 0;
+}

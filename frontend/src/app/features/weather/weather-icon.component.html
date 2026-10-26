@@ -1,0 +1,74 @@
+<svg class="wx-icon" [attr.data-kind]="kind()" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+  @switch (kind()) {
+    @case ('clear') {
+      <g transform="translate(8 8)">
+        <g class="wx-rays" stroke="#FCD34D" stroke-width="3" stroke-linecap="round">
+          <line x1="38" y1="24" x2="43" y2="24" />
+          <line x1="33.9" y1="33.9" x2="37.4" y2="37.4" />
+          <line x1="24" y1="38" x2="24" y2="43" />
+          <line x1="14.1" y1="33.9" x2="10.6" y2="37.4" />
+          <line x1="10" y1="24" x2="5" y2="24" />
+          <line x1="14.1" y1="14.1" x2="10.6" y2="10.6" />
+          <line x1="24" y1="10" x2="24" y2="5" />
+          <line x1="33.9" y1="14.1" x2="37.4" y2="10.6" />
+        </g>
+        <circle cx="24" cy="24" r="10" fill="#FCD34D" />
+      </g>
+    }
+    @case ('partly_cloudy') {
+      <g class="wx-rays" stroke="#FCD34D" stroke-width="3" stroke-linecap="round">
+        <line x1="38" y1="24" x2="43" y2="24" />
+        <line x1="33.9" y1="33.9" x2="37.4" y2="37.4" />
+        <line x1="24" y1="38" x2="24" y2="43" />
+        <line x1="14.1" y1="33.9" x2="10.6" y2="37.4" />
+        <line x1="10" y1="24" x2="5" y2="24" />
+        <line x1="14.1" y1="14.1" x2="10.6" y2="10.6" />
+        <line x1="24" y1="10" x2="24" y2="5" />
+        <line x1="33.9" y1="14.1" x2="37.4" y2="10.6" />
+      </g>
+      <circle cx="24" cy="24" r="10" fill="#FCD34D" />
+      <path class="wx-float" d="M22 50h26a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-1 21z" fill="#E2E8F0" />
+    }
+    @case ('cloudy') {
+      <path class="wx-float" d="M20 42h28a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-3 21z" fill="#CBD5E1" />
+    }
+    @case ('fog') {
+      <path class="wx-float" transform="translate(0 -6)" d="M20 42h28a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-3 21z" fill="#CBD5E1" />
+      <g stroke="#94A3B8" stroke-width="3" stroke-linecap="round">
+        <line class="wx-fog" x1="12" y1="46" x2="52" y2="46" />
+        <line class="wx-fog wx-fog-2" x1="18" y1="52" x2="46" y2="52" />
+        <line class="wx-fog" x1="14" y1="58" x2="40" y2="58" />
+      </g>
+    }
+    @case ('drizzle') {
+      <path class="wx-float" d="M20 42h28a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-3 21z" fill="#CBD5E1" />
+      <g stroke="#7DD3FC" stroke-width="2.5" stroke-linecap="round">
+        <line class="wx-drizzle" x1="28" y1="46" x2="26" y2="51" />
+        <line class="wx-drizzle wx-drop-2" x1="40" y1="46" x2="38" y2="51" />
+      </g>
+    }
+    @case ('rain') {
+      <path class="wx-float" d="M20 42h28a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-3 21z" fill="#94A3B8" />
+      <g stroke="#60A5FA" stroke-width="3" stroke-linecap="round">
+        <line class="wx-drop" x1="26" y1="48" x2="24" y2="53" />
+        <line class="wx-drop wx-drop-2" x1="36" y1="48" x2="34" y2="53" />
+        <line class="wx-drop wx-drop-3" x1="46" y1="48" x2="44" y2="53" />
+      </g>
+    }
+    @case ('snow') {
+      <path class="wx-float" d="M20 42h28a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-3 21z" fill="#CBD5E1" />
+      <g fill="#93C5FD">
+        <circle class="wx-flake" cx="24" cy="50" r="2.5" />
+        <circle class="wx-flake wx-flake-2" cx="34" cy="50" r="2.5" />
+        <circle class="wx-flake wx-flake-3" cx="44" cy="50" r="2.5" />
+      </g>
+    }
+    @case ('storm') {
+      <path class="wx-float" d="M20 42h28a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-3 21z" fill="#64748B" />
+      <polygon class="wx-bolt" points="31,42 25,52 31,52 27,62 39,47 33,47 37,42" fill="#FDE047" />
+    }
+    @default {
+      <path d="M20 42h28a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10.5 10.5 0 0 0-3 21z" fill="#94A3B8" />
+    }
+  }
+</svg>

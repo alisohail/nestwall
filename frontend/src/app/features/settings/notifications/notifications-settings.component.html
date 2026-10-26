@@ -1,0 +1,168 @@
+<ng-template #headerActions>
+  <div class="row wrap actions-end">
+    <button
+      type="button"
+      class="btn primary"
+      data-testid="notify-save"
+      [disabled]="saving() || !canManage() || !isDirty()"
+      (click)="save()">
+      {{ 'settings.notifications.save' | transloco }}
+    </button>
+  </div>
+</ng-template>
+
+@if (!permsReady() || loadState() === 'loading') {
+  <app-loading variant="full" labelKey="settings.common.loading" data-testid="notify-loading" />
+} @else if (!canView()) {
+  <app-banner tone="info">{{ 'settings.notifications.no_permission' | transloco }}</app-banner>
+} @else if (loadState() === 'error') {
+  <app-load-error [error]="loadApiError()" (retry)="load()" />
+} @else {
+  @if (notice(); as msg) {
+    <p class="saved" role="status" data-testid="notify-saved">{{ msg }}</p>
+  }
+  @if (actionError(); as key) {
+    <app-banner tone="error">{{ key | transloco }}</app-banner>
+  }
+
+  <section class="card notify-card" data-testid="notify-switches">
+    <div class="switch-row">
+      <div class="grow">
+        <div class="t" id="notify-in-app-label">{{ 'settings.notifications.in_app.label' | transloco }}</div>
+        <p class="hint">{{ 'settings.notifications.in_app.hint' | transloco }}</p>
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          role="switch"
+          data-testid="notify-in_app"
+          aria-labelledby="notify-in-app-label"
+          [checked]="draft().in_app"
+          [disabled]="!canManage()"
+          (change)="setSwitch('in_app', $any($event.target).checked)" />
+      </label>
+    </div>
+
+    <div class="switch-row">
+      <div class="grow">
+        <div class="t" id="notify-browser-label">{{ 'settings.notifications.browser.label' | transloco }}</div>
+        <p class="hint">{{ 'settings.notifications.browser.hint' | transloco }}</p>
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          role="switch"
+          data-testid="notify-browser"
+          aria-labelledby="notify-browser-label"
+          [checked]="draft().browser"
+          [disabled]="!canManage()"
+          (change)="setSwitch('browser', $any($event.target).checked)" />
+      </label>
+    </div>
+
+    <div class="switch-row">
+      <div class="grow">
+        <div class="t" id="notify-email-label">{{ 'settings.notifications.email.label' | transloco }}</div>
+        <p class="hint">{{ 'settings.notifications.email.hint' | transloco }}</p>
+        @if (!smtpReady()) {
+          <p class="hint warn" data-testid="notify-email-not-ready">{{ 'settings.notifications.email.not_ready' | transloco }}</p>
+        }
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          role="switch"
+          data-testid="notify-email"
+          aria-labelledby="notify-email-label"
+          [checked]="draft().email"
+          [disabled]="emailDisabled()"
+          (change)="setSwitch('email', $any($event.target).checked)" />
+      </label>
+    </div>
+
+    <div class="switch-row">
+      <div class="grow">
+        <div class="t" id="notify-digest-label">{{ 'settings.notifications.digest.label' | transloco }}</div>
+        <p class="hint">{{ 'settings.notifications.digest.hint' | transloco }}</p>
+      </div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          role="switch"
+          data-testid="notify-digest"
+          aria-labelledby="notify-digest-label"
+          [checked]="draft().email_digest"
+          [disabled]="digestDisabled()"
+          (change)="setSwitch('email_digest', $any($event.target).checked)" />
+      </label>
+    </div>
+
+    <div class="switch-row">
+      <div class="grow">
+        <label class="t" for="notify-digest-minutes">{{ 'settings.notifications.digest.interval_label' | transloco }}</label>
+        <p class="hint">{{ 'settings.notifications.digest.interval_hint' | transloco }}</p>
+      </div>
+      <span class="interval">
+        <input
+          id="notify-digest-minutes"
+          type="number"
+          data-testid="notify-digest-minutes"
+          inputmode="numeric"
+          step="1"
+          [min]="digestMin"
+          [max]="digestMax"
+          [value]="draft().digest_minutes"
+          [disabled]="digestIntervalDisabled()"
+          [attr.aria-invalid]="digestIntervalValid() ? null : 'true'"
+          (input)="setDigestMinutes($any($event.target).value)" />
+        <span class="unit">{{ 'settings.notifications.digest.interval_unit' | transloco }}</span>
+      </span>
+    </div>
+  </section>
+
+  <section class="card notify-card mt" data-testid="notify-template-card">
+    <div class="template-body">
+      <div class="t">{{ 'settings.notifications.template.title' | transloco }}</div>
+      <p class="hint">{{ 'settings.notifications.template.lead' | transloco }}</p>
+
+      <label class="field-label" for="notify-template">{{ 'settings.notifications.template.label' | transloco }}</label>
+      <textarea
+        id="notify-template"
+        class="template"
+        rows="14"
+        data-testid="notify-template"
+        spellcheck="false"
+        [value]="draft().email_template"
+        [disabled]="!canManage()"
+        (input)="setTemplate($any($event.target).value)"></textarea>
+      <p class="hint">
+        {{ 'settings.notifications.template.placeholders' | transloco }}:
+        @for (name of placeholders; track name) {
+          <code>{{ name }}</code>
+        }
+      </p>
+
+      @if (templateError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+
+      <div class="row wrap">
+        <button type="button" class="btn soft" data-testid="notify-preview" [disabled]="previewing()" (click)="preview()">
+          {{ 'settings.notifications.template.preview' | transloco }}
+        </button>
+        <button type="button" class="btn ghost" data-testid="notify-template-reset" [disabled]="!canManage()" (click)="resetTemplate()">
+          {{ 'settings.notifications.template.reset' | transloco }}
+        </button>
+      </div>
+
+      @if (previewHtml(); as html) {
+        <iframe
+          class="preview"
+          data-testid="notify-preview-frame"
+          sandbox=""
+          [attr.title]="'settings.notifications.template.preview_title' | transloco"
+          [srcdoc]="html"></iframe>
+      }
+    </div>
+  </section>
+}

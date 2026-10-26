@@ -1,0 +1,14 @@
+<main class="nw-error-page">
+  <section class="nw-error-page__box">
+    <div class="nw-error-page__icon" [class]="'nw-error-page__icon nw-error-page__icon--' + tone()">
+      <span class="material-icons" aria-hidden="true">{{ icon() }}</span>
+    </div>
+    <p class="nw-error-page__code">{{ 'errors.page.code' | transloco: { code: code() } }}</p>
+    <h1 class="nw-error-page__title">{{ titleKey() | transloco }}</h1>
+    <p class="nw-error-page__body">{{ bodyKey() | transloco }}</p>
+    <div class="nw-error-page__actions">
+      <ng-content />
+    </div>
+    <p class="nw-error-page__reference">{{ 'errors.page.reference' | transloco: { reference: reference() } }}</p>
+  </section>
+</main>

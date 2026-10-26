@@ -1,0 +1,56 @@
+<div
+  class="task-row"
+  [class.done]="isDone()"
+  [class.late]="item().past_due"
+  [style.--row-colour]="colour()"
+  data-testid="my-task-row"
+>
+  <span class="ico" aria-hidden="true">
+    @if (item().category_emoji; as emoji) {
+      {{ emoji }}
+    } @else {
+      <span class="material-icons">task_alt</span>
+    }
+  </span>
+  <span class="grow">
+    <a class="title" [routerLink]="['/my-tasks', item().task_id]" [queryParams]="{ from: origin() }">{{ item().title }}</a>
+    <span class="meta">
+      @if (approvedWhen(); as when) {
+        @if (item().decided_by_name; as name) {
+          {{ 'myTasks.meta.approved_by' | transloco: { name, when } }}
+        } @else {
+          {{ 'myTasks.meta.approved_on' | transloco: { when } }}
+        }
+      } @else if (doneAt()) {
+        @if (doneToday()) {
+          {{ 'myTasks.meta.submitted_today' | transloco: { time: doneTime() } }}
+        } @else {
+          {{ 'myTasks.meta.submitted_on' | transloco: { day: doneDay(), time: doneTime() } }}
+        }
+      } @else if (item().past_due) {
+        {{ 'myTasks.meta.past_due' | transloco: { time: clock() } }}
+      } @else {
+        {{ 'myTasks.part.' + part() | transloco }} &middot; {{ 'myTasks.meta.due' | transloco: { time: clock() } }}
+      }
+      @if (expiresIn(); as left) {
+        <span class="badge amber" data-testid="my-task-expires-in">{{ 'tasks.expires_in' | transloco: { time: (left.key | transloco: left.params) } }}</span>
+      }
+      @if (expired()) {
+        <span class="badge err" data-testid="my-task-expired">{{ 'myTasks.expired_badge' | transloco }}</span>
+      }
+    </span>
+    @if (steps().length) {
+      <span class="steps-count" data-testid="my-task-steps">
+        <span class="material-icons" aria-hidden="true">checklist</span>
+        {{ 'myTasks.steps_progress' | transloco: { done: stepsDone(), total: steps().length } }}
+      </span>
+    }
+  </span>
+  <span class="pts" [attr.aria-label]="'myTasks.points' | transloco: { points: item().points }">
+    <span class="material-icons" aria-hidden="true">star</span>{{ item().points }}
+  </span>
+  @if (isDone()) {
+    <span class="material-icons check" aria-hidden="true">check_circle</span>
+  }
+  <ng-content />
+</div>

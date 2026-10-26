@@ -1,0 +1,157 @@
+<main class="login-container" role="main">
+  <div class="login-box">
+    <header class="login-header">
+      <img class="nesty" src="assets/images/nesty.svg" width="96" height="96" [alt]="'login.nesty_alt' | transloco">
+      <h1>{{ 'login.title' | transloco }}</h1>
+      <p class="login-subtitle">{{ 'login.subtitle' | transloco }}</p>
+    </header>
+
+    <form class="card login-form" [formGroup]="form" (ngSubmit)="submit()">
+      @if (error(); as message) {
+        <app-banner tone="error" data-testid="login-error">{{ message | transloco }}</app-banner>
+      }
+
+      <div class="form-field">
+        <label for="login-user-id">{{ 'login.user_id.label' | transloco }}</label>
+        <input
+          id="login-user-id"
+          type="text"
+          formControlName="user_id"
+          autocomplete="username"
+          [attr.aria-invalid]="form.get('user_id')?.invalid && form.get('user_id')?.touched">
+        @if (form.get('user_id')?.invalid && form.get('user_id')?.touched) {
+          <p class="field-error" role="alert">{{ 'login.user_id.error' | transloco }}</p>
+        }
+      </div>
+
+      <div class="form-field">
+        <div class="label-row">
+          <label for="login-password">{{ 'login.password.label' | transloco }}</label>
+          <button type="button" class="link-btn" (click)="openForgot()">
+            {{ 'login.forgot' | transloco }}
+          </button>
+        </div>
+        <input
+          id="login-password"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          [attr.aria-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <p class="field-error" role="alert">{{ 'login.password.error' | transloco }}</p>
+        }
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        @if (loading()) {
+          <app-loading variant="spinner" />
+        } @else {
+          {{ 'login.submit' | transloco }}
+        }
+      </button>
+    </form>
+
+    <p class="login-note">{{ 'login.no_signup' | transloco }}</p>
+    <p class="login-note">
+      <a routerLink="/pair" data-testid="login-pair-link">{{ 'login.pair_link' | transloco }}</a>
+    </p>
+  </div>
+</main>
+
+@if (showForgot()) {
+  <div class="dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="forgot-heading">
+    <div class="dialog-card">
+      <button type="button" class="dialog-close" (click)="closeForgot()" [attr.aria-label]="'common.close' | transloco">✕</button>
+
+      @switch (forgotStep()) {
+        @case ('ask') {
+          <h2 id="forgot-heading">{{ 'login.forgot_dialog.heading' | transloco }}</h2>
+          <p>{{ 'login.forgot_dialog.ask_intro' | transloco }}</p>
+          <form class="forgot-form" [formGroup]="forgotForm" (ngSubmit)="submitForgot()">
+            @if (forgotError(); as message) {
+              <app-banner tone="error" data-testid="forgot-error">{{ message | transloco }}</app-banner>
+            }
+            <div class="form-field">
+              <label for="forgot-user-id">{{ 'login.user_id.label' | transloco }}</label>
+              <input
+                id="forgot-user-id"
+                type="text"
+                formControlName="user_id"
+                autocomplete="username"
+                [attr.aria-invalid]="forgotForm.get('user_id')?.invalid && forgotForm.get('user_id')?.touched">
+              @if (forgotForm.get('user_id')?.invalid && forgotForm.get('user_id')?.touched) {
+                <p class="field-error" role="alert">{{ 'login.user_id.error' | transloco }}</p>
+              }
+            </div>
+            <div class="dialog-actions">
+              <button type="button" class="btn-ghost" (click)="closeForgot()">{{ 'login.forgot_dialog.cancel' | transloco }}</button>
+              <button type="submit" class="btn-primary" [disabled]="forgotLoading()">{{ 'login.forgot_dialog.continue' | transloco }}</button>
+            </div>
+          </form>
+          <p class="forgot-parent-option">
+            <button type="button" class="btn-link" (click)="chooseEmailReset()" data-testid="forgot-parent-email">{{ 'login.forgot_dialog.parent_email_option' | transloco }}</button>
+          </p>
+        }
+        @case ('email') {
+          <h2 id="forgot-heading">{{ 'login.forgot_dialog.email_heading' | transloco }}</h2>
+          <p>{{ 'login.forgot_dialog.email_intro' | transloco }}</p>
+          <form class="forgot-form" [formGroup]="forgotEmailForm" (ngSubmit)="submitForgotEmail()">
+            @if (forgotError(); as message) {
+              <app-banner tone="error" data-testid="forgot-error">{{ message | transloco }}</app-banner>
+            }
+            <div class="form-field">
+              <label for="forgot-email">{{ 'login.forgot_dialog.email_label' | transloco }}</label>
+              <input
+                id="forgot-email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                [attr.aria-invalid]="forgotEmailForm.get('email')?.invalid && forgotEmailForm.get('email')?.touched">
+              @if (forgotEmailForm.get('email')?.invalid && forgotEmailForm.get('email')?.touched) {
+                <p class="field-error" role="alert">{{ 'login.forgot_dialog.email_error' | transloco }}</p>
+              }
+            </div>
+            <div class="dialog-actions">
+              <button type="button" class="btn-ghost" (click)="openForgot()">{{ 'login.forgot_dialog.back' | transloco }}</button>
+              <button type="submit" class="btn-primary" [disabled]="forgotLoading()">{{ 'login.forgot_dialog.email_submit' | transloco }}</button>
+            </div>
+          </form>
+        }
+        @case ('email_sent') {
+          <h2 id="forgot-heading">{{ 'login.forgot_dialog.email_sent_heading' | transloco }}</h2>
+          <p>{{ 'login.forgot_dialog.email_sent_body' | transloco }}</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn-primary" (click)="closeForgot()">{{ 'login.forgot_dialog.back_to_sign_in' | transloco }}</button>
+          </div>
+        }
+        @case ('email_not_set_up') {
+          <h2 id="forgot-heading">{{ 'login.forgot_dialog.email_not_set_up_heading' | transloco }}</h2>
+          <p>{{ 'login.forgot_dialog.email_not_set_up_body' | transloco }}</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn-primary" (click)="closeForgot()">{{ 'login.forgot_dialog.back_to_sign_in' | transloco }}</button>
+          </div>
+        }
+
+        @case ('ask_parent') {
+          <h2 id="forgot-heading">{{ 'login.forgot_dialog.ask_parent_heading' | transloco }}</h2>
+          <p>{{ 'login.forgot_dialog.ask_parent_body' | transloco }}</p>
+          <p class="forgot-child-note">{{ 'login.forgot_dialog.tell_parents_hint' | transloco }}</p>
+          @if (forgotError(); as message) {
+            <app-banner tone="error" data-testid="forgot-error">{{ message | transloco }}</app-banner>
+          }
+          <div class="dialog-actions">
+            <button type="button" class="btn-ghost" (click)="closeForgot()">{{ 'login.forgot_dialog.cancel' | transloco }}</button>
+            <button type="button" class="btn-primary" [disabled]="forgotLoading()" (click)="tellParents()">{{ 'login.forgot_dialog.tell_parents' | transloco }}</button>
+          </div>
+        }
+        @case ('notified') {
+          <h2 id="forgot-heading">{{ 'login.forgot_dialog.notified_heading' | transloco }}</h2>
+          <p>{{ 'login.forgot_dialog.notified_body' | transloco }}</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn-primary" (click)="closeForgot()">{{ 'login.forgot_dialog.back_to_sign_in' | transloco }}</button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}

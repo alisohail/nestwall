@@ -1,0 +1,190 @@
+<section class="my-tasks" aria-labelledby="my-tasks-title">
+  <header class="page-head">
+    <h1 id="my-tasks-title">{{ 'myTasks.title' | transloco }}</h1>
+  </header>
+
+  @if (loadState() === 'error') {
+    <div data-testid="my-tasks-error">
+      <app-load-error [error]="loadError()" (retry)="reload()" />
+    </div>
+  } @else if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="myTasks.loading" data-testid="my-tasks-loading" />
+  } @else {
+    <div class="tabs" role="tablist" [attr.aria-label]="'myTasks.tabs.label' | transloco">
+      @for (name of tabs; track name) {
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          [class.active]="tab() === name"
+          [attr.aria-selected]="tab() === name"
+          [attr.id]="'tab-' + name"
+          [attr.aria-controls]="'panel-' + name"
+          [attr.data-testid]="'tab-' + name"
+          (click)="select(name)"
+        >
+          {{ 'myTasks.tabs.' + name | transloco }}
+          @if (badges[name]; as tone) {
+            <span class="badge" [class.teal]="tone === 'teal'" [class.amber]="tone === 'amber'">{{ count(name) }}</span>
+          }
+        </button>
+      }
+    </div>
+
+    <div class="panel" role="tabpanel" [attr.id]="'panel-' + tab()" [attr.aria-labelledby]="'tab-' + tab()" data-testid="my-tasks-panel">
+      <div data-testid="my-tasks-bonus" [hidden]="tab() !== 'bonus'">
+        <p class="muted intro">{{ 'myTasks.bonus.intro' | transloco }}</p>
+        <app-kid-bonus-list mode="tab" (openCount)="bonusOpen.set($event)" />
+      </div>
+
+      @switch (tab()) {
+        @case ('today') {
+          @if (todayAllDone()) {
+            <app-all-done [name]="firstName()" [streakDays]="data()?.streak_days ?? 0" />
+          } @else if (today().length) {
+            @for (group of todayGroups(); track group.part) {
+              <h2 class="day">{{ 'myTasks.part.' + group.part | transloco }}</h2>
+              <div class="list">
+                @for (item of group.items; track item.task_id) {
+                  <app-today-task [item]="item" [origin]="tab()" (changed)="reload()" />
+                }
+              </div>
+            }
+          } @else {
+            <app-empty-state data-testid="my-tasks-today-empty" icon="event_available" titleKey="myTasks.empty.today.title" bodyKey="myTasks.empty.today.body" />
+          }
+        }
+        @case ('past_due') {
+          @if (pastDue().length) {
+            <div class="list">
+              @for (item of pastDue(); track item.task_id) {
+                <app-task-row [item]="item" [origin]="tab()" />
+              }
+            </div>
+          } @else {
+            <app-empty-state icon="verified" titleKey="myTasks.empty.past_due.title" bodyKey="myTasks.empty.past_due.body" />
+          }
+        }
+        @case ('coming') {
+          @if (comingState() === 'error') {
+            <app-banner tone="error" data-testid="my-tasks-coming-error">
+              {{ 'myTasks.page_error' | transloco }}
+              <button type="button" class="btn ghost" (click)="retryPage('coming')">{{ 'myTasks.retry' | transloco }}</button>
+            </app-banner>
+          }
+          @if (comingState() === 'loading' || comingState() === 'idle') {
+            <div role="status" data-testid="my-tasks-coming-loading">
+              <span class="nw-sr-only">{{ 'myTasks.loading' | transloco }}</span>
+              <app-skeleton [rows]="3" />
+            </div>
+          } @else {
+            <div class="day-groups">
+              @for (group of comingGroups(); track group.date) {
+                <section class="day-group">
+                  <h2 class="day">
+                    {{ group.tomorrow ? ('myTasks.day.tomorrow' | transloco: { day: group.label }) : group.label }}
+                  </h2>
+                  <div class="list">
+                    @for (item of group.items; track item.task_id) {
+                      <app-task-row [item]="item" [origin]="tab()" />
+                    }
+                  </div>
+                </section>
+              } @empty {
+                @if (comingState() === 'ready') {
+                  <app-empty-state icon="calendar_month" titleKey="myTasks.empty.coming.title" bodyKey="myTasks.empty.coming.body" />
+                }
+              }
+            </div>
+          }
+          @if (comingHistory().length || comingNext()) {
+            <nav class="pager" [attr.aria-label]="'myTasks.pager.label' | transloco" data-testid="my-tasks-coming-pager">
+              <button type="button" class="btn ghost" data-testid="my-tasks-coming-prev" [disabled]="!comingHistory().length || comingState() !== 'ready'" (click)="prevPage('coming')">
+                {{ 'myTasks.prev' | transloco }}
+              </button>
+              <span class="pager-label" aria-live="polite" data-testid="my-tasks-coming-page">{{ 'myTasks.page' | transloco: { page: pageNumber('coming') } }}</span>
+              <button type="button" class="btn ghost" data-testid="my-tasks-coming-next" [disabled]="!comingNext() || comingState() !== 'ready'" (click)="nextPage('coming')">
+                {{ 'myTasks.next' | transloco }}
+              </button>
+            </nav>
+          }
+        }
+        @case ('waiting') {
+          @if (waiting().length) {
+            <p class="muted">{{ 'myTasks.waiting_note' | transloco }}</p>
+            @if (withdrawError(); as key) {
+              <p class="error" role="alert" data-testid="my-tasks-withdraw-error">{{ key | transloco }}</p>
+            }
+            <div class="list">
+              @for (item of waiting(); track item.task_id) {
+                <app-task-row [item]="item" [origin]="tab()" [doneAt]="item.completed_at">
+                  <div class="row-actions">
+                    <span class="badge amber" data-testid="my-task-checking">{{ 'myTasks.waiting_badge' | transloco }}</span>
+                    <button
+                      type="button"
+                      class="btn ghost undo"
+                      data-testid="my-task-undo"
+                      [disabled]="withdrawingId() !== null"
+                      (click)="withdraw(item)"
+                    >
+                      {{ 'myTasks.undo' | transloco }}
+                    </button>
+                  </div>
+                </app-task-row>
+              }
+            </div>
+          } @else {
+            <app-empty-state icon="hourglass_empty" titleKey="myTasks.empty.waiting.title" bodyKey="myTasks.empty.waiting.body" />
+          }
+        }
+        @case ('expired') {
+          @if (expired().length) {
+            <p class="muted">{{ 'myTasks.expired_note' | transloco }}</p>
+            <div class="list">
+              @for (item of expired(); track item.task_id) {
+                <app-task-row [item]="item" [origin]="tab()" [expired]="true" />
+              }
+            </div>
+          } @else {
+            <app-empty-state icon="event_busy" titleKey="myTasks.empty.expired.title" bodyKey="myTasks.empty.expired.body" />
+          }
+        }
+        @case ('done') {
+          @if (doneState() === 'error') {
+            <app-banner tone="error" data-testid="my-tasks-done-error">
+              {{ 'myTasks.page_error' | transloco }}
+              <button type="button" class="btn ghost" (click)="retryPage('done')">{{ 'myTasks.retry' | transloco }}</button>
+            </app-banner>
+          }
+          @if (doneState() === 'loading' || doneState() === 'idle') {
+            <div role="status" data-testid="my-tasks-done-loading">
+              <span class="nw-sr-only">{{ 'myTasks.loading' | transloco }}</span>
+              <app-skeleton [rows]="3" />
+            </div>
+          } @else {
+            <div class="list">
+              @for (item of doneItems(); track item.task_id) {
+                <app-task-row [item]="item" [origin]="tab()" />
+              } @empty {
+                @if (doneState() === 'ready') {
+                  <app-empty-state icon="emoji_events" titleKey="myTasks.empty.done.title" bodyKey="myTasks.empty.done.body" />
+                }
+              }
+            </div>
+          }
+          @if (doneHistory().length || doneNext()) {
+            <nav class="pager" [attr.aria-label]="'myTasks.pager.label' | transloco" data-testid="my-tasks-done-pager">
+              <button type="button" class="btn ghost" data-testid="my-tasks-done-prev" [disabled]="!doneHistory().length || doneState() !== 'ready'" (click)="prevPage('done')">
+                {{ 'myTasks.prev' | transloco }}
+              </button>
+              <span class="pager-label" aria-live="polite" data-testid="my-tasks-done-page">{{ 'myTasks.page' | transloco: { page: pageNumber('done') } }}</span>
+              <button type="button" class="btn ghost" data-testid="my-tasks-done-next" [disabled]="!doneNext() || doneState() !== 'ready'" (click)="nextPage('done')">
+                {{ 'myTasks.next' | transloco }}
+              </button>
+            </nav>
+          }
+        }
+      }
+    </div>
+  }
+</section>

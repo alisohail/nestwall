@@ -1,0 +1,329 @@
+<section class="new" data-testid="bonus-new-page">
+  <header class="page-head">
+    <div class="grow">
+      <a class="icon-btn back" routerLink="/bonus" data-testid="bonus-new-back" [attr.aria-label]="'bonus.new.back' | transloco">
+        <span class="material-icons" aria-hidden="true">arrow_back</span>
+      </a>
+      <h1>{{ 'bonus.new.title' | transloco }}</h1>
+    </div>
+    <div class="head-actions">
+      <button
+        type="button"
+        class="btn ghost"
+        [disabled]="templateSaving()"
+        (click)="saveAsTemplate()"
+        data-testid="bonus-save-template"
+      >
+        {{ (templateSaving() ? 'bonus.new.savingTemplate' : 'bonus.new.saveTemplate') | transloco }}
+      </button>
+      <a class="btn ghost" routerLink="/bonus">{{ 'common.cancel' | transloco }}</a>
+      <button type="submit" form="bonus-new-form" class="btn primary" [disabled]="saving() || !hasUnsavedChanges()" data-testid="bonus-publish">
+        {{ (saving() ? 'bonus.new.publishing' : 'bonus.new.publish') | transloco }}
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <form id="bonus-new-form" class="card form" novalidate (ngSubmit)="submit()" data-testid="bonus-new-form">
+      @if (zoneState() === 'error') {
+        <app-banner tone="error" data-testid="bonus-zone-error">{{ 'bonus.new.zoneError' | transloco }}</app-banner>
+      }
+      @if (saveError(); as e) {
+        <app-banner tone="error" data-testid="bonus-new-error">{{ e | transloco }}</app-banner>
+      }
+
+      @if (templates().length > 0) {
+        <div class="fld" data-testid="bonus-template-pick">
+          <span class="fld-label" id="bonus-template-label">{{ 'bonus.new.templatePick' | transloco }}</span>
+          <div class="chips" role="group" aria-labelledby="bonus-template-label">
+            @for (t of visibleTemplates(); track t.id) {
+              <button
+                type="button"
+                class="chip"
+                [class.on]="selectedTemplateId() === t.id"
+                [attr.aria-pressed]="selectedTemplateId() === t.id"
+                (click)="applyTemplate(t)"
+                [attr.data-testid]="'bonus-template-' + t.id"
+              >
+                {{ t.name }}
+              </button>
+            }
+            @if (templates().length > visibleTemplates().length) {
+              <button type="button" class="chip" (click)="templatesExpanded.set(true)" data-testid="bonus-template-more">
+                {{ 'bonus.new.templateMore' | transloco }}
+              </button>
+            }
+          </div>
+          <p class="fld-hint">{{ 'bonus.new.templateHint' | transloco }}</p>
+        </div>
+      }
+
+      <div class="fld">
+        <label class="fld-label" for="bonus-title">{{ 'bonus.new.titleLabel' | transloco }}</label>
+        <input
+          id="bonus-title"
+          class="input"
+          type="text"
+          name="title"
+          autocomplete="off"
+          [ngModel]="title()"
+          (ngModelChange)="title.set($event)"
+          [attr.aria-invalid]="attempted() && titleError() ? 'true' : null"
+          aria-describedby="bonus-title-hint"
+          data-testid="bonus-title"
+        />
+        @if (attempted() && titleError(); as e) {
+          <p class="fld-hint err" id="bonus-title-hint" role="alert">{{ e | transloco }}</p>
+        } @else {
+          <p class="fld-hint" id="bonus-title-hint">{{ 'bonus.new.titleHint' | transloco: { max: titleMax } }}</p>
+        }
+      </div>
+
+      <div class="fld">
+        <label class="fld-label" for="bonus-description">{{ 'bonus.new.descriptionLabel' | transloco }}</label>
+        <textarea
+          id="bonus-description"
+          class="input textarea"
+          name="description"
+          rows="3"
+          [ngModel]="description()"
+          (ngModelChange)="description.set($event)"
+          aria-describedby="bonus-description-hint"
+          data-testid="bonus-description"
+        ></textarea>
+        @if (attempted() && descriptionError(); as e) {
+          <p class="fld-hint err" id="bonus-description-hint" role="alert">{{ e | transloco }}</p>
+        } @else {
+          <p class="fld-hint" id="bonus-description-hint">
+            {{ 'bonus.new.descriptionHint' | transloco: { max: descriptionMax } }}
+          </p>
+        }
+      </div>
+
+      <div class="fld">
+        <label class="fld-label" for="bonus-points">{{ 'bonus.new.pointsLabel' | transloco }}</label>
+        <input
+          id="bonus-points"
+          class="input points-input"
+          type="number"
+          name="points"
+          inputmode="numeric"
+          step="1"
+          [min]="pointsMin"
+          [max]="pointsMax"
+          [ngModel]="points()"
+          (ngModelChange)="points.set($event)"
+          [attr.aria-invalid]="attempted() && pointsError() ? 'true' : null"
+          aria-describedby="bonus-points-hint"
+          data-testid="bonus-points"
+        />
+        @if (attempted() && pointsError(); as e) {
+          <p class="fld-hint err" id="bonus-points-hint" role="alert">{{ e | transloco: pointsRangeParams }}</p>
+        } @else {
+          <p class="fld-hint" id="bonus-points-hint">
+            {{ 'bonus.new.pointsHint' | transloco: pointsRangeParams }}
+          </p>
+        }
+      </div>
+
+      <fieldset class="fld">
+        <legend class="fld-label">{{ 'bonus.new.kidsLabel' | transloco }}</legend>
+        @if (kidsState() === 'loading') {
+          <div role="status">
+            <span class="nw-sr-only">{{ 'bonus.new.kidsLoading' | transloco }}</span>
+            <app-skeleton [rows]="2" />
+          </div>
+        } @else if (kidsState() === 'error') {
+          <p class="err-text" role="alert">{{ 'bonus.new.kidsError' | transloco }}</p>
+        } @else if (kids().length === 0) {
+          <p class="muted small" data-testid="bonus-no-kids">{{ 'bonus.new.noKids' | transloco }}</p>
+        } @else {
+          <div class="chips" role="group" [attr.aria-label]="'bonus.new.kidsLabel' | transloco">
+            @for (kid of kids(); track kid.id) {
+              <button
+                type="button"
+                class="kid-chip"
+                [class.on]="isSelected(kid.id)"
+                [attr.aria-pressed]="isSelected(kid.id)"
+                (click)="toggleKid(kid.id)"
+                [attr.data-testid]="'bonus-kid-' + kid.id"
+              >
+                <app-avatar [name]="kid.display_name" [colour]="kid.colour" [avatarId]="kid.avatar_id" size="sm" />
+                <span>{{ kid.display_name }}</span>
+              </button>
+            }
+          </div>
+        }
+        @if (attempted() && kidsError(); as e) {
+          <p class="fld-hint err" role="alert">{{ e | transloco }}</p>
+        }
+      </fieldset>
+
+      <fieldset class="fld">
+        <legend class="fld-label">{{ 'bonus.new.modeLabel' | transloco }}</legend>
+        <label class="option" [class.on]="mode() === 'first_come'">
+          <input
+            type="radio"
+            name="claim-mode"
+            value="first_come"
+            [checked]="mode() === 'first_come'"
+            (change)="mode.set('first_come')"
+            data-testid="bonus-mode-first-come"
+          />
+          <span class="option-text">
+            <strong>{{ 'bonus.mode.first_come' | transloco }}</strong>
+            <span class="muted small">{{ 'bonus.new.modeFirstComeHint' | transloco }}</span>
+          </span>
+        </label>
+        <label class="option" [class.on]="mode() === 'everyone_once'">
+          <input
+            type="radio"
+            name="claim-mode"
+            value="everyone_once"
+            [checked]="mode() === 'everyone_once'"
+            (change)="mode.set('everyone_once')"
+            data-testid="bonus-mode-everyone-once"
+          />
+          <span class="option-text">
+            <strong>{{ 'bonus.mode.everyone_once' | transloco }}</strong>
+            <span class="muted small">{{ 'bonus.new.modeEveryoneOnceHint' | transloco }}</span>
+          </span>
+        </label>
+      </fieldset>
+
+      <fieldset class="fld">
+        <legend class="fld-label">{{ 'bonus.new.dayLabel' | transloco }}</legend>
+        <div class="chips" role="group" [attr.aria-label]="'bonus.new.dayLabel' | transloco">
+          <button
+            type="button"
+            class="day-chip"
+            [class.on]="day() === today()"
+            [attr.aria-pressed]="day() === today()"
+            [disabled]="!today()"
+            (click)="day.set(today())"
+            data-testid="bonus-day-today"
+          >
+            {{ 'bonus.new.dayToday' | transloco }}
+          </button>
+          <button
+            type="button"
+            class="day-chip"
+            [class.on]="day() === tomorrow()"
+            [attr.aria-pressed]="day() === tomorrow()"
+            [disabled]="!tomorrow()"
+            (click)="day.set(tomorrow())"
+            data-testid="bonus-day-tomorrow"
+          >
+            {{ 'bonus.new.dayTomorrow' | transloco }}
+          </button>
+          <input
+            class="input day-input"
+            type="date"
+            name="day"
+            [attr.min]="today() || null"
+            [ngModel]="day()"
+            (ngModelChange)="day.set($event)"
+            [attr.aria-label]="'bonus.new.dayPick' | transloco"
+            [attr.aria-invalid]="attempted() && dayError() ? 'true' : null"
+            aria-describedby="bonus-day-hint"
+            data-testid="bonus-day"
+          />
+        </div>
+        @if (attempted() && dayError(); as e) {
+          <p class="fld-hint err" id="bonus-day-hint" role="alert">{{ e | transloco }}</p>
+        } @else {
+          <p class="fld-hint" id="bonus-day-hint">{{ 'bonus.new.dayHint' | transloco }}</p>
+        }
+      </fieldset>
+
+      <div class="window">
+        <div class="fld">
+          <label class="fld-label" for="bonus-show">{{ 'bonus.new.showLabel' | transloco }}</label>
+          <input
+            id="bonus-show"
+            class="input time-input"
+            type="time"
+            name="show"
+            [ngModel]="showAt()"
+            (ngModelChange)="showAt.set($event)"
+            aria-describedby="bonus-show-hint"
+            data-testid="bonus-show"
+          />
+          <p class="fld-hint" id="bonus-show-hint">{{ 'bonus.new.showHint' | transloco }}</p>
+        </div>
+
+        <div class="fld">
+          <label class="fld-label" for="bonus-ends">{{ 'bonus.new.endsLabel' | transloco }}</label>
+          <input
+            id="bonus-ends"
+            class="input time-input"
+            type="time"
+            name="ends"
+            [ngModel]="endsAt()"
+            (ngModelChange)="endsAt.set($event)"
+            [attr.aria-invalid]="attempted() && windowError() ? 'true' : null"
+            aria-describedby="bonus-ends-hint"
+            data-testid="bonus-ends"
+          />
+          @if (attempted() && windowError(); as e) {
+            <p class="fld-hint err" id="bonus-ends-hint" role="alert">{{ e | transloco }}</p>
+          } @else {
+            <p class="fld-hint" id="bonus-ends-hint">{{ 'bonus.new.endsHint' | transloco }}</p>
+          }
+        </div>
+      </div>
+
+      <label class="switch-row">
+        <span class="option-text">
+          <strong>{{ 'bonus.new.approvalLabel' | transloco }}</strong>
+          <span class="muted small">{{ 'bonus.new.approvalHint' | transloco }}</span>
+        </span>
+        <input
+          type="checkbox"
+          role="switch"
+          name="approval-required"
+          [ngModel]="approvalRequired()"
+          (ngModelChange)="approvalRequired.set($event)"
+          data-testid="bonus-approval"
+        />
+      </label>
+
+      @if (templateError(); as e) {
+        <app-banner tone="error" data-testid="bonus-template-error">{{ e | transloco }}</app-banner>
+      }
+      @if (templateSaved()) {
+        <app-banner tone="success" data-testid="bonus-template-saved">{{ 'bonus.new.templateSaved' | transloco }}</app-banner>
+      }
+    </form>
+
+    <aside class="card preview" aria-labelledby="bonus-preview-title" data-testid="bonus-preview">
+      <h2 id="bonus-preview-title" class="preview-title">
+        @if (previewName(); as name) {
+          {{ 'bonus.new.previewFor' | transloco: { name } }}
+        } @else {
+          {{ 'bonus.new.previewAnyKid' | transloco }}
+        }
+      </h2>
+      <div class="bn">
+        <span class="bn-tag">{{ 'bonus.tag' | transloco }}</span>
+        <div class="bn-top">
+          <span class="ico material-icons" aria-hidden="true">redeem</span>
+          <div class="grow">
+            <p class="title">{{ title().trim() || ('bonus.new.previewTitle' | transloco) }}</p>
+            @if (description().trim(); as d) {
+              <p class="muted desc">{{ d }}</p>
+            }
+          </div>
+          <span class="bn-pts">{{ 'bonus.points' | transloco: { points: pointsPreview() } }}</span>
+        </div>
+        <div class="chips">
+          <span class="chip-t">{{ 'bonus.mode.' + mode() | transloco }}</span>
+          <span class="chip-t">{{ dayPreview() }}</span>
+          <span class="chip-t">{{ windowPreview().key | transloco: windowPreview().params }}</span>
+          <span class="chip-t good">{{ 'bonus.noPenalty' | transloco }}</span>
+        </div>
+      </div>
+      <p class="muted small">{{ 'bonus.new.previewNote' | transloco }}</p>
+    </aside>
+  </div>
+</section>

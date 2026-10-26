@@ -1,0 +1,180 @@
+<section class="card col" aria-labelledby="general-family-title">
+  <div class="row head">
+    <div class="grow">
+      <h2 id="general-family-title">{{ 'settings.general.family_title' | transloco }}</h2>
+      <p class="hint">{{ 'settings.general.family_hint' | transloco }}</p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="field">
+      <label class="field-label" for="general-family-name">{{ 'family.name_edit.label' | transloco }}</label>
+      <input
+        id="general-family-name"
+        class="input"
+        type="text"
+        name="family_name"
+        autocomplete="off"
+        maxlength="80"
+        [disabled]="!canManageFamily() || familySaving()"
+        [(ngModel)]="familyDraft"
+        data-testid="family-name-input"
+      />
+    </div>
+  </div>
+  @if (familyError(); as key) {
+    <app-banner tone="error">{{ key | transloco }}</app-banner>
+  }
+  @if (canManageFamily()) {
+    <div class="foot">
+      <button type="button" class="btn primary" data-testid="family-name-save" [disabled]="familySaving() || familyDraft.trim() === '' || familyDraft.trim() === familyName()" (click)="saveFamilyName()">
+        {{ 'settings.general.family_save' | transloco }}
+      </button>
+    </div>
+  }
+</section>
+
+<section class="card col" aria-labelledby="general-weather-title">
+  @if (loadState() === 'loading') {
+    <app-loading variant="full" labelKey="settings.common.loading" />
+  } @else if (loadState() === 'error') {
+    <app-load-error [error]="loadApiError()" (retry)="load()" />
+  } @else {
+    <div class="row head">
+      <span class="emoji" aria-hidden="true">⛅</span>
+      <div class="grow">
+        <h2 id="general-weather-title">{{ 'settings.general.weather_title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.general.weather_hint' | transloco }}</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label class="field-label" for="general-place">{{ 'settings.general.place' | transloco }}</label>
+        <input
+          id="general-place"
+          class="input"
+          type="text"
+          name="place"
+          autocomplete="off"
+          [maxlength]="maxPlace"
+          [(ngModel)]="placeName"
+          data-testid="weather-place"
+        />
+        <span class="hint">{{ 'settings.general.place_hint' | transloco }}</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="general-lat">{{ 'settings.general.latitude' | transloco }}</label>
+        <input
+          id="general-lat"
+          class="input"
+          type="number"
+          name="latitude"
+          step="any"
+          [min]="-90"
+          [max]="90"
+          [(ngModel)]="latitude"
+          data-testid="weather-lat"
+        />
+      </div>
+      <div class="field">
+        <label class="field-label" for="general-lon">{{ 'settings.general.longitude' | transloco }}</label>
+        <input
+          id="general-lon"
+          class="input"
+          type="number"
+          name="longitude"
+          step="any"
+          [min]="-180"
+          [max]="180"
+          [(ngModel)]="longitude"
+          data-testid="weather-lon"
+        />
+      </div>
+    </div>
+    <div class="detect">
+      <p class="hint">{{ 'settings.general.coords_hint' | transloco }}</p>
+      <button
+        type="button"
+        class="btn soft"
+        data-testid="weather-detect"
+        [disabled]="detecting() || busy()"
+        (click)="detect()"
+      >
+        {{ (detecting() ? 'settings.general.detecting' : 'settings.general.detect') | transloco }}
+      </button>
+    </div>
+    @if (detectError(); as key) {
+      <app-banner tone="error">{{ key | transloco }}</app-banner>
+    }
+
+    <div class="setting">
+      <div class="grow">
+        <div class="t" id="weather-unit-label">{{ 'settings.general.unit' | transloco }}</div>
+      </div>
+      <div class="seg" role="group" aria-labelledby="weather-unit-label">
+        <button
+          type="button"
+          [class.on]="unit === 'c'"
+          [attr.aria-pressed]="unit === 'c'"
+          data-testid="weather-unit-c"
+          (click)="unit = 'c'"
+        >
+          {{ 'settings.general.unit_c' | transloco }}
+        </button>
+        <button
+          type="button"
+          [class.on]="unit === 'f'"
+          [attr.aria-pressed]="unit === 'f'"
+          data-testid="weather-unit-f"
+          (click)="unit = 'f'"
+        >
+          {{ 'settings.general.unit_f' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div class="grow">
+        <div class="t" id="weather-animation-label">{{ 'settings.general.animation' | transloco }}</div>
+        <p class="hint">{{ 'settings.general.animation_hint' | transloco }}</p>
+      </div>
+      <div class="seg" role="group" aria-labelledby="weather-animation-label">
+        <button
+          type="button"
+          [class.on]="animation === 'calm'"
+          [attr.aria-pressed]="animation === 'calm'"
+          data-testid="weather-animation-calm"
+          (click)="animation = 'calm'"
+        >
+          {{ 'settings.general.animation_calm' | transloco }}
+        </button>
+        <button
+          type="button"
+          [class.on]="animation === 'live'"
+          [attr.aria-pressed]="animation === 'live'"
+          data-testid="weather-animation-live"
+          (click)="animation = 'live'"
+        >
+          {{ 'settings.general.animation_live' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <div class="foot">
+      @if (saved()) {
+        <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
+      }
+      @if (saveError(); as key) {
+        <app-banner tone="error">{{ key | transloco }}</app-banner>
+      }
+      @if (hasLocation()) {
+        <button type="button" class="btn soft" data-testid="weather-remove" [disabled]="busy()" (click)="removeLocation()">
+          {{ 'settings.general.remove' | transloco }}
+        </button>
+      }
+        <button type="button" class="btn primary" data-testid="weather-save" [disabled]="busy() || !hasUnsavedChanges()" (click)="save()">
+          {{ 'settings.common.save' | transloco }}
+        </button>
+    </div>
+  }
+</section>

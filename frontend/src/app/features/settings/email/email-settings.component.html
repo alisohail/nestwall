@@ -1,0 +1,208 @@
+<ng-template #headerActions>
+  <div class="row wrap actions-end">
+    <button type="button" class="btn ghost" data-testid="email-test" [disabled]="testing() || loadState() !== 'ready'" (click)="sendTest()">
+      {{ 'settings.email.test' | transloco }}
+    </button>
+    @if (canManage()) {
+      <button type="button" class="btn primary" data-testid="email-save" [disabled]="busy() || loadState() !== 'ready' || !hasUnsavedChanges()" (click)="save()">
+        {{ 'settings.email.save' | transloco }}
+      </button>
+    }
+  </div>
+</ng-template>
+
+@if (loadState() === 'loading') {
+  <app-loading variant="full" labelKey="settings.common.loading" data-testid="email-loading" />
+} @else if (loadState() === 'error') {
+  <app-load-error [error]="loadApiError()" (retry)="load()" />
+} @else {
+  <div class="col">
+    <section class="card row" aria-labelledby="email-enable-title">
+      <div class="grow">
+        <h2 id="email-enable-title">{{ 'settings.email.enable_title' | transloco }}</h2>
+        <p class="hint">{{ 'settings.email.enable_hint' | transloco }}</p>
+      </div>
+      @if (ready()) {
+        <span class="badge ok" data-testid="email-status">{{ 'settings.email.ready' | transloco }}</span>
+      } @else {
+        <span class="badge" data-testid="email-status">{{ 'settings.email.not_ready' | transloco }}</span>
+      }
+    </section>
+
+    @if (saved()) {
+      <p class="saved" role="status" data-testid="email-saved">{{ 'settings.common.saved' | transloco }}</p>
+    }
+    @if (saveError(); as m) {
+      <app-banner tone="error">{{ m.key ? (m.key | transloco) : m.message }}</app-banner>
+    }
+    @if (testResult(); as r) {
+      <app-banner [tone]="r.tone" data-testid="email-test-result">
+        {{ r.text.key ? (r.text.key | transloco) : r.text.message }}
+      </app-banner>
+    }
+
+    <div class="split" [class.single]="provider() !== 'gmail'">
+      <fieldset class="reset" [disabled]="!canManage()">
+        <section class="card col" aria-labelledby="email-server-title">
+          <h3 id="email-server-title">{{ 'settings.email.server_title' | transloco }}</h3>
+
+          <div class="field">
+            <span class="field-label" id="email-provider-label">{{ 'settings.email.provider' | transloco }}</span>
+            <div class="seg provider" role="group" aria-labelledby="email-provider-label">
+              @for (p of providers; track p) {
+                <button
+                  type="button"
+                  [class.on]="provider() === p"
+                  [attr.aria-pressed]="provider() === p"
+                  [attr.data-testid]="'email-provider-' + p"
+                  (click)="pickProvider(p); saved.set(false)"
+                >
+                  {{ 'settings.email.provider_' + p | transloco }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label class="field-label" for="email-host">{{ 'settings.email.host' | transloco }}</label>
+              <input id="email-host" class="input mono" type="text" name="host" autocomplete="off" [(ngModel)]="host" (ngModelChange)="saved.set(false)" data-testid="email-host" />
+            </div>
+            <div class="field">
+              <label class="field-label" for="email-port">{{ 'settings.email.port' | transloco }}</label>
+              <input
+                id="email-port"
+                class="input mono"
+                type="number"
+                name="port"
+                [min]="portMin"
+                [max]="portMax"
+                [(ngModel)]="port"
+                (ngModelChange)="saved.set(false)"
+                data-testid="email-port"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="email-security-label">{{ 'settings.email.security' | transloco }}</span>
+            <div class="seg" role="group" aria-labelledby="email-security-label">
+              <button
+                type="button"
+                [class.on]="security === 'starttls'"
+                [attr.aria-pressed]="security === 'starttls'"
+                data-testid="email-security-starttls"
+                (click)="security = 'starttls'; saved.set(false)"
+              >
+                {{ 'settings.email.security_starttls' | transloco }}
+              </button>
+              <button
+                type="button"
+                [class.on]="security === 'tls'"
+                [attr.aria-pressed]="security === 'tls'"
+                data-testid="email-security-tls"
+                (click)="security = 'tls'; saved.set(false)"
+              >
+                {{ 'settings.email.security_tls' | transloco }}
+              </button>
+            </div>
+            <span class="hint">{{ 'settings.email.security_hint' | transloco }}</span>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="email-username">{{ 'settings.email.username' | transloco }}</label>
+            <input id="email-username" class="input" type="text" name="username" autocomplete="off" [(ngModel)]="username" (ngModelChange)="saved.set(false)" data-testid="email-username" />
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="email-password-label">{{ 'settings.email.password' | transloco }}</span>
+            @if (passwordSet() && passwordAction() === 'keep') {
+              <div class="row">
+                <input class="input mono grow" type="password" value="••••••••••••••••" disabled aria-labelledby="email-password-label" />
+                <button type="button" class="btn ghost" data-testid="email-password-replace" (click)="replacePassword(); saved.set(false)">
+                  {{ 'settings.email.password_replace' | transloco }}
+                </button>
+                <button type="button" class="btn ghost" data-testid="email-password-remove" (click)="removePassword(); saved.set(false)">
+                  {{ 'settings.email.password_remove' | transloco }}
+                </button>
+              </div>
+              <span class="hint">{{ 'settings.email.password_stored' | transloco }}</span>
+            } @else if (passwordAction() === 'clear') {
+              <div class="row">
+                <span class="hint grow">{{ 'settings.email.password_clear_pending' | transloco }}</span>
+                <button type="button" class="btn ghost" data-testid="email-password-undo" (click)="cancelReplace()">
+                  {{ 'settings.email.password_undo' | transloco }}
+                </button>
+              </div>
+            } @else {
+              <div class="row">
+                <input
+                  id="email-password"
+                  aria-labelledby="email-password-label"
+                  class="input mono grow"
+                  type="password"
+                  name="password"
+                  autocomplete="new-password"
+                  [(ngModel)]="password"
+                  (ngModelChange)="saved.set(false)"
+                  data-testid="email-password"
+                />
+                @if (passwordSet()) {
+                  <button type="button" class="btn ghost" data-testid="email-password-cancel" (click)="cancelReplace()">
+                    {{ 'settings.email.password_cancel' | transloco }}
+                  </button>
+                }
+              </div>
+              <span class="hint">{{ 'settings.email.password_stored' | transloco }}</span>
+            }
+          </div>
+
+          <div class="divider"></div>
+          <h3>{{ 'settings.email.sender_title' | transloco }}</h3>
+
+          <div class="grid">
+            <div class="field">
+              <label class="field-label" for="email-from-name">{{ 'settings.email.from_name' | transloco }}</label>
+              <input id="email-from-name" class="input" type="text" name="from_name" autocomplete="off" [(ngModel)]="fromName" (ngModelChange)="saved.set(false)" data-testid="email-from-name" />
+            </div>
+            <div class="field">
+              <label class="field-label" for="email-from-address">{{ 'settings.email.from_address' | transloco }}</label>
+              <input id="email-from-address" class="input" type="email" name="from_address" autocomplete="off" [(ngModel)]="fromAddress" (ngModelChange)="saved.set(false)" data-testid="email-from-address" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="email-send-limit">{{ 'settings.email.send_limit' | transloco }}</label>
+            <input
+              id="email-send-limit"
+              class="input num"
+              type="number"
+              name="send_limit"
+              [min]="sendLimitMin"
+              [max]="sendLimitMax"
+              [(ngModel)]="sendLimit"
+              (ngModelChange)="saved.set(false)"
+              data-testid="email-send-limit"
+            />
+            <span class="hint">{{ 'settings.email.send_limit_hint' | transloco }}</span>
+          </div>
+        </section>
+      </fieldset>
+
+      @if (provider() === 'gmail') {
+        <aside class="card tint" aria-labelledby="email-gmail-title" data-testid="email-gmail-steps">
+          <h3 id="email-gmail-title">{{ 'settings.email.gmail_title' | transloco }}</h3>
+          <ol class="steps small">
+            <li>{{ 'settings.email.gmail_step_1' | transloco }}</li>
+            <li>{{ 'settings.email.gmail_step_2' | transloco }}</li>
+            <li>{{ 'settings.email.gmail_step_3' | transloco }}</li>
+            <li>{{ 'settings.email.gmail_step_4' | transloco }}</li>
+          </ol>
+          <p class="tiny muted">{{ 'settings.email.gmail_note' | transloco }}</p>
+        </aside>
+      }
+    </div>
+
+    <app-banner tone="info">{{ 'settings.email.privacy' | transloco }}</app-banner>
+  </div>
+}

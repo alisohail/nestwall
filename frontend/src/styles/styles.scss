@@ -1,0 +1,636 @@
+/* NestWall Global Styles */
+@use 'tokens/reference';
+@use 'themes/dark';
+
+/* Self-hosted fonts — files are in assets/fonts/ */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url('/assets/fonts/fredoka-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url('/assets/fonts/nunito-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/assets/fonts/inter-var.woff2') format('woff2');
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--nw-font-ui);
+  background-color: var(--nw-color-background);
+  color: var(--nw-color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-size: var(--nw-text-base);
+  line-height: var(--nw-leading-normal);
+}
+
+h1, h2, h3, h4 { margin: 0; line-height: var(--nw-leading-tight); letter-spacing: -.01em; }
+h1 { font-family: var(--nw-font-brand); font-size: var(--nw-text-3xl); font-weight: 700; }
+h2 { font-size: var(--nw-text-lg); font-weight: 700; }
+h3 { font-size: var(--nw-text-base); font-weight: 700; }
+p  { margin: 0; }
+a  { color: var(--nw-color-primary); text-decoration: none; }
+
+
+/* ---------- App shell ---------- */
+.app {
+  display: grid;
+  grid-template-columns: 252px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--nw-color-surface);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 20px 14px;
+  background: var(--nw-color-surface);
+  border-right: 1px solid var(--nw-color-outline);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--nw-font-brand);
+  font-weight: 700;
+  font-size: var(--nw-text-2xl);
+  color: var(--nw-color-primary);
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+.brand img {
+  width: 38px;
+  height: 38px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--nw-button-radius);
+  color: var(--nw-color-on-surface-variant);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background var(--nw-motion-fast), color var(--nw-motion-fast);
+  cursor: pointer;
+}
+
+.nav a:hover {
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface);
+}
+
+.nav a.active {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-on-primary-container);
+}
+
+.sidebar .foot {
+  margin-top: auto;
+}
+
+.family-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--nw-color-surface-variant);
+}
+
+.main {
+  padding: 0 32px 56px;
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0 8px;
+  margin-bottom: 12px;
+}
+
+.m-brand {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--nw-font-brand);
+  font-weight: 700;
+  font-size: var(--nw-text-lg);
+  color: var(--nw-color-primary);
+}
+
+/* Nesty mascot image on auth screens */
+.nesty {
+  display: block;
+  margin: 0 auto 16px;
+  max-width: 100%;
+  height: auto;
+}
+
+.m-brand img {
+  width: 24px;
+  height: 24px;
+}
+
+.bottomnav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: var(--nw-color-surface);
+  border-top: 1px solid var(--nw-color-outline);
+  justify-content: space-around;
+  align-items: center;
+  z-index: var(--nw-z-nav);
+}
+
+.bottomnav a,
+.bottomnav .more-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--nw-color-faint);
+  text-decoration: none;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 4px 0;
+}
+
+.bottomnav .more-btn {
+  background: none;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.bottomnav a.active,
+.bottomnav .more-btn.active,
+.bottomnav .more-btn[aria-expanded='true'] {
+  color: var(--nw-color-primary);
+}
+
+.more-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--nw-color-scrim);
+  z-index: calc(var(--nw-z-nav) + 1);
+}
+
+.more-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px 24px;
+  background: var(--nw-color-surface);
+  border-radius: 24px 24px 0 0;
+  box-shadow: var(--nw-shadow-lg);
+  z-index: calc(var(--nw-z-nav) + 2);
+}
+
+.more-sheet a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 12px;
+  font-size: var(--nw-text-md);
+  font-weight: 700;
+  color: var(--nw-color-on-surface);
+  text-decoration: none;
+  border-radius: 14px;
+}
+
+.more-sheet a.active,
+.more-sheet a:hover {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-primary);
+}
+
+/* Button style utilities mapping to tokens */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--nw-button-radius);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  border: none;
+  transition: opacity var(--nw-motion-fast);
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn.primary {
+  background: var(--nw-color-primary);
+  color: var(--nw-color-on-primary);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--nw-color-on-surface-variant);
+  border: 1px solid var(--nw-color-outline);
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface-variant);
+  border: 1px solid var(--nw-color-outline);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface);
+}
+
+.icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface-variant);
+}
+
+/* Page-level back buttons: primary tint so they stand out from the page in both themes. */
+.icon-btn.back {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-on-primary-container);
+  border-color: var(--nw-color-primary);
+}
+
+.icon-btn.back:hover {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-on-primary-container);
+  border-color: var(--nw-color-on-primary-container);
+  opacity: 0.9;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Detail pages: one action card with a hint and the buttons. Stacks with full-width buttons on phones. */
+.action-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-3) var(--nw-space-4);
+}
+
+.action-card > p {
+  flex: 1 1 14rem;
+  margin: 0;
+  font-size: var(--nw-text-sm);
+  color: var(--nw-color-on-surface-variant);
+}
+
+.action-card__buttons {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--nw-space-2);
+  margin-left: auto;
+}
+
+.action-card .btn {
+  min-height: 44px;
+  padding: var(--nw-space-2) var(--nw-space-5);
+  font-size: var(--nw-text-base);
+}
+
+@media (max-width: 600px) {
+  .action-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .action-card > p {
+    flex: 0 0 auto;
+  }
+
+  .action-card__buttons {
+    flex-direction: column;
+    justify-content: stretch;
+    margin-left: 0;
+  }
+
+  .action-card .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+/* Shared components, ported from the mock stylesheet */
+.card {
+  background: var(--nw-color-surface);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-card-radius);
+  padding: 20px;
+  box-shadow: var(--nw-shadow);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+/* Undo on a submitted copy: a warning tint, so it stands out from the background in both themes. */
+.btn.undo {
+  background: var(--nw-color-warning-container);
+  color: var(--nw-color-on-warning-container);
+  border-color: var(--nw-color-warning);
+}
+
+.btn.soft {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-primary);
+}
+
+.btn.danger {
+  background: var(--nw-color-error-container);
+  color: var(--nw-color-error);
+}
+
+.btn.amber {
+  background: var(--nw-color-points);
+  color: var(--nw-color-on-points);
+}
+
+.btn.sm {
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  border-radius: 10px;
+}
+
+.btn.lg {
+  padding: 14px 22px;
+  font-size: 1rem;
+  border-radius: 14px;
+}
+
+.btn.block {
+  width: 100%;
+  justify-content: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border-radius: var(--nw-radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface-variant);
+  white-space: nowrap;
+}
+
+.badge.teal {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-primary);
+}
+
+.badge.amber {
+  background: var(--nw-color-warning-container);
+  color: var(--nw-color-on-warning-container);
+}
+
+.badge.ok {
+  background: var(--nw-color-success-container);
+  color: var(--nw-color-on-success-container);
+}
+
+.badge.err {
+  background: var(--nw-color-error-container);
+  color: var(--nw-color-error);
+}
+
+.pts {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: var(--nw-radius-full);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  background: var(--nw-color-warning-container);
+  color: var(--nw-color-on-warning-container);
+}
+
+.pts svg {
+  fill: currentColor;
+}
+
+.banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--nw-color-warning-container);
+  color: var(--nw-color-on-warning-container);
+  font-weight: 600;
+}
+
+.banner.teal {
+  background: var(--nw-color-primary-container);
+  color: var(--nw-color-primary);
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nw-color-on-surface-variant);
+  margin: 20px 0 10px;
+}
+
+.muted {
+  color: var(--nw-color-on-surface-variant);
+}
+
+/* Centred note for screens with no data. Used in place of left-aligned empty text. */
+.nw-empty-note {
+  margin: var(--nw-space-4) 0;
+  padding: var(--nw-space-4);
+  text-align: center;
+  color: var(--nw-color-on-surface-variant);
+}
+
+.faint {
+  color: var(--nw-color-faint);
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin: 12px 0 22px;
+  flex-wrap: wrap;
+}
+
+.page-head .sub {
+  color: var(--nw-color-on-surface-variant);
+  margin-top: 4px;
+}
+
+/* Modal dialog, shared by family, profile and Me pages */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--nw-color-scrim);
+  z-index: var(--nw-z-dialog);
+  padding: var(--nw-space-4);
+}
+
+.modal {
+  position: relative;
+  z-index: var(--nw-z-dialog);
+  width: min(480px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: var(--nw-color-surface);
+  border-radius: var(--nw-card-radius);
+  box-shadow: var(--nw-shadow-lg);
+  padding: var(--nw-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nw-space-3);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nw-space-1);
+
+    input,
+    select {
+      font: inherit;
+      padding: var(--nw-space-2);
+      border: 1px solid var(--nw-color-outline);
+      border-radius: var(--nw-radius-md);
+      background: var(--nw-color-background);
+      color: var(--nw-color-on-surface);
+    }
+  }
+
+  .foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--nw-space-2);
+  }
+
+  .token {
+    display: block;
+    overflow-wrap: anywhere;
+    padding: var(--nw-space-3);
+    border-radius: var(--nw-radius-md);
+    background: var(--nw-color-surface-variant);
+  }
+}
+
+/* Responsive refinements */
+/* The sidebar gives way to the bottom bar at 1100px (spec 8.5), wider than the mock's 900px. */
+@media (max-width: 1100px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+    background: none;
+  }
+  .sidebar {
+    display: none;
+  }
+  .main {
+    padding: 0 16px 72px; /* space for bottomnav */
+  }
+  .m-brand {
+    display: flex;
+  }
+  .bottomnav {
+    display: flex;
+  }
+}
+
+/* Reduced motion (WCAG 2.3.3): people who ask the OS for less motion get no animations or transitions. Set once here so every screen follows it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

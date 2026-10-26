@@ -1,0 +1,136 @@
+.modal.detail {
+  width: min(420px, 100%);
+  gap: var(--nw-space-4);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-2);
+  margin: calc(var(--nw-space-1) * -1) calc(var(--nw-space-2) * -1) 0 0;
+}
+
+.kind {
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
+}
+
+.title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nw-space-3);
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-xl);
+    font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+}
+
+.bar {
+  flex: none;
+  width: 6px;
+  align-self: stretch;
+  min-height: 28px;
+  border-radius: 3px;
+  background: var(--c);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nw-space-3);
+  color: var(--nw-color-on-surface);
+  font-size: var(--nw-text-base);
+  font-weight: 700;
+
+  app-icon {
+    flex: none;
+    margin-top: 2px;
+    color: var(--nw-color-on-surface-variant);
+  }
+}
+
+.sub {
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-sm);
+  font-weight: 600;
+}
+
+.notes {
+  font-weight: 600;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-1);
+}
+
+.icon-btn.danger {
+  color: var(--nw-color-error);
+}
+
+.people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nw-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modal.confirm {
+  width: min(380px, 100%);
+  gap: var(--nw-space-4);
+
+  h2 {
+    margin: 0;
+    font-size: var(--nw-text-lg);
+    font-weight: 800;
+  }
+}
+
+.scope {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+}
+
+.opt {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-3);
+  color: var(--nw-color-on-surface);
+  font-size: var(--nw-text-base);
+  font-weight: 600;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--nw-color-primary);
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nw-space-2);
+}

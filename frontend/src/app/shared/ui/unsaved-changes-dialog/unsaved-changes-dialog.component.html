@@ -1,0 +1,25 @@
+@if (unsaved.pending()) {
+  <div class="modal-bg" role="presentation" (click)="unsaved.stay()">
+    <section
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="unsaved-title"
+      data-testid="unsaved-dialog"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="unsaved-title">{{ 'common.unsaved_title' | transloco }}</h2>
+      <p class="sub">{{ 'common.unsaved_body' | transloco }}</p>
+
+      <div class="modal-foot">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" data-testid="unsaved-stay" (click)="unsaved.stay()">
+          {{ 'common.unsaved_stay' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="unsaved-leave" (click)="unsaved.leave()">
+          {{ 'common.unsaved_leave' | transloco }}
+        </button>
+      </div>
+    </section>
+  </div>
+}

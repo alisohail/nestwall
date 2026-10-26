@@ -1,0 +1,112 @@
+/* A small card, as in Google Calendar's "+N more" view. */
+.modal.day-dialog {
+  width: min(320px, 100%);
+  padding: 0;
+  gap: 0;
+}
+
+.day-head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nw-space-1);
+  padding: var(--nw-space-5) var(--nw-space-4) var(--nw-space-3);
+  border-bottom: 1px solid var(--nw-color-outline);
+}
+
+.dow {
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.num {
+  color: var(--nw-color-on-surface);
+  font-size: var(--nw-text-4xl);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.close {
+  position: absolute;
+  top: var(--nw-space-2);
+  right: var(--nw-space-2);
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--nw-space-2) 0;
+  list-style: none;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--nw-space-2) var(--nw-space-4);
+  border: 0;
+  background: transparent;
+  color: var(--nw-color-on-surface);
+  font: inherit;
+  font-size: var(--nw-text-sm);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--nw-color-surface-variant);
+  }
+
+  .time {
+    flex: none;
+    min-width: 4.5rem;
+    color: var(--nw-color-on-surface-variant);
+    font-weight: 700;
+  }
+
+  .title {
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.bar {
+  flex: none;
+  width: 4px;
+  align-self: stretch;
+  border-radius: 2px;
+  background: var(--c);
+}
+
+/* Tasks are outlined, as in the month grid */
+.item.task .dot {
+  background: transparent;
+  border: 2px solid var(--c);
+}
+
+.item.all-day {
+  padding-top: var(--nw-space-1);
+  padding-bottom: var(--nw-space-1);
+}
+
+.item.all-day .bar {
+  align-self: stretch;
+}

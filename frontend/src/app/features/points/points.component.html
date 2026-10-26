@@ -1,0 +1,370 @@
+<section class="points" aria-labelledby="points-title" data-testid="points">
+  <header class="page-head">
+    <div>
+      <h1 id="points-title">{{ 'points.title' | transloco }}</h1>
+    </div>
+    @if (isParent()) {
+      <div class="actions">
+        <button type="button" class="btn ghost" data-testid="points-award-badge" (click)="openAward()">
+          <span class="material-icons" aria-hidden="true">star_outline</span>
+          {{ 'settings.badges.award' | transloco }}
+        </button>
+        <button type="button" class="btn amber" data-testid="points-add" (click)="openManual()">
+          <span class="material-icons" aria-hidden="true">star</span>
+          {{ 'points.add' | transloco }}
+        </button>
+      </div>
+    }
+  </header>
+
+  @if (notice(); as n) {
+    <app-banner tone="info" data-testid="points-notice">{{ n | transloco }}</app-banner>
+  }
+
+  @if (isParent()) {
+    @if (balanceError()) {
+      <app-banner tone="warning" data-testid="balances-error">{{ 'points.error.balances' | transloco }}</app-banner>
+    }
+    @if (balanceCards().length > 0) {
+      <section class="balances" [attr.aria-label]="'points.balance.title' | transloco" data-testid="balances">
+        @for (card of balanceCards(); track card.id) {
+          <article class="card balance" [attr.data-testid]="'balance-' + card.id">
+            <app-avatar [name]="card.name" [colour]="card.colour" [avatarId]="card.avatarId" size="md" />
+            <div class="balance-body">
+              <span class="balance-name">{{ card.name }}</span>
+              <span class="balance-value" data-testid="balance-value">{{ card.balance }}</span>
+              <div
+                class="goal-bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                [attr.aria-valuenow]="card.percent"
+                [attr.aria-labelledby]="'goal-' + card.id"
+              >
+                <span class="goal-fill" [style.width.%]="card.percent"></span>
+              </div>
+              @if (card.goal; as goal) {
+                <span class="balance-goal" [attr.id]="'goal-' + card.id">
+                  {{ 'points.balance.goal' | transloco: { percent: card.percent, reward: goal.name, cost: goal.cost } }}
+                </span>
+              } @else {
+                <span class="balance-goal" [attr.id]="'goal-' + card.id">{{ 'points.balance.allReachable' | transloco }}</span>
+              }
+              @if (card.reserved > 0) {
+                <span class="balance-reserved">{{ 'points.balance.reserved' | transloco: { points: card.reserved } }}</span>
+              }
+            </div>
+          </article>
+        }
+      </section>
+    }
+  }
+
+  <section class="card ledger-card" aria-labelledby="ledger-title">
+    <div class="ledger-head">
+      <h2 id="ledger-title">{{ 'points.ledger' | transloco }}</h2>
+      <div class="filters">
+        @if (isParent()) {
+          <div class="chips" role="group" [attr.aria-label]="'points.filter.member' | transloco">
+            <button
+              type="button"
+              class="chip"
+              [class.on]="memberFilter() === ''"
+              [attr.aria-pressed]="memberFilter() === ''"
+              data-testid="filter-member-all"
+              (click)="setMember('')"
+            >{{ 'points.filter.allMembers' | transloco }}</button>
+            @for (child of children(); track child.id) {
+              <button
+                type="button"
+                class="chip"
+                [class.on]="memberFilter() === child.id"
+                [attr.aria-pressed]="memberFilter() === child.id"
+                (click)="setMember(child.id)"
+              >
+                <app-avatar [name]="child.display_name" [colour]="child.colour" [avatarId]="child.avatar_id" size="sm" />{{ child.display_name }}
+              </button>
+            }
+          </div>
+        }
+        <select
+          class="select"
+          [attr.aria-label]="'points.filter.type' | transloco"
+          [ngModel]="typeFilter()"
+          (ngModelChange)="setType($event)"
+          data-testid="filter-type"
+        >
+          <option value="">{{ 'points.filter.allTypes' | transloco }}</option>
+          @for (t of entryTypes; track t) {
+            <option [value]="t">{{ 'points.type.' + t | transloco }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    @if (loadState() === 'loading') {
+      <div role="status" data-testid="ledger-loading">
+        <span class="nw-sr-only">{{ 'points.loading' | transloco }}</span>
+        <app-skeleton [rows]="3" />
+      </div>
+    } @else if (loadState() === 'error') {
+      <app-error-state
+        data-testid="ledger-error"
+        messageKey="points.error.load"
+        retryKey="points.retry"
+        (retry)="load()"
+      />
+    } @else if (entries().length === 0) {
+      <app-empty-state data-testid="ledger-empty" titleKey="points.empty.title" bodyKey="points.empty.body" />
+    } @else {
+      <div class="table-wrap">
+        <table class="ledger-table" data-testid="ledger">
+          <thead>
+            <tr>
+              <th scope="col" class="col-when">{{ 'points.col.when' | transloco }}</th>
+              @if (isParent()) {
+                <th scope="col" class="col-who">{{ 'points.col.who' | transloco }}</th>
+              }
+              <th scope="col" class="col-entry">{{ 'points.col.entry' | transloco }}</th>
+              <th scope="col" class="col-reason">{{ 'points.col.reason' | transloco }}</th>
+              <th scope="col" class="col-points num">{{ 'points.col.points' | transloco }}</th>
+              @if (isParent()) {
+                <th scope="col" class="col-action"><span class="sr-only">{{ 'points.col.actions' | transloco }}</span></th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of entries(); track entry.id) {
+              <tr [attr.data-testid]="'entry-' + entry.id">
+                <td class="col-when">
+                  <time class="when" [attr.datetime]="entry.created_at">{{ entry.created_at | date: 'EEE d MMM, HH:mm' }}</time>
+                </td>
+                @if (isParent()) {
+                  <td class="col-who who">
+                    @if (member(entry.member_id); as m) {
+                      <span class="who-cell">
+                        <app-avatar [name]="m.display_name" [colour]="m.colour" [avatarId]="m.avatar_id" size="sm" />
+                        <span>{{ m.display_name }}</span>
+                      </span>
+                    }
+                  </td>
+                }
+                <td class="col-entry"><span [class]="typeTone(entry.type)">{{ 'points.type.' + entry.type | transloco }}</span></td>
+                <td class="col-reason reason">{{ entry.reason || entry.reward_name || '' }}</td>
+                <td class="col-points num amount" [class.pos]="entry.amount > 0" [class.neg]="entry.amount < 0">{{ amountText(entry) }}</td>
+                @if (isParent()) {
+                  <td class="col-action">
+                    @if (canReverse(entry)) {
+                      <button
+                        type="button"
+                        class="btn ghost sm reverse"
+                        [attr.aria-label]="('points.reverse.action' | transloco) + ': ' + (entry.reason || '')"
+                        (click)="askReverse(entry)"
+                      >{{ 'points.reverse.action' | transloco }}</button>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (nextCursor()) {
+        <div class="more">
+          <button type="button" class="btn ghost" data-testid="ledger-more" [disabled]="loadingMore()" (click)="loadMore()">
+            {{ 'points.loadMore' | transloco }}
+          </button>
+        </div>
+      }
+    }
+  </section>
+
+  @if (manualOpen()) {
+    <div class="modal-bg" role="presentation" (click)="closeManual()">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="manual-title" data-testid="manual-form" (click)="$event.stopPropagation()">
+      <h2 id="manual-title">{{ 'points.manual.title' | transloco }}</h2>
+
+      @if (manualError(); as me) {
+        <p class="hint err" role="alert" data-testid="manual-error">{{ me | transloco }}</p>
+      }
+
+      <div class="seg" role="group" [attr.aria-label]="'points.manual.type' | transloco">
+        @for (t of manualTypes; track t) {
+          <button
+            type="button"
+            [class.on]="manualType() === t"
+            [attr.aria-pressed]="manualType() === t"
+            [attr.data-testid]="'manual-type-' + t"
+            (click)="setManualType(t)"
+          >{{ 'points.manual.' + t | transloco }}</button>
+        }
+      </div>
+
+      <fieldset class="field">
+        <legend>{{ 'points.manual.who' | transloco }}</legend>
+        <div class="chips">
+          @for (child of children(); track child.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="manualMember() === child.id"
+              [attr.aria-pressed]="manualMember() === child.id"
+              (click)="manualMember.set(child.id)"
+            >
+              <app-avatar [name]="child.display_name" [colour]="child.colour" [avatarId]="child.avatar_id" size="sm" />{{ child.display_name }}
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="manual-points">{{ 'points.manual.points' | transloco }}</label>
+          <input id="manual-points" class="input" type="number" [(ngModel)]="manualPoints" data-testid="manual-points" />
+        </div>
+        <div class="field">
+          <label for="manual-reason">{{ 'points.manual.reason' | transloco }}</label>
+          <input
+            id="manual-reason"
+            class="input"
+            type="text"
+            maxlength="200"
+            [(ngModel)]="manualReason"
+            data-testid="manual-reason"
+          />
+        </div>
+      </div>
+      <p class="hint">{{ manualHint() | transloco }}</p>
+
+      <div class="modal-foot">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" (click)="closeManual()" [disabled]="manualBusy()">
+          {{ 'points.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="manual-save" (click)="submitManual()" [disabled]="manualBusy()">
+          {{ 'points.save' | transloco }}
+        </button>
+      </div>
+    </section>
+    </div>
+  }
+
+  @if (awardOpen()) {
+    <div class="modal-bg" role="presentation" (click)="closeAward()">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="award-title" data-testid="award-form" (click)="$event.stopPropagation()">
+      <h2 id="award-title">{{ 'settings.badges.award_title' | transloco }}</h2>
+
+      @if (awardError(); as ae) {
+        <app-banner tone="error" data-testid="award-error">{{ ae | transloco }}</app-banner>
+      }
+
+      <fieldset class="field">
+        <legend>{{ 'settings.badges.who' | transloco }}</legend>
+        @if (children().length === 0) {
+          <p class="hint">{{ 'settings.badges.no_children' | transloco }}</p>
+        }
+        <div class="chips">
+          @for (child of children(); track child.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.on]="awardMemberId === child.id"
+              [attr.aria-pressed]="awardMemberId === child.id"
+              (click)="awardMemberId = child.id"
+            >
+              <app-avatar [name]="child.display_name" [colour]="child.colour" [avatarId]="child.avatar_id" size="sm" />{{ child.display_name }}
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="award-badge">{{ 'settings.badges.badge' | transloco }}</label>
+        @if (awardBadgesLoading()) {
+          <div role="status">
+            <span class="nw-sr-only">{{ 'settings.common.loading' | transloco }}</span>
+            <app-skeleton [rows]="2" />
+          </div>
+        } @else if (awardBadgesError()) {
+          <app-banner tone="error">{{ awardBadgesError() | transloco }}</app-banner>
+        } @else if (awardBadges().length === 0) {
+          <p class="hint">{{ 'settings.badges.no_custom' | transloco }}</p>
+        }
+        <select id="award-badge" class="select" name="award-badge" data-testid="award-badge" [(ngModel)]="awardBadgeId">
+          <option [ngValue]="null">{{ 'settings.badges.pick_badge' | transloco }}</option>
+          @for (c of awardBadges(); track c.id) {
+            <option [ngValue]="c.id">{{ c.emoji }} {{ c.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="award-note">
+          {{ 'settings.badges.why' | transloco }}
+          <span class="hint">{{ 'settings.badges.why_hint' | transloco }}</span>
+        </label>
+        <input
+          id="award-note"
+          class="input"
+          type="text"
+          data-testid="award-note"
+          name="award-note"
+          [maxlength]="noteMax"
+          [placeholder]="'settings.badges.why_placeholder' | transloco"
+          [(ngModel)]="awardNote"
+        />
+        @if (awardSubmitted() && awardNote.trim() === '') {
+          <span class="hint err">{{ 'settings.badges.error.note' | transloco }}</span>
+        }
+      </div>
+
+      <div class="modal-foot">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" (click)="closeAward()" [disabled]="awardBusy()">
+          {{ 'points.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="award-submit" (click)="submitAward()" [disabled]="awardBusy()">
+          {{ 'settings.badges.award_action' | transloco }}
+        </button>
+      </div>
+    </section>
+    </div>
+  }
+
+  @if (reverseTarget(); as target) {
+    <div class="modal-bg" role="presentation" (click)="closeReverse()">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="reverse-title" data-testid="reverse-form" (click)="$event.stopPropagation()">
+      <h2 id="reverse-title">{{ 'points.reverse.title' | transloco }}</h2>
+      <p class="muted">{{ 'points.reverse.body' | transloco }}</p>
+      <p class="bold">{{ target.reason || target.reward_name || '' }} ({{ amountText(target) }})</p>
+
+      @if (reverseError(); as re) {
+        <p class="hint err" role="alert" data-testid="reverse-error">{{ re | transloco }}</p>
+      }
+
+      <div class="field">
+        <label for="reverse-reason">{{ 'points.reverse.reason' | transloco }}</label>
+        <input
+          id="reverse-reason"
+          class="input"
+          type="text"
+          maxlength="200"
+          [(ngModel)]="reverseReason"
+          data-testid="reverse-reason"
+        />
+      </div>
+
+      <div class="modal-foot">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" (click)="closeReverse()" [disabled]="reverseBusy()">
+          {{ 'points.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="reverse-confirm" (click)="confirmReverse()" [disabled]="reverseBusy()">
+          {{ 'points.reverse.confirm' | transloco }}
+        </button>
+      </div>
+    </section>
+    </div>
+  }
+</section>

@@ -1,0 +1,212 @@
+/* Reference tokens - raw palette values */
+:root {
+  /* Colour palette */
+  --nw-ref-primary-0: #ffffff;
+  --nw-ref-primary-10: #f2e8ff;
+  --nw-ref-primary-20: #ede0ff;
+  --nw-ref-primary-30: #e8d7ff;
+  --nw-ref-primary-40: #ddc9ff;
+  --nw-ref-primary-50: #d2bbff;
+  --nw-ref-primary-60: #c7adff;
+  --nw-ref-primary-70: #bb9fff;
+  --nw-ref-primary-80: #b091ff;
+  --nw-ref-primary-90: #a583ff;
+  --nw-ref-primary-95: #9a75ff;
+  --nw-ref-primary-99: #8f67ff;
+  --nw-ref-primary-100: #6366f1;
+
+  --nw-ref-success-0: #ffffff;
+  --nw-ref-success-50: #e6f9f3;
+  --nw-ref-success-100: #10b981;
+
+  --nw-ref-warning-0: #ffffff;
+  --nw-ref-warning-50: #fef3c7;
+  --nw-ref-warning-100: #f59e0b;
+
+  --nw-ref-error-0: #ffffff;
+  --nw-ref-error-50: #fee2e2;
+  --nw-ref-error-100: #ef4444;
+
+  --nw-ref-neutral-0: #ffffff;
+  --nw-ref-neutral-10: #f9fafb;
+  --nw-ref-neutral-20: #f3f4f6;
+  --nw-ref-neutral-30: #e5e7eb;
+  --nw-ref-neutral-40: #d1d5db;
+  --nw-ref-neutral-50: #9ca3af;
+  --nw-ref-neutral-60: #6b7280;
+  --nw-ref-neutral-70: #4b5563;
+  --nw-ref-neutral-80: #374151;
+  --nw-ref-neutral-90: #1f2937;
+  --nw-ref-neutral-100: #111827;
+
+  /* Member colours (8 members) */
+  --nw-member-1: #6366f1;
+  --nw-member-2: #06b6d4;
+  --nw-member-3: #ec4899;
+  --nw-member-4: #f59e0b;
+  --nw-member-5: #10b981;
+  --nw-member-6: #8b5cf6;
+  --nw-member-7: #14b8a6;
+  --nw-member-8: #f97316;
+
+  --nw-on-member-1: #ffffff;
+  --nw-on-member-2: #ffffff;
+  --nw-on-member-3: #ffffff;
+  --nw-on-member-4: #ffffff;
+  --nw-on-member-5: #ffffff;
+  --nw-on-member-6: #ffffff;
+  --nw-on-member-7: #ffffff;
+  --nw-on-member-8: #ffffff;
+
+  /* Spacing scale (rem). Half steps (1-5, 2-5, 3-5) and 5 are the mock's 6, 10, 14 and 20px gaps. */
+  --nw-space-0: 0;
+  --nw-space-1: 0.25rem;
+  --nw-space-1-5: 0.375rem;
+  --nw-space-2: 0.5rem;
+  --nw-space-2-5: 0.625rem;
+  --nw-space-3: 0.75rem;
+  --nw-space-3-5: 0.875rem;
+  --nw-space-4: 1rem;
+  --nw-space-5: 1.25rem;
+  --nw-space-6: 1.5rem;
+  --nw-space-8: 2rem;
+  --nw-space-12: 3rem;
+  --nw-space-16: 4rem;
+
+  /* Radius scale (mock: 8, 10, 12, 14, 16, 24px, pill) */
+  --nw-radius-sm: 0.5rem;
+  --nw-radius-md: 0.625rem;
+  --nw-radius-lg: 0.75rem;
+  --nw-radius-tile: 0.875rem;
+  --nw-radius-xl: 1rem;
+  --nw-radius-2xl: 1.5rem;
+  --nw-radius-full: 9999px;
+
+  /* Font families (stacks from the mock stylesheet) */
+  --nw-font-ui: Inter, "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --nw-font-brand: Nunito, "Segoe UI", system-ui, sans-serif;
+  --nw-font-logo: Fredoka, "Baloo 2", "Segoe UI", system-ui, sans-serif;
+  --nw-font-mono: Consolas, "SF Mono", monospace;
+
+  /* Type scale in rem (16px root), the sizes the mock uses */
+  --nw-text-2xs: 0.6875rem; /* 11px */
+  --nw-text-xs: 0.75rem; /* 12px */
+  --nw-text-sm: 0.8125rem; /* 13px */
+  --nw-text-base: 0.9375rem; /* 15px, body */
+  --nw-text-md: 1rem; /* 16px */
+  --nw-text-lg: 1.125rem; /* 18px */
+  --nw-text-xl: 1.375rem; /* 22px */
+  --nw-text-2xl: 1.5rem; /* 24px */
+  --nw-text-3xl: 1.75rem; /* 28px */
+  --nw-text-4xl: 1.875rem; /* 30px */
+  --nw-text-5xl: 2rem; /* 32px */
+
+  /* Font weights */
+  --nw-weight-regular: 400;
+  --nw-weight-medium: 500;
+  --nw-weight-semibold: 600;
+  --nw-weight-bold: 700;
+  --nw-weight-extrabold: 800;
+
+  /* Line heights */
+  --nw-leading-none: 1;
+  --nw-leading-tight: 1.2;
+  --nw-leading-snug: 1.4;
+  --nw-leading-normal: 1.5;
+
+  /* Motion */
+  --nw-motion-fast: 100ms;
+  --nw-motion-base: 200ms;
+  --nw-motion-slow: 300ms;
+
+  /* Semantic tokens (light theme), values from the mock stylesheet */
+  --nw-color-background: #f4f7f7;
+  --nw-color-primary: #0f766e;
+  --nw-color-on-primary: #ffffff;
+  --nw-color-primary-container: #e4f5f2;
+  --nw-color-on-primary-container: #0f766e;
+
+  --nw-color-surface: #ffffff;
+  --nw-color-on-surface: #15222b;
+  --nw-color-surface-variant: #eff4f4;
+  --nw-color-on-surface-variant: #5a6b76;
+  --nw-color-faint: #5f7079;
+
+  --nw-color-success: #166534;
+  --nw-color-on-success: #ffffff;
+  --nw-color-success-container: #e2f6e9;
+  --nw-color-on-success-container: #166534;
+
+  --nw-color-warning: #d97706;
+  --nw-color-on-warning: #ffffff;
+  --nw-color-warning-container: #fff3d6;
+  --nw-color-on-warning-container: #8a5300;
+
+  --nw-color-error: #b91c1c;
+  --nw-color-on-error: #ffffff;
+  --nw-color-error-container: #fde8e8;
+
+  --nw-color-points: #f59e0b;
+  --nw-color-outline: #e1e8e8;
+
+  --nw-color-primary-hover: #0b5f59;
+  --nw-color-info: #2563eb;
+  --nw-color-info-container: #e6eefe;
+  --nw-color-hero-from: #0f766e;
+  --nw-color-hero-to: #14a091;
+  --nw-color-hero-inner: #0f766e;
+  --nw-color-white: #ffffff;
+  --nw-color-hero-chip: rgba(255, 255, 255, 0.18);
+  --nw-color-hero-track: rgba(255, 255, 255, 0.25);
+  --nw-color-weather-from: #dff3ff;
+  --nw-color-weather-to: #fdf0d5;
+  --nw-color-on-weather: #1b2a41;
+  --nw-color-weather-sun: #ffd166;
+  --nw-color-weather-cool: #1d2b4a;
+  --nw-color-weather-mist: #d0d7de;
+  --nw-color-weather-cloud: #7d8ba3;
+  --nw-color-weather-snow: #ffffff;
+
+  --nw-shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 8px 24px rgba(16, 24, 40, .06);
+  --nw-shadow-lg: 0 20px 60px rgba(16, 24, 40, .22);
+  --nw-color-scrim: rgb(0 0 0 / 0.48);
+  --nw-color-on-points: #3b2600;
+  --nw-icon-size: 1.375rem;
+  --nw-z-nav: 100;
+  --nw-z-raised: 1;
+  --nw-z-dialog: 200;
+
+  /* Wall display palette (kiosk is always dark), values from the mock wall stylesheet */
+  --nw-wall-bg-start: #0a1a36;
+  --nw-wall-bg-mid: #0f3558;
+  --nw-wall-bg-end: #1b4d6a;
+  --nw-wall-ink: #f1f6ff;
+  --nw-wall-mute: #9db0cf;
+  --nw-wall-amber: #f59e0b;
+  --nw-wall-teal: #14b8a6;
+  --nw-wall-indigo: #6366f1;
+  --nw-wall-blue: #60a5fa;
+  --nw-wall-gold: #fcd34d;
+  --nw-wall-rose: #fca5a5;
+  --nw-wall-coral: #f87171;
+  --nw-wall-mint: #4ade80;
+  --nw-wall-cheer-ink: #006622;
+  --nw-wall-check-ink: #04221f;
+  --nw-wall-rose-bright: #fb7185;
+  --nw-wall-violet: #a855f7;
+  --nw-wall-plum: #3b0764;
+  --nw-wall-purple: #7e22ce;
+  --nw-wall-cream: #fef3c7;
+  --nw-wall-amber-ink: #b45309;
+
+  /* Component tokens */
+  --nw-card-radius: 16px;
+  --nw-button-radius: 12px;
+
+  /* Material tokens mapping */
+  --mat-sys-primary: var(--nw-color-primary);
+  --mat-sys-on-primary: var(--nw-color-on-primary);
+  --mat-sys-surface: var(--nw-color-surface);
+  --mat-sys-on-surface: var(--nw-color-on-surface);
+  --mat-sys-error: var(--nw-color-error);
+}

@@ -1,0 +1,64 @@
+# Environment files - secrets never enter the repo (.env.example stays tracked)
+.env
+
+# Angular specific
+/dist/
+/out-tsc/
+/tmp/
+/coverage/
+/e2e/test-output/
+/.angular/
+.angular/
+
+
+# Node modules and dependency files
+*/node_modules/
+/package-lock.json
+/yarn.lock
+
+# Angular CLI and build artefacts
+/.angular-cli.json
+/.ng/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Go / backend build artefacts
+backend/bin/
+*.test
+*.out
+
+# Local runtime data (spec 9.1: data lives outside the source tree)
+deploy/data/
+nestwall-data/
+
+# SQLite database file (encrypted with DB_KEY) and its journal
+database/*.db
+database/*.db-journal
+
+# Local demo sign-in details (do not commit)
+database/demo-credentials.json
+
+# Runtime uploads and local database backups (contain personal data; do not commit)
+database/avatars/
+/backups/
+database/backups/
+
+# Local authoring material (specs, backlog, mocks, generators): kept on disk, not in git
+/design/
+
+# Generated tool output
+__pycache__/
+
+# Logs: all local log files go in the root logs/ folder (kept out of git)
+logs/*
+!logs/.gitkeep
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
