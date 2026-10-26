@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -80,7 +82,12 @@ describe('KidBonusListComponent', () => {
   async function create(mode: 'section' | 'tab' = 'section'): Promise<ComponentFixture<KidBonusListComponent>> {
     await TestBed.configureTestingModule({
       imports: [KidBonusListComponent, getTranslocoTestingModule()],
-      providers: [{ provide: BonusService, useValue: service }, provideRouter([])],
+      providers: [
+        { provide: BonusService, useValue: service },
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
     const fixture = TestBed.createComponent(KidBonusListComponent);
     fixture.componentRef.setInput('mode', mode);
@@ -144,7 +151,7 @@ describe('KidBonusListComponent', () => {
       of({ tasks: [task({ id: 'b1', ends_at: endOfDay }), task({ id: 'b2', ends_at: timed })] }),
     );
     const fixture = await create('section');
-    const chips = cards(fixture).map((card) => card.querySelectorAll('.chip')[1]?.textContent?.trim());
+    const chips = cards(fixture).map((card) => card.querySelector('.meta .muted')?.textContent?.trim());
     expect(chips[0]).toBe('Until the end of the day');
     expect(chips[1]).toContain('Ends');
     expect(chips[1]).not.toContain('Until the end of the day');
@@ -155,7 +162,12 @@ describe('KidBonusListComponent', () => {
     const emitted: number[] = [];
     await TestBed.configureTestingModule({
       imports: [KidBonusListComponent, getTranslocoTestingModule()],
-      providers: [{ provide: BonusService, useValue: service }, provideRouter([])],
+      providers: [
+        { provide: BonusService, useValue: service },
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
     const created = TestBed.createComponent(KidBonusListComponent);
     created.componentRef.setInput('mode', 'tab');

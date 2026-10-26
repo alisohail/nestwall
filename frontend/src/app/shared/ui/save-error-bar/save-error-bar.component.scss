@@ -11,7 +11,7 @@
   background: var(--nw-color-error);
   color: var(--nw-color-on-error);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+  box-shadow: 0 2px 8px var(--nw-color-shadow-raised);
 }
 
 .save-error-bar__text {

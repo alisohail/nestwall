@@ -101,16 +101,39 @@ nestwall/
 
 ## Getting started
 
-```bash
-cp .env.example deploy/.env                      # then set DB_KEY and SESSION_SECRET
-docker compose -f deploy/compose.yaml up -d --build
-```
+Requirements: Docker with the Compose plugin.
 
-Then open `http://localhost:5842`. The full install steps are in [install-guide.md](docs/install-guide.md). Developers who build from source should use [dev-guide.md](docs/dev-guide.md).
+1. Create the configuration file from the template:
+   ```bash
+   cp .env.example deploy/.env
+   ```
+2. Open `deploy/.env` and set `DB_KEY` and `SESSION_SECRET` (see [Configuration](#configuration)). Generate the secret with `openssl rand -base64 48`.
+3. Build and start the stack:
+   ```bash
+   docker compose -f deploy/compose.yaml up -d --build
+   ```
+4. Open `http://localhost:5842` and create the first account.
+
+The full install steps are in [install-guide.md](docs/install-guide.md). Developers who build from source should use [dev-guide.md](docs/dev-guide.md).
+
+### Configuration
+
+Compose reads these values from a `.env` file next to the compose file it runs. [.env.example](.env.example) lists every variable with comments.
+
+| Variable | Required | What it does |
+|---|---|---|
+| `DB_KEY` | Yes | Passphrase that encrypts the database. Without it the data cannot be opened. Keep a copy outside the repo. |
+| `SESSION_SECRET` | Yes | Secret that signs sign-in sessions. Use at least 48 random characters. |
+| `APP_URL` | No | Address of the app, including the port. Used in password reset emails. Default `http://localhost:5842`. |
+| `WEB_PORT` | No | Port on the host that opens NestWall. Default `5842`. Keep `APP_URL` on the same port. |
+| `TZ` | No | Time zone for scheduled backups. Default `America/Toronto`. |
+| `NESTWALL_VERSION` | No | Image version for `compose.release.yaml`. Default `latest`. Pin a version such as `1.0.0` to control upgrades. |
+
+Never commit `.env`. It is git-ignored because it holds your keys.
 
 ### Install with Docker Compose (no coding needed)
 
-Families who only want to run NestWall can skip the source code. Download [compose.release.yaml](compose.release.yaml), add a `.env` file, and start it with `docker compose -f compose.release.yaml up -d`. The step-by-step guide, which works on Windows, macOS, Linux and NAS boxes, is in [install-guide.md](docs/install-guide.md).
+Families who only want to run NestWall can skip the source code. Download [compose.release.yaml](compose.release.yaml) and [.env.example](.env.example) into one folder, rename the copy to `.env`, set `DB_KEY` and `SESSION_SECRET`, and start it with `docker compose -f compose.release.yaml up -d`. The step-by-step guide, which works on Windows, macOS, Linux and NAS boxes, is in [install-guide.md](docs/install-guide.md).
 
 ## Releases
 

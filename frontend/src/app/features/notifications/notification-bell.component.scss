@@ -27,7 +27,7 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  z-index: 50;
+  z-index: var(--nw-z-popover);
   width: min(340px, 90vw);
   padding: 0;
   overflow: hidden;
@@ -49,7 +49,7 @@
   background: none;
   color: var(--nw-color-primary);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--nw-text-sm);
   cursor: pointer;
   text-decoration: underline;
 }
@@ -192,7 +192,7 @@
     background: none;
     color: var(--nw-color-primary);
     font: inherit;
-    font-size: 13px;
+    font-size: var(--nw-text-sm);
     font-weight: 600;
     padding: 0;
     cursor: pointer;

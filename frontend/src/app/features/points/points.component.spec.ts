@@ -2,7 +2,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NEVER, Observable, of, throwError } from 'rxjs';
-import { ApiError } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
 import { BadgeAward, BadgeConfig, CustomBadge } from '../badges/badges.models';

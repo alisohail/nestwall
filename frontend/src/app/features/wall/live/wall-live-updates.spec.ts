@@ -4,7 +4,7 @@ class FakeSource {
   static readonly CLOSED = 2;
   readyState = 0;
   closed = false;
-  private listeners = new Map<string, Array<() => void>>();
+  private listeners = new Map<string, (() => void)[]>();
 
   addEventListener(type: string, listener: () => void): void {
     this.listeners.set(type, [...(this.listeners.get(type) ?? []), listener]);

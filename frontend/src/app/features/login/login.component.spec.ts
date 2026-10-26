@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
-import { signal } from '@angular/core';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../core/auth/auth.service';

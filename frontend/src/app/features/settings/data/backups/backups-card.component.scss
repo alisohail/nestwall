@@ -27,7 +27,7 @@
   background: var(--nw-color-surface-variant);
   color: var(--nw-color-on-surface);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 13px;
+  font-size: var(--nw-text-sm);
   font-weight: 600;
   word-break: break-all;
 }
@@ -205,22 +205,22 @@
 .restore-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  z-index: var(--nw-z-busy);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--nw-space-3);
-  background: rgba(15, 23, 42, 0.8);
-  color: #fff;
+  background: var(--nw-color-scrim-strong);
+  color: var(--nw-color-white);
 }
 
 .restore-spinner {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border: 4px solid var(--nw-color-white-soft);
+  border-top-color: var(--nw-color-white);
   animation: restore-spin 0.9s linear infinite;
 }
 

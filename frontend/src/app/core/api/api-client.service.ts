@@ -44,7 +44,7 @@ export class ApiClient {
    * POSTs a body and returns the file in the response. Errors are JSON even though the
    * request asked for a Blob, so the error body is read back as text first.
    */
-  postDownload(url: string, body: any): Observable<Blob> {
+  postDownload(url: string, body: unknown): Observable<Blob> {
     const request = this.http.post(url, body, { responseType: 'blob' }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (!(error.error instanceof Blob)) return this.handleError(error);
@@ -64,7 +64,7 @@ export class ApiClient {
    */
   post<T>(
     url: string,
-    body: any,
+    body: unknown,
     ifMatch?: number,
     extraHeaders?: Record<string, string>,
     writeOptions?: WriteOptions,
@@ -76,13 +76,13 @@ export class ApiClient {
   }
 
   /** ifMatch, when given, is sent as the If-Match header so the server can reject stale writes. */
-  put<T>(url: string, body: any, ifMatch?: number, writeOptions?: WriteOptions): Observable<T> {
+  put<T>(url: string, body: unknown, ifMatch?: number, writeOptions?: WriteOptions): Observable<T> {
     const options = ifMatch === undefined ? {} : { headers: { 'If-Match': `"${ifMatch}"` } };
     return this.tracked(this.http.put<T>(url, body, options).pipe(catchError(this.handleError)), writeOptions);
   }
 
   /** Partial update. ifMatch, when given, is sent as the If-Match header. */
-  patch<T>(url: string, body: any, ifMatch?: number, writeOptions?: WriteOptions): Observable<T> {
+  patch<T>(url: string, body: unknown, ifMatch?: number, writeOptions?: WriteOptions): Observable<T> {
     const options = ifMatch === undefined ? {} : { headers: { 'If-Match': `"${ifMatch}"` } };
     return this.tracked(this.http.patch<T>(url, body, options).pipe(catchError(this.handleError)), writeOptions);
   }

@@ -18,7 +18,7 @@ import {
 } from '../../badges/badges.models';
 import { badgeErrorKey } from '../../badges/badge-errors';
 import { BadgesService } from '../../badges/badges.service';
-import { blankToNull, isSingleEmoji, settingsErrorKey } from '../settings.format';
+import { blankToNull, isSingleEmoji } from '../settings.format';
 import { SettingsHeaderService } from '../settings-header.service';
 
 type LoadState = 'loading' | 'ready' | 'error';

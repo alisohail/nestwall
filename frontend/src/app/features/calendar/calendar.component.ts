@@ -8,7 +8,7 @@ import { ApiError } from '../../core/api/api-client.service';
 import { AvatarComponent } from '../../shared/avatar/avatar.component';
 import { IconComponent } from '../../shared/ui/icon/icon.component';
 import { FamilyService, MemberDetail } from '../family/family.service';
-import { taskErrorKey, todayIso } from '../tasks/tasks.format';
+import { todayIso } from '../tasks/tasks.format';
 import { TasksService } from '../tasks/tasks.service';
 import { DayDialogComponent } from './day-dialog/day-dialog.component';
 import { EventDetailComponent } from './event-detail/event-detail.component';

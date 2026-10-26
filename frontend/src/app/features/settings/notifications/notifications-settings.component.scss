@@ -67,12 +67,12 @@
   }
 
   input[aria-invalid='true'] {
-    border-color: var(--nw-color-error, #b42318);
+    border-color: var(--nw-color-error);
   }
 
   .unit {
-    font-size: 14px;
-    color: var(--nw-color-muted, #5a6474);
+    font-size: var(--nw-text-sm-md);
+    color: var(--nw-color-on-surface-variant);
   }
 }
 
@@ -106,7 +106,7 @@
   height: 420px;
   border: 1px solid var(--nw-color-outline);
   border-radius: 8px;
-  background: #fff;
+  background: var(--nw-color-white);
 }
 
 .switch {
