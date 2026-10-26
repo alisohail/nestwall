@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.0.0",
-    "@angular/cli": "^18.0.0",
+    "@angular/cli": "^22.2.4",
     "@angular/compiler-cli": "^18.0.0",
     "@playwright/test": "^1.64.0",
     "@types/jasmine": "^5.1.4",
