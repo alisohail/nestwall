@@ -75,6 +75,6 @@ Published images are not deleted, so a bad release can be rolled back by pinning
 ## Troubleshooting
 
 - **The release did not run:** the change may have touched only `VERSION` or Markdown files, or the commit message may contain `[skip ci]`.
-- **The bump push was rejected:** `main` may have branch protection that blocks the bot. Allow `github-actions[bot]` to push, or release from a manual tag.
+- **The bump push was rejected:** `main` has a ruleset that requires the CI checks and blocks direct pushes. Check that the `RELEASE_TOKEN` secret is set (a PAT from an admin account, with `contents: write`). The release job uses it to push past the ruleset. Without it, the push falls back to the default token and is rejected.
 - **The publish step failed:** check that the Actions settings allow read and write for `GITHUB_TOKEN` (for packages and contents). Then republish with the manual run above.
 - **The version is wrong:** the bump is computed only from commit messages since the last tag, and any commit without `feat` or `!` gives a patch bump. Fix the commit history before the release runs. If a wrong version was already published, release a corrected version with a new commit. Do not reuse or move the old tag.

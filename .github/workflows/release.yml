@@ -29,6 +29,8 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          # A PAT from an admin lets this push pass the main ruleset. The default token cannot.
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - name: Check for new commits
         id: check
