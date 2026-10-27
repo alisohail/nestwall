@@ -34,6 +34,8 @@ type rangeItem struct {
 	CalendarName   *string  `json:"calendar_name,omitempty"`
 	CalendarColour *string  `json:"calendar_colour,omitempty"`
 	Description    *string  `json:"description,omitempty"`
+	// Age is set for birthdays: the age the member turns on that day.
+	Age int `json:"age,omitempty"`
 	Location       *string  `json:"location,omitempty"`
 	Imported       bool     `json:"imported"`
 	Reminders      []int    `json:"reminders,omitempty"`
@@ -385,6 +387,43 @@ func (h *Handlers) rangeEvents(ctx context.Context, familyID, scope string, q ra
 				Edited:         &edited,
 			}})
 		}
+	}
+	if q.calendarID != "" {
+		return out, nil
+	}
+	birthdays, err := LoadBirthdays(ctx, h.db, familyID)
+	if err != nil {
+		return nil, err
+	}
+	if q.memberID != "" {
+		kept := birthdays[:0]
+		for _, b := range birthdays {
+			if b.MemberID == q.memberID {
+				kept = append(kept, b)
+			}
+		}
+		birthdays = kept
+	}
+	if len(birthdays) == 0 {
+		return out, nil
+	}
+	zone, zoneName, err := h.familyZone(ctx, familyID)
+	if err != nil {
+		return nil, err
+	}
+	for _, o := range BirthdayOccurrences(birthdays, zone, q.from, q.to) {
+		out = append(out, sortable{at: o.StartsAt, item: rangeItem{
+			Key:            fmt.Sprintf("birthday:%s:%s", o.MemberID, o.OccurrenceDate),
+			Kind:           "birthday",
+			Title:          o.Name,
+			OccurrenceDate: o.OccurrenceDate,
+			StartsAt:       o.StartsAt.UTC().Format(time.RFC3339),
+			EndsAt:         o.EndsAt.UTC().Format(time.RFC3339),
+			AllDay:         true,
+			TimeZone:       zoneName,
+			MemberIDs:      []string{o.MemberID},
+			Age:            o.Age,
+		}})
 	}
 	return out, nil
 }

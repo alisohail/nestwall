@@ -256,6 +256,40 @@ describe("WallDisplayComponent", () => {
     });
   });
 
+  it("shows a birthday from date of birth with a cake and party emoji", () => {
+    create(
+      of({
+        ...summary,
+        events: [
+          {
+            title: "Ava",
+            kind: "birthday",
+            age: 11,
+            date: "2024-05-01",
+            starts_at: "2024-05-01T00:00:00Z",
+            ends_at: "2024-05-02T00:00:00Z",
+            all_day: true,
+            location: null,
+            attendees: [
+              {
+                member_id: "m1",
+                name: "Ava",
+                colour: "#E07A5F",
+                avatar_id: null,
+              },
+            ],
+          },
+        ],
+      }),
+    );
+
+    const rows = fixture.nativeElement.querySelectorAll(
+      ".ev",
+    ) as NodeListOf<HTMLElement>;
+    expect(rows.length).toBe(1);
+    expect(rows[0].textContent).toContain("🎂 Ava turns 11 🎉");
+  });
+
   it("marks family-wide events as everyone and shows avatars for the children in others", () => {
     create(
       of({

@@ -29,10 +29,19 @@ export interface WeatherDay {
   precip_chance: number | null;
 }
 
+/** One hour of the forecast. `time` is an RFC 3339 timestamp with the place's UTC offset. */
+export interface WeatherHour {
+  time: string;
+  temperature: number;
+  condition: WeatherCondition;
+  precip_chance: number | null;
+}
+
 export interface WeatherForecast {
   current: WeatherCurrent;
   today: WeatherDay;
   tomorrow: WeatherDay;
+  hourly: WeatherHour[];
   fetched_at: string;
   stale: boolean;
 }

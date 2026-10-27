@@ -127,6 +127,23 @@
             </div>
           </div>
         }
+        @if (shownHours().length) {
+          <div class="wx-hours" data-testid="weather-hours">
+            <p class="lab">{{ 'weather.hourly' | transloco }}</p>
+            <div class="wx-hour-row">
+              @for (h of shownHours(); track h.time; let first = $first) {
+                <div class="wx-hour" [class.now]="first" data-testid="weather-hour">
+                  <span class="t">{{ first ? ('weather.now' | transloco) : hourLabel(h.time) }}</span>
+                  <app-weather-icon [condition]="h.condition" [size]="22" />
+                  <span class="deg">{{ round(h.temperature) }}°</span>
+                  @if (h.precip_chance !== null) {
+                    <span class="p">{{ h.precip_chance }}%</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
         @if (f.stale) {
           <p class="meta wx-stale">{{ 'weather.stale' | transloco }}</p>
         }

@@ -52,12 +52,24 @@ type Day struct {
 	PrecipChance *int    `json:"precip_chance"`
 }
 
+// Hour is the temperature and rain chance for one hour, starting at the hour that is current now.
+type Hour struct {
+	Time         time.Time `json:"time"`
+	Temperature  float64   `json:"temperature"`
+	Condition    string    `json:"condition"`
+	PrecipChance *int      `json:"precip_chance"`
+}
+
+// hourlyCount is how many hours the forecast carries, from the current hour onward.
+const hourlyCount = 12
+
 // Forecast is what the wall and the apps show. Stale means the provider could not be reached, so
 // this is the last answer kept for the location.
 type Forecast struct {
 	Current   Current   `json:"current"`
 	Today     Day       `json:"today"`
 	Tomorrow  Day       `json:"tomorrow"`
+	Hourly    []Hour    `json:"hourly"`
 	FetchedAt time.Time `json:"fetched_at"`
 	Stale     bool      `json:"stale"`
 }
@@ -149,6 +161,12 @@ type upstream struct {
 		Low    []float64  `json:"temperature_2m_min"`
 		Precip []*float64 `json:"precipitation_probability_max"`
 	} `json:"daily"`
+	Hourly struct {
+		Time   []string   `json:"time"`
+		Temp   []float64  `json:"temperature_2m"`
+		Code   []int      `json:"weather_code"`
+		Precip []*float64 `json:"precipitation_probability"`
+	} `json:"hourly"`
 }
 
 func (c *Client) fetch(ctx context.Context, p Place, now time.Time) (Forecast, error) {
@@ -157,6 +175,7 @@ func (c *Client) fetch(ctx context.Context, p Place, now time.Time) (Forecast, e
 	q.Set("longitude", strconv.FormatFloat(p.Longitude, 'f', 4, 64))
 	q.Set("current", "temperature_2m,apparent_temperature,weather_code")
 	q.Set("daily", "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max")
+	q.Set("hourly", "temperature_2m,weather_code,precipitation_probability")
 	q.Set("timezone", p.Timezone)
 	q.Set("forecast_days", "2")
 	q.Set("temperature_unit", temperatureUnit(p.Unit))
@@ -179,12 +198,12 @@ func (c *Client) fetch(ctx context.Context, p Place, now time.Time) (Forecast, e
 	if err := json.NewDecoder(io.LimitReader(resp.Body, maxResponseBytes)).Decode(&body); err != nil {
 		return Forecast{}, ErrUnavailable
 	}
-	return body.forecast(now)
+	return body.forecast(now, p.Timezone)
 }
 
 // forecast converts the provider answer. It needs two days, and every daily list must have one
-// value per day.
-func (u upstream) forecast(now time.Time) (Forecast, error) {
+// value per day. Hourly data is optional: without it the forecast has no hours.
+func (u upstream) forecast(now time.Time, zone string) (Forecast, error) {
 	d := u.Daily
 	if len(d.Code) < 2 || len(d.High) < 2 || len(d.Low) < 2 || len(d.Precip) < 2 {
 		return Forecast{}, ErrUnavailable
@@ -197,8 +216,50 @@ func (u upstream) forecast(now time.Time) (Forecast, error) {
 		},
 		Today:     day(d.Code[0], d.High[0], d.Low[0], d.Precip[0]),
 		Tomorrow:  day(d.Code[1], d.High[1], d.Low[1], d.Precip[1]),
+		Hourly:    u.hours(now, zone),
 		FetchedAt: now,
 	}, nil
+}
+
+// hours returns up to hourlyCount hours, starting with the hour that contains now. The provider
+// times are local to the place, so they are read in the place's zone. Lists that do not line up
+// give no hours rather than a wrong forecast.
+func (u upstream) hours(now time.Time, zone string) []Hour {
+	hr := u.Hourly
+	out := []Hour{}
+	n := len(hr.Time)
+	if n == 0 || len(hr.Temp) != n || len(hr.Code) != n || len(hr.Precip) != n {
+		return out
+	}
+	loc, err := time.LoadLocation(zone)
+	if err != nil {
+		loc = time.UTC
+	}
+	for i, s := range hr.Time {
+		t, err := time.ParseInLocation("2006-01-02T15:04", s, loc)
+		if err != nil {
+			return []Hour{}
+		}
+		if !t.Add(time.Hour).After(now) {
+			continue
+		}
+		v := hr.Precip[i]
+		var precip *int
+		if v != nil {
+			p := int(*v + 0.5)
+			precip = &p
+		}
+		out = append(out, Hour{
+			Time:         t,
+			Temperature:  hr.Temp[i],
+			Condition:    conditionFor(hr.Code[i]),
+			PrecipChance: precip,
+		})
+		if len(out) == hourlyCount {
+			break
+		}
+	}
+	return out
 }
 
 func day(code int, high, low float64, precip *float64) Day {

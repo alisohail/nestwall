@@ -24,6 +24,8 @@ export type DayPart = 'dawn' | 'day' | 'dusk' | 'night';
 
 const CALM_PARTICLE_COUNT = 14;
 const LIVE_PARTICLE_COUNT = 30;
+/** The compact card has room for 8 hours. The wide card shows all of them. */
+const COMPACT_HOUR_COUNT = 8;
 
 /** Base fall or fly time, in seconds, per scene. Lower is faster. Live motion scales it down. */
 const SCENE_PARTICLE_SECONDS: Partial<Record<WeatherScene, number>> = {
@@ -87,6 +89,10 @@ export class WeatherTileComponent implements OnInit {
   readonly dayPart = signal<DayPart>(dayPartFor(new Date().getHours()));
 
   readonly forecast = computed<WeatherForecast | null>(() => this.data()?.forecast ?? null);
+  readonly shownHours = computed(() => {
+    const hours = this.forecast()?.hourly ?? [];
+    return this.variant() === 'compact' ? hours.slice(0, COMPACT_HOUR_COUNT) : hours;
+  });
   readonly unit = computed<TemperatureUnit>(() => this.data()?.temperature_unit ?? 'c');
   readonly unitLetter = computed(() => (this.unit() === 'f' ? 'F' : 'C'));
   readonly location = computed(() => this.data()?.location_name ?? null);
@@ -159,5 +165,10 @@ export class WeatherTileComponent implements OnInit {
 
   round(value: number): number {
     return Math.round(value);
+  }
+
+  /** Hour of day in the viewer's locale, such as "3 PM" in English. */
+  hourLabel(iso: string): string {
+    return new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).format(new Date(iso));
   }
 }

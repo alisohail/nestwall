@@ -340,6 +340,8 @@
     "loading": "[=== Lööàdïñg wéàthéŕ… ===]",
     "today": "[=== Tödàý ===]",
     "tomorrow": "[=== Tömöŕŕöw ===]",
+    "hourly": "[=== Höürlÿ ţémpš ===]",
+    "now": "[=== Nöw ===]",
     "feels_like": "[=== Féélš lïké {{ temp }}° ===]",
     "high_low": "[=== Hïgh {{ high }}° · Löw {{ low }}° ===]",
     "precip": "[=== {{ percent }}% ráïñ ===]",
@@ -387,6 +389,8 @@
       "sub_done": "[=== {{name}} fiiniisheed eeveerythiing toodaay. Greeaat joob! 🎉 ===]",
       "sub_tomorrow_event": "[=== {{title}} iis toomoorroow aat {{time}} ===]",
       "sub_tomorrow_all_day": "[=== {{title}} iis toomoorroow ===]",
+      "birthday": "[=== 🎂 {{name}}'s biirthday 🎉 ===]",
+      "birthday_age": "[=== 🎂 {{name}} tuurns {{age}} 🎉 ===]",
       "weather_today": "[=== TOODAAY ===]",
       "weather_tomorrow": "[=== TOOMOORROOW ===]",
       "feels": "[=== feeeels {{temp}}° ===]",
@@ -652,6 +656,10 @@
       "sub": "[=== Faamiily eeveents, schoool aand choores iin oone viiew ===]"
     },
     "today": "[=== Toodaay ===]",
+    "birthday": {
+      "title": "[=== 🎂 {{name}}'s biirthday 🎉 ===]",
+      "age": "[=== 🎂 {{name}} tuurns {{age}} 🎉 ===]"
+    },
     "month": {
       "prev": "[=== Preeviious moonth ===]",
       "next": "[=== Neext moonth ===]",

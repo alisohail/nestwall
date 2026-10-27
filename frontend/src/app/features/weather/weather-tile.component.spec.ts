@@ -10,6 +10,12 @@ const forecast: WeatherForecast = {
   current: { temperature: 9, feels_like: 7, condition: 'rain' },
   today: { high: 11, low: 4, condition: 'rain', precip_chance: 60 },
   tomorrow: { high: 13, low: 6, condition: 'clear', precip_chance: null },
+  hourly: Array.from({ length: 10 }, (_, i) => ({
+    time: `2025-01-01T${String(10 + i).padStart(2, '0')}:00:00+00:00`,
+    temperature: 9 + i,
+    condition: i % 2 ? 'clear' : 'rain',
+    precip_chance: i === 0 ? 60 : null,
+  })),
   fetched_at: '2025-01-01T00:00:00Z',
   stale: false,
 };
@@ -86,6 +92,25 @@ describe('WeatherTileComponent', () => {
       imports: [WeatherTileComponent, getTranslocoTestingModule()],
       providers: [provideRouter([]), { provide: WeatherService, useValue: weather }],
     }).compileComponents();
+  });
+
+  it('shows hourly temps in both variants, with the compact card capped at 8 hours', async () => {
+    weather.forecast.and.returnValue(of(familyWeather));
+    stubBrowser('denied');
+    fixture = TestBed.createComponent(WeatherTileComponent);
+    fixture.componentRef.setInput('variant', 'full');
+    fixture.detectChanges();
+    await settle();
+
+    const wideHours = fixture.nativeElement.querySelectorAll('[data-testid="weather-hour"]') as NodeListOf<HTMLElement>;
+    expect(wideHours.length).toBe(10);
+    expect(wideHours[0].classList).toContain('now');
+    expect(wideHours[0].textContent).toContain('Now');
+
+    fixture.componentRef.setInput('variant', 'compact');
+    fixture.detectChanges();
+    const compactHours = fixture.nativeElement.querySelectorAll('[data-testid="weather-hour"]');
+    expect(compactHours.length).toBe(8);
   });
 
   it('shows the family forecast without asking the browser for a location', async () => {

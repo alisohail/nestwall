@@ -5,6 +5,11 @@
 }
 
 .wx-card {
+  --wx-glass-base: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--nw-color-weather-from) 74%, transparent),
+    color-mix(in srgb, var(--nw-color-weather-to) 74%, transparent)
+  );
   flex: 1 1 auto;
   position: relative;
   isolation: isolate;
@@ -12,8 +17,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--nw-space-3);
-  background: linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
-  border-color: transparent;
+  background: var(--wx-glass-base);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-color: color-mix(in srgb, var(--nw-color-on-weather) 40%, transparent);
   color: var(--nw-color-on-weather);
 
   p {
@@ -56,11 +63,11 @@
 
 /* Dawn and dusk warm the sky, and night gets a darker sky with light text. */
 .wx-card[data-part='dawn'] {
-  background: linear-gradient(170deg, color-mix(in srgb, var(--nw-color-weather-dawn) 38%, transparent), transparent 65%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
+  background: linear-gradient(170deg, color-mix(in srgb, var(--nw-color-weather-dawn) 38%, transparent), transparent 65%), var(--wx-glass-base);
 }
 
 .wx-card[data-part='dusk'] {
-  background: linear-gradient(170deg, color-mix(in srgb, var(--nw-color-weather-dusk) 30%, transparent), color-mix(in srgb, var(--nw-color-weather-dusk-deep) 22%, transparent) 75%), linear-gradient(150deg, var(--nw-color-weather-from), var(--nw-color-weather-to));
+  background: linear-gradient(170deg, color-mix(in srgb, var(--nw-color-weather-dusk) 30%, transparent), color-mix(in srgb, var(--nw-color-weather-dusk-deep) 22%, transparent) 75%), var(--wx-glass-base);
 }
 
 .wx-card[data-part='night'] {
@@ -391,6 +398,55 @@
 
 .wx-scene[data-motion='live'][data-scene='storm'] .wx-particle {
   opacity: 0.35;
+}
+
+.wx-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wx-hours > .lab {
+  font-size: var(--nw-text-xs);
+  opacity: 0.8;
+}
+
+.wx-hour-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+  gap: 6px;
+}
+
+.wx-hour {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 6px 2px;
+  border-radius: 12px;
+  font-size: var(--nw-text-xs);
+  background: color-mix(in srgb, var(--nw-color-on-weather) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nw-color-on-weather) 14%, transparent);
+}
+
+.wx-hour.now {
+  outline: 2px solid color-mix(in srgb, var(--nw-color-on-weather) 55%, transparent);
+}
+
+.wx-hour .t,
+.wx-hour .p {
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.wx-hour .p {
+  font-size: var(--nw-text-xs);
+}
+
+.wx-hour .deg {
+  font-size: var(--nw-text-sm);
+  font-weight: 700;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -45,6 +45,9 @@ export interface WallSummaryEvent {
   location: string | null;
   /** Empty when the event is for everyone. */
   attendees: WallSummaryAttendee[];
+  /** Birthdays carry the member's name as the title, and the age they turn. */
+  kind?: 'event' | 'birthday';
+  age?: number;
 }
 
 export type WallBonusClaimMode = 'first_come' | 'everyone_once';

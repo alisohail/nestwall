@@ -1,7 +1,7 @@
 import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { Subject, catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { ApiError } from '../../core/api/api-client.service';
@@ -92,6 +92,7 @@ export class CalendarComponent implements OnInit {
   private family = inject(FamilyService);
   private destroyRef = inject(DestroyRef);
   private document = inject(DOCUMENT);
+  private transloco = inject(TranslocoService);
 
   readonly isChild = this.auth.isChild;
   readonly zone = computed(() => this.auth.currentUser()?.family?.timezone);
@@ -530,7 +531,7 @@ export class CalendarComponent implements OnInit {
   private toPill(item: CalendarItem): MonthPill {
     return {
       key: item.key,
-      title: item.title,
+      title: item.kind === 'birthday' ? this.birthdayTitle(item.title, item.age) : item.title,
       task: item.kind === 'task',
       colour: this.colourFor(item),
       item,
@@ -538,6 +539,12 @@ export class CalendarComponent implements OnInit {
       date: item.occurrence_date,
       recurring: !!item.recurring,
     };
+  }
+
+  private birthdayTitle(name: string, age?: number): string {
+    return age
+      ? this.transloco.translate('calendar.birthday.age', { name, age })
+      : this.transloco.translate('calendar.birthday.title', { name });
   }
 
   private colourFor(item: CalendarItem): string {

@@ -51,6 +51,7 @@ type summaryChild struct {
 }
 
 type summaryEvent struct {
+	Kind      string            `json:"kind"`
 	Title     string            `json:"title"`
 	Date      string            `json:"date"`
 	StartsAt  time.Time         `json:"starts_at"`
@@ -58,6 +59,8 @@ type summaryEvent struct {
 	AllDay    bool              `json:"all_day"`
 	Location  *string           `json:"location"`
 	Attendees []summaryAttendee `json:"attendees"`
+	// Age is set for birthdays: the age the member turns on that day.
+	Age int `json:"age,omitempty"`
 }
 
 // summaryAttendee is one family member an event is shown to. The wall draws the member's picture when
@@ -174,7 +177,12 @@ func (h *Handlers) summary(ctx context.Context, dev Device, device *weather.Coor
 				attendees = append(attendees, m)
 			}
 		}
+		kind := "event"
+		if e.Birthday {
+			kind = "birthday"
+		}
 		out.Events = append(out.Events, summaryEvent{
+			Kind:      kind,
 			Title:     e.Title,
 			Date:      e.OccurrenceDate,
 			StartsAt:  e.StartsAt.UTC(),
@@ -182,6 +190,7 @@ func (h *Handlers) summary(ctx context.Context, dev Device, device *weather.Coor
 			AllDay:    e.AllDay,
 			Location:  e.Location,
 			Attendees: attendees,
+			Age:       e.Age,
 		})
 	}
 	return out, nil
