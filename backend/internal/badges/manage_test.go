@@ -46,12 +46,12 @@ func TestSettingsStartOnAndSaveBumpsVersion(t *testing.T) {
 		}
 	}
 
-	s := Settings{Enabled: true, ShowOnKidDashboard: true, ShowOnWall: true, NotifyChild: false}
+	s := Settings{Enabled: true, ShowOnKidDashboard: true, NotifyChild: false}
 	saved, err := SaveSettings(ctx, conn, testNow, f.FamilyID, f.ParentUserID, s, 1)
 	if err != nil {
 		t.Fatalf("save: %v", err)
 	}
-	if saved.Version != 2 || !saved.Settings.ShowOnWall || saved.Settings.NotifyChild {
+	if saved.Version != 2 || saved.Settings.NotifyChild {
 		t.Fatalf("saved = %+v, want version 2 with the new switches", saved)
 	}
 

@@ -435,7 +435,7 @@ describe('CalendarComponent', () => {
 
   it('shows a synced event without edit or delete, and names its calendar', () => {
     calendar.range.and.returnValue(
-      of(range([event('Football', { event_id: 'ev2', calendar_id: 'cal1', calendar_name: 'School term' })])),
+      of(range([event('Football', { event_id: 'ev2', calendar_id: 'cal1', calendar_name: 'School term', imported: true })])),
     );
 
     const fixture = create();

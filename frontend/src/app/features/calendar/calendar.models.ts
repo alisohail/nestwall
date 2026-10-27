@@ -23,8 +23,12 @@ export interface CalendarItem {
   calendar_name?: string;
   /** Set for imported calendars. Local events take their colour from their people. */
   calendar_colour?: string;
+  /** True for an event that came from an imported feed. Those are read-only here. */
+  imported?: boolean;
   description?: string;
   location?: string;
+  /** Minutes before the start that the event's reminders fire. Set for events only. */
+  reminders?: number[];
   recurring?: boolean;
   edited?: boolean;
   task_id?: string;

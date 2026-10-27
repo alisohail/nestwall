@@ -71,6 +71,17 @@
         </li>
       }
 
+      @if (!isTask() && reminders().length) {
+        <li class="row">
+          <app-icon name="bell" [size]="18" />
+          <div data-testid="detail-reminders">
+            @for (line of reminders(); track $index) {
+              <div>{{ line }}</div>
+            }
+          </div>
+        </li>
+      }
+
       @if (people().length) {
         <li class="row">
           <app-icon name="users" [size]="18" />

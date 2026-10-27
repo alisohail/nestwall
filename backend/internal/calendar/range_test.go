@@ -79,6 +79,27 @@ func decodeRange(t *testing.T, rec *httptest.ResponseRecorder) rangeResponse {
 	return out
 }
 
+func TestRangeCarriesEventReminders(t *testing.T) {
+	f := newFixture(t)
+	body := timedBody("Dentist", "2030-01-15", "09:00", "10:00")
+	body["reminders"] = []int{15, 1440}
+	f.createEvent(t, f.parent, body)
+	f.createEvent(t, f.parent, timedBody("Kid club", "2030-01-15", "11:00", "12:00"))
+	insertTask(t, f, "Bins", "2030-01-15", "2030-01-15 17:00:00+00:00", f.parent.memberID)
+
+	resp, _ := f.rangeGet(t, f.parent, "from=2030-01-15&to=2030-01-16")
+	got := map[string][]int{}
+	for _, it := range resp.Items {
+		got[it.Title] = it.Reminders
+	}
+	if want := []int{15, 1440}; !reflect.DeepEqual(got["Dentist"], want) {
+		t.Fatalf("Dentist reminders = %v, want %v", got["Dentist"], want)
+	}
+	if len(got["Kid club"]) != 0 {
+		t.Fatalf("Kid club reminders = %v, want none", got["Kid club"])
+	}
+}
+
 func rangeTitles(items []rangeItem) []string {
 	out := []string{}
 	for _, it := range items {

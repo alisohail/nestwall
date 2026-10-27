@@ -53,8 +53,7 @@ export class EventDetailComponent {
 
   readonly item = computed(() => this.pill().item);
   readonly isTask = computed(() => this.pill().task);
-  /** A synced event follows its source calendar, so it cannot be edited or deleted here. */
-  readonly synced = computed(() => !this.isTask() && !!this.item().calendar_id);
+  readonly synced = computed(() => !this.isTask() && !!this.item().imported);
 
   readonly day = computed(() => formatDay(this.item().occurrence_date));
 
@@ -70,6 +69,18 @@ export class EventDetailComponent {
     if (from === to && !endsOtherDay) return from;
     return `${from} – ${to}${endsOtherDay ? ` (${formatDay(endDay)})` : ''}`;
   });
+
+  /** Reminder lines for an event, such as "15 min before". Tasks have none. */
+  readonly reminders = computed(() =>
+    this.isTask() ? [] : (this.item().reminders ?? []).map((m) => this.reminderLabel(m)),
+  );
+
+  private reminderLabel(minutes: number): string {
+    if (minutes === 0) return this.i18n.translate('calendar.event.reminder_at_start');
+    if (minutes % 1440 === 0) return this.i18n.translate('calendar.event.reminder_days', { count: minutes / 1440 });
+    if (minutes % 60 === 0) return this.i18n.translate('calendar.event.reminder_hours', { count: minutes / 60 });
+    return this.i18n.translate('calendar.event.reminder_minutes', { count: minutes });
+  }
 
   onBackdrop(e: MouseEvent): void {
     if (e.target === e.currentTarget) this.closed.emit();

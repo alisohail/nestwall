@@ -8,7 +8,12 @@ import { IconComponent } from '../ui/icon/icon.component';
 
 export const MAX_PICTURE_BYTES = 5 * 1024 * 1024;
 export const PREVIEW_PX = 240;
+/** Pictures larger than this on the long side are scaled down in the browser before upload. */
+export const UPLOAD_MAX_SIDE = 2048;
+/** Types the server takes as they are. Anything else is re-encoded as a JPEG first. */
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png'];
+const JPEG_TYPE = 'image/jpeg';
+const JPEG_QUALITY = 0.9;
 
 /**
  * Square crop from a source image. Zoom 1 uses the whole short side. Pan values run from 0 to 1 across
@@ -27,6 +32,8 @@ function clamp01(value: number): number {
 
 function uploadErrorKey(err: ApiError): string {
   if (err.status === 0) return 'avatar.error.network';
+  // A 413 can come from a proxy with a non-JSON body, so the status is checked before the code.
+  if (err.status === 413) return 'avatar.error.too_large';
   switch (err.code) {
     case 'image_too_large':
       return 'avatar.error.too_large';
@@ -76,7 +83,8 @@ export class PhotoEditorComponent {
   changed = output<string | null>();
   closed = output<void>();
 
-  readonly accept = ACCEPTED_TYPES.join(',');
+  /** Any picture the browser can read. Phones often offer HEIC, which is converted on upload. */
+  readonly accept = 'image/*';
   readonly maxBytes = MAX_PICTURE_BYTES;
 
   canvas = viewChild<ElementRef<HTMLCanvasElement>>('preview');
@@ -132,21 +140,13 @@ export class PhotoEditorComponent {
     this.cancel();
   }
 
-  onFile(event: Event): void {
+  async onFile(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const selected = input.files?.[0] ?? null;
     input.value = '';
     this.errorKey.set(null);
     if (!selected) return;
-    if (!ACCEPTED_TYPES.includes(selected.type)) {
-      this.errorKey.set('avatar.error.type');
-      return;
-    }
-    if (selected.size > MAX_PICTURE_BYTES) {
-      this.errorKey.set('avatar.error.too_large');
-      return;
-    }
-    this.loadImage(selected);
+    await this.loadImage(selected);
   }
 
   setZoom(event: Event): void {
@@ -232,21 +232,69 @@ export class PhotoEditorComponent {
       });
   }
 
-  private loadImage(file: File): void {
-    const url = URL.createObjectURL(file);
+  private async loadImage(file: File): Promise<void> {
+    try {
+      const img = await decodeImage(file);
+      const usable =
+        ACCEPTED_TYPES.includes(file.type) &&
+        file.size <= MAX_PICTURE_BYTES &&
+        Math.max(img.naturalWidth, img.naturalHeight) <= UPLOAD_MAX_SIDE;
+      if (usable) {
+        this.setPicture(file, img);
+        return;
+      }
+      const jpeg = new File([await encodeJpeg(img)], 'picture.jpg', { type: JPEG_TYPE });
+      if (jpeg.size > MAX_PICTURE_BYTES) {
+        this.errorKey.set('avatar.error.too_large');
+        return;
+      }
+      this.setPicture(jpeg, await decodeImage(jpeg));
+    } catch {
+      this.errorKey.set('avatar.error.invalid_image');
+    }
+  }
+
+  private setPicture(file: File, img: HTMLImageElement): void {
+    this.file.set(file);
+    this.zoom.set(1);
+    this.panX.set(0.5);
+    this.panY.set(0.5);
+    this.image.set(img);
+  }
+}
+
+function decodeImage(blob: Blob): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob);
     const img = new Image();
     img.onload = () => {
       URL.revokeObjectURL(url);
-      this.file.set(file);
-      this.zoom.set(1);
-      this.panX.set(0.5);
-      this.panY.set(0.5);
-      this.image.set(img);
+      resolve(img);
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      this.errorKey.set('avatar.error.invalid_image');
+      reject(new Error('The picture could not be read.'));
     };
     img.src = url;
-  }
+  });
+}
+
+/** Scales the picture so its long side is at most UPLOAD_MAX_SIDE, then encodes it as a JPEG. Transparent areas become white. */
+async function encodeJpeg(img: HTMLImageElement): Promise<Blob> {
+  const scale = Math.min(1, UPLOAD_MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas is not available.');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error('The picture could not be encoded.'))),
+      JPEG_TYPE,
+      JPEG_QUALITY,
+    );
+  });
 }

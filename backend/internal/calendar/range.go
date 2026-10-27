@@ -35,6 +35,8 @@ type rangeItem struct {
 	CalendarColour *string  `json:"calendar_colour,omitempty"`
 	Description    *string  `json:"description,omitempty"`
 	Location       *string  `json:"location,omitempty"`
+	Imported       bool     `json:"imported"`
+	Reminders      []int    `json:"reminders,omitempty"`
 	Recurring      *bool    `json:"recurring,omitempty"`
 	Edited         *bool    `json:"edited,omitempty"`
 	TaskID         *string  `json:"task_id,omitempty"`
@@ -377,6 +379,8 @@ func (h *Handlers) rangeEvents(ctx context.Context, familyID, scope string, q ra
 				CalendarColour: calendarColour,
 				Description:    o.Description,
 				Location:       o.Location,
+				Imported:       e.FromFeed,
+				Reminders:      e.Reminders,
 				Recurring:      &recurring,
 				Edited:         &edited,
 			}})

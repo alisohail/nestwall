@@ -9,7 +9,7 @@ import { BadgesSettingsComponent } from './badges-settings.component';
 
 const config: BadgeConfig = {
   version: 3,
-  settings: { enabled: true, show_on_kid_dashboard: true, show_on_wall: false, notify_child: true },
+  settings: { enabled: true, show_on_kid_dashboard: true, notify_child: true },
   groups: [
     { group: 'streaks', enabled: true, badges: [{ id: 'b1', key: 's3', enabled: true }] },
     { group: 'points', enabled: true, badges: [{ id: 'b2', key: 'p100', enabled: true }] },
@@ -94,7 +94,7 @@ describe('BadgesSettingsComponent', () => {
     badges.saveSettings.and.returnValue(throwError(() => ({ code: 'version_conflict', status: 412 }) as ApiError));
     build();
 
-    const input = el('[data-testid="badges-show-wall"]') as HTMLInputElement;
+    const input = el('[data-testid="badges-notify-child"]') as HTMLInputElement;
     input.checked = true;
     input.dispatchEvent(new Event('change'));
     fixture.detectChanges();

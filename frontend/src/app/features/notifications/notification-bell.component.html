@@ -14,7 +14,14 @@
 </button>
 
 @if (open()) {
-  <div class="bell-panel card" role="dialog" [attr.aria-label]="'shell.notif.title' | transloco" data-testid="bell-panel">
+  <div
+    class="bell-panel card"
+    role="dialog"
+    [attr.aria-label]="'shell.notif.title' | transloco"
+    data-testid="bell-panel"
+    [style.top.px]="panelPos()?.top"
+    [style.left.px]="panelPos()?.left"
+    [style.width.px]="panelPos()?.width">
     <div class="bell-head">
       <b>{{ 'shell.notif.title' | transloco }}</b>
       @if (unread() > 0) {
