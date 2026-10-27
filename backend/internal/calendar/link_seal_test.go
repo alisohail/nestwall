@@ -1,6 +1,7 @@
 package calendar
 
 import (
+	"encoding/base64"
 	"strings"
 	"testing"
 )
@@ -37,14 +38,15 @@ func TestSealedLinkRejectsWrongImportKeyOrTampering(t *testing.T) {
 	if _, err := openLink(testDBKey, "import-1", "not-base64!!"); err == nil {
 		t.Error("garbage opened")
 	}
-	// Flip the last base64 character so the ciphertext fails authentication.
-	tampered := []byte(sealed)
-	if tampered[len(tampered)-2] == 'A' {
-		tampered[len(tampered)-2] = 'B'
-	} else {
-		tampered[len(tampered)-2] = 'A'
+	// Flip a byte in the raw ciphertext so authentication fails. Editing the
+	// base64 text can hit padding bits that decode to the same bytes.
+	raw, err := base64.StdEncoding.DecodeString(sealed)
+	if err != nil {
+		t.Fatalf("decode: %v", err)
 	}
-	if _, err := openLink(testDBKey, "import-1", string(tampered)); err == nil {
+	raw[len(raw)-1] ^= 0x01
+	tampered := base64.StdEncoding.EncodeToString(raw)
+	if _, err := openLink(testDBKey, "import-1", tampered); err == nil {
 		t.Error("tampered link opened")
 	}
 }
