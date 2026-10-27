@@ -127,10 +127,8 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: backend/go.mod
-      # Report only until the Go toolchain upgrade lands; then remove continue-on-error.
       - name: Go vulnerabilities (govulncheck)
         working-directory: backend
-        continue-on-error: true
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
           "$(go env GOPATH)/bin/govulncheck" ./...
