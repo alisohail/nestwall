@@ -38,7 +38,14 @@ nestwall/
 └── .env
 ```
 
-The `database` folder is created automatically on the first start.
+The `database` folder is created automatically on the first start, but Docker creates it owned by `root`. NestWall runs as a non-root user (uid `100`, gid `101`) and cannot write to a root-owned folder. On Linux and NAS systems, create the folder yourself and give it to that user before the first start:
+
+```bash
+mkdir -p database
+sudo chown -R 100:101 database
+```
+
+Windows and macOS (Docker Desktop) handle this for you, so the commands are not needed there.
 
 ## Step 2: Fill in the settings file
 
@@ -137,7 +144,7 @@ NestWall also makes its own backups inside `database/backups` on a schedule. Kee
 |---|---|
 | The page does not open | Check that `docker compose ... ps` shows `web` as `Up`. Check that the browser uses the same port as `WEB_PORT`. Check the firewall on the computer. |
 | `port is already allocated` or `address already in use` when starting | Another app uses `WEB_PORT`. Pick another port (for example `8090`) in `.env`, set `APP_URL` to match, then run `docker compose -f compose.release.yaml up -d` again. To see what uses a port, use `netstat -ano \| findstr :5842` on Windows or `ss -ltn \| grep :5842` on Linux and NAS systems. |
-| `api` never says `healthy` | Run `docker compose -f compose.release.yaml logs --tail 100 api`. Most often `DB_KEY` or `SESSION_SECRET` is missing from `.env`. |
+| `api` never says `healthy` | Run `docker compose -f compose.release.yaml logs --tail 100 api`. Most often `DB_KEY` or `SESSION_SECRET` is missing from `.env`. If the log says `unable to open database file` and `database/nestwall.db` is missing, the `database` folder is not writable by uid `100`. Run `sudo chown -R 100:101 database` (see Step 1), then `docker compose -f compose.release.yaml up -d`. |
 | `pull` says `unauthorized` or `denied` | The published images must be public on GitHub. Ask the project owner, or run `docker login ghcr.io` with a GitHub account that can read them. |
 | Phones cannot open the page | Use the computer's network address (not `localhost`) in `APP_URL` and in the browser. |
 | The page looks out of date after an update | Close the browser tab and reopen it. If it still looks old, clear the site data for the address and reload. |
