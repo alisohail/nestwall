@@ -14,7 +14,7 @@ RUN CGO_ENABLED=1 CGO_CFLAGS="-D_LARGEFILE64_SOURCE" GOOS=linux go build -trimpa
 # Runtime stage: minimal pinned base, non-root user.
 # Migrations are embedded in the binary (see database/database.go).
 # The database file lives in /app/database, which compose bind-mounts from the host.
-FROM alpine:3.21@sha256:bbfcd601d7cd20d35bb0b8b866ad1a8a0d107ca3e1c20870c75c5ce2c1186d30
+FROM alpine:3.24@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 # tzdata lets TZ (set in compose) resolve a named zone for scheduled backups.
 RUN apk add --no-cache tzdata \
     && addgroup -S app && adduser -S -G app app \
