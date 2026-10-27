@@ -23,6 +23,7 @@ describe('LoadingComponent', () => {
   });
 
   it('renders the full variant with an accessible logo', () => {
+    TestBed.inject(ThemeService).currentTheme.set('light');
     fixture.componentRef.setInput('variant', 'full');
     fixture.detectChanges();
     const logo = el.querySelector('.nw-loading__logo') as HTMLImageElement;
