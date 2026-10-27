@@ -135,6 +135,11 @@
 
 .stat-chip.tasks { --chip: var(--nw-color-warning); }
 .stat-chip.rewards { --chip: var(--nw-color-primary); }
+.stat-chip.tasks,
+.stat-chip.rewards {
+  font-size: var(--nw-text-xs);
+  padding: var(--nw-space-1) var(--nw-space-3);
+}
 
 /* Overdue people sit in two compact columns so four names take two lines, not four. Narrow tiles drop to one column. */
 .stat-people {

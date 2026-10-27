@@ -30,6 +30,24 @@ const POLL_INTERVAL_MS = 60_000;
 const MAX_BROWSER_PER_REFRESH = 3;
 /** Server-sent events endpoint that signals when the member's inbox changes. */
 const STREAM_URL = '/api/v1/notifications/stream';
+const PANEL_WIDTH_PX = 340;
+const PANEL_GAP_PX = 8;
+
+export interface PanelPlacement {
+  top: number;
+  left: number;
+  width: number;
+}
+
+/**
+ * Places the panel under the bell, right-aligned to it, but never past either edge of the viewport.
+ * On a phone the bell sits well inside the right edge, so a plain right alignment runs off the left.
+ */
+export function panelPlacement(bell: { bottom: number; right: number }, viewportWidth: number): PanelPlacement {
+  const width = Math.min(PANEL_WIDTH_PX, viewportWidth - 2 * PANEL_GAP_PX);
+  const left = Math.min(Math.max(PANEL_GAP_PX, bell.right - width), viewportWidth - width - PANEL_GAP_PX);
+  return { top: bell.bottom + PANEL_GAP_PX, left, width };
+}
 
 type Tone = 'success' | 'warning' | 'error' | 'primary' | 'neutral';
 
@@ -87,6 +105,8 @@ export class NotificationBellComponent {
   }
 
   readonly open = signal(false);
+  /** Screen position of the open panel, set each time it opens or the window resizes. */
+  readonly panelPos = signal<PanelPlacement | null>(null);
   readonly items = signal<InboxItem[]>([]);
   readonly unread = signal(0);
   readonly loading = signal(false);
@@ -135,9 +155,20 @@ export class NotificationBellComponent {
   toggle(): void {
     this.open.update((v) => !v);
     if (this.open()) {
+      this.placePanel();
       this.requestBrowserPermission();
       this.refresh();
     }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (this.open()) this.placePanel();
+  }
+
+  private placePanel(): void {
+    const rect = this.host.nativeElement.getBoundingClientRect();
+    this.panelPos.set(panelPlacement(rect, window.innerWidth));
   }
 
   close(): void {

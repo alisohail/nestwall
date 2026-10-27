@@ -63,7 +63,6 @@ func (e staleVersionError) Error() string {
 type Settings struct {
 	Enabled            bool `json:"enabled"`
 	ShowOnKidDashboard bool `json:"show_on_kid_dashboard"`
-	ShowOnWall         bool `json:"show_on_wall"`
 	NotifyChild        bool `json:"notify_child"`
 }
 
@@ -144,9 +143,9 @@ const customSelect = `SELECT d.id, d.name, d.emoji, d.description, d.enabled, d.
 func LoadConfig(ctx context.Context, q querier, familyID string) (Config, error) {
 	cfg := Config{Groups: []GroupView{}, Custom: []Custom{}}
 	err := q.QueryRowContext(ctx,
-		`SELECT enabled, show_on_kid_dashboard, show_on_wall, notify_child, version
+		`SELECT enabled, show_on_kid_dashboard, notify_child, version
 		 FROM badge_settings WHERE family_id = ?`, familyID,
-	).Scan(&cfg.Settings.Enabled, &cfg.Settings.ShowOnKidDashboard, &cfg.Settings.ShowOnWall,
+	).Scan(&cfg.Settings.Enabled, &cfg.Settings.ShowOnKidDashboard,
 		&cfg.Settings.NotifyChild, &cfg.Version)
 	if err != nil {
 		return Config{}, fmt.Errorf("load badge settings: %w", err)
@@ -222,16 +221,15 @@ func SaveSettings(ctx context.Context, db *sql.DB, now time.Time, familyID, user
 	}
 	if _, err := tx.ExecContext(ctx,
 		`UPDATE badge_settings
-		 SET enabled = ?, show_on_kid_dashboard = ?, show_on_wall = ?, notify_child = ?
+		 SET enabled = ?, show_on_kid_dashboard = ?, notify_child = ?
 		 WHERE family_id = ?`,
-		boolInt(s.Enabled), boolInt(s.ShowOnKidDashboard), boolInt(s.ShowOnWall), boolInt(s.NotifyChild), familyID,
+		boolInt(s.Enabled), boolInt(s.ShowOnKidDashboard), boolInt(s.NotifyChild), familyID,
 	); err != nil {
 		return Config{}, fmt.Errorf("update badge settings: %w", err)
 	}
 	if err := audit.Record(ctx, tx, familyID, userID, "badge.settings_updated", "badge_settings", nil, map[string]any{
 		"enabled":               s.Enabled,
 		"show_on_kid_dashboard": s.ShowOnKidDashboard,
-		"show_on_wall":          s.ShowOnWall,
 		"notify_child":          s.NotifyChild,
 	}); err != nil {
 		return Config{}, fmt.Errorf("audit badge settings: %w", err)

@@ -19,8 +19,8 @@ export type BuiltSettingsSection = SettingsSection & { path: string; subKey: str
 /** Same order as the Configuration menu on the settings hub. */
 export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   { path: 'general', labelKey: 'settings.nav.general', subKey: 'settings.sub.general', icon: 'tune' },
-  { path: 'templates', labelKey: 'settings.nav.templates', subKey: 'settings.sub.templates', icon: 'list' },
-  { path: 'categories', labelKey: 'settings.nav.categories', subKey: 'settings.sub.categories', icon: 'list' },
+  { path: 'templates', labelKey: 'settings.nav.templates', subKey: 'settings.sub.templates', icon: 'description' },
+  { path: 'categories', labelKey: 'settings.nav.categories', subKey: 'settings.sub.categories', icon: 'category' },
   { path: 'points', labelKey: 'settings.nav.points', subKey: 'settings.sub.points', icon: 'emoji_events' },
   { path: 'badges', labelKey: 'settings.nav.badges', subKey: 'settings.sub.badges', icon: 'star' },
   { path: 'calendars', labelKey: 'settings.nav.calendars', subKey: 'settings.sub.calendars', icon: 'calendar_month' },

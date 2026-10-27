@@ -2,10 +2,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
 import { AvatarService } from '../avatar/avatar.service';
-import { MAX_PICTURE_BYTES, PhotoEditorComponent, cropFor } from './photo-editor.component';
+import { PhotoEditorComponent, MAX_PICTURE_BYTES, UPLOAD_MAX_SIDE, cropFor } from './photo-editor.component';
 
 function fakeFileEvent(file: File): Event {
   return { target: { files: [file], value: 'x' } } as unknown as Event;
+}
+
+/** A solid-colour picture encoded by the browser, so the test file decodes like a real photo. */
+async function pictureFile(width: number, height: number, type: string): Promise<File> {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const blob = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b as Blob), type));
+  return new File([blob], 'pic', { type });
 }
 
 describe('cropFor', () => {
@@ -69,19 +78,35 @@ describe('PhotoEditorComponent', () => {
     expect(closed).toHaveBeenCalledTimes(1);
   });
 
-  it('should reject a file that is not a JPG or PNG', () => {
-    component.onFile(fakeFileEvent(new File(['GIF89a'], 'pic.gif', { type: 'image/gif' })));
+  it('should convert a picture that is not a JPG or PNG to a JPEG before upload', async () => {
+    const webp = await pictureFile(40, 30, 'image/webp');
+    await component.onFile(fakeFileEvent(webp));
     fixture.detectChanges();
-    expect(component.errorKey()).toBe('avatar.error.type');
-    expect(component.file()).toBeNull();
-    expect(avatarSpy.upload).not.toHaveBeenCalled();
+    expect(component.errorKey()).toBeNull();
+    expect(component.file()?.type).toBe('image/jpeg');
+    expect(component.image()?.naturalWidth).toBe(40);
   });
 
-  it('should reject a file over the 5 MB limit', () => {
-    const big = new File([new Uint8Array(MAX_PICTURE_BYTES + 1)], 'big.jpg', { type: 'image/jpeg' });
-    component.onFile(fakeFileEvent(big));
-    expect(component.errorKey()).toBe('avatar.error.too_large');
+  it('should scale a large picture down so its long side is at most the upload limit', async () => {
+    const large = await pictureFile(3000, 2000, 'image/png');
+    await component.onFile(fakeFileEvent(large));
+    fixture.detectChanges();
+    expect(component.file()?.type).toBe('image/jpeg');
+    expect(component.image()?.naturalWidth).toBe(UPLOAD_MAX_SIDE);
+    expect(component.image()?.naturalHeight).toBe(Math.round(2000 * (UPLOAD_MAX_SIDE / 3000)));
+  });
+
+  it('should keep a small JPG or PNG as it is', async () => {
+    const small = await pictureFile(40, 30, 'image/png');
+    await component.onFile(fakeFileEvent(small));
+    expect(component.file()).toBe(small);
+  });
+
+  it('should show a readable message when the browser cannot read the picture', async () => {
+    await component.onFile(fakeFileEvent(new File(['not a picture'], 'pic.heic', { type: 'image/heic' })));
+    expect(component.errorKey()).toBe('avatar.error.invalid_image');
     expect(component.file()).toBeNull();
+    expect(avatarSpy.upload).not.toHaveBeenCalled();
   });
 
   it('should not allow saving before a picture is chosen', () => {
@@ -114,5 +139,38 @@ describe('PhotoEditorComponent', () => {
     fixture.detectChanges();
 
     expect(component.errorKey()).toBe('avatar.error.network');
+  });
+
+  it('should show the size message for a 413 even when the body is not the app JSON', async () => {
+    avatarSpy.upload.and.returnValue(throwError(() => ({ code: 'server_error', status: 413 })));
+    await component.onFile(fakeFileEvent(await pictureFile(40, 30, 'image/png')));
+    fixture.detectChanges();
+
+    component.save();
+
+    expect(avatarSpy.upload).toHaveBeenCalled();
+    expect(component.errorKey()).toBe('avatar.error.too_large');
+  });
+
+  it('should refuse a picture that is still over 5 MB after conversion, without uploading it', async () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 2048;
+    canvas.height = 2048;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const pixels = ctx.createImageData(2048, 2048);
+    for (let i = 0; i < pixels.data.length; i++) pixels.data[i] = Math.random() * 256;
+    ctx.putImageData(pixels, 0, 0);
+    const noise = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b as Blob), 'image/png'));
+
+    await component.onFile(fakeFileEvent(new File([noise], 'noise.png', { type: 'image/png' })));
+    fixture.detectChanges();
+
+    const kept = component.file();
+    if (kept) {
+      expect(kept.size).toBeLessThanOrEqual(MAX_PICTURE_BYTES);
+    } else {
+      expect(component.errorKey()).toBe('avatar.error.too_large');
+    }
+    expect(avatarSpy.upload).not.toHaveBeenCalled();
   });
 });

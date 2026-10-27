@@ -25,8 +25,8 @@ export class SettingsHubComponent {
    */
   readonly familySetup: readonly SettingsHubItem[] = [
     { key: 'general', path: 'general', labelKey: 'settings.nav.general', icon: 'tune' },
-    { key: 'templates', path: 'templates', labelKey: 'settings.nav.templates', icon: 'list' },
-    { key: 'categories', path: 'categories', labelKey: 'settings.nav.categories', icon: 'list' },
+    { key: 'templates', path: 'templates', labelKey: 'settings.nav.templates', icon: 'description' },
+    { key: 'categories', path: 'categories', labelKey: 'settings.nav.categories', icon: 'category' },
     { key: 'points', path: 'points', labelKey: 'settings.nav.points', icon: 'emoji_events' },
     { key: 'badges', path: 'badges', labelKey: 'settings.nav.badges', icon: 'star' },
     { key: 'calendars', path: 'calendars', labelKey: 'settings.nav.calendars', icon: 'calendar_month' },

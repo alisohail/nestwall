@@ -4,7 +4,26 @@ import { of } from 'rxjs';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
 import { ApiClient } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { InboxItem, NotificationBellComponent } from './notification-bell.component';
+import { InboxItem, NotificationBellComponent, panelPlacement } from './notification-bell.component';
+
+describe('panelPlacement', () => {
+  it('should right-align the panel to the bell on a wide screen', () => {
+    expect(panelPlacement({ bottom: 60, right: 1200 }, 1280)).toEqual({ top: 68, left: 860, width: 340 });
+  });
+
+  it('should keep the panel inside the left edge when the bell is near the middle of a phone', () => {
+    const placed = panelPlacement({ bottom: 64, right: 280 }, 412);
+    expect(placed.left).toBe(8);
+    expect(placed.width).toBe(340);
+    expect(placed.left + placed.width).toBeLessThanOrEqual(412 - 8);
+  });
+
+  it('should narrow the panel on a very small screen', () => {
+    const placed = panelPlacement({ bottom: 64, right: 300 }, 320);
+    expect(placed.width).toBe(304);
+    expect(placed.left).toBe(8);
+  });
+});
 
 const ITEMS: InboxItem[] = [
   { id: 'n1', kind: 'task_approved', subject_member_id: null, body: 'Tidy room was approved', created_at: '2026-10-20T10:00:00Z', read_at: null },

@@ -2548,7 +2548,6 @@
       "master_body": "NestWall ships 24 badges that children earn automatically from real task, points and streak records. You can switch groups off and add your own.",
       "show_kid": "Show badges on the kid dashboard",
       "show_kid_hint": "A small showcase of recent badges next to their name.",
-      "show_wall": "Show badges on the wall display",
       "notify_child": "Tell the child when they earn a badge",
       "groups_title": "Built-in badge groups",
       "group_count": "{{ count }} badges",

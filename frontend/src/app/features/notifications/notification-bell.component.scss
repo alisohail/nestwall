@@ -23,12 +23,10 @@
   text-align: center;
 }
 
+/* Top, left and width are set from the bell's position when the panel opens. */
 .bell-panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+  position: fixed;
   z-index: var(--nw-z-popover);
-  width: min(340px, 90vw);
   padding: 0;
   overflow: hidden;
   box-shadow: var(--nw-shadow-lg);

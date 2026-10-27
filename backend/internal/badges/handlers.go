@@ -37,7 +37,6 @@ func NewHandlers(db *sql.DB, clk clock.Clock, logger *slog.Logger) *Handlers {
 type settingsRequest struct {
 	Enabled            bool `json:"enabled"`
 	ShowOnKidDashboard bool `json:"show_on_kid_dashboard"`
-	ShowOnWall         bool `json:"show_on_wall"`
 	NotifyChild        bool `json:"notify_child"`
 }
 
@@ -95,7 +94,6 @@ func (h *Handlers) PutSettings(w http.ResponseWriter, r *http.Request) {
 	cfg, err := SaveSettings(r.Context(), h.db, h.clock.Now(), familyID, userID, Settings{
 		Enabled:            req.Enabled,
 		ShowOnKidDashboard: req.ShowOnKidDashboard,
-		ShowOnWall:         req.ShowOnWall,
 		NotifyChild:        req.NotifyChild,
 	}, expected)
 	h.respondConfig(w, cfg, err, "save badge settings")

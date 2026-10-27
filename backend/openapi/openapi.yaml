@@ -4919,11 +4919,9 @@ components:
           description: Master switch. When off, no badge is awarded.
         show_on_kid_dashboard:
           type: boolean
-        show_on_wall:
-          type: boolean
         notify_child:
           type: boolean
-      required: [enabled, show_on_kid_dashboard, show_on_wall, notify_child]
+      required: [enabled, show_on_kid_dashboard, notify_child]
     BadgeSettingsRequest:
       type: object
       additionalProperties: false
@@ -4933,11 +4931,9 @@ components:
           type: boolean
         show_on_kid_dashboard:
           type: boolean
-        show_on_wall:
-          type: boolean
         notify_child:
           type: boolean
-      required: [enabled, show_on_kid_dashboard, show_on_wall, notify_child]
+      required: [enabled, show_on_kid_dashboard, notify_child]
     BadgeGroupRequest:
       type: object
       additionalProperties: false
@@ -5848,9 +5844,15 @@ components:
         location:
           type: string
           nullable: true
-        recurring:
+        imported:
           type: boolean
-        edited:
+          description: True when the event came from an imported calendar feed. Imported events are read-only here.
+        reminders:
+          type: array
+          description: Minutes before the start that the event's reminders fire. Only set for events.
+          items:
+            type: integer
+        recurring:
           type: boolean
         task_id:
           type: string

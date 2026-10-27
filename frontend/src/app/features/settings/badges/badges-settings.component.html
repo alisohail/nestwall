@@ -67,24 +67,6 @@
 
         <div class="setting">
           <div class="grow">
-            <div class="t" id="badges-wall-label">{{ 'settings.badges.show_wall' | transloco }}</div>
-          </div>
-          <label class="switch">
-            <input
-              type="checkbox"
-              role="switch"
-              data-testid="badges-show-wall"
-              aria-labelledby="badges-wall-label"
-              [checked]="cfg.settings.show_on_wall"
-              [disabled]="busy()"
-              (change)="toggleSetting('show_on_wall', $event)"
-            />
-            <span class="track" aria-hidden="true"></span>
-          </label>
-        </div>
-
-        <div class="setting">
-          <div class="grow">
             <div class="t" id="badges-notify-label">{{ 'settings.badges.notify_child' | transloco }}</div>
           </div>
           <label class="switch">

@@ -5,7 +5,6 @@ export type BadgeGroupKey = 'streaks' | 'points' | 'tasks' | 'skills' | 'timing'
 export interface BadgeSettings {
   enabled: boolean;
   show_on_kid_dashboard: boolean;
-  show_on_wall: boolean;
   notify_child: boolean;
 }
 
