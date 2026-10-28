@@ -11,7 +11,7 @@ export class TimeFormatService {
   private auth = inject(AuthService);
 
   /** True for 12-hour (AM/PM). Families default to 12h when the setting is absent. */
-  readonly twelveHour = computed(() => this.auth.currentUser()?.family?.time_format !== '24h');
+  readonly twelveHour = computed(() => this.auth.currentUser?.()?.family?.time_format !== '24h');
 
   constructor() {
     effect(() => setTwelveHour(this.twelveHour()));
