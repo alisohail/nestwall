@@ -3161,6 +3161,44 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+  /api/v1/family/timezone:
+    put:
+      tags: [Family]
+      summary: Set the family's timezone
+      description: Requires the `settings.manage` permission. Sets the IANA timezone used for the family's dates, due times, weather and wall clock. Writes an audit entry.
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/CSRFHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [timezone]
+              properties:
+                timezone:
+                  type: string
+                  example: Europe/Berlin
+      responses:
+        '200':
+          description: Saved timezone
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [timezone]
+                properties:
+                  timezone:
+                    type: string
+        '400':
+          description: Value is not a valid IANA timezone (error code `invalid_timezone`)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
   /api/v1/family/roles:
     get:
       tags: [Permissions]

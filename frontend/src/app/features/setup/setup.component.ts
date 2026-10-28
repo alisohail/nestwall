@@ -13,6 +13,7 @@ import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { catchError, filter, finalize, of, switchMap, take, timer } from 'rxjs';
 import { SetupService } from '../../core/setup/setup.service';
 import { ApiError } from '../../core/api/api-client.service';
+import { FAMILY_TIMEZONES } from '../../core/timezones';
 import { BannerComponent } from '../../shared/ui/banner/banner.component';
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 
@@ -112,17 +113,7 @@ export class SetupComponent {
     return keys[this.passwordStrength()];
   }
 
-  readonly timezones = [
-    'America/New_York', 'America/Chicago', 'America/Denver',
-    'America/Los_Angeles', 'America/Toronto', 'America/Vancouver',
-    'America/Sao_Paulo', 'America/Mexico_City',
-    'Europe/London', 'Europe/Dublin', 'Europe/Paris', 'Europe/Berlin',
-    'Europe/Rome', 'Europe/Madrid', 'Europe/Amsterdam', 'Europe/Stockholm',
-    'Europe/Warsaw', 'Europe/Helsinki', 'Europe/Athens', 'Europe/Istanbul',
-    'Europe/Moscow', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Bangkok',
-    'Asia/Singapore', 'Asia/Shanghai', 'Asia/Tokyo', 'Asia/Seoul',
-    'Australia/Sydney', 'Australia/Melbourne', 'Pacific/Auckland', 'UTC',
-  ];
+  readonly timezones = FAMILY_TIMEZONES;
 
   start(): void {
     this.step.set(2);
