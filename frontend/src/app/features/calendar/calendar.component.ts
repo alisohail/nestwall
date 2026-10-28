@@ -1,5 +1,5 @@
-import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal, DOCUMENT } from '@angular/core';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { Subject, catchError, finalize, of, switchMap, tap } from 'rxjs';

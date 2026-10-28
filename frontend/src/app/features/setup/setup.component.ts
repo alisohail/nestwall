@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, DestroyRef, inject, signal, DOCUMENT } from '@angular/core';
+
 import { Router } from '@angular/router';
 import {
   ReactiveFormsModule,

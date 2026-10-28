@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+
+import { Component, DestroyRef, inject, signal, DOCUMENT } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, concatMap, finalize, from, map } from 'rxjs';
