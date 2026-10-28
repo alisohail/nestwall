@@ -15,11 +15,10 @@ type ResetState = 'form' | 'done' | 'invalid';
  * session out, so the user goes to sign in again.
  */
 @Component({
-  selector: 'app-reset-password',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslocoModule, BannerComponent],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.scss',
+    selector: 'app-reset-password',
+    imports: [ReactiveFormsModule, RouterLink, TranslocoModule, BannerComponent],
+    templateUrl: './reset-password.component.html',
+    styleUrl: './reset-password.component.scss'
 })
 export class ResetPasswordComponent {
   private fb = inject(FormBuilder);

@@ -20,11 +20,10 @@ interface Notice {
 
 /** Every reward request the child has made, newest first, one page at a time. */
 @Component({
-  selector: 'app-reward-requests',
-  standalone: true,
-  imports: [DatePipe, RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
-  templateUrl: './reward-requests.component.html',
-  styleUrl: './reward-requests.component.scss',
+    selector: 'app-reward-requests',
+    imports: [DatePipe, RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
+    templateUrl: './reward-requests.component.html',
+    styleUrl: './reward-requests.component.scss'
 })
 export class RewardRequestsComponent implements OnInit {
   protected auth = inject(AuthService);

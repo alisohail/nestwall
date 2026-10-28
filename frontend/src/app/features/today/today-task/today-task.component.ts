@@ -16,11 +16,10 @@ import { TasksService } from '../../tasks/tasks.service';
  * "I'm done!" completes it; a task without steps completes from its check circle.
  */
 @Component({
-  selector: 'app-today-task',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, TaskConfirmComponent],
-  templateUrl: './today-task.component.html',
-  styleUrl: './today-task.component.scss',
+    selector: 'app-today-task',
+    imports: [RouterLink, TranslocoModule, TaskConfirmComponent],
+    templateUrl: './today-task.component.html',
+    styleUrl: './today-task.component.scss'
 })
 export class TodayTaskComponent {
   item = input.required<MyTaskItem>();

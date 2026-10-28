@@ -30,11 +30,10 @@ import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.com
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
-  selector: 'app-task-categories-settings',
-  standalone: true,
-  imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
-  templateUrl: './task-categories-settings.component.html',
-  styleUrl: './task-categories-settings.component.scss',
+    selector: 'app-task-categories-settings',
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
+    templateUrl: './task-categories-settings.component.html',
+    styleUrl: './task-categories-settings.component.scss'
 })
 export class TaskCategoriesSettingsComponent implements UnsavedChangesAware {
   private service = inject(TasksService);

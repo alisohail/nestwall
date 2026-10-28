@@ -61,11 +61,10 @@ import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.com
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
-  selector: 'app-bonus-templates-settings',
-  standalone: true,
-  imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './bonus-templates-settings.component.html',
-  styleUrl: './bonus-templates-settings.component.scss',
+    selector: 'app-bonus-templates-settings',
+    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './bonus-templates-settings.component.html',
+    styleUrl: './bonus-templates-settings.component.scss'
 })
 export class BonusTemplatesSettingsComponent implements UnsavedChangesAware {
   private service = inject(TasksService);

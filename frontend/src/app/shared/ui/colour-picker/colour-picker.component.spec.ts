@@ -6,9 +6,8 @@ import { getTranslocoTestingModule } from '../../../core/transloco/transloco-tes
 import { COLOUR_PALETTE, ColourPickerComponent } from './colour-picker.component';
 
 @Component({
-  standalone: true,
-  imports: [ColourPickerComponent, ReactiveFormsModule],
-  template: `<app-colour-picker label="Colour" [formControl]="control" />`,
+    imports: [ColourPickerComponent, ReactiveFormsModule],
+    template: `<app-colour-picker label="Colour" [formControl]="control" />`
 })
 class HostComponent {
   readonly control = new FormControl(COLOUR_PALETTE[0], { nonNullable: true });

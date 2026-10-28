@@ -40,19 +40,18 @@ const REFUSED_CODES = ['daily_limit_reached', 'below_minimum_balance', 'sharing_
 
 /** Child screen to give some points to a sibling. Parents see a short note instead. */
 @Component({
-  selector: 'app-share',
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    RouterLink,
-    AvatarComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    LoadErrorComponent,
-    LoadingComponent,
-  ],
-  templateUrl: './share.component.html',
-  styleUrl: './share.component.scss',
+    selector: 'app-share',
+    imports: [
+        TranslocoModule,
+        RouterLink,
+        AvatarComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        LoadErrorComponent,
+        LoadingComponent,
+    ],
+    templateUrl: './share.component.html',
+    styleUrl: './share.component.scss'
 })
 export class ShareComponent {
   auth = inject(AuthService);

@@ -3,11 +3,10 @@ import { TranslocoModule } from '@ngneat/transloco';
 
 /** Confirmation step for actions that change a copy, such as completing or skipping it. */
 @Component({
-  selector: 'app-task-confirm',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './task-confirm.component.html',
-  host: { '(document:keydown.escape)': 'cancelled.emit()' },
+    selector: 'app-task-confirm',
+    imports: [TranslocoModule],
+    templateUrl: './task-confirm.component.html',
+    host: { '(document:keydown.escape)': 'cancelled.emit()' }
 })
 export class TaskConfirmComponent {
   heading = input.required<string>();

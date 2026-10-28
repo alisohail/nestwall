@@ -4,9 +4,8 @@ import { By } from '@angular/platform-browser';
 import { BannerComponent } from './banner.component';
 
 @Component({
-  standalone: true,
-  imports: [BannerComponent],
-  template: `<app-banner [tone]="tone">Saved</app-banner>`,
+    imports: [BannerComponent],
+    template: `<app-banner [tone]="tone">Saved</app-banner>`
 })
 class HostComponent {
   tone: 'info' | 'success' | 'warning' | 'error' = 'info';

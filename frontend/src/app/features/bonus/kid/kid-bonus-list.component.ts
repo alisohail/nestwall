@@ -75,11 +75,10 @@ const LIVE_STATES: readonly KidBonusState[] = ['open', 'once', 'mine'];
 
 /** Shows the child's bonus tasks for today. Used as a section on Today and as the Bonus tab on Tasks. */
 @Component({
-  selector: 'app-kid-bonus-list',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, BannerComponent, EmptyStateComponent, LoadErrorComponent, LoadingComponent],
-  templateUrl: './kid-bonus-list.component.html',
-  styleUrl: './kid-bonus-list.component.scss',
+    selector: 'app-kid-bonus-list',
+    imports: [RouterLink, TranslocoModule, BannerComponent, EmptyStateComponent, LoadErrorComponent, LoadingComponent],
+    templateUrl: './kid-bonus-list.component.html',
+    styleUrl: './kid-bonus-list.component.scss'
 })
 export class KidBonusListComponent implements OnInit {
   private api = inject(BonusService);

@@ -51,11 +51,10 @@ const PORT_MAX = 65535;
 
 /** Family mail server. Parents set it up; the outbox sends with it once it is ready. */
 @Component({
-  selector: 'app-email-settings',
-  standalone: true,
-  imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './email-settings.component.html',
-  styleUrl: './email-settings.component.scss',
+    selector: 'app-email-settings',
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './email-settings.component.html',
+    styleUrl: './email-settings.component.scss'
 })
 export class EmailSettingsComponent implements OnInit, OnDestroy, UnsavedChangesAware {
   private api = inject(EmailSettingsService);

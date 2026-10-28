@@ -3,16 +3,15 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { WallScrollCueDirective } from "./wall-scroll-cue.directive";
 
 @Component({
-  standalone: true,
-  imports: [WallScrollCueDirective],
-  template: `
+    imports: [WallScrollCueDirective],
+    template: `
     <div class="list" appWallScrollCue style="height: 100px; overflow-y: auto">
       <div style="height: 400px"></div>
     </div>
     <div class="row" appWallScrollCue="x" style="width: 100px; overflow-x: auto">
       <div style="width: 400px; height: 20px"></div>
     </div>
-  `,
+  `
 })
 class HostComponent {}
 

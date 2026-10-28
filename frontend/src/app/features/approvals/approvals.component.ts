@@ -46,21 +46,20 @@ const BONUS_NOTE_MAX = 200;
 
 /** Parent review queue: task completions, reward requests and the decision history. */
 @Component({
-  selector: 'app-approvals',
-  standalone: true,
-  imports: [
-    FormsModule,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    IconComponent,
-    LoadingComponent,
-    SkeletonComponent,
-  ],
-  templateUrl: './approvals.component.html',
-  styleUrl: './approvals.component.scss',
+    selector: 'app-approvals',
+    imports: [
+        FormsModule,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        IconComponent,
+        LoadingComponent,
+        SkeletonComponent,
+    ],
+    templateUrl: './approvals.component.html',
+    styleUrl: './approvals.component.scss'
 })
 export class ApprovalsComponent {
   private tasksApi = inject(TasksService);

@@ -69,11 +69,10 @@ function clock(hhmm: string): string {
 
 /** Publishes a bonus task for one day, with an optional show-from time and end time. */
 @Component({
-  selector: 'app-bonus-new',
-  standalone: true,
-  imports: [FormsModule, RouterLink, TranslocoModule, AvatarComponent, BannerComponent, LoadingComponent, SkeletonComponent],
-  templateUrl: './bonus-new.component.html',
-  styleUrl: './bonus-new.component.scss',
+    selector: 'app-bonus-new',
+    imports: [FormsModule, RouterLink, TranslocoModule, AvatarComponent, BannerComponent, LoadingComponent, SkeletonComponent],
+    templateUrl: './bonus-new.component.html',
+    styleUrl: './bonus-new.component.scss'
 })
 export class BonusNewComponent implements UnsavedChangesAware {
   private api = inject(BonusService);

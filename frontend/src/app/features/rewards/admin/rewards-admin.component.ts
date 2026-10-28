@@ -37,19 +37,18 @@ const MAX_POINTS = 100000;
 const MAX_LIMIT = 1000;
 
 @Component({
-  selector: 'app-rewards-admin',
-  standalone: true,
-  imports: [
-    FormsModule,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    LoadErrorComponent,
-    LoadingComponent,
-  ],
-  templateUrl: './rewards-admin.component.html',
-  styleUrl: './rewards-admin.component.scss',
+    selector: 'app-rewards-admin',
+    imports: [
+        FormsModule,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        LoadErrorComponent,
+        LoadingComponent,
+    ],
+    templateUrl: './rewards-admin.component.html',
+    styleUrl: './rewards-admin.component.scss'
 })
 export class RewardsAdminComponent implements OnInit {
   private api = inject(RewardsService);

@@ -57,24 +57,23 @@ export interface PartGroup {
 
 /** Child home. Today's progress, streak, catch-up, today's tasks grouped by part of day, and tomorrow. */
 @Component({
-  selector: 'app-today',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    SkeletonComponent,
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    LoadErrorComponent,
-    TaskRowComponent,
-    TodayTaskComponent,
-    MyBadgesPillComponent,
-    KidBonusListComponent,
-    AllDoneComponent,
-    WeatherTileComponent,
-  ],
-  templateUrl: './today.component.html',
-  styleUrl: './today.component.scss',
+    selector: 'app-today',
+    imports: [
+        LoadingComponent,
+        SkeletonComponent,
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        LoadErrorComponent,
+        TaskRowComponent,
+        TodayTaskComponent,
+        MyBadgesPillComponent,
+        KidBonusListComponent,
+        AllDoneComponent,
+        WeatherTileComponent,
+    ],
+    templateUrl: './today.component.html',
+    styleUrl: './today.component.scss'
 })
 export class TodayComponent {
   private service = inject(MyTasksService);

@@ -51,14 +51,14 @@ export interface DayGroup {
 
 /** The child's own tasks: tabs for today, past due, coming up, bonus, waiting for a parent, and done. */
 @Component({
-  selector: 'app-my-tasks',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    LoadErrorComponent,
-    SkeletonComponent,TranslocoModule, BannerComponent, AllDoneComponent, TaskRowComponent, TodayTaskComponent, KidBonusListComponent, EmptyStateComponent],
-  templateUrl: './my-tasks.component.html',
-  styleUrl: './my-tasks.component.scss',
+    selector: 'app-my-tasks',
+    imports: [
+        LoadingComponent,
+        LoadErrorComponent,
+        SkeletonComponent, TranslocoModule, BannerComponent, AllDoneComponent, TaskRowComponent, TodayTaskComponent, KidBonusListComponent, EmptyStateComponent
+    ],
+    templateUrl: './my-tasks.component.html',
+    styleUrl: './my-tasks.component.scss'
 })
 export class MyTasksComponent {
   private service = inject(MyTasksService);

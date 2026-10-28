@@ -45,11 +45,10 @@ import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.com
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
-  selector: 'app-badges-settings',
-  standalone: true,
-  imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './badges-settings.component.html',
-  styleUrl: './badges-settings.component.scss',
+    selector: 'app-badges-settings',
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './badges-settings.component.html',
+    styleUrl: './badges-settings.component.scss'
 })
 export class BadgesSettingsComponent implements OnInit, OnDestroy {
   private service = inject(BadgesService);

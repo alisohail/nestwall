@@ -23,11 +23,10 @@ type LoadState = 'loading' | 'ready' | 'missing' | 'error';
 
 /** One bonus card for the signed-in child, with the same actions as the list. */
 @Component({
-  selector: 'app-kid-bonus-detail',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
-  templateUrl: './kid-bonus-detail.component.html',
-  styleUrl: './kid-bonus-detail.component.scss',
+    selector: 'app-kid-bonus-detail',
+    imports: [RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
+    templateUrl: './kid-bonus-detail.component.html',
+    styleUrl: './kid-bonus-detail.component.scss'
 })
 export class KidBonusDetailComponent {
   private route = inject(ActivatedRoute);

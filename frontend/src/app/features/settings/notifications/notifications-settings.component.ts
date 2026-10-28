@@ -42,11 +42,10 @@ const PLACEHOLDERS = ['{{subject}}', '{{body}}', '{{logo_url}}', '{{app_url}}', 
  * server stores one set for the whole family.
  */
 @Component({
-  selector: 'app-notifications-settings',
-  standalone: true,
-  imports: [TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './notifications-settings.component.html',
-  styleUrl: './notifications-settings.component.scss',
+    selector: 'app-notifications-settings',
+    imports: [TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './notifications-settings.component.html',
+    styleUrl: './notifications-settings.component.scss'
 })
 export class NotificationsSettingsComponent implements OnInit, OnDestroy, UnsavedChangesAware {
   private api = inject(NotificationsSettingsService);

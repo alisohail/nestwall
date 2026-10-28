@@ -10,11 +10,10 @@ export type LoadingVariant = 'full' | 'inline' | 'spinner';
  * The mark stops animating when the user prefers reduced motion (see the stylesheet).
  */
 @Component({
-  selector: 'app-loading',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './loading.component.html',
-  styleUrl: './loading.component.scss',
+    selector: 'app-loading',
+    imports: [TranslocoModule],
+    templateUrl: './loading.component.html',
+    styleUrl: './loading.component.scss'
 })
 export class LoadingComponent {
   private readonly theme = inject(ThemeService);

@@ -53,21 +53,20 @@ const MAX_POINTS = 100000;
 const MAX_REASON = 200;
 
 @Component({
-  selector: 'app-points',
-  standalone: true,
-  imports: [
-    AvatarComponent,
-    DatePipe,
-    FormsModule,
-    TranslocoModule,
-    BannerComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LoadingComponent,
-    SkeletonComponent,
-  ],
-  templateUrl: './points.component.html',
-  styleUrl: './points.component.scss',
+    selector: 'app-points',
+    imports: [
+        AvatarComponent,
+        DatePipe,
+        FormsModule,
+        TranslocoModule,
+        BannerComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LoadingComponent,
+        SkeletonComponent,
+    ],
+    templateUrl: './points.component.html',
+    styleUrl: './points.component.scss'
 })
 export class PointsComponent implements OnInit {
   private api = inject(RewardsService);

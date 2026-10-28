@@ -13,11 +13,10 @@ import { ForgotPasswordResponse, ForgotPasswordService } from './forgot-password
 type ForgotStep = 'ask' | 'ask_parent' | 'notified' | 'email' | 'email_sent' | 'email_not_set_up';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, RouterLink, BannerComponent, LoadingComponent],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+    selector: 'app-login',
+    imports: [ReactiveFormsModule, TranslocoModule, RouterLink, BannerComponent, LoadingComponent],
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);

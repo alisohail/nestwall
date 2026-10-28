@@ -45,21 +45,20 @@ const NO_ITEMS: DashboardItem[] = [];
 
 /** Parent home. Shows the day's band, counts, people progress, approvals, bonus tasks and recent activity. */
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    IconComponent,
-    LoadingComponent,
-    LoadErrorComponent,
-    AgendaBandComponent,
-    WeatherTileComponent,
-  ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+    selector: 'app-dashboard',
+    imports: [
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        IconComponent,
+        LoadingComponent,
+        LoadErrorComponent,
+        AgendaBandComponent,
+        WeatherTileComponent,
+    ],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
   private service = inject(DashboardService);

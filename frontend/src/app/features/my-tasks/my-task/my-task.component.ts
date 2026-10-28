@@ -17,11 +17,10 @@ import { MyTasksService } from '../my-tasks.service';
 
 /** One task copy for the child: its steps, a tick for each step, and the "I'm done!" button. */
 @Component({
-  selector: 'app-my-task',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, TaskConfirmComponent],
-  templateUrl: './my-task.component.html',
-  styleUrl: './my-task.component.scss',
+    selector: 'app-my-task',
+    imports: [RouterLink, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, TaskConfirmComponent],
+    templateUrl: './my-task.component.html',
+    styleUrl: './my-task.component.scss'
 })
 export class MyTaskComponent {
   private route = inject(ActivatedRoute);

@@ -38,11 +38,10 @@ const BUILT_SECTIONS = SETTINGS_SECTIONS.filter(
 
 /** Settings layout. Desktop shows a subnav; tablets open it as a dropdown; phones use a bottom sheet. */
 @Component({
-  selector: 'app-settings',
-  standalone: true,
-  imports: [NgTemplateOutlet, RouterOutlet, RouterLink, RouterLinkActive, TranslocoModule],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss',
+    selector: 'app-settings',
+    imports: [NgTemplateOutlet, RouterOutlet, RouterLink, RouterLinkActive, TranslocoModule],
+    templateUrl: './settings.component.html',
+    styleUrl: './settings.component.scss'
 })
 export class SettingsComponent {
   private router = inject(Router);

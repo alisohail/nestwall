@@ -11,19 +11,18 @@ import { MyDetailsComponent } from '../me/my-details/my-details.component';
 
 /** The parent's own profile page (`/profile`), laid out as in the profile mock. */
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    AvatarComponent,
-    PhotoEditorComponent,
-    IconComponent,
-    MyDetailsComponent,
-    OwnPasswordComponent,
-    SessionsComponent,
-  ],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+    selector: 'app-profile',
+    imports: [
+        TranslocoModule,
+        AvatarComponent,
+        PhotoEditorComponent,
+        IconComponent,
+        MyDetailsComponent,
+        OwnPasswordComponent,
+        SessionsComponent,
+    ],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
   auth = inject(AuthService);

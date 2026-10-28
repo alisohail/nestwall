@@ -59,11 +59,10 @@ function resetErrorKey(err: ApiError): string {
 
 /** The Backups card on Settings > Data and backups: status, schedule, encryption, run now and the history. */
 @Component({
-  selector: 'app-backups-card',
-  standalone: true,
-  imports: [FormsModule, DatePipe, TranslocoModule, BannerComponent, IconComponent, LoadingComponent, SkeletonComponent],
-  templateUrl: './backups-card.component.html',
-  styleUrl: './backups-card.component.scss',
+    selector: 'app-backups-card',
+    imports: [FormsModule, DatePipe, TranslocoModule, BannerComponent, IconComponent, LoadingComponent, SkeletonComponent],
+    templateUrl: './backups-card.component.html',
+    styleUrl: './backups-card.component.scss'
 })
 export class BackupsCardComponent implements OnInit {
   private api = inject(BackupsService);

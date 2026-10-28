@@ -7,11 +7,10 @@ import type { MonthPill } from '../calendar.component';
 
 /** Every item on one day, opened from "+N more". Picking an item hands it back to the month page. */
 @Component({
-  selector: 'app-day-dialog',
-  standalone: true,
-  imports: [TranslocoModule, IconComponent],
-  templateUrl: './day-dialog.component.html',
-  styleUrl: './day-dialog.component.scss',
+    selector: 'app-day-dialog',
+    imports: [TranslocoModule, IconComponent],
+    templateUrl: './day-dialog.component.html',
+    styleUrl: './day-dialog.component.scss'
 })
 export class DayDialogComponent {
   private displayZone = inject(DisplayZoneService);

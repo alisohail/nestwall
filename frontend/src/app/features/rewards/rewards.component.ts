@@ -30,21 +30,20 @@ interface Notice {
 }
 
 @Component({
-  selector: 'app-rewards',
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    DatePipe,
-    RouterLink,
-    RewardsAdminComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    LoadErrorComponent,
-    IconComponent,
-    LoadingComponent,
-  ],
-  templateUrl: './rewards.component.html',
-  styleUrl: './rewards.component.scss',
+    selector: 'app-rewards',
+    imports: [
+        TranslocoModule,
+        DatePipe,
+        RouterLink,
+        RewardsAdminComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        LoadErrorComponent,
+        IconComponent,
+        LoadingComponent,
+    ],
+    templateUrl: './rewards.component.html',
+    styleUrl: './rewards.component.scss'
 })
 export class RewardsComponent implements OnInit {
   protected auth = inject(AuthService);

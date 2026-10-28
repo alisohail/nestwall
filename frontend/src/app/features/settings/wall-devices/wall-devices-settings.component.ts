@@ -20,11 +20,10 @@ const REFRESH_MS = 30_000;
 
 /** Wall devices: list and status, configure name and exit code, add a device with a pairing key, and revoke. */
 @Component({
-  selector: 'app-wall-devices-settings',
-  standalone: true,
-  imports: [DatePipe, FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './wall-devices-settings.component.html',
-  styleUrl: './wall-devices-settings.component.scss',
+    selector: 'app-wall-devices-settings',
+    imports: [DatePipe, FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './wall-devices-settings.component.html',
+    styleUrl: './wall-devices-settings.component.scss'
 })
 export class WallDevicesSettingsComponent implements OnDestroy {
   private devicesApi = inject(WallDevicesService);

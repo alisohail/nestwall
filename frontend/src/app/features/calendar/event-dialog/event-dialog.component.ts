@@ -61,11 +61,10 @@ function errorKey(err: ApiError): string {
  * "This occurrence" (title, date and time only) or "Whole series".
  */
 @Component({
-  selector: 'app-event-dialog',
-  standalone: true,
-  imports: [TranslocoModule, IconComponent, RepeatBuilderComponent, AvatarComponent],
-  templateUrl: './event-dialog.component.html',
-  styleUrl: './event-dialog.component.scss',
+    selector: 'app-event-dialog',
+    imports: [TranslocoModule, IconComponent, RepeatBuilderComponent, AvatarComponent],
+    templateUrl: './event-dialog.component.html',
+    styleUrl: './event-dialog.component.scss'
 })
 export class EventDialogComponent implements OnInit, AfterViewInit {
   private calendar = inject(CalendarService);

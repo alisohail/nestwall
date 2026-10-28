@@ -20,11 +20,10 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../../shared/ui/skeleton/skeleton.component';
 
 @Component({
-  selector: 'app-points-settings',
-  standalone: true,
-  imports: [FormsModule, RouterLink, TranslocoModule, BannerComponent, LoadingComponent, SkeletonComponent],
-  templateUrl: './points-settings.component.html',
-  styleUrl: './points-settings.component.scss',
+    selector: 'app-points-settings',
+    imports: [FormsModule, RouterLink, TranslocoModule, BannerComponent, LoadingComponent, SkeletonComponent],
+    templateUrl: './points-settings.component.html',
+    styleUrl: './points-settings.component.scss'
 })
 export class PointsSettingsComponent implements UnsavedChangesAware {
   private sharing = inject(SharingService);

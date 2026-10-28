@@ -18,11 +18,10 @@ interface ExportFile {
 
 /** Data and backups: the backups card and the "Export for reading" card. Reset comes in a later step. */
 @Component({
-  selector: 'app-data-settings',
-  standalone: true,
-  imports: [TranslocoModule, BannerComponent, IconComponent, LoadingComponent, BackupsCardComponent],
-  templateUrl: './data-settings.component.html',
-  styleUrl: './data-settings.component.scss',
+    selector: 'app-data-settings',
+    imports: [TranslocoModule, BannerComponent, IconComponent, LoadingComponent, BackupsCardComponent],
+    templateUrl: './data-settings.component.html',
+    styleUrl: './data-settings.component.scss'
 })
 export class DataSettingsComponent {
   private api = inject(ApiClient);

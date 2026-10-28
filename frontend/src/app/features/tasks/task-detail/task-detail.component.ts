@@ -16,11 +16,10 @@ import { TasksService } from '../tasks.service';
 
 /** Popup for one person's copy of a task. Shows the task, its checklist, and the skip action. */
 @Component({
-  selector: 'app-task-detail',
-  standalone: true,
-  imports: [TranslocoModule, AvatarComponent, BannerComponent, LoadErrorComponent, LoadingComponent, TaskConfirmComponent],
-  templateUrl: './task-detail.component.html',
-  styleUrl: './task-detail.component.scss',
+    selector: 'app-task-detail',
+    imports: [TranslocoModule, AvatarComponent, BannerComponent, LoadErrorComponent, LoadingComponent, TaskConfirmComponent],
+    templateUrl: './task-detail.component.html',
+    styleUrl: './task-detail.component.scss'
 })
 export class TaskDetailComponent {
   private service = inject(TasksService);

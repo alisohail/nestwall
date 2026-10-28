@@ -22,11 +22,10 @@ const MAX_TILES = 6;
 
 /** Me block for a child: earned count, up to six recent badges and a link to the full page. */
 @Component({
-  selector: 'app-my-badges-card',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, BannerComponent, SkeletonComponent],
-  templateUrl: './my-badges-card.component.html',
-  styleUrl: './my-badges-card.component.scss',
+    selector: 'app-my-badges-card',
+    imports: [RouterLink, TranslocoModule, BannerComponent, SkeletonComponent],
+    templateUrl: './my-badges-card.component.html',
+    styleUrl: './my-badges-card.component.scss'
 })
 export class MyBadgesCardComponent implements OnInit {
   private readonly badges = inject(BadgesService);

@@ -3,11 +3,10 @@ import { TranslocoModule } from '@ngneat/transloco';
 
 /** The all done card shown when nothing is left to do today. Used by Today and the My tasks Today tab. */
 @Component({
-  selector: 'app-all-done',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './all-done.component.html',
-  styleUrl: './all-done.component.scss',
+    selector: 'app-all-done',
+    imports: [TranslocoModule],
+    templateUrl: './all-done.component.html',
+    styleUrl: './all-done.component.scss'
 })
 export class AllDoneComponent {
   /** The child's first name for the message. */

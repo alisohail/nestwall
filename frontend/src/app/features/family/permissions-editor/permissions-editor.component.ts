@@ -58,11 +58,10 @@ function audienceAllows(audience: PermissionAudience, roleType: RoleType): boole
 }
 
 @Component({
-  selector: 'app-permissions-editor',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './permissions-editor.component.html',
-  styleUrl: './permissions-editor.component.scss',
+    selector: 'app-permissions-editor',
+    imports: [ReactiveFormsModule, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './permissions-editor.component.html',
+    styleUrl: './permissions-editor.component.scss'
 })
 export class PermissionsEditorComponent implements OnInit, UnsavedChangesAware {
   private fb = inject(FormBuilder);

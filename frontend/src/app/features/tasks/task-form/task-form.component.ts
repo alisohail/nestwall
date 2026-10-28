@@ -34,20 +34,19 @@ function expiryParts(minutes: number | null): { value: number | null; unit: Expi
 
 /** Create and edit form for a task. Repeats are only set on create. */
 @Component({
-  selector: 'app-task-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    ErrorStateComponent,
-    LoadingComponent,
-    RepeatBuilderComponent,
-  ],
-  templateUrl: './task-form.component.html',
-  styleUrl: './task-form.component.scss',
+    selector: 'app-task-form',
+    imports: [
+        ReactiveFormsModule,
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        ErrorStateComponent,
+        LoadingComponent,
+        RepeatBuilderComponent,
+    ],
+    templateUrl: './task-form.component.html',
+    styleUrl: './task-form.component.scss'
 })
 export class TaskFormComponent implements UnsavedChangesAware {
   private fb = inject(NonNullableFormBuilder);

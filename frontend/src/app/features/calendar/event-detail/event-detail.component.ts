@@ -25,11 +25,10 @@ function dateIn(iso: string, zone: string): string {
 
 /** Details of one calendar item. Events can be edited here; task deadlines open the task. */
 @Component({
-  selector: 'app-event-detail',
-  standalone: true,
-  imports: [TranslocoModule, IconComponent, AvatarComponent, TaskConfirmComponent, RemovePersonConfirmComponent],
-  templateUrl: './event-detail.component.html',
-  styleUrl: './event-detail.component.scss',
+    selector: 'app-event-detail',
+    imports: [TranslocoModule, IconComponent, AvatarComponent, TaskConfirmComponent, RemovePersonConfirmComponent],
+    templateUrl: './event-detail.component.html',
+    styleUrl: './event-detail.component.scss'
 })
 export class EventDetailComponent {
   private router = inject(Router);

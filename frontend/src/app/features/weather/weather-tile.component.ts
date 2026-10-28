@@ -72,12 +72,11 @@ function sceneFor(condition: WeatherCondition | undefined): WeatherScene {
  * Parents see a link to set up the location when it is missing; others see a neutral hint.
  */
 @Component({
-  selector: 'app-weather-tile',
-  standalone: true,
-  imports: [TranslocoModule, RouterLink, LoadingComponent, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
-  templateUrl: './weather-tile.component.html',
-  styleUrl: './weather-tile.component.scss',
-  host: { class: 'weather-tile' },
+    selector: 'app-weather-tile',
+    imports: [TranslocoModule, RouterLink, LoadingComponent, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
+    templateUrl: './weather-tile.component.html',
+    styleUrl: './weather-tile.component.scss',
+    host: { class: 'weather-tile' }
 })
 export class WeatherTileComponent implements OnInit {
   private weather = inject(WeatherService);

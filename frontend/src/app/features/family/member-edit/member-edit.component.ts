@@ -20,11 +20,10 @@ import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
 const USER_ID_PATTERN = /^[a-zA-Z0-9._-]{3,32}$/;
 
 @Component({
-  selector: 'app-member-edit',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent, OwnPasswordComponent, PhotoEditorComponent, ColourPickerComponent],
-  templateUrl: './member-edit.component.html',
-  styleUrl: './member-edit.component.scss',
+    selector: 'app-member-edit',
+    imports: [ReactiveFormsModule, RouterLink, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent, OwnPasswordComponent, PhotoEditorComponent, ColourPickerComponent],
+    templateUrl: './member-edit.component.html',
+    styleUrl: './member-edit.component.scss'
 })
 export class MemberEditComponent implements OnInit, UnsavedChangesAware {
   private fb = inject(FormBuilder);

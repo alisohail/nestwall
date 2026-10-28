@@ -35,11 +35,10 @@ import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.com
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
-  selector: 'app-task-templates-settings',
-  standalone: true,
-  imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, AvatarComponent, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './task-templates-settings.component.html',
-  styleUrl: './task-templates-settings.component.scss',
+    selector: 'app-task-templates-settings',
+    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, AvatarComponent, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './task-templates-settings.component.html',
+    styleUrl: './task-templates-settings.component.scss'
 })
 export class TaskTemplatesSettingsComponent implements UnsavedChangesAware {
   private service = inject(TasksService);

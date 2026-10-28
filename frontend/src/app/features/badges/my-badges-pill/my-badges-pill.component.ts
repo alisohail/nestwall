@@ -20,11 +20,10 @@ export interface PillView {
  * the child's kid dashboard showcase is on. Stays hidden while loading or on error.
  */
 @Component({
-  selector: 'app-my-badges-pill',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule],
-  templateUrl: './my-badges-pill.component.html',
-  styleUrl: './my-badges-pill.component.scss',
+    selector: 'app-my-badges-pill',
+    imports: [RouterLink, TranslocoModule],
+    templateUrl: './my-badges-pill.component.html',
+    styleUrl: './my-badges-pill.component.scss'
 })
 export class MyBadgesPillComponent implements OnInit {
   private readonly badges = inject(BadgesService);

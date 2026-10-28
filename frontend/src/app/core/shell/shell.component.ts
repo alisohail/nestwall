@@ -65,11 +65,10 @@ export const CHILD_NAV: NavItem[] = [
 ];
 
 @Component({
-  selector: 'app-shell',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslocoModule, IconComponent, AvatarComponent, EmailPromptComponent, NotificationBellComponent],
-  templateUrl: './shell.component.html',
-  styleUrl: './shell.component.scss',
+    selector: 'app-shell',
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslocoModule, IconComponent, AvatarComponent, EmailPromptComponent, NotificationBellComponent],
+    templateUrl: './shell.component.html',
+    styleUrl: './shell.component.scss'
 })
 export class ShellComponent {
   private themeService = inject(ThemeService);

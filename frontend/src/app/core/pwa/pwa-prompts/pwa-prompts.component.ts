@@ -13,11 +13,10 @@ interface BeforeInstallPromptEvent extends Event {
 
 /** Offers to install the app and to reload when a new version is ready. */
 @Component({
-  selector: 'app-pwa-prompts',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './pwa-prompts.component.html',
-  styleUrl: './pwa-prompts.component.scss',
+    selector: 'app-pwa-prompts',
+    imports: [TranslocoModule],
+    templateUrl: './pwa-prompts.component.html',
+    styleUrl: './pwa-prompts.component.scss'
 })
 export class PwaPromptsComponent {
   private readonly swUpdate = inject(SwUpdate);

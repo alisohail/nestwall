@@ -12,12 +12,11 @@ import { TasksService } from '../tasks.service';
  * and which person when several are candidates. The last person on the task archives it.
  */
 @Component({
-  selector: 'app-remove-person-confirm',
-  standalone: true,
-  imports: [TranslocoModule, AvatarComponent],
-  templateUrl: './remove-person-confirm.component.html',
-  styleUrl: './remove-person-confirm.component.scss',
-  host: { '(document:keydown.escape)': 'cancelled.emit()' },
+    selector: 'app-remove-person-confirm',
+    imports: [TranslocoModule, AvatarComponent],
+    templateUrl: './remove-person-confirm.component.html',
+    styleUrl: './remove-person-confirm.component.scss',
+    host: { '(document:keydown.escape)': 'cancelled.emit()' }
 })
 export class RemovePersonConfirmComponent implements OnInit {
   private tasks = inject(TasksService);

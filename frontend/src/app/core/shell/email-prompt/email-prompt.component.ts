@@ -6,11 +6,10 @@ import { IconComponent } from '../../../shared/ui/icon/icon.component';
 
 /** Asks a parent who has no email to add one, once after login. Later closes it for this session. */
 @Component({
-  selector: 'app-email-prompt',
-  standalone: true,
-  imports: [TranslocoModule, IconComponent],
-  templateUrl: './email-prompt.component.html',
-  styleUrl: './email-prompt.component.scss',
+    selector: 'app-email-prompt',
+    imports: [TranslocoModule, IconComponent],
+    templateUrl: './email-prompt.component.html',
+    styleUrl: './email-prompt.component.scss'
 })
 export class EmailPromptComponent {
   auth = inject(AuthService);

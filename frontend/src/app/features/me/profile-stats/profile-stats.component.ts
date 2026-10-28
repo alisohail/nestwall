@@ -15,11 +15,10 @@ export interface ProfileStats {
 
 /** Points and streak tiles for the child's profile card on the Me page. */
 @Component({
-  selector: 'app-me-profile-stats',
-  standalone: true,
-  imports: [TranslocoModule, SkeletonComponent],
-  templateUrl: './profile-stats.component.html',
-  styleUrl: './profile-stats.component.scss',
+    selector: 'app-me-profile-stats',
+    imports: [TranslocoModule, SkeletonComponent],
+    templateUrl: './profile-stats.component.html',
+    styleUrl: './profile-stats.component.scss'
 })
 export class MeProfileStatsComponent implements OnInit {
   private rewards = inject(RewardsService);

@@ -27,11 +27,10 @@ function toKeyChar(raw: string): string | null {
 }
 
 @Component({
-  selector: "app-wall-pair",
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: "./wall-pair.component.html",
-  styleUrl: "./wall-pair.component.scss",
+    selector: "app-wall-pair",
+    imports: [RouterLink, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: "./wall-pair.component.html",
+    styleUrl: "./wall-pair.component.scss"
 })
 export class WallPairComponent implements AfterViewInit {
   private pairService = inject(WallPairService);

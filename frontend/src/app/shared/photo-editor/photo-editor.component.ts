@@ -60,11 +60,10 @@ function uploadErrorKey(err: ApiError): string {
  * then saves it, or goes back to the letter. Hosts open it with @if and close it on (closed).
  */
 @Component({
-  selector: 'app-photo-editor',
-  standalone: true,
-  imports: [TranslocoModule, AvatarComponent, IconComponent],
-  templateUrl: './photo-editor.component.html',
-  styleUrl: './photo-editor.component.scss',
+    selector: 'app-photo-editor',
+    imports: [TranslocoModule, AvatarComponent, IconComponent],
+    templateUrl: './photo-editor.component.html',
+    styleUrl: './photo-editor.component.scss'
 })
 export class PhotoEditorComponent {
   private avatars = inject(AvatarService);

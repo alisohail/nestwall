@@ -10,11 +10,10 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
 
 @Component({
-  selector: 'app-my-details',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: './my-details.component.html',
-  styleUrl: './my-details.component.scss',
+    selector: 'app-my-details',
+    imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: './my-details.component.html',
+    styleUrl: './my-details.component.scss'
 })
 export class MyDetailsComponent implements UnsavedChangesAware {
   private fb = inject(FormBuilder);

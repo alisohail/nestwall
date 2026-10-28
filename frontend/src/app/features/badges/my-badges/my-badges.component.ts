@@ -15,11 +15,10 @@ const FALLBACK_EMOJI = '🏅';
 
 /** The child's own badges page. Mirrors the child badges mock. */
 @Component({
-  selector: 'app-my-badges',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, LoadErrorComponent, LoadingComponent],
-  templateUrl: './my-badges.component.html',
-  styleUrl: './my-badges.component.scss',
+    selector: 'app-my-badges',
+    imports: [RouterLink, TranslocoModule, LoadErrorComponent, LoadingComponent],
+    templateUrl: './my-badges.component.html',
+    styleUrl: './my-badges.component.scss'
 })
 export class MyBadgesComponent implements OnInit {
   private readonly badges = inject(BadgesService);

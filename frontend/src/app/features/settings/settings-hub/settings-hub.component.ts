@@ -12,11 +12,10 @@ export interface SettingsHubItem {
 
 /** Settings tab: the Configuration menu. Profile and sign out stay in the top bar. */
 @Component({
-  selector: 'app-settings-hub',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule],
-  templateUrl: './settings-hub.component.html',
-  styleUrl: './settings-hub.component.scss',
+    selector: 'app-settings-hub',
+    imports: [RouterLink, TranslocoModule],
+    templateUrl: './settings-hub.component.html',
+    styleUrl: './settings-hub.component.scss'
 })
 export class SettingsHubComponent {
   /**

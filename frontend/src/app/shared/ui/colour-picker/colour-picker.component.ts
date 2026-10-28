@@ -13,12 +13,11 @@ export const COLOUR_PALETTE: readonly string[] = ['#119e8f', '#c47e09', '#ec4899
  * With checkContrast set, a colour too faint on the light or dark surface shows a warning.
  */
 @Component({
-  selector: 'app-colour-picker',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './colour-picker.component.html',
-  styleUrl: './colour-picker.component.scss',
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ColourPickerComponent), multi: true }],
+    selector: 'app-colour-picker',
+    imports: [TranslocoModule],
+    templateUrl: './colour-picker.component.html',
+    styleUrl: './colour-picker.component.scss',
+    providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ColourPickerComponent), multi: true }]
 })
 export class ColourPickerComponent implements ControlValueAccessor {
   readonly label = input.required<string>();

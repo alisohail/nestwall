@@ -21,11 +21,10 @@ function matchingPasswords(group: AbstractControl): ValidationErrors | null {
  * Used on the profile page and in the Family profile dialog for the signed-in parent.
  */
 @Component({
-  selector: 'app-own-password',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: './own-password.component.html',
-  styleUrl: './own-password.component.scss',
+    selector: 'app-own-password',
+    imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: './own-password.component.html',
+    styleUrl: './own-password.component.scss'
 })
 export class OwnPasswordComponent {
   private fb = inject(FormBuilder);

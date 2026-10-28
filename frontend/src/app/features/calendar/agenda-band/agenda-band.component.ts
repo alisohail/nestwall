@@ -48,11 +48,10 @@ interface BandFilter {
 
 /** Today and coming up, from the calendar range. Events only; tasks stay on the Tasks pages. */
 @Component({
-  selector: 'app-agenda-band',
-  standalone: true,
-  imports: [TranslocoModule, NgTemplateOutlet, AvatarComponent, IconComponent, EventDetailComponent, SkeletonComponent],
-  templateUrl: './agenda-band.component.html',
-  styleUrl: './agenda-band.component.scss',
+    selector: 'app-agenda-band',
+    imports: [TranslocoModule, NgTemplateOutlet, AvatarComponent, IconComponent, EventDetailComponent, SkeletonComponent],
+    templateUrl: './agenda-band.component.html',
+    styleUrl: './agenda-band.component.scss'
 })
 export class AgendaBandComponent implements OnInit, OnChanges {
   private calendar = inject(CalendarService);

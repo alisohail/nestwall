@@ -10,11 +10,10 @@ import { TimeFormatService } from '../../../core/time-format/time-format.service
  * Projected content (for example an action button) renders inside the card on the right.
  */
 @Component({
-  selector: 'app-task-row',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule],
-  templateUrl: './task-row.component.html',
-  styleUrl: './task-row.component.scss',
+    selector: 'app-task-row',
+    imports: [RouterLink, TranslocoModule],
+    templateUrl: './task-row.component.html',
+    styleUrl: './task-row.component.scss'
 })
 export class TaskRowComponent {
   item = input.required<MyTaskItem>();

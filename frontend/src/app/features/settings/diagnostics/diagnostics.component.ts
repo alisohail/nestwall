@@ -49,11 +49,10 @@ const BADGE_CLASS: Record<Tone, string> = { ok: 'ok', warn: 'amber', bad: 'err' 
 
 /** Parent diagnostics page: version, migrations, backups and calendar sync health (`settings.view`). */
 @Component({
-  selector: 'app-diagnostics',
-  standalone: true,
-  imports: [TranslocoModule, DatePipe, BannerComponent, IconComponent, LoadErrorComponent, LoadingComponent],
-  templateUrl: './diagnostics.component.html',
-  styleUrl: './diagnostics.component.scss',
+    selector: 'app-diagnostics',
+    imports: [TranslocoModule, DatePipe, BannerComponent, IconComponent, LoadErrorComponent, LoadingComponent],
+    templateUrl: './diagnostics.component.html',
+    styleUrl: './diagnostics.component.scss'
 })
 export class DiagnosticsComponent {
   private api = inject(ApiClient);

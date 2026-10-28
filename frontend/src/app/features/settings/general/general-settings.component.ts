@@ -34,11 +34,10 @@ function roundCoord(value: number): number {
 
 /** Family-wide settings. The weather section sets the location and units for the forecast. */
 @Component({
-  selector: 'app-general-settings',
-  standalone: true,
-  imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './general-settings.component.html',
-  styleUrl: './general-settings.component.scss',
+    selector: 'app-general-settings',
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './general-settings.component.html',
+    styleUrl: './general-settings.component.scss'
 })
 export class GeneralSettingsComponent implements UnsavedChangesAware {
   private weather = inject(WeatherService);

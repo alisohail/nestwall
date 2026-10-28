@@ -59,21 +59,20 @@ export interface BonusListRow {
 
 /** Parent Bonus tasks page. Today's tasks with the claim state and the approval actions. */
 @Component({
-  selector: 'app-bonus',
-  standalone: true,
-  imports: [
-    FormsModule,
-    NgTemplateOutlet,
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LoadingComponent,
-  ],
-  templateUrl: './bonus.component.html',
-  styleUrl: './bonus.component.scss',
+    selector: 'app-bonus',
+    imports: [
+        FormsModule,
+        NgTemplateOutlet,
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LoadingComponent,
+    ],
+    templateUrl: './bonus.component.html',
+    styleUrl: './bonus.component.scss'
 })
 export class BonusComponent {
   private api = inject(BonusService);

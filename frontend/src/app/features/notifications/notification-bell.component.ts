@@ -81,12 +81,11 @@ const FALLBACK_META: KindMeta = { icon: 'bell', tone: 'neutral' };
 
 /** Header bell: unread count, a short list of recent notifications, and browser alerts for new ones. */
 @Component({
-  selector: 'app-notification-bell',
-  standalone: true,
-  imports: [TranslocoModule, RouterLink, DatePipe, IconComponent, SkeletonComponent],
-  templateUrl: './notification-bell.component.html',
-  styleUrl: './notification-bell.component.scss',
-  host: { class: 'notification-bell' },
+    selector: 'app-notification-bell',
+    imports: [TranslocoModule, RouterLink, DatePipe, IconComponent, SkeletonComponent],
+    templateUrl: './notification-bell.component.html',
+    styleUrl: './notification-bell.component.scss',
+    host: { class: 'notification-bell' }
 })
 export class NotificationBellComponent {
   private api = inject(ApiClient);

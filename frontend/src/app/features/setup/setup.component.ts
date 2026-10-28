@@ -31,11 +31,10 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 }
 
 @Component({
-  selector: 'app-setup',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: './setup.component.html',
-  styleUrl: './setup.component.scss',
+    selector: 'app-setup',
+    imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: './setup.component.html',
+    styleUrl: './setup.component.scss'
 })
 export class SetupComponent {
   private fb = inject(FormBuilder);

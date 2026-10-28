@@ -15,23 +15,22 @@ import { MyPointsComponent } from './my-points/my-points.component';
 import { MeProfileStatsComponent } from './profile-stats/profile-stats.component';
 
 @Component({
-  selector: 'app-me',
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    RouterLink,
-    SessionsComponent,
-    AvatarComponent,
-    PhotoEditorComponent,
-    IconComponent,
-    MyPointsComponent,
-    MyBadgesCardComponent,
-    MyDetailsComponent,
-    OwnPasswordComponent,
-    MeProfileStatsComponent,
-  ],
-  templateUrl: './me.component.html',
-  styleUrl: './me.component.scss',
+    selector: 'app-me',
+    imports: [
+        TranslocoModule,
+        RouterLink,
+        SessionsComponent,
+        AvatarComponent,
+        PhotoEditorComponent,
+        IconComponent,
+        MyPointsComponent,
+        MyBadgesCardComponent,
+        MyDetailsComponent,
+        OwnPasswordComponent,
+        MeProfileStatsComponent,
+    ],
+    templateUrl: './me.component.html',
+    styleUrl: './me.component.scss'
 })
 export class MeComponent {
   auth = inject(AuthService);
