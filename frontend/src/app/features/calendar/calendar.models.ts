@@ -1,4 +1,5 @@
-export type CalendarItemKind = 'event' | 'task';
+/** Birthdays come from members' date of birth; they are read-only, like task deadlines. */
+export type CalendarItemKind = 'event' | 'task' | 'birthday';
 
 export type TaskCalendarStatus = 'scheduled' | 'past_due' | 'missed';
 
@@ -18,6 +19,8 @@ export interface CalendarItem {
   /** Empty for family-wide items. */
   member_ids: string[];
   event_id?: string;
+  /** Set for birthdays: the age the member turns that day. */
+  age?: number;
   /** The id of the calendar the event is on: a manual calendar, or an import. */
   calendar_id?: string;
   calendar_name?: string;

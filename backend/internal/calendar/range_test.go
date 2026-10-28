@@ -100,6 +100,38 @@ func TestRangeCarriesEventReminders(t *testing.T) {
 	}
 }
 
+func TestRangeIncludesBirthdaysFromDateOfBirth(t *testing.T) {
+	f := newFixture(t)
+	mustExec(t, f.db, `UPDATE users SET date_of_birth = '2015-10-12' WHERE id = (SELECT user_id FROM family_members WHERE id = ?)`, f.kid.memberID)
+
+	resp, _ := f.rangeGet(t, f.parent, "from=2026-10-10&to=2026-10-12")
+	var birthday *rangeItem
+	for i := range resp.Items {
+		if resp.Items[i].Kind == "birthday" {
+			birthday = &resp.Items[i]
+		}
+	}
+	if birthday == nil {
+		t.Fatalf("no birthday in %v", rangeTitles(resp.Items))
+	}
+	if birthday.OccurrenceDate != "2026-10-12" || !birthday.AllDay || birthday.EventID != nil || birthday.CalendarID != nil {
+		t.Fatalf("birthday = %+v, want an all-day, non-editable item on 2026-10-12", birthday)
+	}
+	if birthday.Age != 11 {
+		t.Fatalf("birthday age = %d, want 11", birthday.Age)
+	}
+	if len(birthday.MemberIDs) != 1 || birthday.MemberIDs[0] != f.kid.memberID {
+		t.Fatalf("birthday members = %v, want the child", birthday.MemberIDs)
+	}
+
+	resp, _ = f.rangeGet(t, f.parent, "from=2026-10-10&to=2026-10-12&member_id="+f.parent.memberID)
+	for _, it := range resp.Items {
+		if it.Kind == "birthday" {
+			t.Fatalf("member filter for the parent still shows the child's birthday")
+		}
+	}
+}
+
 func rangeTitles(items []rangeItem) []string {
 	out := []string{}
 	for _, it := range items {

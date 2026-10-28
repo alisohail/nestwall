@@ -57,6 +57,15 @@ func (s *Service) deviceLabel(ctx context.Context, latitude, longitude float64) 
 // device is set, the forecast uses the device location. When the provider fails and nothing is
 // kept, the error is ErrUnavailable and the response still says whether a location is known.
 func (s *Service) Current(ctx context.Context, familyID string, device *Coordinates) (Response, error) {
+	return s.current(ctx, familyID, device, false)
+}
+
+// Refresh is Current, but the forecast is fetched from the provider even when a cached one is fresh.
+func (s *Service) Refresh(ctx context.Context, familyID string, device *Coordinates) (Response, error) {
+	return s.current(ctx, familyID, device, true)
+}
+
+func (s *Service) current(ctx context.Context, familyID string, device *Coordinates, refresh bool) (Response, error) {
 	var zone, unit, animation string
 	var name sql.NullString
 	var lat, lon sql.NullFloat64
@@ -87,7 +96,11 @@ func (s *Service) Current(ctx context.Context, familyID string, device *Coordina
 	}
 	resp.Configured = true
 
-	fc, err := s.client.Forecast(ctx, place)
+	fetch := s.client.Forecast
+	if refresh {
+		fetch = s.client.Refresh
+	}
+	fc, err := fetch(ctx, place)
 	if err != nil {
 		s.logger.Warn("weather forecast unavailable")
 		return resp, err

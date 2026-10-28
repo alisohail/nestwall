@@ -17,6 +17,9 @@ type WallEvent struct {
 	Location       *string
 	// MemberIDs are the members the event is shown to. Empty means the whole family.
 	MemberIDs []string
+	// Birthday is set for a member's birthday, where Title is the member's name and Age is the age reached.
+	Birthday bool
+	Age      int
 }
 
 // WallEvents returns the occurrences the wall shows between the first and last local dates, both
@@ -82,6 +85,22 @@ func WallEvents(ctx context.Context, db *sql.DB, familyID string, zone *time.Loc
 				MemberIDs:      e.MemberIDs,
 			})
 		}
+	}
+	birthdays, err := LoadBirthdays(ctx, db, familyID)
+	if err != nil {
+		return nil, err
+	}
+	for _, o := range BirthdayOccurrences(birthdays, zone, first, last) {
+		out = append(out, WallEvent{
+			Title:          o.Name,
+			OccurrenceDate: o.OccurrenceDate,
+			StartsAt:       o.StartsAt,
+			EndsAt:         o.EndsAt,
+			AllDay:         true,
+			MemberIDs:      []string{o.MemberID},
+			Birthday:       true,
+			Age:            o.Age,
+		})
 	}
 	sort.SliceStable(out, func(i, j int) bool { return out[i].StartsAt.Before(out[j].StartsAt) })
 	return out, nil

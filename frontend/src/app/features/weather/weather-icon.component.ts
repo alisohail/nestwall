@@ -16,6 +16,8 @@ const KNOWN_CONDITIONS = ['clear', 'partly_cloudy', 'cloudy', 'fog', 'drizzle', 
 export class WeatherIconComponent {
   readonly condition = input<string>('unknown');
   readonly size = input(56);
+  /** At night a clear or partly cloudy sky shows the moon instead of the sun. */
+  readonly night = input(false);
 
   /** Unrecognised conditions fall back to the neutral cloud. */
   readonly kind = computed(() => (KNOWN_CONDITIONS.includes(this.condition()) ? this.condition() : 'unknown'));

@@ -365,6 +365,8 @@
       "sub_done": "{{name}} finished everything today. Great job! 🎉",
       "sub_tomorrow_event": "{{title}} is tomorrow at {{time}}",
       "sub_tomorrow_all_day": "{{title}} is tomorrow",
+      "birthday": "🎂 {{name}}'s birthday 🎉",
+      "birthday_age": "🎂 {{name}} turns {{age}} 🎉",
       "weather_today": "TODAY",
       "weather_tomorrow": "TOMORROW",
       "feels": "feels {{temp}}°",
@@ -630,6 +632,10 @@
       "sub": "Family events, school and chores in one view"
     },
     "today": "Today",
+    "birthday": {
+      "title": "🎂 {{name}}'s birthday 🎉",
+      "age": "🎂 {{name}} turns {{age}} 🎉"
+    },
     "month": {
       "prev": "Previous month",
       "next": "Next month",
@@ -2965,6 +2971,10 @@
     "loading": "Loading weather…",
     "today": "Today",
     "tomorrow": "Tomorrow",
+    "hourly": "Hourly temps",
+    "hour_feels": "Feels {{ temp }}°",
+    "refresh": "Refresh weather",
+    "now": "Now",
     "feels_like": "Feels like {{ temp }}°",
     "high_low": "High {{ high }}° · Low {{ low }}°",
     "precip": "{{ percent }}% rain",

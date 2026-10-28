@@ -379,9 +379,9 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
     if (next) {
       messages.push(
         next.all_day
-          ? t("wall.display.sub_tomorrow_all_day", { title: next.title })
+          ? t("wall.display.sub_tomorrow_all_day", { title: this.eventTitle(next) })
           : t("wall.display.sub_tomorrow_event", {
-              title: next.title,
+              title: this.eventTitle(next),
               time: format.formatClock(next.starts_at, zone, locale),
             }),
       );
@@ -711,11 +711,21 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
       key,
       kind: "event",
       time,
-      title: e.title,
+      title: this.eventTitle(e),
       location: e.location,
       attendees,
       everyone: attendees.length === 0,
     };
+  }
+
+  private eventTitle(e: WallSummaryEvent): string {
+    return e.kind === "birthday" ? this.birthdayTitle(e.title, e.age) : e.title;
+  }
+
+  private birthdayTitle(name: string, age?: number): string {
+    return age
+      ? this.transloco.translate("wall.display.birthday_age", { name, age })
+      : this.transloco.translate("wall.display.birthday", { name });
   }
 
   private avatarView(a: WallSummaryAttendee): AvatarView {

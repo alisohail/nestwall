@@ -252,6 +252,48 @@ func TestSummaryEventsFollowMemberRulesAndWindow(t *testing.T) {
 	}
 }
 
+func TestSummaryShowsBirthdaysFromDateOfBirth(t *testing.T) {
+	s := newSummaryFx(t)
+	mustExec(t, s.db, `UPDATE users SET date_of_birth = '2015-10-12' WHERE id = (SELECT user_id FROM family_members WHERE id = ?)`, s.childMemberID)
+	s.setOptions(t, summaryOptions{ShowTomorrow: true})
+
+	resp := s.fetch(t)
+	child := childByID(t, resp, s.childMemberID)
+	var found *summaryEvent
+	for i := range resp.Events {
+		if resp.Events[i].Kind == "birthday" {
+			found = &resp.Events[i]
+		}
+	}
+	if found == nil {
+		t.Fatalf("no birthday in events %q", eventTitles(resp))
+	}
+	if found.Title != child.Name || found.Date != "2026-10-12" || !found.AllDay {
+		t.Fatalf("birthday = %+v, want all-day %s on 2026-10-12", found, child.Name)
+	}
+	if len(found.Attendees) != 1 || found.Attendees[0].MemberID != s.childMemberID {
+		t.Fatalf("birthday attendees = %+v, want the child only", found.Attendees)
+	}
+	if found.Age != 11 {
+		t.Fatalf("birthday age = %d, want 11 (born 2015, turning 11 in 2026)", found.Age)
+	}
+
+	mustExec(t, s.db, `UPDATE users SET date_of_birth = '2015-10-11' WHERE id = (SELECT user_id FROM family_members WHERE id = ?)`, s.childMemberID)
+	s.setOptions(t, summaryOptions{ShowTomorrow: false})
+	for _, e := range s.fetch(t).Events {
+		if e.Kind == "birthday" {
+			t.Fatalf("birthday tomorrow shown with show_tomorrow off: %+v", e)
+		}
+	}
+	s.setOptions(t, summaryOptions{ShowTomorrow: true})
+	for _, e := range s.fetch(t).Events {
+		if e.Kind == "birthday" && e.Date == "2026-10-11" {
+			return
+		}
+	}
+	t.Fatalf("birthday tomorrow missing with show_tomorrow on")
+}
+
 func TestSummaryPointsFollowDeviceOption(t *testing.T) {
 	s := newSummaryFx(t)
 	addPoints(t, s, s.childMemberID, 5)

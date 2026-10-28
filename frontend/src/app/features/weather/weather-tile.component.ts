@@ -5,6 +5,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, catchError, from, of, switchMap } from 'rxjs';
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
+import { WallScrollCueDirective } from '../wall/display/wall-scroll-cue.directive';
 import { currentDeviceLocation } from './device-location';
 import { WeatherIconComponent } from './weather-icon.component';
 import {
@@ -24,6 +25,8 @@ export type DayPart = 'dawn' | 'day' | 'dusk' | 'night';
 
 const CALM_PARTICLE_COUNT = 14;
 const LIVE_PARTICLE_COUNT = 30;
+/** The hour strip scrolls sideways, so the wide card can keep the full 12 hours in one row. */
+const HOUR_COUNT = 12;
 
 /** Base fall or fly time, in seconds, per scene. Lower is faster. Live motion scales it down. */
 const SCENE_PARTICLE_SECONDS: Partial<Record<WeatherScene, number>> = {
@@ -70,7 +73,7 @@ function sceneFor(condition: WeatherCondition | undefined): WeatherScene {
 @Component({
   selector: 'app-weather-tile',
   standalone: true,
-  imports: [TranslocoModule, RouterLink, LoadingComponent, SkeletonComponent, WeatherIconComponent],
+  imports: [TranslocoModule, RouterLink, LoadingComponent, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
   templateUrl: './weather-tile.component.html',
   styleUrl: './weather-tile.component.scss',
   host: { class: 'weather-tile' },
@@ -83,10 +86,12 @@ export class WeatherTileComponent implements OnInit {
   readonly canConfigure = input(false);
 
   readonly state = signal<TileState>('loading');
+  readonly refreshing = signal(false);
   readonly data = signal<WeatherResponse | null>(null);
   readonly dayPart = signal<DayPart>(dayPartFor(new Date().getHours()));
 
   readonly forecast = computed<WeatherForecast | null>(() => this.data()?.forecast ?? null);
+  readonly shownHours = computed(() => (this.forecast()?.hourly ?? []).slice(0, HOUR_COUNT));
   readonly unit = computed<TemperatureUnit>(() => this.data()?.temperature_unit ?? 'c');
   readonly unitLetter = computed(() => (this.unit() === 'f' ? 'F' : 'C'));
   readonly location = computed(() => this.data()?.location_name ?? null);
@@ -119,17 +124,19 @@ export class WeatherTileComponent implements OnInit {
     ].join('; ');
   }
 
-  load(): void {
-    this.state.set('loading');
+  load(refresh = false): void {
+    if (!refresh) this.state.set('loading');
+    this.refreshing.set(refresh);
     this.dayPart.set(dayPartFor(new Date().getHours()));
     this.weather
-      .forecast()
+      .forecast(undefined, refresh)
       .pipe(
-        switchMap((family) => (family.configured ? of(family) : this.deviceForecast(family))),
+        switchMap((family) => (family.configured ? of(family) : this.deviceForecast(family, refresh))),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (res) => {
+          this.refreshing.set(false);
           this.data.set(res);
           if (!res.configured) {
             this.state.set('unconfigured');
@@ -140,24 +147,36 @@ export class WeatherTileComponent implements OnInit {
           }
         },
         error: () => {
+          this.refreshing.set(false);
+          // A failed refresh keeps the forecast on screen; the next refresh can try again.
+          if (refresh && this.data()) return;
           this.data.set(null);
           this.state.set('error');
         },
       });
   }
 
+  refresh(): void {
+    this.load(true);
+  }
+
   /**
    * The family has no location, so ask the browser for the viewer's position. If the browser
    * gives none (denied, unsupported, timed out), keep the family's unconfigured response.
    */
-  private deviceForecast(family: WeatherResponse): Observable<WeatherResponse> {
+  private deviceForecast(family: WeatherResponse, refresh: boolean): Observable<WeatherResponse> {
     return from(currentDeviceLocation()).pipe(
       catchError(() => of(null)),
-      switchMap((coords) => (coords ? this.weather.forecast(coords) : of(family))),
+      switchMap((coords) => (coords ? this.weather.forecast(coords, refresh) : of(family))),
     );
   }
 
   round(value: number): number {
     return Math.round(value);
+  }
+
+  /** Hour of day in the viewer's locale, such as "3 PM" in English. */
+  hourLabel(iso: string): string {
+    return new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).format(new Date(iso));
   }
 }

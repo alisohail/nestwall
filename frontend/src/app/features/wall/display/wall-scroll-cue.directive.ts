@@ -39,10 +39,11 @@ export class WallScrollCueDirective implements AfterViewInit, OnDestroy {
 
   update(): void {
     const el = this.host.nativeElement;
-    const hidden =
-      this.axis() === "x"
-        ? el.scrollLeft + el.clientWidth < el.scrollWidth - 4
-        : el.scrollTop + el.clientHeight < el.scrollHeight - 4;
-    el.toggleAttribute("data-more", hidden);
+    if (this.axis() === "x") {
+      el.toggleAttribute("data-more", el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+      el.toggleAttribute("data-more-start", el.scrollLeft > 4);
+      return;
+    }
+    el.toggleAttribute("data-more", el.scrollTop + el.clientHeight < el.scrollHeight - 4);
   }
 }

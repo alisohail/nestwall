@@ -5798,10 +5798,14 @@ components:
       properties:
         key:
           type: string
-          description: Stable identifier. event:<event id>:<occurrence date> for an event, task:<occurrence id> for a task.
+          description: Stable identifier. event:<event id>:<occurrence date> for an event, task:<occurrence id> for a task, birthday:<member id>:<occurrence date> for a birthday.
         kind:
           type: string
-          enum: [event, task]
+          enum: [event, task, birthday]
+          description: A birthday comes from a member's date of birth. Its title is the member's name, it has no event id, it is always all day, and age is the age the member turns that day.
+        age:
+          type: integer
+          description: Set for birthdays only.
         title:
           type: string
         occurrence_date:

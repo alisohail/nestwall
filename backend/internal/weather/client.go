@@ -37,11 +37,12 @@ type Place struct {
 	Timezone  string
 }
 
-// Current is the conditions right now.
+// Current is the conditions right now. IsDay tells the icon whether to show the sun or the moon.
 type Current struct {
 	Temperature float64 `json:"temperature"`
 	FeelsLike   float64 `json:"feels_like"`
 	Condition   string  `json:"condition"`
+	IsDay       bool    `json:"is_day"`
 }
 
 // Day is the high, low and rain chance for one local day.
@@ -52,12 +53,26 @@ type Day struct {
 	PrecipChance *int    `json:"precip_chance"`
 }
 
+// Hour is the temperature, feels-like temperature and rain chance for one hour, starting at the hour that is current now.
+type Hour struct {
+	Time         time.Time `json:"time"`
+	Temperature  float64   `json:"temperature"`
+	FeelsLike    float64   `json:"feels_like"`
+	Condition    string    `json:"condition"`
+	IsDay        bool      `json:"is_day"`
+	PrecipChance *int      `json:"precip_chance"`
+}
+
+// hourlyCount is how many hours the forecast carries, from the current hour onward.
+const hourlyCount = 12
+
 // Forecast is what the wall and the apps show. Stale means the provider could not be reached, so
 // this is the last answer kept for the location.
 type Forecast struct {
 	Current   Current   `json:"current"`
 	Today     Day       `json:"today"`
 	Tomorrow  Day       `json:"tomorrow"`
+	Hourly    []Hour    `json:"hourly"`
 	FetchedAt time.Time `json:"fetched_at"`
 	Stale     bool      `json:"stale"`
 }
@@ -93,13 +108,23 @@ func NewClient(baseURL string, clk clock.Clock) *Client {
 
 // Forecast returns the forecast for the place, from the cache when it is fresh.
 func (c *Client) Forecast(ctx context.Context, p Place) (Forecast, error) {
+	return c.load(ctx, p, false)
+}
+
+// Refresh fetches the forecast from upstream even when the cache is fresh, for an explicit
+// refresh. The result still replaces the cached entry.
+func (c *Client) Refresh(ctx context.Context, p Place) (Forecast, error) {
+	return c.load(ctx, p, true)
+}
+
+func (c *Client) load(ctx context.Context, p Place, bypassCache bool) (Forecast, error) {
 	key := fmt.Sprintf("%.4f|%.4f|%s|%s", p.Latitude, p.Longitude, p.Unit, p.Timezone)
 	now := c.clk.Now()
 
 	c.mu.Lock()
 	entry, ok := c.cache[key]
 	c.mu.Unlock()
-	if ok && now.Sub(entry.fetchedAt) < cacheTTL {
+	if ok && !bypassCache && now.Sub(entry.fetchedAt) < cacheTTL {
 		return entry.forecast, nil
 	}
 
@@ -142,6 +167,7 @@ type upstream struct {
 		Temperature float64 `json:"temperature_2m"`
 		FeelsLike   float64 `json:"apparent_temperature"`
 		Code        int     `json:"weather_code"`
+		IsDay       int     `json:"is_day"`
 	} `json:"current"`
 	Daily struct {
 		Code   []int      `json:"weather_code"`
@@ -149,14 +175,23 @@ type upstream struct {
 		Low    []float64  `json:"temperature_2m_min"`
 		Precip []*float64 `json:"precipitation_probability_max"`
 	} `json:"daily"`
+	Hourly struct {
+		Time   []string   `json:"time"`
+		Temp   []float64  `json:"temperature_2m"`
+		Feels  []float64  `json:"apparent_temperature"`
+		Code   []int      `json:"weather_code"`
+		IsDay  []int      `json:"is_day"`
+		Precip []*float64 `json:"precipitation_probability"`
+	} `json:"hourly"`
 }
 
 func (c *Client) fetch(ctx context.Context, p Place, now time.Time) (Forecast, error) {
 	q := url.Values{}
 	q.Set("latitude", strconv.FormatFloat(p.Latitude, 'f', 4, 64))
 	q.Set("longitude", strconv.FormatFloat(p.Longitude, 'f', 4, 64))
-	q.Set("current", "temperature_2m,apparent_temperature,weather_code")
+	q.Set("current", "temperature_2m,apparent_temperature,weather_code,is_day")
 	q.Set("daily", "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max")
+	q.Set("hourly", "temperature_2m,apparent_temperature,weather_code,precipitation_probability,is_day")
 	q.Set("timezone", p.Timezone)
 	q.Set("forecast_days", "2")
 	q.Set("temperature_unit", temperatureUnit(p.Unit))
@@ -179,12 +214,12 @@ func (c *Client) fetch(ctx context.Context, p Place, now time.Time) (Forecast, e
 	if err := json.NewDecoder(io.LimitReader(resp.Body, maxResponseBytes)).Decode(&body); err != nil {
 		return Forecast{}, ErrUnavailable
 	}
-	return body.forecast(now)
+	return body.forecast(now, p.Timezone)
 }
 
 // forecast converts the provider answer. It needs two days, and every daily list must have one
-// value per day.
-func (u upstream) forecast(now time.Time) (Forecast, error) {
+// value per day. Hourly data is optional: without it the forecast has no hours.
+func (u upstream) forecast(now time.Time, zone string) (Forecast, error) {
 	d := u.Daily
 	if len(d.Code) < 2 || len(d.High) < 2 || len(d.Low) < 2 || len(d.Precip) < 2 {
 		return Forecast{}, ErrUnavailable
@@ -194,11 +229,56 @@ func (u upstream) forecast(now time.Time) (Forecast, error) {
 			Temperature: u.Current.Temperature,
 			FeelsLike:   u.Current.FeelsLike,
 			Condition:   conditionFor(u.Current.Code),
+			IsDay:       u.Current.IsDay == 1,
 		},
 		Today:     day(d.Code[0], d.High[0], d.Low[0], d.Precip[0]),
 		Tomorrow:  day(d.Code[1], d.High[1], d.Low[1], d.Precip[1]),
+		Hourly:    u.hours(now, zone),
 		FetchedAt: now,
 	}, nil
+}
+
+// hours returns up to hourlyCount hours, starting with the hour that contains now. The provider
+// times are local to the place, so they are read in the place's zone. Lists that do not line up
+// give no hours rather than a wrong forecast.
+func (u upstream) hours(now time.Time, zone string) []Hour {
+	hr := u.Hourly
+	out := []Hour{}
+	n := len(hr.Time)
+	if n == 0 || len(hr.Temp) != n || len(hr.Feels) != n || len(hr.Code) != n || len(hr.IsDay) != n || len(hr.Precip) != n {
+		return out
+	}
+	loc, err := time.LoadLocation(zone)
+	if err != nil {
+		loc = time.UTC
+	}
+	for i, s := range hr.Time {
+		t, err := time.ParseInLocation("2006-01-02T15:04", s, loc)
+		if err != nil {
+			return []Hour{}
+		}
+		if !t.Add(time.Hour).After(now) {
+			continue
+		}
+		v := hr.Precip[i]
+		var precip *int
+		if v != nil {
+			p := int(*v + 0.5)
+			precip = &p
+		}
+		out = append(out, Hour{
+			Time:         t,
+			Temperature:  hr.Temp[i],
+			FeelsLike:    hr.Feels[i],
+			Condition:    conditionFor(hr.Code[i]),
+			IsDay:        hr.IsDay[i] == 1,
+			PrecipChance: precip,
+		})
+		if len(out) == hourlyCount {
+			break
+		}
+	}
+	return out
 }
 
 func day(code int, high, low float64, precip *float64) Day {

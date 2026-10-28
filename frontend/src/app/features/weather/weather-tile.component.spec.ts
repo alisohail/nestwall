@@ -7,9 +7,17 @@ import { WeatherForecast, WeatherResponse } from './weather.models';
 import { WeatherService } from './weather.service';
 
 const forecast: WeatherForecast = {
-  current: { temperature: 9, feels_like: 7, condition: 'rain' },
+  current: { temperature: 9, feels_like: 7, condition: 'rain', is_day: true },
   today: { high: 11, low: 4, condition: 'rain', precip_chance: 60 },
   tomorrow: { high: 13, low: 6, condition: 'clear', precip_chance: null },
+  hourly: Array.from({ length: 10 }, (_, i) => ({
+    time: `2025-01-01T${String(10 + i).padStart(2, '0')}:00:00+00:00`,
+    temperature: 9 + i,
+    feels_like: 7 + i,
+    condition: i % 2 ? 'clear' : 'rain',
+    precip_chance: i === 0 ? 60 : null,
+    is_day: true,
+  })),
   fetched_at: '2025-01-01T00:00:00Z',
   stale: false,
 };
@@ -88,6 +96,27 @@ describe('WeatherTileComponent', () => {
     }).compileComponents();
   });
 
+  it('shows hourly temps and feels-like in both variants in one swipeable row', async () => {
+    weather.forecast.and.returnValue(of(familyWeather));
+    stubBrowser('denied');
+    fixture = TestBed.createComponent(WeatherTileComponent);
+    fixture.componentRef.setInput('variant', 'full');
+    fixture.detectChanges();
+    await settle();
+
+    const wideHours = fixture.nativeElement.querySelectorAll('[data-testid="weather-hour"]') as NodeListOf<HTMLElement>;
+    expect(wideHours.length).toBe(10);
+    expect(wideHours[0].classList).toContain('now');
+    expect(wideHours[0].textContent).toContain('Now');
+    expect(fixture.nativeElement.querySelectorAll('.wx-hour-nav').length).toBe(0);
+    expect(wideHours[0].querySelector('.feels')?.textContent).toContain('Feels');
+
+    fixture.componentRef.setInput('variant', 'compact');
+    fixture.detectChanges();
+    const compactHours = fixture.nativeElement.querySelectorAll('[data-testid="weather-hour"]');
+    expect(compactHours.length).toBe(10);
+  });
+
   it('shows the family forecast without asking the browser for a location', async () => {
     weather.forecast.and.returnValue(of(familyWeather));
     stubBrowser({ latitude: 48.8566, longitude: 2.3522 });
@@ -96,9 +125,31 @@ describe('WeatherTileComponent', () => {
 
     expect(state()).toBe('ready');
     expect(weather.forecast).toHaveBeenCalledTimes(1);
-    expect(weather.forecast).toHaveBeenCalledWith();
+    expect(weather.forecast).toHaveBeenCalledWith(undefined, false);
     expect(geolocation).not.toHaveBeenCalled();
     expect(fixture.nativeElement.textContent).toContain('Toronto');
+  });
+
+  it('refreshes from the server when the refresh button is clicked and keeps the forecast on screen', async () => {
+    weather.forecast.and.returnValues(of(familyWeather), of(familyWeather));
+    stubBrowser('denied');
+    build();
+    await settle();
+
+    const button = fixture.nativeElement.querySelector('[data-testid="weather-refresh"]') as HTMLButtonElement;
+    expect(button).toBeTruthy();
+    const style = getComputedStyle(button);
+    expect(style.position).toBe('absolute');
+    const cardRect = (fixture.nativeElement.querySelector('[data-testid="weather-tile"]') as HTMLElement).getBoundingClientRect();
+    expect(cardRect.right - button.getBoundingClientRect().right).toBeLessThan(24);
+    expect(button.getBoundingClientRect().top - cardRect.top).toBeLessThan(24);
+    button.click();
+    await settle();
+
+    expect(weather.forecast).toHaveBeenCalledTimes(2);
+    expect(weather.forecast.calls.mostRecent().args).toEqual([undefined, true]);
+    expect(state()).toBe('ready');
+    expect(fixture.nativeElement.querySelector('[data-testid="weather-current"]')).toBeTruthy();
   });
 
   it('uses the viewer device location when the family has no location', async () => {
@@ -109,7 +160,7 @@ describe('WeatherTileComponent', () => {
 
     expect(state()).toBe('ready');
     expect(weather.forecast).toHaveBeenCalledTimes(2);
-    expect(weather.forecast).toHaveBeenCalledWith({ latitude: 48.8566, longitude: 2.3522 });
+    expect(weather.forecast).toHaveBeenCalledWith({ latitude: 48.8566, longitude: 2.3522 }, false);
     expect(fixture.nativeElement.querySelector('.wx-place')?.textContent).toContain('Paris, France');
   });
 
@@ -161,7 +212,7 @@ describe('WeatherTileComponent', () => {
   it('chooses the scene from the condition and falls back to none for unknown conditions', async () => {
     const clear: WeatherResponse = {
       ...familyWeather,
-      forecast: { ...forecast, current: { temperature: 20, feels_like: 19, condition: 'clear' } },
+      forecast: { ...forecast, current: { temperature: 20, feels_like: 19, condition: 'clear', is_day: true } },
     };
     weather.forecast.and.returnValue(of(clear));
     build();
@@ -172,7 +223,7 @@ describe('WeatherTileComponent', () => {
 
     const unknown: WeatherResponse = {
       ...familyWeather,
-      forecast: { ...forecast, current: { temperature: 5, feels_like: 5, condition: 'unknown' } },
+      forecast: { ...forecast, current: { temperature: 5, feels_like: 5, condition: 'unknown', is_day: true } },
     };
     weather.forecast.and.returnValue(of(unknown));
     fixture = TestBed.createComponent(WeatherTileComponent);
@@ -189,7 +240,7 @@ describe('WeatherTileComponent', () => {
         of({
           ...familyWeather,
           animation: 'live',
-          forecast: { ...forecast, current: { temperature: 20, feels_like: 19, condition } },
+          forecast: { ...forecast, current: { temperature: 20, feels_like: 19, condition, is_day: true } },
         }),
       );
       build();
@@ -222,7 +273,7 @@ describe('WeatherTileComponent', () => {
 
   it('uses the drizzle scene for drizzle instead of the rain scene', async () => {
     weather.forecast.and.returnValue(
-      of({ ...familyWeather, forecast: { ...forecast, current: { temperature: 8, feels_like: 6, condition: 'drizzle' } } }),
+      of({ ...familyWeather, forecast: { ...forecast, current: { temperature: 8, feels_like: 6, condition: 'drizzle', is_day: true } } }),
     );
     build();
     await settle();

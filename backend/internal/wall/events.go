@@ -56,6 +56,11 @@ func (h *Handlers) Events(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// An open stream is a live display, so each heartbeat also refreshes last_seen_at. Otherwise an idle
+	// display would look offline in settings. RequireDevice has just recorded it, so the clock starts here,
+	// before the client can see the stream open.
+	lastSeen := h.clk.Now().UTC()
+
 	header := w.Header()
 	header.Set("Content-Type", "text/event-stream")
 	header.Set("Cache-Control", "no-cache")
@@ -68,10 +73,6 @@ func (h *Handlers) Events(w http.ResponseWriter, r *http.Request) {
 	defer poll.Stop()
 	beat := time.NewTicker(eventsHeartbeatInterval)
 	defer beat.Stop()
-
-	// An open stream is a live display, so each heartbeat also refreshes last_seen_at. Otherwise an idle
-	// display would look offline in settings. RequireDevice has just recorded it, so the clock starts here.
-	lastSeen := h.clk.Now().UTC()
 
 	for {
 		select {
