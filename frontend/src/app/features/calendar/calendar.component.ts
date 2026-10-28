@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { Subject, catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
+import { DisplayZoneService } from '../../core/timezone/display-zone.service';
 import { ApiError } from '../../core/api/api-client.service';
 import { AvatarComponent } from '../../shared/avatar/avatar.component';
 import { IconComponent } from '../../shared/ui/icon/icon.component';
@@ -87,6 +88,7 @@ export interface MonthCell extends GridDay {
 })
 export class CalendarComponent implements OnInit {
   private auth = inject(AuthService);
+  private displayZone = inject(DisplayZoneService);
   private calendar = inject(CalendarService);
   private tasks = inject(TasksService);
   private family = inject(FamilyService);
@@ -369,7 +371,7 @@ export class CalendarComponent implements OnInit {
 
   /** Clock time for a timed item, or the all-day label. Tasks show their deadline. */
   timeOf(pill: MonthPill): string {
-    return clockIn(pill.item.starts_at, pill.item.time_zone || this.zone());
+    return clockIn(pill.item.starts_at, pill.item.time_zone || this.displayZone.clockZone(this.zone()));
   }
 
   closeDay(): void {

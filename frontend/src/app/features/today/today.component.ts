@@ -8,6 +8,7 @@ import { AvatarComponent } from '../../shared/avatar/avatar.component';
 import { LoadErrorComponent } from '../../shared/ui/load-error/load-error.component';
 import { ApiError } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { DisplayZoneService } from '../../core/timezone/display-zone.service';
 import { BadgesService } from '../badges/badges.service';
 import { MyBadges } from '../badges/badges.models';
 import { CalendarService } from '../calendar/calendar.service';
@@ -80,6 +81,7 @@ export class TodayComponent {
   private rewardsService = inject(RewardsService);
   private destroyRef = inject(DestroyRef);
   private auth = inject(AuthService);
+  private displayZone = inject(DisplayZoneService);
   private badgesService = inject(BadgesService);
   private calendarService = inject(CalendarService);
 
@@ -306,9 +308,9 @@ export class TodayComponent {
       });
   }
 
-  /** Clock time of an event in the family's timezone, such as "16:30". */
+  /** Clock time of an event, such as "16:30", in the family or device timezone per the display setting. */
   clock(iso: string): string {
-    return clockIn(iso, this.data()?.timezone);
+    return clockIn(iso, this.displayZone.clockZone(this.data()?.timezone));
   }
 
   private loadEvents(date: string): void {

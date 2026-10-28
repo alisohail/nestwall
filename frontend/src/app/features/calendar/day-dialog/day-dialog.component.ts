@@ -1,7 +1,8 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { clockIn } from '../calendar.dates';
+import { DisplayZoneService } from '../../../core/timezone/display-zone.service';
 import type { MonthPill } from '../calendar.component';
 
 /** Every item on one day, opened from "+N more". Picking an item hands it back to the month page. */
@@ -13,6 +14,8 @@ import type { MonthPill } from '../calendar.component';
   styleUrl: './day-dialog.component.scss',
 })
 export class DayDialogComponent {
+  private displayZone = inject(DisplayZoneService);
+
   readonly iso = input.required<string>();
   readonly pills = input.required<MonthPill[]>();
   readonly zone = input<string | undefined>(undefined);
@@ -29,7 +32,7 @@ export class DayDialogComponent {
   readonly dayNumber = computed(() => Number(this.iso().slice(8)));
 
   timeOf(pill: MonthPill): string {
-    return clockIn(pill.item.starts_at, pill.item.time_zone || this.zone());
+    return clockIn(pill.item.starts_at, pill.item.time_zone || this.displayZone.clockZone(this.zone()));
   }
 
   onBackdrop(e: MouseEvent): void {
