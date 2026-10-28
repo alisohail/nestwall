@@ -45,20 +45,20 @@ export const routes: Routes = [
       { path: 'my-tasks/:id', loadComponent: () => import('./features/my-tasks/my-task/my-task.component').then(m => m.MyTaskComponent) },
       { path: 'my-tasks/bonus/:id', loadComponent: () => import('./features/bonus/kid/kid-bonus-detail.component').then(m => m.KidBonusDetailComponent) },
       { path: 'tasks', loadComponent: () => import('./features/tasks/tasks.component').then(m => m.TasksComponent) },
-      { path: 'tasks/new', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/tasks/task-form/task-form.component').then(m => m.TaskFormComponent) },
-      { path: 'tasks/:id/edit', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/tasks/task-form/task-form.component').then(m => m.TaskFormComponent) },
+      { path: 'tasks/new', canActivate: [anyPermissionGuard('tasks.manage')], canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/tasks/task-form/task-form.component').then(m => m.TaskFormComponent) },
+      { path: 'tasks/:id/edit', canActivate: [anyPermissionGuard('tasks.manage')], canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/tasks/task-form/task-form.component').then(m => m.TaskFormComponent) },
       { path: 'bonus', canActivate: [anyPermissionGuard('bonus.manage')], data: { titleKey: 'shell.nav.bonus' }, loadComponent: () => import('./features/bonus/bonus.component').then(m => m.BonusComponent) },
       { path: 'bonus/new', canActivate: [anyPermissionGuard('bonus.manage')], canDeactivate: [unsavedChangesGuard], data: { titleKey: 'shell.nav.bonus' }, loadComponent: () => import('./features/bonus/bonus-new/bonus-new.component').then(m => m.BonusNewComponent) },
       { path: 'approvals', canActivate: [anyPermissionGuard('tasks.approve', 'rewards.approve')], data: { titleKey: 'shell.nav.approvals' }, loadComponent: () => import('./features/approvals/approvals.component').then(m => m.ApprovalsComponent) },
       { path: 'calendar', loadComponent: () => import('./features/calendar/calendar.component').then(m => m.CalendarComponent) },
       { path: 'rewards', loadComponent: () => import('./features/rewards/rewards.component').then(m => m.RewardsComponent) },
-      { path: 'rewards/requests', loadComponent: () => import('./features/rewards/requests/reward-requests.component').then(m => m.RewardRequestsComponent) },
-      { path: 'points', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/points/points.component').then(m => m.PointsComponent) },
+      { path: 'rewards/requests', canActivate: [anyPermissionGuard('rewards.approve')], loadComponent: () => import('./features/rewards/requests/reward-requests.component').then(m => m.RewardRequestsComponent) },
+      { path: 'points', canActivate: [anyPermissionGuard('rewards.manage')], canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/points/points.component').then(m => m.PointsComponent) },
       { path: 'share', loadComponent: () => import('./features/sharing/share/share.component').then(m => m.ShareComponent) },
-      { path: 'family/members/:id', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/family/member-edit/member-edit.component').then(m => m.MemberEditComponent) },
-      { path: 'family', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/family/family.component').then(m => m.FamilyComponent) },
+      { path: 'family/members/:id', canActivate: [anyPermissionGuard('members.view', 'family.view')], canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/family/member-edit/member-edit.component').then(m => m.MemberEditComponent) },
+      { path: 'family', canActivate: [anyPermissionGuard('members.view', 'family.view')], canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/family/family.component').then(m => m.FamilyComponent) },
       { path: 'settings', loadComponent: () => import('./features/settings/settings-hub/settings-hub.component').then(m => m.SettingsHubComponent) },
-      { path: 'settings/admin', loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent), children: [
+      { path: 'settings/admin', canActivate: [anyPermissionGuard('settings.view')], loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent), children: [
           { path: '', pathMatch: 'full', redirectTo: 'templates' },
           {
             path: 'templates',
@@ -129,12 +129,9 @@ export const routes: Routes = [
       },
       { path: 'me', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/me/me.component').then(m => m.MeComponent) },
       { path: 'profile', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent) },
-      { path: 'me/badges', loadComponent: () => import('./features/badges/my-badges/my-badges.component').then(m => m.MyBadgesComponent) }
+      { path: 'me/badges', loadComponent: () => import('./features/badges/my-badges/my-badges.component').then(m => m.MyBadgesComponent) },
+      { path: 'forbidden', loadComponent: () => import('./features/errors/forbidden/forbidden.component').then(m => m.ForbiddenComponent) }
     ]
-  },
-  {
-    path: 'forbidden',
-    loadComponent: () => import('./features/errors/forbidden/forbidden.component').then(m => m.ForbiddenComponent)
   },
   {
     path: 'server-error',
