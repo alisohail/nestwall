@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 
 /**
  * Lets a route open only when the signed-in member holds at least one of the codes.
- * Otherwise sends them to their home screen. Use it after authGuard.
+ * Otherwise sends them to the forbidden page, which stays inside the app shell. Use it after authGuard.
  */
 export function anyPermissionGuard(...codes: string[]): CanActivateFn {
   return () => {
@@ -18,7 +18,7 @@ export function anyPermissionGuard(...codes: string[]): CanActivateFn {
       map((): boolean | UrlTree => {
         if (!auth.isAuthenticated()) return false;
         if (codes.some((code) => auth.can(code))) return true;
-        return router.createUrlTree([auth.isChild() ? '/today' : '/dashboard']);
+        return router.createUrlTree(['/forbidden']);
       })
     );
   };

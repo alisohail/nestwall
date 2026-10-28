@@ -39,15 +39,15 @@ describe('anyPermissionGuard', () => {
     });
   });
 
-  it('should send a child without the permission to /today', async () => {
+  it('should send a child without the permission to the forbidden page', async () => {
     const result = await run('settings.view');
-    expect(result).toEqual({ commands: ['/today'] } as unknown as UrlTree);
+    expect(result).toEqual({ commands: ['/forbidden'] } as unknown as UrlTree);
   });
 
-  it('should send a parent without the permission to /dashboard', async () => {
+  it('should send a parent without the permission to the forbidden page', async () => {
     isChild = false;
     const result = await run('settings.view');
-    expect(result).toEqual({ commands: ['/dashboard'] } as unknown as UrlTree);
+    expect(result).toEqual({ commands: ['/forbidden'] } as unknown as UrlTree);
   });
 
   it('should allow a member who holds any one of the codes', async () => {

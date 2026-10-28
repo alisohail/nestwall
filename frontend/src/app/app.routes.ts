@@ -44,7 +44,7 @@ export const routes: Routes = [
       { path: 'my-tasks', loadComponent: () => import('./features/my-tasks/my-tasks.component').then(m => m.MyTasksComponent) },
       { path: 'my-tasks/:id', loadComponent: () => import('./features/my-tasks/my-task/my-task.component').then(m => m.MyTaskComponent) },
       { path: 'my-tasks/bonus/:id', loadComponent: () => import('./features/bonus/kid/kid-bonus-detail.component').then(m => m.KidBonusDetailComponent) },
-      { path: 'tasks', canActivate: [anyPermissionGuard('tasks.view')], loadComponent: () => import('./features/tasks/tasks.component').then(m => m.TasksComponent) },
+      { path: 'tasks', loadComponent: () => import('./features/tasks/tasks.component').then(m => m.TasksComponent) },
       { path: 'tasks/new', canActivate: [anyPermissionGuard('tasks.manage')], canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/tasks/task-form/task-form.component').then(m => m.TaskFormComponent) },
       { path: 'tasks/:id/edit', canActivate: [anyPermissionGuard('tasks.manage')], canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/tasks/task-form/task-form.component').then(m => m.TaskFormComponent) },
       { path: 'bonus', canActivate: [anyPermissionGuard('bonus.manage')], data: { titleKey: 'shell.nav.bonus' }, loadComponent: () => import('./features/bonus/bonus.component').then(m => m.BonusComponent) },
@@ -129,12 +129,9 @@ export const routes: Routes = [
       },
       { path: 'me', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/me/me.component').then(m => m.MeComponent) },
       { path: 'profile', canDeactivate: [unsavedChangesGuard], loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent) },
-      { path: 'me/badges', loadComponent: () => import('./features/badges/my-badges/my-badges.component').then(m => m.MyBadgesComponent) }
+      { path: 'me/badges', loadComponent: () => import('./features/badges/my-badges/my-badges.component').then(m => m.MyBadgesComponent) },
+      { path: 'forbidden', loadComponent: () => import('./features/errors/forbidden/forbidden.component').then(m => m.ForbiddenComponent) }
     ]
-  },
-  {
-    path: 'forbidden',
-    loadComponent: () => import('./features/errors/forbidden/forbidden.component').then(m => m.ForbiddenComponent)
   },
   {
     path: 'server-error',
