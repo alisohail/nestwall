@@ -1,65 +1,69 @@
+import type { MockedObject } from "vitest";
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { anyPermissionGuard } from './permission.guard';
 import { AuthService } from './auth.service';
+import { mockOf } from '../../testing/mock-of';
 
 describe('anyPermissionGuard', () => {
-  let granted: string[];
-  let isChild: boolean;
-  let routerSpy: jasmine.SpyObj<Router>;
-  const route = {} as ActivatedRouteSnapshot;
-  const state = { url: '/settings/admin' } as RouterStateSnapshot;
+    let granted: string[];
+    let isChild: boolean;
+    let routerSpy: MockedObject<Router>;
+    const route = {} as ActivatedRouteSnapshot;
+    const state = { url: '/settings/admin' } as RouterStateSnapshot;
 
-  function run(...codes: string[]): Promise<boolean | UrlTree> {
-    const guard = TestBed.runInInjectionContext(() => anyPermissionGuard(...codes)(route, state));
-    return new Promise((resolve) => (guard as Observable<boolean | UrlTree>).subscribe(resolve));
-  }
+    function run(...codes: string[]): Promise<boolean | UrlTree> {
+        const guard = TestBed.runInInjectionContext(() => anyPermissionGuard(...codes)(route, state));
+        return new Promise((resolve) => (guard as Observable<boolean | UrlTree>).subscribe(resolve));
+    }
 
-  beforeEach(() => {
-    granted = [];
-    isChild = true;
-    routerSpy = jasmine.createSpyObj('Router', ['createUrlTree']);
-    routerSpy.createUrlTree.and.callFake((commands: string[]) => ({ commands }) as unknown as UrlTree);
-    TestBed.configureTestingModule({
-      providers: [
-        {
-          provide: AuthService,
-          useValue: {
-            currentUser: () => ({}),
-            checkAuth: () => of(true),
-            loadPermissions: () => of(true),
-            isAuthenticated: () => true,
-            isChild: () => isChild,
-            can: (code: string) => granted.includes(code),
-          },
-        },
-        { provide: Router, useValue: routerSpy },
-      ],
+    beforeEach(() => {
+        granted = [];
+        isChild = true;
+        routerSpy = mockOf<Router>({
+            createUrlTree: vi.fn().mockName("Router.createUrlTree")
+        });
+        routerSpy.createUrlTree.mockImplementation((commands: readonly unknown[]) => ({ commands }) as unknown as UrlTree);
+        TestBed.configureTestingModule({
+            providers: [
+                {
+                    provide: AuthService,
+                    useValue: {
+                        currentUser: () => ({}),
+                        checkAuth: () => of(true),
+                        loadPermissions: () => of(true),
+                        isAuthenticated: () => true,
+                        isChild: () => isChild,
+                        can: (code: string) => granted.includes(code),
+                    },
+                },
+                { provide: Router, useValue: routerSpy },
+            ],
+        });
     });
-  });
 
-  it('should send a child without the permission to the forbidden page', async () => {
-    const result = await run('settings.view');
-    expect(result).toEqual({ commands: ['/forbidden'] } as unknown as UrlTree);
-  });
+    it('should send a child without the permission to the forbidden page', async () => {
+        const result = await run('settings.view');
+        expect(result).toEqual({ commands: ['/forbidden'] } as unknown as UrlTree);
+    });
 
-  it('should send a parent without the permission to the forbidden page', async () => {
-    isChild = false;
-    const result = await run('settings.view');
-    expect(result).toEqual({ commands: ['/forbidden'] } as unknown as UrlTree);
-  });
+    it('should send a parent without the permission to the forbidden page', async () => {
+        isChild = false;
+        const result = await run('settings.view');
+        expect(result).toEqual({ commands: ['/forbidden'] } as unknown as UrlTree);
+    });
 
-  it('should allow a member who holds any one of the codes', async () => {
-    granted = ['members.view'];
-    expect(await run('members.view', 'family.view')).toBeTrue();
-  });
+    it('should allow a member who holds any one of the codes', async () => {
+        granted = ['members.view'];
+        expect(await run('members.view', 'family.view')).toBe(true);
+    });
 
-  it('should not let a child open a parent-only route by URL', async () => {
-    granted = ['tasks.own.view', 'rewards.view', 'calendar.own.view'];
-    expect(await run('tasks.view')).not.toBeTrue();
-    expect(await run('rewards.manage')).not.toBeTrue();
-    expect(await run('rewards.approve')).not.toBeTrue();
-    expect(await run('members.view', 'family.view')).not.toBeTrue();
-  });
+    it('should not let a child open a parent-only route by URL', async () => {
+        granted = ['tasks.own.view', 'rewards.view', 'calendar.own.view'];
+        expect(await run('tasks.view')).not.toBe(true);
+        expect(await run('rewards.manage')).not.toBe(true);
+        expect(await run('rewards.approve')).not.toBe(true);
+        expect(await run('members.view', 'family.view')).not.toBe(true);
+    });
 });
