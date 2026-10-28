@@ -20,6 +20,7 @@ export interface WeatherCurrent {
   temperature: number;
   feels_like: number;
   condition: WeatherCondition;
+  is_day: boolean;
 }
 
 export interface WeatherDay {
@@ -33,7 +34,9 @@ export interface WeatherDay {
 export interface WeatherHour {
   time: string;
   temperature: number;
+  feels_like: number;
   condition: WeatherCondition;
+  is_day: boolean;
   precip_chance: number | null;
 }
 

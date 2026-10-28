@@ -27,7 +27,7 @@
     margin: 0;
   }
 
-  > :not(.wx-scene) {
+  > :not(.wx-scene):not(.wx-refresh) {
     position: relative;
   }
 }
@@ -403,7 +403,7 @@
 .wx-hours {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .wx-hours > .lab {
@@ -411,42 +411,175 @@
   opacity: 0.8;
 }
 
+/* Hidden-scroll hour row: swipe or scroll sideways; a faded chevron at the right edge hints at more. */
+/* Inner padding keeps the "now" outline from being clipped; the negative margin keeps tiles aligned with the label. */
 .wx-hour-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
-  gap: 6px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  min-width: 0;
+  margin: -4px -6px;
+  padding: 4px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Edge fades on the hour row: masked at whichever edge has hidden hours. */
+.wx-hour-row[data-more] {
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 3em), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - 3em), transparent);
+}
+
+.wx-hour-row[data-more-start] {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 3em);
+  mask-image: linear-gradient(to right, transparent, black 3em);
+}
+
+.wx-hour-row[data-more][data-more-start] {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 3em, black calc(100% - 3em), transparent);
+  mask-image: linear-gradient(to right, transparent, black 3em, black calc(100% - 3em), transparent);
 }
 
 .wx-hour {
+  flex: 0 0 62px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0;
   min-width: 0;
-  padding: 6px 2px;
-  border-radius: 12px;
+  padding: 3px 3px;
+  border-radius: 10px;
   font-size: var(--nw-text-xs);
-  background: color-mix(in srgb, var(--nw-color-on-weather) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--nw-color-on-weather) 14%, transparent);
+  /* Frosted surface taken from the card colour, so it reads as a tile in both light and dark themes. */
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nw-color-on-weather) 12%, transparent);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--nw-color-on-weather) 10%, transparent);
 }
 
 .wx-hour.now {
-  outline: 2px solid color-mix(in srgb, var(--nw-color-on-weather) 55%, transparent);
+  background: color-mix(in srgb, var(--card) 85%, transparent);
+  border-color: color-mix(in srgb, var(--nw-color-on-weather) 45%, transparent);
 }
 
 .wx-hour .t,
-.wx-hour .p {
+.wx-hour .feels {
   white-space: nowrap;
   opacity: 0.8;
 }
 
-.wx-hour .p {
-  font-size: var(--nw-text-xs);
+.wx-hour .feels {
+  font-size: var(--nw-text-2xs);
 }
 
 .wx-hour .deg {
   font-size: var(--nw-text-sm);
   font-weight: 700;
+}
+
+/* Right-edge cue for the hour row, mirroring the wall's horizontal scroll cue. */
+.scroll-cue {
+  position: sticky;
+  flex: none;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* Right-edge cue: the chevron. The row's mask supplies the fade. */
+.scroll-cue.is-x {
+  right: 0;
+  width: 3em;
+  margin-left: -3em;
+}
+
+.scroll-cue::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 0.35em);
+  width: 0.7em;
+  height: 0.7em;
+  margin-top: -0.35em;
+  border-top: 0.18em solid var(--nw-color-on-weather);
+  border-right: 0.18em solid var(--nw-color-on-weather);
+  transform: rotate(45deg);
+}
+
+[data-more] > .scroll-cue:not(.is-x-start) {
+  opacity: 1;
+}
+
+[data-more] > .scroll-cue::after {
+  animation: scroll-cue-nudge-x 1.8s ease-in-out infinite;
+}
+
+@keyframes scroll-cue-nudge-x {
+  0%,
+  100% {
+    translate: -0.15em 0;
+    opacity: 0.35;
+  }
+
+  50% {
+    translate: 0.25em 0;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-more] > .scroll-cue::after {
+    animation: none;
+  }
+}
+
+/* Left-edge cue, shown only after the row has been scrolled past its start. */
+.scroll-cue.is-x-start {
+  left: 0;
+  right: auto;
+  width: 3em;
+  margin-left: 0;
+  margin-right: -3em;
+}
+
+.scroll-cue.is-x-start::after {
+  left: calc(50% - 0.35em);
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0.18em solid var(--nw-color-on-weather);
+  border-left: 0.18em solid var(--nw-color-on-weather);
+  animation: none;
+}
+
+[data-more-start] > .scroll-cue.is-x-start {
+  opacity: 1;
+}
+
+[data-more-start] > .scroll-cue.is-x-start::after {
+  animation: scroll-cue-nudge-x-start 1.8s ease-in-out infinite;
+}
+
+@keyframes scroll-cue-nudge-x-start {
+  0%,
+  100% {
+    translate: 0.15em 0;
+    opacity: 0.35;
+  }
+
+  50% {
+    translate: -0.25em 0;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-more-start] > .scroll-cue.is-x-start::after {
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -469,6 +602,14 @@
 .wx-d.tom {
   padding-top: var(--nw-space-2);
   border-top: 1px solid var(--nw-color-outline);
+
+  .deg {
+    font-size: 1.5rem;
+  }
+
+  .meta {
+    font-size: var(--nw-text-xs);
+  }
 }
 
 .lab {
@@ -502,6 +643,54 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   opacity: 0.75;
+  padding-right: 28px;
+}
+
+.wx-refresh {
+  position: absolute;
+  top: var(--nw-space-2);
+  right: var(--nw-space-2);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--nw-color-on-weather);
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.wx-refresh:hover:not(:disabled),
+.wx-refresh:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--nw-color-on-weather) 14%, transparent);
+}
+
+.wx-refresh:disabled {
+  cursor: default;
+}
+
+.wx-refresh svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wx-refresh.spinning svg {
+  animation: wx-refresh-spin 0.9s linear infinite;
+}
+
+@keyframes wx-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .wx-stale {
@@ -522,6 +711,34 @@
   }
 }
 
+/* Wrapper is transparent for the Today card; the dashboard card lays it out as a row. */
+.wx-body {
+  display: contents;
+}
+
+/* Dashboard card: Today | Tomorrow | Hourly temps on one row; stacks on narrow screens. */
+.wx-card.compact .wx-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+  align-items: stretch;
+  gap: 0;
+}
+
+.wx-card.compact .wx-d {
+  align-items: flex-start;
+  padding-right: var(--nw-space-4);
+}
+
+.wx-card.compact .wx-pair {
+  display: contents;
+}
+
+.wx-card.compact .wx-hours {
+  min-width: 0;
+  padding-left: var(--nw-space-4);
+  border-left: 1px solid var(--nw-color-outline);
+}
+
 /* Compact: today and tomorrow side by side, stacked on narrow screens. */
 .wx-pair {
   display: grid;
@@ -532,16 +749,33 @@
     padding-top: 0;
     border-top: 0;
     padding-left: var(--nw-space-4);
+    padding-right: var(--nw-space-4);
     border-left: 1px solid var(--nw-color-outline);
   }
 }
 
 @media (max-width: 560px) {
+  .wx-card.compact .wx-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wx-card.compact .wx-d {
+    padding-right: 0;
+  }
+
+  .wx-card.compact .wx-hours {
+    padding-left: 0;
+    padding-top: var(--nw-space-2);
+    border-left: 0;
+    border-top: 1px solid var(--nw-color-outline);
+  }
+
   .wx-pair {
     grid-template-columns: minmax(0, 1fr);
 
     .wx-d.tom {
       padding-left: 0;
+      padding-right: 0;
       padding-top: var(--nw-space-2);
       border-left: 0;
       border-top: 1px solid var(--nw-color-outline);

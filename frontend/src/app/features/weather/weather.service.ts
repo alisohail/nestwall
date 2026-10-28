@@ -10,12 +10,16 @@ export class WeatherService {
 
   /**
    * The family forecast. Any signed-in member can read it. With `device`, the server uses those
-   * coordinates when the family has no location; it never stores or logs them.
+   * coordinates when the family has no location; it never stores or logs them. With `refresh`, the
+   * server fetches a new forecast instead of its cached one.
    */
-  forecast(device?: DeviceCoords): Observable<WeatherResponse> {
-    if (!device) return this.api.get<WeatherResponse>('/api/v1/weather');
-    const query = `lat=${device.latitude.toFixed(4)}&lon=${device.longitude.toFixed(4)}`;
-    return this.api.get<WeatherResponse>(`/api/v1/weather?${query}`);
+  forecast(device?: DeviceCoords, refresh = false): Observable<WeatherResponse> {
+    const params: string[] = [];
+    if (device) {
+      params.push(`lat=${device.latitude.toFixed(4)}`, `lon=${device.longitude.toFixed(4)}`);
+    }
+    if (refresh) params.push('refresh=1');
+    return this.api.get<WeatherResponse>(params.length ? `/api/v1/weather?${params.join('&')}` : '/api/v1/weather');
   }
 
   settings(): Observable<WeatherSettings> {

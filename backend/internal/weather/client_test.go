@@ -87,6 +87,28 @@ func TestClientReusesFreshAnswer(t *testing.T) {
 	}
 }
 
+func TestClientRefreshBypassesFreshCache(t *testing.T) {
+	st := newStub(t)
+	clk := &fakeClock{now: time.Date(2026, 10, 10, 9, 0, 0, 0, time.UTC)}
+	c := NewClient(st.srv.URL, clk)
+
+	if _, err := c.Forecast(context.Background(), london); err != nil {
+		t.Fatalf("forecast: %v", err)
+	}
+	if _, err := c.Refresh(context.Background(), london); err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if got := st.calls.Load(); got != 2 {
+		t.Fatalf("upstream calls = %d, want 2 because refresh skips the cache", got)
+	}
+	if _, err := c.Forecast(context.Background(), london); err != nil {
+		t.Fatalf("forecast after refresh: %v", err)
+	}
+	if got := st.calls.Load(); got != 2 {
+		t.Fatalf("upstream calls = %d, want 2 because refresh refills the cache", got)
+	}
+}
+
 func TestClientServesStaleAnswerWhenUpstreamFails(t *testing.T) {
 	st := newStub(t)
 	clk := &fakeClock{now: time.Date(2026, 10, 10, 9, 0, 0, 0, time.UTC)}

@@ -2,6 +2,7 @@ package weather
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 	"time"
 )
@@ -23,11 +24,12 @@ func hourlyBody(n int, temps, precip, codes string) string {
 		}
 		times += `"2026-10-27T` + twoDigits(10+i) + `:00"`
 	}
-	return `{"current":{"temperature_2m":18,"apparent_temperature":17,"weather_code":0},` +
+	return `{"current":{"temperature_2m":18,"apparent_temperature":17,"weather_code":0,"is_day":1},` +
 		`"daily":{"weather_code":[0,1],"temperature_2m_max":[21,19],"temperature_2m_min":[12,11],` +
 		`"precipitation_probability_max":[40,70]},` +
 		`"hourly":{"time":[` + times + `],"temperature_2m":` + temps + `,` +
-		`"weather_code":` + codes + `,"precipitation_probability":` + precip + `}}`
+		`"apparent_temperature":` + temps + `,` +
+		`"weather_code":` + codes + `,"is_day":` + seq(n, "1") + `,"precipitation_probability":` + precip + `}}`
 }
 
 func twoDigits(n int) string {
@@ -91,6 +93,19 @@ func TestHourlyRoundsPrecipAndMapsCondition(t *testing.T) {
 	}
 	if fc.Hourly[0].Condition != "rain" || fc.Hourly[1].Condition != "clear" || fc.Hourly[2].Condition != "storm" {
 		t.Fatalf("conditions = %q %q %q", fc.Hourly[0].Condition, fc.Hourly[1].Condition, fc.Hourly[2].Condition)
+	}
+}
+
+func TestHourlyMarksNightFromProviderDayFlag(t *testing.T) {
+	const zone = "UTC"
+	body := hourlyBody(3, "[1,2,3]", "[0,0,0]", "[0,0,0]")
+	body = strings.Replace(body, `"is_day":[1,1,1]`, `"is_day":[1,0,1]`, 1)
+	fc, err := decodeUpstream(t, body).forecast(time.Date(2026, 10, 27, 10, 0, 0, 0, time.UTC), zone)
+	if err != nil {
+		t.Fatalf("forecast: %v", err)
+	}
+	if !fc.Hourly[0].IsDay || fc.Hourly[1].IsDay || !fc.Hourly[2].IsDay {
+		t.Fatalf("is_day = %v %v %v, want true false true", fc.Hourly[0].IsDay, fc.Hourly[1].IsDay, fc.Hourly[2].IsDay)
 	}
 }
 

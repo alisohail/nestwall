@@ -25,6 +25,23 @@
       <span class="wx-particle" [style]="particleStyle(p)"></span>
     }
   </div>
+  @if (state() === 'ready') {
+    <button
+      type="button"
+      class="wx-refresh"
+      [class.spinning]="refreshing()"
+      [disabled]="refreshing()"
+      [attr.aria-label]="'weather.refresh' | transloco"
+      [title]="'weather.refresh' | transloco"
+      (click)="refresh()"
+      data-testid="weather-refresh"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 12a8 8 0 1 1-2.34-5.66" />
+        <path d="M20 4v5h-5" />
+      </svg>
+    </button>
+  }
   @switch (state()) {
     @case ('loading') {
       <div role="status">
@@ -60,9 +77,11 @@
         @if (location(); as place) {
           <p class="wx-place" data-testid="weather-location">{{ place }}</p>
         }
+        <div class="wx-body">
         @if (variant() === 'full') {
+          <div class="wx-pair">
           <div class="wx-d">
-            <app-weather-icon [condition]="f.current.condition" [size]="64" />
+            <app-weather-icon [condition]="f.current.condition" [night]="!f.current.is_day" [size]="64" />
             <div>
               <div class="lab">{{ 'weather.today' | transloco }}</div>
               <div class="deg" data-testid="weather-current">{{ round(f.current.temperature) }}°{{ unitLetter() }}</div>
@@ -79,7 +98,7 @@
             </div>
           </div>
           <div class="wx-d tom">
-            <app-weather-icon [condition]="f.tomorrow.condition" [size]="46" />
+            <app-weather-icon [condition]="f.tomorrow.condition" [size]="34" />
             <div>
               <div class="lab">{{ 'weather.tomorrow' | transloco }}</div>
               <div class="deg s">{{ round(f.tomorrow.high) }}°{{ unitLetter() }}</div>
@@ -92,10 +111,11 @@
               </div>
             </div>
           </div>
+          </div>
         } @else {
           <div class="wx-pair">
             <div class="wx-d">
-              <app-weather-icon [condition]="f.current.condition" [size]="48" />
+              <app-weather-icon [condition]="f.current.condition" [night]="!f.current.is_day" [size]="48" />
               <div>
                 <div class="lab">{{ 'weather.today' | transloco }}</div>
                 <div class="deg" data-testid="weather-current">{{ round(f.current.temperature) }}°{{ unitLetter() }}</div>
@@ -112,7 +132,7 @@
               </div>
             </div>
             <div class="wx-d tom">
-              <app-weather-icon [condition]="f.tomorrow.condition" [size]="40" />
+              <app-weather-icon [condition]="f.tomorrow.condition" [size]="32" />
               <div>
                 <div class="lab">{{ 'weather.tomorrow' | transloco }}</div>
                 <div class="deg s" data-testid="weather-tomorrow">{{ round(f.tomorrow.high) }}°{{ unitLetter() }}</div>
@@ -130,20 +150,21 @@
         @if (shownHours().length) {
           <div class="wx-hours" data-testid="weather-hours">
             <p class="lab">{{ 'weather.hourly' | transloco }}</p>
-            <div class="wx-hour-row">
+            <div class="wx-hour-row" appWallScrollCue="x" data-testid="weather-hour-row">
+              <span class="scroll-cue is-x-start" aria-hidden="true"></span>
               @for (h of shownHours(); track h.time; let first = $first) {
                 <div class="wx-hour" [class.now]="first" data-testid="weather-hour">
                   <span class="t">{{ first ? ('weather.now' | transloco) : hourLabel(h.time) }}</span>
-                  <app-weather-icon [condition]="h.condition" [size]="22" />
+                  <app-weather-icon [condition]="h.condition" [night]="!h.is_day" [size]="20" />
                   <span class="deg">{{ round(h.temperature) }}°</span>
-                  @if (h.precip_chance !== null) {
-                    <span class="p">{{ h.precip_chance }}%</span>
-                  }
+                  <span class="feels">{{ 'weather.hour_feels' | transloco: { temp: round(h.feels_like) } }}</span>
                 </div>
               }
+              <span class="scroll-cue is-x" aria-hidden="true"></span>
             </div>
           </div>
         }
+        </div>
         @if (f.stale) {
           <p class="meta wx-stale">{{ 'weather.stale' | transloco }}</p>
         }

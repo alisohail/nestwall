@@ -65,7 +65,11 @@ func (h *Handlers) Forecast(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := h.service.Current(ctx, familyID, device)
+	read := h.service.Current
+	if r.URL.Query().Get("refresh") == "1" {
+		read = h.service.Refresh
+	}
+	resp, err := read(ctx, familyID, device)
 	if errors.Is(err, ErrUnavailable) {
 		web.RespondError(w, http.StatusServiceUnavailable, "weather_unavailable", "Weather is unavailable right now", nil)
 		return
