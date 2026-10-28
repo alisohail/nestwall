@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -48,6 +48,7 @@ const MAX_LIMIT = 1000;
         LoadingComponent,
     ],
     templateUrl: './rewards-admin.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './rewards-admin.component.scss'
 })
 export class RewardsAdminComponent implements OnInit {

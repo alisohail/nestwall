@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, input, output, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -78,6 +78,7 @@ const LIVE_STATES: readonly KidBonusState[] = ['open', 'once', 'mine'];
     selector: 'app-kid-bonus-list',
     imports: [RouterLink, TranslocoModule, BannerComponent, EmptyStateComponent, LoadErrorComponent, LoadingComponent],
     templateUrl: './kid-bonus-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './kid-bonus-list.component.scss'
 })
 export class KidBonusListComponent implements OnInit {

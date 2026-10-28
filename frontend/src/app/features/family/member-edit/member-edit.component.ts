@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -23,6 +23,7 @@ const USER_ID_PATTERN = /^[a-zA-Z0-9._-]{3,32}$/;
     selector: 'app-member-edit',
     imports: [ReactiveFormsModule, RouterLink, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent, OwnPasswordComponent, PhotoEditorComponent, ColourPickerComponent],
     templateUrl: './member-edit.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './member-edit.component.scss'
 })
 export class MemberEditComponent implements OnInit, UnsavedChangesAware {

@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -53,7 +53,7 @@ describe('ShareComponent', () => {
       imports: [ShareComponent, getTranslocoTestingModule()],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: SharingService, useValue: sharing },
         { provide: AuthService, useValue: { isChild: () => true } },

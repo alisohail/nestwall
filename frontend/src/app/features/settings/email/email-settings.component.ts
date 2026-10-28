@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnDestroy, OnInit, TemplateRef, ViewChild, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnDestroy, OnInit, TemplateRef, ViewChild, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -54,6 +54,7 @@ const PORT_MAX = 65535;
     selector: 'app-email-settings',
     imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './email-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './email-settings.component.scss'
 })
 export class EmailSettingsComponent implements OnInit, OnDestroy, UnsavedChangesAware {

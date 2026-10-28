@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -20,6 +20,7 @@ import { MyTasksService } from '../my-tasks.service';
     selector: 'app-my-task',
     imports: [RouterLink, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, TaskConfirmComponent],
     templateUrl: './my-task.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './my-task.component.scss'
 })
 export class MyTaskComponent {

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -23,6 +23,7 @@ interface Notice {
     selector: 'app-reward-requests',
     imports: [DatePipe, RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
     templateUrl: './reward-requests.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './reward-requests.component.scss'
 })
 export class RewardRequestsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ApiError } from '../../../core/api/api-client.service';
 import { ErrorPageComponent } from '../error-page/error-page.component';
@@ -17,6 +17,7 @@ interface LoadErrorReason {
     selector: 'app-load-error',
     host: { role: 'alert' },
     imports: [TranslocoModule, ErrorPageComponent],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
     <app-error-page
       [icon]="reason().icon"

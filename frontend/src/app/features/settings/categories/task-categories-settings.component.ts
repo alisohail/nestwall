@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -33,6 +33,7 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
     selector: 'app-task-categories-settings',
     imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
     templateUrl: './task-categories-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-categories-settings.component.scss'
 })
 export class TaskCategoriesSettingsComponent implements UnsavedChangesAware {

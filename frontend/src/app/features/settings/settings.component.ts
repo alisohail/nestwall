@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgTemplateOutlet } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -41,6 +41,7 @@ const BUILT_SECTIONS = SETTINGS_SECTIONS.filter(
     selector: 'app-settings',
     imports: [NgTemplateOutlet, RouterOutlet, RouterLink, RouterLinkActive, TranslocoModule],
     templateUrl: './settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './settings.component.scss'
 })
 export class SettingsComponent {

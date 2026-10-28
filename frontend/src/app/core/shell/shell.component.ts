@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, computed, signal } from '@angular/core';
+import { Component, HostListener, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -68,6 +68,7 @@ export const CHILD_NAV: NavItem[] = [
     selector: 'app-shell',
     imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslocoModule, IconComponent, AvatarComponent, EmailPromptComponent, NotificationBellComponent],
     templateUrl: './shell.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './shell.component.scss'
 })
 export class ShellComponent {

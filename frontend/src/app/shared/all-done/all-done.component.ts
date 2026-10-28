@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 
 /** The all done card shown when nothing is left to do today. Used by Today and the My tasks Today tab. */
@@ -6,6 +6,7 @@ import { TranslocoModule } from '@ngneat/transloco';
     selector: 'app-all-done',
     imports: [TranslocoModule],
     templateUrl: './all-done.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './all-done.component.scss'
 })
 export class AllDoneComponent {

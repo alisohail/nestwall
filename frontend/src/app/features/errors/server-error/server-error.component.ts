@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ErrorPageComponent } from '../../../shared/ui/error-page/error-page.component';
@@ -8,6 +8,7 @@ import { ErrorPageComponent } from '../../../shared/ui/error-page/error-page.com
     selector: 'app-server-error',
     imports: [ErrorPageComponent, RouterLink, TranslocoModule],
     templateUrl: './server-error.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './server-error.component.scss'
 })
 export class ServerErrorComponent {

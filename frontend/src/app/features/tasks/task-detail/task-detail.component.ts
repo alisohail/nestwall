@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, inject, input, output, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
@@ -19,6 +19,7 @@ import { TasksService } from '../tasks.service';
     selector: 'app-task-detail',
     imports: [TranslocoModule, AvatarComponent, BannerComponent, LoadErrorComponent, LoadingComponent, TaskConfirmComponent],
     templateUrl: './task-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-detail.component.scss'
 })
 export class TaskDetailComponent {

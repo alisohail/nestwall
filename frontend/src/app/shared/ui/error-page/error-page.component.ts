@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 
 export type ErrorPageTone = 'danger' | 'calm' | 'warm';
@@ -11,6 +11,7 @@ export type ErrorPageTone = 'danger' | 'calm' | 'warm';
     selector: 'app-error-page',
     imports: [TranslocoModule],
     templateUrl: './error-page.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './error-page.component.scss'
 })
 export class ErrorPageComponent {

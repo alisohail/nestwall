@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -18,6 +18,7 @@ const FALLBACK_EMOJI = '🏅';
     selector: 'app-my-badges',
     imports: [RouterLink, TranslocoModule, LoadErrorComponent, LoadingComponent],
     templateUrl: './my-badges.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './my-badges.component.scss'
 })
 export class MyBadgesComponent implements OnInit {

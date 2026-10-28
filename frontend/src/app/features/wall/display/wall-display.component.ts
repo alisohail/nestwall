@@ -6,6 +6,7 @@ import {
   computed,
   inject,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslocoModule, TranslocoService } from "@ngneat/transloco";
@@ -124,6 +125,7 @@ interface AgendaRow {
         WallScrollCueDirective,
     ],
     templateUrl: "./wall-display.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./wall-display.component.scss"
 })
 export class WallDisplayComponent implements OnInit, OnDestroy {

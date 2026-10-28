@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal, DOCUMENT } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -62,6 +62,7 @@ function resetErrorKey(err: ApiError): string {
     selector: 'app-backups-card',
     imports: [FormsModule, DatePipe, TranslocoModule, BannerComponent, IconComponent, LoadingComponent, SkeletonComponent],
     templateUrl: './backups-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './backups-card.component.scss'
 })
 export class BackupsCardComponent implements OnInit {

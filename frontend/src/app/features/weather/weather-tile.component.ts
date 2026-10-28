@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -76,6 +76,7 @@ function sceneFor(condition: WeatherCondition | undefined): WeatherScene {
     imports: [TranslocoModule, RouterLink, LoadingComponent, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
     templateUrl: './weather-tile.component.html',
     styleUrl: './weather-tile.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     host: { class: 'weather-tile' }
 })
 export class WeatherTileComponent implements OnInit {

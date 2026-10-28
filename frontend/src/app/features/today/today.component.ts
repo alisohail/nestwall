@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -73,6 +73,7 @@ export interface PartGroup {
         WeatherTileComponent,
     ],
     templateUrl: './today.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './today.component.scss'
 })
 export class TodayComponent {

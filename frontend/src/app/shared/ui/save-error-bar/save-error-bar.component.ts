@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { BusyService } from '../../../core/busy/busy.service';
 
@@ -7,6 +7,7 @@ import { BusyService } from '../../../core/busy/busy.service';
     selector: 'app-save-error-bar',
     imports: [TranslocoModule],
     templateUrl: './save-error-bar.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './save-error-bar.component.scss'
 })
 export class SaveErrorBarComponent {

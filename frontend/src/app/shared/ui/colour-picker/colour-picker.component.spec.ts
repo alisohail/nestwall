@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -7,6 +7,7 @@ import { COLOUR_PALETTE, ColourPickerComponent } from './colour-picker.component
 
 @Component({
     imports: [ColourPickerComponent, ReactiveFormsModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `<app-colour-picker label="Colour" [formControl]="control" />`
 })
 class HostComponent {

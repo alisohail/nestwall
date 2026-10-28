@@ -1,9 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { WallScrollCueDirective } from "./wall-scroll-cue.directive";
 
 @Component({
     imports: [WallScrollCueDirective],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
     <div class="list" appWallScrollCue style="height: 100px; overflow-y: auto">
       <div style="height: 400px"></div>

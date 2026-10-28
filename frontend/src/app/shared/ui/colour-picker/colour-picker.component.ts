@@ -1,4 +1,4 @@
-import { Component, computed, forwardRef, input, signal } from '@angular/core';
+import { Component, computed, forwardRef, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
 
@@ -17,6 +17,7 @@ export const COLOUR_PALETTE: readonly string[] = ['#119e8f', '#c47e09', '#ec4899
     imports: [TranslocoModule],
     templateUrl: './colour-picker.component.html',
     styleUrl: './colour-picker.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ColourPickerComponent), multi: true }]
 })
 export class ColourPickerComponent implements ControlValueAccessor {

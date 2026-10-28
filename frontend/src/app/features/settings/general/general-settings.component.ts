@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -37,6 +37,7 @@ function roundCoord(value: number): number {
     selector: 'app-general-settings',
     imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './general-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './general-settings.component.scss'
 })
 export class GeneralSettingsComponent implements UnsavedChangesAware {

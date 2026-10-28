@@ -1,5 +1,5 @@
 
-import { Component, DestroyRef, inject, signal, DOCUMENT } from '@angular/core';
+import { Component, DestroyRef, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, concatMap, finalize, from, map } from 'rxjs';
@@ -21,6 +21,7 @@ interface ExportFile {
     selector: 'app-data-settings',
     imports: [TranslocoModule, BannerComponent, IconComponent, LoadingComponent, BackupsCardComponent],
     templateUrl: './data-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './data-settings.component.scss'
 })
 export class DataSettingsComponent {

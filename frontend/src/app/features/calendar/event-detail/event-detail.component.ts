@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, inject, input, output, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
@@ -28,6 +28,7 @@ function dateIn(iso: string, zone: string): string {
     selector: 'app-event-detail',
     imports: [TranslocoModule, IconComponent, AvatarComponent, TaskConfirmComponent, RemovePersonConfirmComponent],
     templateUrl: './event-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './event-detail.component.scss'
 })
 export class EventDetailComponent {

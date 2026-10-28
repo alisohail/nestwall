@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { BannerComponent } from '../banner/banner.component';
 
@@ -7,6 +7,7 @@ import { BannerComponent } from '../banner/banner.component';
     selector: 'app-error-state',
     imports: [TranslocoModule, BannerComponent],
     templateUrl: './error-state.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './error-state.component.scss'
 })
 export class ErrorStateComponent {

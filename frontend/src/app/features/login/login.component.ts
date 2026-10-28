@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -16,6 +16,7 @@ type ForgotStep = 'ask' | 'ask_parent' | 'notified' | 'email' | 'email_sent' | '
     selector: 'app-login',
     imports: [ReactiveFormsModule, TranslocoModule, RouterLink, BannerComponent, LoadingComponent],
     templateUrl: './login.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './login.component.scss'
 })
 export class LoginComponent {

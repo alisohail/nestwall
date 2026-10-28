@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -25,6 +25,7 @@ function matchingPasswords(group: AbstractControl): ValidationErrors | null {
     selector: 'app-change-password',
     imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
     templateUrl: './change-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './change-password.component.scss'
 })
 export class ChangePasswordComponent {

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -23,6 +23,7 @@ import { SkeletonComponent } from '../../../shared/ui/skeleton/skeleton.componen
     selector: 'app-points-settings',
     imports: [FormsModule, RouterLink, TranslocoModule, BannerComponent, LoadingComponent, SkeletonComponent],
     templateUrl: './points-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './points-settings.component.scss'
 })
 export class PointsSettingsComponent implements UnsavedChangesAware {

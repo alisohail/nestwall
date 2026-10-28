@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -72,6 +72,7 @@ export interface BonusListRow {
         LoadingComponent,
     ],
     templateUrl: './bonus.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './bonus.component.scss'
 })
 export class BonusComponent {

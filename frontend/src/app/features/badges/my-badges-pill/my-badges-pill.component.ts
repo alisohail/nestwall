@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -23,6 +23,7 @@ export interface PillView {
     selector: 'app-my-badges-pill',
     imports: [RouterLink, TranslocoModule],
     templateUrl: './my-badges-pill.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './my-badges-pill.component.scss'
 })
 export class MyBadgesPillComponent implements OnInit {

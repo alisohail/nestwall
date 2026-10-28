@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 
 const KNOWN_CONDITIONS = ['clear', 'partly_cloudy', 'cloudy', 'fog', 'drizzle', 'rain', 'snow', 'storm'];
 
@@ -8,6 +8,7 @@ const KNOWN_CONDITIONS = ['clear', 'partly_cloudy', 'cloudy', 'fog', 'drizzle', 
   standalone: true,
   templateUrl: './weather-icon.component.html',
   styleUrl: './weather-icon.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '[style.width.px]': 'size()',
     '[style.height.px]': 'size()',

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -59,6 +59,7 @@ const BONUS_NOTE_MAX = 200;
         SkeletonComponent,
     ],
     templateUrl: './approvals.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './approvals.component.scss'
 })
 export class ApprovalsComponent {

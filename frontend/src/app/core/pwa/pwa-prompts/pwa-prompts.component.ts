@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SwUpdate } from '@angular/service-worker';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -16,6 +16,7 @@ interface BeforeInstallPromptEvent extends Event {
     selector: 'app-pwa-prompts',
     imports: [TranslocoModule],
     templateUrl: './pwa-prompts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './pwa-prompts.component.scss'
 })
 export class PwaPromptsComponent {

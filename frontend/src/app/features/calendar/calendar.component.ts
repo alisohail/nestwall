@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal, DOCUMENT } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -83,6 +83,7 @@ export interface MonthCell extends GridDay {
     selector: 'app-calendar',
     imports: [TranslocoModule, AvatarComponent, IconComponent, DayDialogComponent, EventDetailComponent, EventDialogComponent],
     templateUrl: './calendar.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './calendar.component.scss'
 })
 export class CalendarComponent implements OnInit {

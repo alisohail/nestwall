@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, ViewChild, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -64,6 +64,7 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
     selector: 'app-bonus-templates-settings',
     imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './bonus-templates-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './bonus-templates-settings.component.scss'
 })
 export class BonusTemplatesSettingsComponent implements UnsavedChangesAware {

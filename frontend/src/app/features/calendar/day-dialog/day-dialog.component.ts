@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { clockIn } from '../calendar.dates';
@@ -10,6 +10,7 @@ import type { MonthPill } from '../calendar.component';
     selector: 'app-day-dialog',
     imports: [TranslocoModule, IconComponent],
     templateUrl: './day-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './day-dialog.component.scss'
 })
 export class DayDialogComponent {

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -26,6 +26,7 @@ type LoadState = 'loading' | 'ready' | 'missing' | 'error';
     selector: 'app-kid-bonus-detail',
     imports: [RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
     templateUrl: './kid-bonus-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './kid-bonus-detail.component.scss'
 })
 export class KidBonusDetailComponent {

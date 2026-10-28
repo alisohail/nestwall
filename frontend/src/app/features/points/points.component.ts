@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -66,6 +66,7 @@ const MAX_REASON = 200;
         SkeletonComponent,
     ],
     templateUrl: './points.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './points.component.scss'
 })
 export class PointsComponent implements OnInit {

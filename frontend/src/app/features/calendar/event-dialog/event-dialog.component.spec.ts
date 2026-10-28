@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -99,7 +99,7 @@ describe('EventDialogComponent', () => {
       providers: [
         { provide: CalendarService, useValue: calendar },
         { provide: FamilyService, useValue: family },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

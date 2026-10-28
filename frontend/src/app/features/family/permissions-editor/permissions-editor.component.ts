@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -61,6 +61,7 @@ function audienceAllows(audience: PermissionAudience, roleType: RoleType): boole
     selector: 'app-permissions-editor',
     imports: [ReactiveFormsModule, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './permissions-editor.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './permissions-editor.component.scss'
 })
 export class PermissionsEditorComponent implements OnInit, UnsavedChangesAware {

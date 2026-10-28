@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 import { getTranslocoTestingModule } from '../../../core/transloco/transloco-testing.module';
@@ -67,7 +67,7 @@ describe('PermissionsEditorComponent', () => {
       imports: [PermissionsEditorComponent, getTranslocoTestingModule()],
       providers: [
         { provide: FamilyService, useValue: familySpy },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

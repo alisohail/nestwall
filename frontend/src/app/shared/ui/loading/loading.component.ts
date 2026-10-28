@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ThemeService } from '../../../core/theme/theme.service';
 
@@ -13,6 +13,7 @@ export type LoadingVariant = 'full' | 'inline' | 'spinner';
     selector: 'app-loading',
     imports: [TranslocoModule],
     templateUrl: './loading.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './loading.component.scss'
 })
 export class LoadingComponent {

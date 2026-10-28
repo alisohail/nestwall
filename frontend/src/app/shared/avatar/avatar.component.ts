@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AvatarService } from './avatar.service';
 
@@ -11,6 +11,7 @@ export type AvatarDisplaySize = 'chip' | 'xs' | 'sm' | 'list' | 'nav' | 'md' | '
     imports: [TranslocoModule],
     templateUrl: './avatar.component.html',
     styleUrl: './avatar.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     host: { '[attr.title]': 'name()' }
 })
 export class AvatarComponent {

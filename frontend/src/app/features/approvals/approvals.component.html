@@ -156,7 +156,7 @@
                 </div>
                 @if (item.checklist?.length) {
                   <p class="checklist-progress small muted" data-testid="task-checklist-progress">
-                    {{ 'approvals.checklist.progress' | transloco: { done: checklistDone(item), total: item.checklist?.length } }}
+                    {{ 'approvals.checklist.progress' | transloco: { done: checklistDone(item), total: $safeNavigationMigration(item.checklist?.length) } }}
                   </p>
                   <ul class="checklist" data-testid="task-checklist">
                     @for (c of item.checklist; track c.id) {

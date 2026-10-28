@@ -1,4 +1,4 @@
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -42,7 +42,7 @@ describe('RemovePersonConfirmComponent', () => {
       imports: [RemovePersonConfirmComponent, getTranslocoTestingModule()],
       providers: [
         { provide: TasksService, useValue: tasks },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
       ],
     });

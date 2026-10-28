@@ -30,6 +30,8 @@ module.exports = tseslint.config(
           style: "kebab-case",
         },
       ],
+      // New in angular-eslint 22; switching 90 components to OnPush is a behaviour change, so it stays off.
+      "@angular-eslint/prefer-on-push-component-change-detection": "off",
     },
   },
   {

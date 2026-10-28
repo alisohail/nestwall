@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, OnChanges, OnInit, SimpleChanges, WritableSignal, computed, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnChanges, OnInit, SimpleChanges, WritableSignal, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -51,6 +51,7 @@ interface BandFilter {
     selector: 'app-agenda-band',
     imports: [TranslocoModule, NgTemplateOutlet, AvatarComponent, IconComponent, EventDetailComponent, SkeletonComponent],
     templateUrl: './agenda-band.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './agenda-band.component.scss'
 })
 export class AgendaBandComponent implements OnInit, OnChanges {

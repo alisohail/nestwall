@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -55,6 +55,7 @@ interface ViewTarget {
         TaskDetailComponent,
     ],
     templateUrl: './tasks.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './tasks.component.scss'
 })
 export class TasksComponent {

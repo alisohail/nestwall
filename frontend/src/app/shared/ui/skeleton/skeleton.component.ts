@@ -1,10 +1,11 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 /** Placeholder rows shown while a list loads. Each row is an avatar and two lines. */
 @Component({
   selector: 'app-skeleton',
   standalone: true,
   templateUrl: './skeleton.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './skeleton.component.scss',
 })
 export class SkeletonComponent {

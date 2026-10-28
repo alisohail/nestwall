@@ -1,4 +1,4 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { UnsavedChangesService } from '../../../core/unsaved/unsaved-changes';
 
@@ -6,6 +6,7 @@ import { UnsavedChangesService } from '../../../core/unsaved/unsaved-changes';
 @Component({
     selector: 'app-unsaved-changes-dialog',
     imports: [TranslocoModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './unsaved-changes-dialog.component.html'
 })
 export class UnsavedChangesDialogComponent {

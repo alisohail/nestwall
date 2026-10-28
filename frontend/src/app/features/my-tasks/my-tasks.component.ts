@@ -1,4 +1,4 @@
-import { Component, DestroyRef, WritableSignal, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, WritableSignal, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -58,6 +58,7 @@ export interface DayGroup {
         SkeletonComponent, TranslocoModule, BannerComponent, AllDoneComponent, TaskRowComponent, TodayTaskComponent, KidBonusListComponent, EmptyStateComponent
     ],
     templateUrl: './my-tasks.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './my-tasks.component.scss'
 })
 export class MyTasksComponent {

@@ -1,4 +1,4 @@
-import { Component, computed, input, model } from '@angular/core';
+import { Component, computed, input, model, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { BannerComponent } from '../../../../shared/ui/banner/banner.component';
 import { formatDay } from '../../tasks.format';
@@ -16,6 +16,7 @@ const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
     selector: 'app-repeat-builder',
     imports: [TranslocoModule, BannerComponent],
     templateUrl: './repeat-builder.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './repeat-builder.component.scss'
 })
 export class RepeatBuilderComponent {

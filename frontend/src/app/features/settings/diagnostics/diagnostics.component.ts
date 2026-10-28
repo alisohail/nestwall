@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ApiClient, ApiError } from '../../../core/api/api-client.service';
@@ -52,6 +52,7 @@ const BADGE_CLASS: Record<Tone, string> = { ok: 'ok', warn: 'amber', bad: 'err' 
     selector: 'app-diagnostics',
     imports: [TranslocoModule, DatePipe, BannerComponent, IconComponent, LoadErrorComponent, LoadingComponent],
     templateUrl: './diagnostics.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './diagnostics.component.scss'
 })
 export class DiagnosticsComponent {

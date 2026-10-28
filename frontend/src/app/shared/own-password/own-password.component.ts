@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AuthService } from '../../core/auth/auth.service';
@@ -24,6 +24,7 @@ function matchingPasswords(group: AbstractControl): ValidationErrors | null {
     selector: 'app-own-password',
     imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
     templateUrl: './own-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './own-password.component.scss'
 })
 export class OwnPasswordComponent {

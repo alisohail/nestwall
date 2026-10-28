@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -58,6 +58,7 @@ const NO_ITEMS: DashboardItem[] = [];
         WeatherTileComponent,
     ],
     templateUrl: './dashboard.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {

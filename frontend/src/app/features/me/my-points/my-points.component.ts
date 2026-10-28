@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { forkJoin } from 'rxjs';
@@ -28,6 +28,7 @@ function weekdayLabel(weekStart: string, index: number): string {
     selector: 'app-my-points',
     imports: [TranslocoModule, DatePipe, BannerComponent, IconComponent, SkeletonComponent],
     templateUrl: './my-points.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './my-points.component.scss'
 })
 export class MyPointsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, input, output, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
@@ -16,6 +16,7 @@ import { TasksService } from '../tasks.service';
     imports: [TranslocoModule, AvatarComponent],
     templateUrl: './remove-person-confirm.component.html',
     styleUrl: './remove-person-confirm.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     host: { '(document:keydown.escape)': 'cancelled.emit()' }
 })
 export class RemovePersonConfirmComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -48,6 +48,7 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
     selector: 'app-badges-settings',
     imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './badges-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './badges-settings.component.scss'
 })
 export class BadgesSettingsComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from './core/theme/theme.service';
 import { PwaPromptsComponent } from './core/pwa/pwa-prompts/pwa-prompts.component';
@@ -11,6 +11,7 @@ import { UnsavedChangesDialogComponent } from './shared/ui/unsaved-changes-dialo
     selector: 'app-root',
     imports: [RouterOutlet, PwaPromptsComponent, BusyOverlayComponent, SaveErrorBarComponent, UnsavedChangesDialogComponent],
     templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './app.component.scss'
 })
 export class AppComponent {

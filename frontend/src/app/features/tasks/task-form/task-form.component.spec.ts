@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
@@ -25,7 +25,7 @@ describe('TaskFormComponent points', () => {
       imports: [TaskFormComponent, getTranslocoTestingModule()],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: TasksService, useValue: tasks },
         { provide: FamilyService, useValue: { listMembers: () => of({ members: [] }) } as unknown as FamilyService },

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -46,6 +46,7 @@ function expiryParts(minutes: number | null): { value: number | null; unit: Expi
         RepeatBuilderComponent,
     ],
     templateUrl: './task-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-form.component.scss'
 })
 export class TaskFormComponent implements UnsavedChangesAware {

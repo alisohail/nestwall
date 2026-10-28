@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -51,6 +51,7 @@ const REFUSED_CODES = ['daily_limit_reached', 'below_minimum_balance', 'sharing_
         LoadingComponent,
     ],
     templateUrl: './share.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './share.component.scss'
 })
 export class ShareComponent {

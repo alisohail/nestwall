@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { APP_INITIALIZER, ErrorHandler, isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -18,7 +18,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideZoneChangeDetection(),provideRouter(routes),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     // Issue a GET first so the CSRF token header is captured before any POST (e.g. direct /login visit).
     {
       provide: APP_INITIALIZER,

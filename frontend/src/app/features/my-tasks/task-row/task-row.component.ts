@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { remaining } from '../../tasks/tasks.format';
@@ -13,6 +13,7 @@ import { TimeFormatService } from '../../../core/time-format/time-format.service
     selector: 'app-task-row',
     imports: [RouterLink, TranslocoModule],
     templateUrl: './task-row.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-row.component.scss'
 })
 export class TaskRowComponent {

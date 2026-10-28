@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BannerComponent } from './banner.component';
 
 @Component({
     imports: [BannerComponent],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `<app-banner [tone]="tone">Saved</app-banner>`
 })
 class HostComponent {

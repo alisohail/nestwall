@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 
 /** Outline icon paths copied from the mock (app script), 24 by 24 grid. */
 export const ICON_PATHS = {
@@ -60,6 +60,7 @@ export type IconName = keyof typeof ICON_PATHS;
       <path [attr.d]="path()" />
     </svg>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [':host { display: inline-flex; flex: none; } svg { display: block; }'],
 })
 export class IconComponent {

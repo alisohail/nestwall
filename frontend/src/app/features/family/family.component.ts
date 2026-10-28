@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, Injector, OnInit, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, Injector, OnInit, afterNextRender, computed, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -26,6 +26,7 @@ const EMAIL_MAX = 254;
     selector: 'app-family',
     imports: [ReactiveFormsModule, RouterLink, TranslocoModule, PermissionsEditorComponent, SessionsComponent, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
     templateUrl: './family.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './family.component.scss'
 })
 export class FamilyComponent implements OnInit, UnsavedChangesAware {

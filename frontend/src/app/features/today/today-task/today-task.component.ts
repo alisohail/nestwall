@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, input, output, signal, untracked, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -19,6 +19,7 @@ import { TasksService } from '../../tasks/tasks.service';
     selector: 'app-today-task',
     imports: [RouterLink, TranslocoModule, TaskConfirmComponent],
     templateUrl: './today-task.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './today-task.component.scss'
 })
 export class TodayTaskComponent {

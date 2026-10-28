@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnDestroy, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,7 @@ const REFRESH_MS = 30_000;
     selector: 'app-wall-devices-settings',
     imports: [DatePipe, FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './wall-devices-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './wall-devices-settings.component.scss'
 })
 export class WallDevicesSettingsComponent implements OnDestroy {

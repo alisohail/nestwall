@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -85,6 +85,7 @@ const FALLBACK_META: KindMeta = { icon: 'bell', tone: 'neutral' };
     imports: [TranslocoModule, RouterLink, DatePipe, IconComponent, SkeletonComponent],
     templateUrl: './notification-bell.component.html',
     styleUrl: './notification-bell.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     host: { class: 'notification-bell' }
 })
 export class NotificationBellComponent {

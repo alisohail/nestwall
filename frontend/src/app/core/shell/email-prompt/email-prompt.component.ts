@@ -1,4 +1,4 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AuthService } from '../../auth/auth.service';
@@ -9,6 +9,7 @@ import { IconComponent } from '../../../shared/ui/icon/icon.component';
     selector: 'app-email-prompt',
     imports: [TranslocoModule, IconComponent],
     templateUrl: './email-prompt.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './email-prompt.component.scss'
 })
 export class EmailPromptComponent {

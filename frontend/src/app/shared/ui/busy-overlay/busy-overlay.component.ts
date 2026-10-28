@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { LoadingComponent } from '../loading/loading.component';
 import { BusyService } from '../../../core/busy/busy.service';
@@ -8,6 +8,7 @@ import { BusyService } from '../../../core/busy/busy.service';
     selector: 'app-busy-overlay',
     imports: [TranslocoModule, LoadingComponent],
     templateUrl: './busy-overlay.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './busy-overlay.component.scss'
 })
 export class BusyOverlayComponent {

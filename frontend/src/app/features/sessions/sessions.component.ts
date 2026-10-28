@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -15,6 +15,7 @@ import { SessionView, SessionsService } from './sessions.service';
     selector: 'app-sessions',
     imports: [DatePipe, TranslocoModule, LoadingComponent, LoadErrorComponent],
     templateUrl: './sessions.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './sessions.component.scss'
 })
 export class SessionsComponent implements OnInit {

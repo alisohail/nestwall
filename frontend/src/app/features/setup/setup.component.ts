@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, DOCUMENT } from '@angular/core';
+import { Component, DestroyRef, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router } from '@angular/router';
 import {
@@ -34,6 +34,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
     selector: 'app-setup',
     imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
     templateUrl: './setup.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './setup.component.scss'
 })
 export class SetupComponent {
