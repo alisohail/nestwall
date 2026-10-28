@@ -12,6 +12,7 @@ import { SkeletonComponent } from '../../../shared/ui/skeleton/skeleton.componen
 import { FamilyService, MemberDetail } from '../../family/family.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { BonusClaimMode } from '../bonus.models';
+import { clockOptions } from '../../../core/time-format/clock-style';
 import { BonusService } from '../bonus.service';
 import { TasksService } from '../../tasks/tasks.service';
 import { BonusDefaults, TaskTemplate } from '../../tasks/tasks.models';
@@ -63,7 +64,7 @@ function zonedInstant(day: string, hhmm: string, timeZone: string): string {
 /** Time such as "4:00 pm" for an HH:mm value. */
 function clock(hhmm: string): string {
   const [h, m] = hhmm.split(':').map(Number);
-  return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date(2000, 0, 1, h, m));
+  return new Intl.DateTimeFormat(undefined, clockOptions({ hour: 'numeric', minute: '2-digit' })).format(new Date(2000, 0, 1, h, m));
 }
 
 /** Publishes a bonus task for one day, with an optional show-from time and end time. */

@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AuthService } from '../../core/auth/auth.service';
+import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { ApiError } from '../../core/api/api-client.service';
 import { AvatarComponent } from '../../shared/avatar/avatar.component';
 import { BannerComponent } from '../../shared/ui/banner/banner.component';
@@ -66,6 +67,7 @@ export class DashboardComponent {
   private destroyRef = inject(DestroyRef);
   private auth = inject(AuthService);
   private bonusApi = inject(BonusService);
+  private timeFormat = inject(TimeFormatService);
 
   /** Only parents with settings access can set up the weather location. Hint only; the server enforces it. */
   canSettings = computed(() => this.auth.can('settings.view'));
@@ -280,18 +282,18 @@ export class DashboardComponent {
 
   /** Clock time such as "5:00 pm" from an instant. */
   clock(iso: string): string {
-    return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date(iso));
+    return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ hour: 'numeric', minute: '2-digit' })).format(new Date(iso));
   }
 
   /** Day and time such as "Fri 9 Oct, 5:00 pm" from an instant. */
   when(iso: string): string {
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({
       weekday: 'short',
       day: 'numeric',
       month: 'short',
       hour: 'numeric',
       minute: '2-digit',
-    }).format(new Date(iso));
+    })).format(new Date(iso));
   }
 
   /** An open copy whose due time has passed. Matches the task list rule. */

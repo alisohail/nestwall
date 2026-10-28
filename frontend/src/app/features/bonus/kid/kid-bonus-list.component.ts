@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Observable } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
+import { clockOptions } from '../../../core/time-format/clock-style';
 import { BonusTask } from '../bonus.models';
 import { BonusService } from '../bonus.service';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
@@ -44,10 +45,10 @@ export function kidBonusUntilKey(task: BonusTask): string {
   return kidBonusEndsAtMidnight(task) ? 'kidBonus.untilEndOfDay' : 'kidBonus.until';
 }
 
-const untilTimeFormat = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+const untilTimeFormat = (): Intl.DateTimeFormat => new Intl.DateTimeFormat(undefined, clockOptions({ hour: 'numeric', minute: '2-digit' }));
 
 export function kidBonusUntilParams(task: BonusTask): Record<string, string> {
-  return { time: untilTimeFormat.format(new Date(task.ends_at)) };
+  return { time: untilTimeFormat().format(new Date(task.ends_at)) };
 }
 
 /** Translation key for a failed bonus action. */

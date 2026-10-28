@@ -1,8 +1,9 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { remaining } from '../../tasks/tasks.format';
 import { MyTaskItem } from '../my-tasks.models';
+import { TimeFormatService } from '../../../core/time-format/time-format.service';
 
 /**
  * One of the child's own copies as a tappable row. Opens the steps page.
@@ -17,6 +18,8 @@ import { MyTaskItem } from '../my-tasks.models';
 })
 export class TaskRowComponent {
   item = input.required<MyTaskItem>();
+
+  private timeFormat = inject(TimeFormatService);
 
   /** The tab the row is shown on. The steps page returns to it. */
   origin = input<string>('today');
@@ -35,7 +38,7 @@ export class TaskRowComponent {
 
   doneTime = computed(() => {
     const at = this.doneAt();
-    return at ? new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date(at)) : '';
+    return at ? new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ hour: 'numeric', minute: '2-digit' })).format(new Date(at)) : '';
   });
 
   doneDay = computed(() => {
@@ -59,7 +62,7 @@ export class TaskRowComponent {
   approvedWhen = computed(() => {
     const at = this.item().decided_at;
     if (this.item().status !== 'approved' || !at) return null;
-    return new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(at));
+    return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })).format(new Date(at));
   });
 
   colour = computed(() => this.item().category_colour ?? 'var(--nw-color-primary)');
@@ -71,5 +74,5 @@ export class TaskRowComponent {
   part = computed(() => this.item().part_of_day ?? 'anytime');
 
   /** Full date and time such as "25 Oct 2026, 5:00 pm" from the instant the copy is due. */
-  clock = computed(() => new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(this.item().due_at)));
+  clock = computed(() => new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })).format(new Date(this.item().due_at)));
 }

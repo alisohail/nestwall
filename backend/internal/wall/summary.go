@@ -82,6 +82,7 @@ type summaryBonus struct {
 
 type summaryResponse struct {
 	FamilyName string            `json:"family_name"`
+	TimeFormat string            `json:"time_format"`
 	Date       string            `json:"date"`
 	Timezone   string            `json:"timezone"`
 	Now        time.Time         `json:"now"`
@@ -147,13 +148,14 @@ func (h *Handlers) summary(ctx context.Context, dev Device, device *weather.Coor
 		wx = h.summaryWeather(ctx, dev.FamilyID, device)
 	}
 
-	var familyName string
-	if err := h.db.QueryRowContext(ctx, `SELECT name FROM families WHERE id = ?`, dev.FamilyID).Scan(&familyName); err != nil {
+	var familyName, timeFormat string
+	if err := h.db.QueryRowContext(ctx, `SELECT name, time_format FROM families WHERE id = ?`, dev.FamilyID).Scan(&familyName, &timeFormat); err != nil {
 		return summaryResponse{}, err
 	}
 
 	out := summaryResponse{
 		FamilyName: familyName,
+		TimeFormat: timeFormat,
 		Date:       today.Format(dateLayout),
 		Timezone:   zoneName,
 		Now:        now,

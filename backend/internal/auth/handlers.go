@@ -57,6 +57,7 @@ type FamilyMembership struct {
 	FamilyID   string  `json:"family_id"`
 	FamilyName string  `json:"family_name"`
 	Timezone   string  `json:"timezone"`
+	TimeFormat string  `json:"time_format"`
 	RoleID     string  `json:"role_id"`
 	RoleName   string  `json:"role_name"`
 	IsParent   bool    `json:"is_parent"`

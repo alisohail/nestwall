@@ -70,7 +70,7 @@ describe('NotificationBellComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [NotificationBellComponent, getTranslocoTestingModule()],
-      providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false } }],
+      providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false, currentUser: () => null } }],
     });
     fixture = TestBed.createComponent(NotificationBellComponent);
     fixture.detectChanges();
@@ -180,7 +180,7 @@ describe('NotificationBellComponent', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         imports: [NotificationBellComponent, getTranslocoTestingModule()],
-        providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false } }],
+        providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false, currentUser: () => null } }],
       });
       const f = TestBed.createComponent(NotificationBellComponent);
       f.detectChanges();
@@ -193,7 +193,7 @@ describe('NotificationBellComponent', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         imports: [NotificationBellComponent, getTranslocoTestingModule()],
-        providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false } }],
+        providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false, currentUser: () => null } }],
       });
       const f = TestBed.createComponent(NotificationBellComponent);
       f.detectChanges();
@@ -216,7 +216,7 @@ describe('NotificationBellComponent', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         imports: [NotificationBellComponent, getTranslocoTestingModule()],
-        providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false } }],
+        providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => false, currentUser: () => null } }],
       });
       const f = TestBed.createComponent(NotificationBellComponent);
       f.detectChanges();

@@ -1,5 +1,7 @@
 /** Date, time and greeting helpers for the wall display. The family timezone comes from the summary. */
 
+import { clockOptions } from '../../../core/time-format/clock-style';
+
 export type GreetingPeriod = 'morning' | 'afternoon' | 'evening';
 
 /** Uses the family timezone when it is valid; otherwise the browser's local zone. */
@@ -57,7 +59,7 @@ export function isNightTime(instant: Date, timeZone?: string): boolean {
 
 /** Clock time such as "8:00 AM" in the given zone and locale. */
 export function formatClock(instant: Date | string, timeZone: string | undefined, locale: string): string {
-  return new Intl.DateTimeFormat(locale, { timeZone, hour: 'numeric', minute: '2-digit' }).format(
+  return new Intl.DateTimeFormat(locale, clockOptions({ timeZone, hour: 'numeric', minute: '2-digit' })).format(
     new Date(instant),
   );
 }

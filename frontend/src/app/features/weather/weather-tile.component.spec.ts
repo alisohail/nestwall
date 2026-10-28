@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
+import { AuthService } from '../../core/auth/auth.service';
 import { WeatherTileComponent, dayPartFor } from './weather-tile.component';
 import { WeatherForecast, WeatherResponse } from './weather.models';
 import { WeatherService } from './weather.service';
@@ -92,7 +93,7 @@ describe('WeatherTileComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [WeatherTileComponent, getTranslocoTestingModule()],
-      providers: [provideRouter([]), { provide: WeatherService, useValue: weather }],
+      providers: [provideRouter([]), { provide: WeatherService, useValue: weather }, { provide: AuthService, useValue: { currentUser: () => null } }],
     }).compileComponents();
   });
 

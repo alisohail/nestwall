@@ -8,6 +8,7 @@ import { LoadErrorComponent } from '../../shared/ui/load-error/load-error.compon
 import { Observable, switchMap } from 'rxjs';
 import { ApiError } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { SessionView, SessionsService } from './sessions.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class SessionsComponent implements OnInit {
 
   private sessions = inject(SessionsService);
   private auth = inject(AuthService);
+  timeFormat = inject(TimeFormatService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 

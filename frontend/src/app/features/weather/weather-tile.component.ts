@@ -16,6 +16,7 @@ import {
   WeatherResponse,
 } from './weather.models';
 import { WeatherService } from './weather.service';
+import { TimeFormatService } from '../../core/time-format/time-format.service';
 
 export type WeatherTileVariant = 'full' | 'compact';
 type TileState = 'loading' | 'ready' | 'unconfigured' | 'error';
@@ -81,6 +82,7 @@ function sceneFor(condition: WeatherCondition | undefined): WeatherScene {
 export class WeatherTileComponent implements OnInit {
   private weather = inject(WeatherService);
   private destroyRef = inject(DestroyRef);
+  private timeFormat = inject(TimeFormatService);
 
   readonly variant = input<WeatherTileVariant>('full');
   readonly canConfigure = input(false);
@@ -177,6 +179,6 @@ export class WeatherTileComponent implements OnInit {
 
   /** Hour of day in the viewer's locale, such as "3 PM" in English. */
   hourLabel(iso: string): string {
-    return new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).format(new Date(iso));
+    return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ hour: 'numeric' })).format(new Date(iso));
   }
 }

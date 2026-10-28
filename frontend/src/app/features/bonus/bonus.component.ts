@@ -12,6 +12,7 @@ import { ErrorStateComponent } from '../../shared/ui/error-state/error-state.com
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { FamilyService, MemberDetail } from '../family/family.service';
 import { BonusClaim, BonusScope, BonusTask, BonusTaskEditRequest } from './bonus.models';
+import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { BonusService } from './bonus.service';
 
 type LoadState = 'loading' | 'ready' | 'error';
@@ -78,6 +79,7 @@ export class BonusComponent {
   private api = inject(BonusService);
   private familyApi = inject(FamilyService);
   private destroyRef = inject(DestroyRef);
+  private timeFormat = inject(TimeFormatService);
 
   readonly maxNote = NOTE_MAX;
   readonly titleMax = TITLE_MAX;
@@ -358,7 +360,7 @@ export class BonusComponent {
 
   /** Time such as "4:02 pm" in the browser's locale. */
   time(iso: string): string {
-    return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date(iso));
+    return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ hour: 'numeric', minute: '2-digit' })).format(new Date(iso));
   }
 
   /** Day such as "Sun 11 Oct". The day is a family-local YYYY-MM-DD, so it is formatted in UTC. */

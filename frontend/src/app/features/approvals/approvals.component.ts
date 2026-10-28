@@ -12,6 +12,7 @@ import { IconComponent } from '../../shared/ui/icon/icon.component';
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
 import { BonusClaim, BonusTask } from '../bonus/bonus.models';
+import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { BonusService } from '../bonus/bonus.service';
 import { FamilyService, MemberDetail } from '../family/family.service';
 import { RedemptionListItem } from '../rewards/rewards.models';
@@ -67,6 +68,7 @@ export class ApprovalsComponent {
   private rewardsApi = inject(RewardsService);
   private familyApi = inject(FamilyService);
   private destroyRef = inject(DestroyRef);
+  private timeFormat = inject(TimeFormatService);
 
   readonly maxNote = NOTE_MAX;
   readonly maxReason = REASON_MAX;
@@ -545,13 +547,13 @@ export class ApprovalsComponent {
 
   /** Short date and time such as "Fri 9 Oct, 5:00 pm" from an instant. */
   when(iso: string): string {
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({
       weekday: 'short',
       day: 'numeric',
       month: 'short',
       hour: 'numeric',
       minute: '2-digit',
-    }).format(new Date(iso));
+    })).format(new Date(iso));
   }
 
   private clearMessages(): void {

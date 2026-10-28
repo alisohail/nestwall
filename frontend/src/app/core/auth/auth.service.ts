@@ -22,6 +22,8 @@ export interface FamilyMembership {
   family_name: string;
   /** The family's IANA time zone. Optional so older fixtures still type-check. */
   timezone?: string;
+  /** Family clock style. Optional so older fixtures still type-check; absent means 12h. */
+  time_format?: '12h' | '24h';
   role_id: string;
   role_name: string;
   status: string;
@@ -169,6 +171,12 @@ export class AuthService {
   setFamilyName(familyName: string): void {
     this.currentUser.update((me) =>
       me && me.family ? { ...me, family: { ...me.family, family_name: familyName } } : me
+    );
+  }
+
+  setTimeFormat(timeFormat: '12h' | '24h'): void {
+    this.currentUser.update((me) =>
+      me && me.family ? { ...me, family: { ...me.family, time_format: timeFormat } } : me
     );
   }
 

@@ -95,6 +95,7 @@ describe('DiagnosticsComponent', () => {
           useValue: {
             can: (perm: string) => grants.includes(perm),
             loadPermissions: (): Observable<void> => of(undefined),
+            currentUser: () => null,
           },
         },
       ],
