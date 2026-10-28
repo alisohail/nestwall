@@ -6,6 +6,7 @@ import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { CalendarService } from '../calendar.service';
 import { CalendarItem } from '../calendar.models';
 import { clockIn, countdown, shortDay } from '../calendar.dates';
+import { DisplayZoneService } from '../../../core/timezone/display-zone.service';
 import type { MonthPill } from '../calendar.component';
 import { EventDetailComponent } from '../event-detail/event-detail.component';
 import { FamilyService, MemberDetail } from '../../family/family.service';
@@ -55,6 +56,7 @@ interface BandFilter {
 })
 export class AgendaBandComponent implements OnInit, OnChanges {
   private calendar = inject(CalendarService);
+  private displayZone = inject(DisplayZoneService);
   private family = inject(FamilyService);
   private destroyRef = inject(DestroyRef);
 
@@ -198,7 +200,7 @@ export class AgendaBandComponent implements OnInit, OnChanges {
     const members = this.membersFor(item);
     return {
       item,
-      time: item.all_day ? '' : clockIn(item.starts_at, this.zone()),
+      time: item.all_day ? '' : clockIn(item.starts_at, this.displayZone.clockZone(this.zone())),
       colour: this.colourFor(item),
       people: members.map((m) => m.display_name).join(', '),
       members,

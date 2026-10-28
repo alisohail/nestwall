@@ -55,6 +55,7 @@ describe('GeneralSettingsComponent', () => {
   }
 
   beforeEach(async () => {
+    localStorage.removeItem('nestwall.displayZone');
     weather = jasmine.createSpyObj<WeatherService>('WeatherService', ['settings', 'saveSettings']);
     weather.settings.and.returnValue(of(saved));
     weather.saveSettings.and.callFake((input: WeatherSettings) => of(input));
@@ -104,6 +105,21 @@ describe('GeneralSettingsComponent', () => {
 
     expect(family.updateTimezone).toHaveBeenCalledWith('Asia/Tokyo');
     expect(auth.setTimezone).toHaveBeenCalledWith('Asia/Tokyo');
+  });
+
+  it('switches clock times to this device and remembers the choice', () => {
+    build();
+
+    const select = el<HTMLSelectElement>('[data-testid="clock-zone-select"]');
+    if (!select) throw new Error('missing clock zone select');
+    expect(select.value).toBe('family');
+
+    select.value = 'device';
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(localStorage.getItem('nestwall.displayZone')).toBe('device');
+    expect(family.updateTimezone).not.toHaveBeenCalled();
   });
 
   it('shows the load error screen and retry reloads the weather settings', () => {

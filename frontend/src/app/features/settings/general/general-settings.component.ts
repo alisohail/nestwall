@@ -6,6 +6,7 @@ import { finalize } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { FAMILY_TIMEZONES } from '../../../core/timezones';
+import { DisplayZoneService } from '../../../core/timezone/display-zone.service';
 import { FamilyService } from '../../family/family.service';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
@@ -70,6 +71,12 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
   });
   timezoneSaving = signal(false);
   timezoneError = signal<string | null>(null);
+  readonly displayZone = inject(DisplayZoneService);
+
+  /** Per-device choice for clock times. Stored in this browser only. */
+  setDisplayZone(value: string): void {
+    this.displayZone.set(value === 'device' ? 'device' : 'family');
+  }
 
   loadState = signal<'loading' | 'ready' | 'error'>('loading');
   loadError = signal<string | null>(null);

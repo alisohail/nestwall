@@ -82,6 +82,24 @@
   @if (timezoneError(); as key) {
     <app-banner tone="error">{{ key | transloco }}</app-banner>
   }
+  <div class="setting">
+    <div class="grow">
+      <label class="t" for="general-clock-zone">{{ 'settings.general.clock_zone_title' | transloco }}</label>
+      <p class="hint">{{ 'settings.general.clock_zone_hint' | transloco }}</p>
+    </div>
+    <select
+      id="general-clock-zone"
+      data-testid="clock-zone-select"
+      (change)="setDisplayZone($any($event.target).value)"
+    >
+      <option value="family" [selected]="displayZone.preference() === 'family'">
+        {{ 'settings.general.clock_zone_family' | transloco: { zone: timezone() } }}
+      </option>
+      <option value="device" [selected]="displayZone.preference() === 'device'">
+        {{ 'settings.general.clock_zone_device' | transloco: { zone: displayZone.deviceZone } }}
+      </option>
+    </select>
+  </div>
 </section>
 
 <section class="card col" aria-labelledby="general-weather-title">
