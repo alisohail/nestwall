@@ -131,6 +131,10 @@ export class FamilyService {
     return this.api.post<void>('/api/v1/family/members', req);
   }
 
+  updateTimezone(timezone: string): Observable<{ timezone: string }> {
+    return this.api.put<{ timezone: string }>('/api/v1/family/timezone', { timezone });
+  }
+
   updateTimeFormat(timeFormat: '12h' | '24h'): Observable<{ time_format: '12h' | '24h' }> {
     return this.api.put<{ time_format: '12h' | '24h' }>('/api/v1/family/time-format', { time_format: timeFormat });
   }

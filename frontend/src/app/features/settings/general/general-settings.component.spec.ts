@@ -30,7 +30,7 @@ describe('GeneralSettingsComponent', () => {
   let fixture: ComponentFixture<GeneralSettingsComponent>;
   let weather: jasmine.SpyObj<WeatherService>;
   let family: jasmine.SpyObj<FamilyService>;
-  let auth: { currentUser: WritableSignal<{ family: { family_name: string } }>; loadPermissions: () => Observable<undefined>; can: () => boolean; setFamilyName: jasmine.Spy };
+  let auth: { currentUser: WritableSignal<{ family: { family_name: string; timezone?: string } }>; loadPermissions: () => Observable<undefined>; can: () => boolean; setFamilyName: jasmine.Spy; setTimezone: jasmine.Spy };
 
   function build(): void {
     fixture = TestBed.createComponent(GeneralSettingsComponent);
@@ -59,13 +59,15 @@ describe('GeneralSettingsComponent', () => {
     weather.settings.and.returnValue(of(saved));
     weather.saveSettings.and.callFake((input: WeatherSettings) => of(input));
     auth = {
-      currentUser: signal({ family: { family_name: 'Rivera' } }),
+      currentUser: signal({ family: { family_name: 'Rivera', timezone: 'Europe/London' } }),
       loadPermissions: () => of(undefined),
       can: () => true,
       setFamilyName: jasmine.createSpy('setFamilyName'),
+      setTimezone: jasmine.createSpy('setTimezone'),
     };
-    family = jasmine.createSpyObj<FamilyService>('FamilyService', ['updateFamilyName']);
+    family = jasmine.createSpyObj<FamilyService>('FamilyService', ['updateFamilyName', 'updateTimezone']);
     family.updateFamilyName.and.returnValue(of({ family_name: 'Chen family' }));
+    family.updateTimezone.and.callFake((timezone: string) => of({ timezone }));
 
     await TestBed.configureTestingModule({
       imports: [GeneralSettingsComponent, getTranslocoTestingModule()],
@@ -87,6 +89,21 @@ describe('GeneralSettingsComponent', () => {
 
     expect(family.updateFamilyName).toHaveBeenCalledWith('Chen family');
     expect(auth.setFamilyName).toHaveBeenCalledWith('Chen family');
+  });
+
+  it('saves a new family timezone and updates the session', () => {
+    build();
+
+    const select = el<HTMLSelectElement>('[data-testid="timezone-select"]');
+    if (!select) throw new Error('missing timezone select');
+    expect(select.value).toBe('Europe/London');
+
+    select.value = 'Asia/Tokyo';
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(family.updateTimezone).toHaveBeenCalledWith('Asia/Tokyo');
+    expect(auth.setTimezone).toHaveBeenCalledWith('Asia/Tokyo');
   });
 
   it('shows the load error screen and retry reloads the weather settings', () => {

@@ -5,6 +5,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { finalize } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { FAMILY_TIMEZONES } from '../../../core/timezones';
 import { FamilyService } from '../../family/family.service';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
@@ -60,6 +61,16 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
   timeSaving = signal(false);
   timeError = signal<string | null>(null);
 
+  /** Family timezone, used for dates, due times, weather and the wall clock. Saves on change. */
+  timezone = computed(() => this.auth.currentUser()?.family?.timezone ?? 'UTC');
+  /** Keeps the saved zone selectable even when it is not in the shared list. */
+  timezoneOptions = computed(() => {
+    const zone = this.timezone();
+    return FAMILY_TIMEZONES.includes(zone) ? FAMILY_TIMEZONES : [zone, ...FAMILY_TIMEZONES];
+  });
+  timezoneSaving = signal(false);
+  timezoneError = signal<string | null>(null);
+
   loadState = signal<'loading' | 'ready' | 'error'>('loading');
   loadError = signal<string | null>(null);
   loadApiError = signal<ApiError | null>(null);
@@ -104,6 +115,26 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
         error: () => {
           this.timeSaving.set(false);
           this.timeError.set('settings.general.time_error');
+        },
+      });
+  }
+
+  /** Sets the family timezone. Saves on change. */
+  setTimezone(zone: string): void {
+    if (this.timezoneSaving() || zone === this.timezone()) return;
+    this.timezoneSaving.set(true);
+    this.timezoneError.set(null);
+    this.family
+      .updateTimezone(zone)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.auth.setTimezone(res.timezone);
+          this.timezoneSaving.set(false);
+        },
+        error: () => {
+          this.timezoneSaving.set(false);
+          this.timezoneError.set('settings.general.timezone_error');
         },
       });
   }

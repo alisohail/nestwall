@@ -180,6 +180,12 @@ export class AuthService {
     );
   }
 
+  setTimezone(timezone: string): void {
+    this.currentUser.update((me) =>
+      me && me.family ? { ...me, family: { ...me.family, timezone } } : me
+    );
+  }
+
   /**
    * PUT /api/v1/me/profile. Any signed-in member can edit their own details.
    * The server requires an email for parents. Reloads the session so the shell shows the new name.

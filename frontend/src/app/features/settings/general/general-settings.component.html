@@ -63,6 +63,25 @@
   @if (timeError(); as key) {
     <app-banner tone="error">{{ key | transloco }}</app-banner>
   }
+  <div class="setting">
+    <div class="grow">
+      <label class="t" for="general-timezone">{{ 'settings.general.timezone_title' | transloco }}</label>
+      <p class="hint">{{ 'settings.general.timezone_hint' | transloco }}</p>
+    </div>
+    <select
+      id="general-timezone"
+      data-testid="timezone-select"
+      [disabled]="!canManageTime() || timezoneSaving()"
+      (change)="setTimezone($any($event.target).value)"
+    >
+      @for (zone of timezoneOptions(); track zone) {
+        <option [value]="zone" [selected]="zone === timezone()">{{ zone }}</option>
+      }
+    </select>
+  </div>
+  @if (timezoneError(); as key) {
+    <app-banner tone="error">{{ key | transloco }}</app-banner>
+  }
 </section>
 
 <section class="card col" aria-labelledby="general-weather-title">
