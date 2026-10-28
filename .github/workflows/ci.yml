@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - name: Install
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - name: Install
@@ -72,15 +72,18 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - name: Install
         working-directory: frontend
         run: npm ci
+      - name: Install Playwright browser
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
       - name: Unit tests
         working-directory: frontend
-        run: npx ng test --watch=false --browsers=ChromeHeadless
+        run: npx ng test --watch=false
 
   e2e:
     name: End-to-end tests
@@ -93,7 +96,7 @@ jobs:
           go-version-file: backend/go.mod
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - name: Install
@@ -134,13 +137,13 @@ jobs:
           "$(go env GOPATH)/bin/govulncheck" ./...
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - name: Install
         working-directory: frontend
         run: npm ci
-      # Non-blocking until the Angular 18 advisories are fixed by the planned major upgrade.
+      # Non-blocking until the remaining advisories in the Angular toolchain are resolved.
       - name: npm audit (report only)
         working-directory: frontend
         continue-on-error: true
