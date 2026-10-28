@@ -16,10 +16,10 @@
             <app-weather-icon [condition]="w.condition" [size]="52" />
             <div>
               <div class="lab">{{ 'wall.display.weather_today' | transloco }}</div>
-              <div class="deg">{{ w.temp }}&deg;<small>{{ 'wall.display.feels' | transloco: { temp: w.feels } }}</small></div>
+              <div class="deg">{{ w.temp }}{{ w.unit }}<small>{{ 'wall.display.feels' | transloco: { temp: w.feels, unit: w.unit } }}</small></div>
               <div class="meta">
-                {{ w.label }} &middot; {{ 'wall.display.high' | transloco: { temp: w.high } }} {{ 'wall.display.low' | transloco: { temp: w.low } }}
-                @if (w.precip !== null) { &middot; <b>{{ w.precip }}%</b> }
+                {{ w.label }} &middot; {{ 'wall.display.high' | transloco: { temp: w.high, unit: w.unit } }} {{ 'wall.display.low' | transloco: { temp: w.low, unit: w.unit } }}
+                @if (w.precip !== null) { &middot; <b>{{ 'weather.precip' | transloco: { percent: w.precip } }}</b> }
               </div>
             </div>
           </div>
@@ -29,10 +29,10 @@
             <app-weather-icon [condition]="t.condition" [size]="52" />
             <div>
               <div class="lab">{{ 'wall.display.weather_tomorrow' | transloco }}</div>
-              <div class="deg">{{ t.high }}&deg;<small>{{ 'wall.display.low' | transloco: { temp: t.low } }}</small></div>
+              <div class="deg">{{ t.high }}{{ t.unit }}</div>
               <div class="meta">
-                {{ t.label }}
-                @if (t.precip !== null) { &middot; <b>{{ t.precip }}%</b> }
+                {{ t.label }} &middot; {{ 'wall.display.high' | transloco: { temp: t.high, unit: t.unit } }} {{ 'wall.display.low' | transloco: { temp: t.low, unit: t.unit } }}
+                @if (t.precip !== null) { &middot; <b>{{ 'weather.precip' | transloco: { percent: t.precip } }}</b> }
               </div>
             </div>
           </div>
