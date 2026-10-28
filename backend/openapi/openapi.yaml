@@ -3122,6 +3122,45 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+  /api/v1/family/time-format:
+    put:
+      tags: [Family]
+      summary: Set the family's clock style
+      description: Requires the `settings.manage` permission. Sets the 12-hour (AM/PM) or 24-hour clock for every member. Writes an audit entry.
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/CSRFHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [time_format]
+              properties:
+                time_format:
+                  type: string
+                  enum: ['12h', '24h']
+      responses:
+        '200':
+          description: Saved clock style
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [time_format]
+                properties:
+                  time_format:
+                    type: string
+                    enum: ['12h', '24h']
+        '400':
+          description: Value is not `12h` or `24h` (error code `invalid_time_format`)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
   /api/v1/family/roles:
     get:
       tags: [Permissions]
@@ -5948,7 +5987,10 @@ components:
         timezone:
           type: string
           description: The family's IANA time zone, such as `Europe/London`. Dates such as "today" use it.
-        role_id:
+        time_format:
+          type: string
+          enum: ['12h', '24h']
+          description: The family's clock style. `12h` shows AM/PM and `24h` shows 24-hour times. Defaults to `12h`.
           type: string
           format: uuid
         role_name:

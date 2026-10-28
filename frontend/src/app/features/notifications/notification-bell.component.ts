@@ -6,6 +6,7 @@ import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { interval } from 'rxjs';
 import { ApiClient } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { IconComponent, IconName } from '../../shared/ui/icon/icon.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
 
@@ -93,6 +94,7 @@ export class NotificationBellComponent {
   private destroyRef = inject(DestroyRef);
   private transloco = inject(TranslocoService);
   private auth = inject(AuthService);
+  timeFormat = inject(TimeFormatService);
 
   /** Only users who can view family settings get the link to the notification settings page. */
   canSettings(): boolean {

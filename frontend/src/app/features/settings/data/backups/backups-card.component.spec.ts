@@ -59,7 +59,7 @@ describe('BackupsCardComponent', () => {
       imports: [BackupsCardComponent, getTranslocoTestingModule()],
       providers: [
         { provide: BackupsService, useValue: api },
-        { provide: AuthService, useValue: { can: (perm: string) => grants.includes(perm) } },
+        { provide: AuthService, useValue: { can: (perm: string) => grants.includes(perm), currentUser: () => null } },
       ],
     });
     fixture = TestBed.createComponent(BackupsCardComponent);

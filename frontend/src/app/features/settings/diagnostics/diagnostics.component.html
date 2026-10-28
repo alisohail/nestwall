@@ -61,7 +61,7 @@
             @if (d.last_backup; as b) {
               {{ b.kind }}, {{ b.status }}
               @if (b.finished_at) {
-                · {{ b.finished_at | date: 'medium' }}
+                · {{ b.finished_at | date: timeFormat.pipeDateTime() }}
               }
             } @else {
               {{ 'settings.diagnostics.never' | transloco }}
@@ -72,7 +72,7 @@
           <span class="l">{{ 'settings.diagnostics.backups.last_success' | transloco }}</span>
           <span class="v" data-testid="diagnostics-last-success">
             @if (d.last_successful_backup_at; as at) {
-              {{ at | date: 'medium' }}
+              {{ at | date: timeFormat.pipeDateTime() }}
             } @else {
               {{ 'settings.diagnostics.never' | transloco }}
             }
@@ -105,7 +105,7 @@
           <span class="l">{{ 'settings.diagnostics.sync.last_synced' | transloco }}</span>
           <span class="v" data-testid="diagnostics-last-synced">
             @if (d.sync.last_synced_at; as at) {
-              {{ at | date: 'medium' }}
+              {{ at | date: timeFormat.pipeDateTime() }}
             } @else {
               {{ 'settings.diagnostics.never' | transloco }}
             }
@@ -148,7 +148,7 @@
           <span class="l">{{ 'settings.diagnostics.wall.last_seen' | transloco }}</span>
           <span class="v" data-testid="diagnostics-wall-last-seen">
             @if (d.wall_devices.last_seen_at; as at) {
-              {{ at | date: 'medium' }}
+              {{ at | date: timeFormat.pipeDateTime() }}
             } @else {
               {{ 'settings.diagnostics.never' | transloco }}
             }
@@ -175,7 +175,7 @@
           <span class="l">{{ 'settings.diagnostics.errors.last' | transloco }}</span>
           <span class="v" data-testid="diagnostics-errors-last">
             @if (d.server_errors.last_at; as at) {
-              {{ at | date: 'medium' }}
+              {{ at | date: timeFormat.pipeDateTime() }}
             } @else {
               {{ 'settings.diagnostics.none' | transloco }}
             }
@@ -212,7 +212,7 @@
         <ul class="events mt-s" data-testid="diagnostics-events-list">
           @for (e of events(); track e.id) {
             <li class="event">
-              <span class="when">{{ e.created_at | date: 'medium' }}</span>
+              <span class="when">{{ e.created_at | date: timeFormat.pipeDateTime() }}</span>
               <span class="what">
                 <strong>{{ 'settings.diagnostics.events.kinds.' + e.kind | transloco }}</strong>
                 —

@@ -62,6 +62,7 @@ describe('SessionsComponent', () => {
 
     auth = jasmine.createSpyObj<AuthService>('AuthService', ['logout']);
     auth.logout.and.returnValue(of(undefined));
+    (auth as unknown as { currentUser: () => null }).currentUser = () => null;
 
     await TestBed.configureTestingModule({
       imports: [SessionsComponent, getTranslocoTestingModule()],

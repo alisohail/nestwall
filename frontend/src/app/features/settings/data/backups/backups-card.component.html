@@ -42,7 +42,7 @@
           <div class="stat">
             <span class="l">{{ 'settings.data.backups.last' | transloco }}</span>
             @if (s.last_good; as last) {
-              <span class="v" data-testid="backups-last">{{ last.started_at | date: 'EEE d MMM, h:mm a' }}</span>
+              <span class="v" data-testid="backups-last">{{ last.started_at | date: timeFormat.pipeDayTime() }}</span>
               <span class="small muted">{{ sizeLabel(last.size_bytes) }}</span>
             } @else {
               <span class="v">{{ 'settings.data.backups.none_yet' | transloco }}</span>
@@ -50,7 +50,7 @@
           </div>
           <div class="stat">
             <span class="l">{{ 'settings.data.backups.next' | transloco }}</span>
-            <span class="v" data-testid="backups-next">{{ s.next_run_at | date: 'EEE d MMM, h:mm a' }}</span>
+            <span class="v" data-testid="backups-next">{{ s.next_run_at | date: timeFormat.pipeDayTime() }}</span>
             <span class="small muted">{{ 'settings.data.backups.daily' | transloco }}</span>
           </div>
           <div class="stat">
@@ -76,7 +76,7 @@
             [disabled]="scheduleBusy()"
           >
             @for (h of hours; track h) {
-              <option [ngValue]="h">{{ scheduleTime(h) | date: 'h:mm a' }}</option>
+              <option [ngValue]="h">{{ scheduleTime(h) | date: timeFormat.pipeTime() }}</option>
             }
           </select>
         </div>
@@ -204,7 +204,7 @@
             <tbody>
               @for (run of s.history; track run.id) {
                 <tr [attr.data-testid]="'backup-row-' + run.id">
-                  <td>{{ run.started_at | date: 'EEE d MMM, h:mm a' }}</td>
+                  <td>{{ run.started_at | date: timeFormat.pipeDayTime() }}</td>
                   <td>
                     <span class="badge">
                       {{ kindKey(run.kind) | transloco }}
@@ -312,7 +312,7 @@
             } @else {
               @if (restoreTarget(); as target) {
                 <p class="muted" data-testid="backups-restore-message">
-                  {{ 'settings.data.backups.restore_desc' | transloco: { when: (target.started_at | date: 'EEE d MMM, h:mm a') } }}
+                  {{ 'settings.data.backups.restore_desc' | transloco: { when: (target.started_at | date: timeFormat.pipeDayTime()) } }}
                 </p>
               }
             }

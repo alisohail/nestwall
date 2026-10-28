@@ -66,6 +66,7 @@ export interface WallSummary {
   timezone: string;
   now: string;
   options: WallSummaryOptions;
+  time_format?: '12h' | '24h';
   children: WallSummaryChild[];
   events: WallSummaryEvent[];
   bonus_tasks: WallSummaryBonus[];

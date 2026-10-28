@@ -6,6 +6,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { catchError, filter, finalize, of, switchMap, take, timer } from 'rxjs';
 import { ApiError } from '../../../../core/api/api-client.service';
 import { AuthService } from '../../../../core/auth/auth.service';
+import { TimeFormatService } from '../../../../core/time-format/time-format.service';
 import { BannerComponent } from '../../../../shared/ui/banner/banner.component';
 import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { LoadingComponent } from '../../../../shared/ui/loading/loading.component';
@@ -67,6 +68,7 @@ function resetErrorKey(err: ApiError): string {
 export class BackupsCardComponent implements OnInit {
   private api = inject(BackupsService);
   private auth = inject(AuthService);
+  timeFormat = inject(TimeFormatService);
   private destroyRef = inject(DestroyRef);
   private document = inject(DOCUMENT);
 

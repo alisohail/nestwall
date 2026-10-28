@@ -54,6 +54,12 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
   familyError = signal<string | null>(null);
   familyDraft = '';
 
+  /** Clock style for the whole family. Saves on click, separate from the weather form. */
+  timeFormat = computed<'12h' | '24h'>(() => (this.auth.currentUser()?.family?.time_format === '24h' ? '24h' : '12h'));
+  canManageTime = signal(false);
+  timeSaving = signal(false);
+  timeError = signal<string | null>(null);
+
   loadState = signal<'loading' | 'ready' | 'error'>('loading');
   loadError = signal<string | null>(null);
   loadApiError = signal<ApiError | null>(null);
@@ -76,9 +82,30 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.canManageFamily.set(this.auth.can('family.manage'));
+        this.canManageTime.set(this.auth.can('settings.manage'));
         this.familyDraft = this.familyName();
       });
     this.load();
+  }
+
+  /** Sets the family clock style, 12h or 24h, for every page. Saves immediately. */
+  setTimeFormat(format: '12h' | '24h'): void {
+    if (this.timeSaving() || format === this.timeFormat()) return;
+    this.timeSaving.set(true);
+    this.timeError.set(null);
+    this.family
+      .updateTimeFormat(format)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.auth.setTimeFormat(res.time_format);
+          this.timeSaving.set(false);
+        },
+        error: () => {
+          this.timeSaving.set(false);
+          this.timeError.set('settings.general.time_error');
+        },
+      });
   }
 
   /** Renames the family. Only the parent holds family.manage, the same permission the server checks. */

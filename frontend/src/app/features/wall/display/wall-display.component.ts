@@ -10,6 +10,7 @@ import {
 import { Router } from "@angular/router";
 import { TranslocoModule, TranslocoService } from "@ngneat/transloco";
 import { ApiError } from "../../../core/api/api-client.service";
+import { clockOptions, setTwelveHour } from "../../../core/time-format/clock-style";
 import { LoadingComponent } from "../../../shared/ui/loading/loading.component";
 import { WeatherIconComponent } from "../../weather/weather-icon.component";
 import { currentDeviceLocation } from "../../weather/device-location";
@@ -168,11 +169,11 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
   readonly locale = computed(() => this.transloco.getActiveLang());
 
   readonly clock = computed(() => {
-    const parts = new Intl.DateTimeFormat(this.locale(), {
+    const parts = new Intl.DateTimeFormat(this.locale(), clockOptions({
       timeZone: this.zone(),
       hour: "numeric",
       minute: "2-digit",
-    }).formatToParts(this.now());
+    })).formatToParts(this.now());
     const part = (type: string) =>
       parts.find((p) => p.type === type)?.value ?? "";
     return {
@@ -566,6 +567,7 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
     this.display.summary(this.deviceCoords).subscribe({
       next: (summary) => {
         this.loading = false;
+        setTwelveHour(summary.time_format !== '24h');
         this.summary.set(summary);
         this.offline.set(false);
         this.lastUpdated.set(new Date());

@@ -31,6 +31,38 @@
       </button>
     </div>
   }
+
+  <div class="setting">
+    <div class="grow">
+      <div class="t" id="time-format-label">{{ 'settings.general.time_title' | transloco }}</div>
+      <p class="hint">{{ 'settings.general.time_hint' | transloco }}</p>
+    </div>
+    <div class="seg" role="group" aria-labelledby="time-format-label">
+      <button
+        type="button"
+        [class.on]="timeFormat() === '12h'"
+        [attr.aria-pressed]="timeFormat() === '12h'"
+        [disabled]="!canManageTime() || timeSaving()"
+        data-testid="time-format-12h"
+        (click)="setTimeFormat('12h')"
+      >
+        {{ 'settings.general.time_12h' | transloco }}
+      </button>
+      <button
+        type="button"
+        [class.on]="timeFormat() === '24h'"
+        [attr.aria-pressed]="timeFormat() === '24h'"
+        [disabled]="!canManageTime() || timeSaving()"
+        data-testid="time-format-24h"
+        (click)="setTimeFormat('24h')"
+      >
+        {{ 'settings.general.time_24h' | transloco }}
+      </button>
+    </div>
+  </div>
+  @if (timeError(); as key) {
+    <app-banner tone="error">{{ key | transloco }}</app-banner>
+  }
 </section>
 
 <section class="card col" aria-labelledby="general-weather-title">

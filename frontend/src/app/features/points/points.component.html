@@ -137,7 +137,7 @@
             @for (entry of entries(); track entry.id) {
               <tr [attr.data-testid]="'entry-' + entry.id">
                 <td class="col-when">
-                  <time class="when" [attr.datetime]="entry.created_at">{{ entry.created_at | date: 'EEE d MMM, HH:mm' }}</time>
+                  <time class="when" [attr.datetime]="entry.created_at">{{ entry.created_at | date: timeFormat.pipeDayTime() }}</time>
                 </td>
                 @if (isParent()) {
                   <td class="col-who who">

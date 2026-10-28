@@ -64,7 +64,7 @@
                   }
                 </span>
                 <span class="bell-body">{{ item.body }}</span>
-                <span class="bell-time">{{ item.created_at | date: 'short' }}</span>
+                <span class="bell-time">{{ item.created_at | date: timeFormat.pipeDateTime() }}</span>
               </span>
             </button>
           </li>

@@ -1,3 +1,5 @@
+import { clockOptions } from '../../core/time-format/clock-style';
+
 export interface GridDay {
   iso: string;
   day: number;
@@ -90,7 +92,7 @@ export function shortDay(iso: string): string {
 
 /** Clock time such as "4:00 pm" in the given IANA zone, or the viewer's zone when none is given. */
 export function clockIn(iso: string, zone?: string): string {
-  return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', timeZone: zone || undefined }).format(
+  return new Intl.DateTimeFormat(undefined, clockOptions({ hour: 'numeric', minute: '2-digit', timeZone: zone || undefined })).format(
     new Date(iso),
   );
 }

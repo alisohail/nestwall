@@ -135,6 +135,7 @@ func New(cfg *config.Config, log *slog.Logger, clk clock.Clock, pool *sql.DB, ou
 	mux.Handle("GET /api/v1/weather", permissions.Authenticated(pool, clk)(weatherHandlers.Forecast))
 	mux.Handle("GET /api/v1/family/weather-settings", permMiddleware(permissions.PermSettingsView, weatherHandlers.GetSettings))
 	mux.Handle("PUT /api/v1/family/weather-settings", permMiddleware(permissions.PermSettingsManage, weatherHandlers.UpdateSettings))
+	mux.Handle("PUT /api/v1/family/time-format", permMiddleware(permissions.PermSettingsManage, familyHandlers.UpdateTimeFormat))
 	emailHandlers := email.NewHandlers(pool, clk, log, cfg.DB.Key)
 	mux.Handle("GET /api/v1/settings/email", permMiddleware(permissions.PermSettingsView, emailHandlers.GetSettings))
 	mux.Handle("PUT /api/v1/settings/email", permMiddleware(permissions.PermSettingsManage, emailHandlers.UpdateSettings))

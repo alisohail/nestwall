@@ -1,4 +1,5 @@
 import { ApiError } from "../../core/api/api-client.service";
+import { clockOptions } from "../../core/time-format/clock-style";
 import { TaskListItem, TaskStatus } from "./tasks.models";
 
 export type DayGroup = "overdue" | "earlier" | "today" | "tomorrow" | "later";
@@ -157,10 +158,10 @@ export function formatDay(iso: string): string {
 /** Time such as "5:00 pm" from HH:MM, formatted in the viewer's locale. */
 export function formatTime(hhmm: string): string {
   const [h, m] = hhmm.split(":").map(Number);
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(undefined, clockOptions({
     hour: "numeric",
     minute: "2-digit",
-  }).format(new Date(2000, 0, 1, h, m));
+  })).format(new Date(2000, 0, 1, h, m));
 }
 
 /** Date such as "9 Oct 2025" for when a task was archived, in the family time zone when given. */

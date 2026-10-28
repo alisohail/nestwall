@@ -120,7 +120,7 @@ describe('PointsComponent', () => {
           provide: FamilyService,
           useValue: { listMembers: () => of({ members: [CHILD] }) } as unknown as FamilyService,
         },
-        { provide: AuthService, useValue: { isChild: () => isChild } as unknown as AuthService },
+        { provide: AuthService, useValue: { isChild: () => isChild, currentUser: () => null } as unknown as AuthService },
       ],
     }).compileComponents();
   });

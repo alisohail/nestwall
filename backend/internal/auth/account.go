@@ -198,7 +198,7 @@ func membershipOf(ctx context.Context, q queryRower, userID string) (*FamilyMemb
 	var m FamilyMembership
 	var avatarID sql.NullString
 	err := q.QueryRowContext(ctx,
-		`SELECT fm.id, fm.family_id, f.name, f.timezone, fm.role_id, r.name, r.is_fixed, fm.status, fm.colour,
+		`SELECT fm.id, fm.family_id, f.name, f.timezone, f.time_format, fm.role_id, r.name, r.is_fixed, fm.status, fm.colour,
 		        (SELECT ma.id FROM member_avatars ma WHERE ma.family_member_id = fm.id LIMIT 1)
 		 FROM family_members fm
 		 JOIN families f ON fm.family_id = f.id
@@ -206,7 +206,7 @@ func membershipOf(ctx context.Context, q queryRower, userID string) (*FamilyMemb
 		 WHERE fm.user_id = ? AND fm.status = 'active'
 		 LIMIT 1`,
 		userID,
-	).Scan(&m.MemberID, &m.FamilyID, &m.FamilyName, &m.Timezone, &m.RoleID, &m.RoleName, &m.IsParent, &m.Status, &m.Colour, &avatarID)
+	).Scan(&m.MemberID, &m.FamilyID, &m.FamilyName, &m.Timezone, &m.TimeFormat, &m.RoleID, &m.RoleName, &m.IsParent, &m.Status, &m.Colour, &avatarID)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}

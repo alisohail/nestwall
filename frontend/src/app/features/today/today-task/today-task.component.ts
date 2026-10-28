@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AuthService } from '../../../core/auth/auth.service';
+import { TimeFormatService } from '../../../core/time-format/time-format.service';
 import { TaskConfirmComponent } from '../../tasks/task-confirm/task-confirm.component';
 import { MyTaskItem } from '../../my-tasks/my-tasks.models';
 import { MyTasksService } from '../../my-tasks/my-tasks.service';
@@ -34,6 +35,7 @@ export class TodayTaskComponent {
   private myTasks = inject(MyTasksService);
   private tasks = inject(TasksService);
   private auth = inject(AuthService);
+  private timeFormat = inject(TimeFormatService);
 
   /** Version and steps from the last tick response. Cleared when the list reloads. */
   private local = signal<{ version: number; checklist: ChecklistItem[] } | null>(null);
@@ -53,7 +55,7 @@ export class TodayTaskComponent {
   part = computed(() => this.item().part_of_day ?? 'anytime');
 
   /** Clock time such as "5:00 pm" from the instant the copy is due. */
-  clock = computed(() => new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date(this.item().due_at)));
+  clock = computed(() => new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ hour: 'numeric', minute: '2-digit' })).format(new Date(this.item().due_at)));
 
   constructor() {
     effect(() => {

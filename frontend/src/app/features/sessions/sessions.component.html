@@ -29,8 +29,8 @@
                 <span class="badge teal">{{ 'sessions.current' | transloco }}</span>
               }
             </div>
-            <div class="small muted">{{ 'sessions.signed_in' | transloco: { time: (session.created_at | date: 'medium') } }}</div>
-            <div class="small muted">{{ 'sessions.expires' | transloco: { time: (session.expires_at | date: 'medium') } }}</div>
+            <div class="small muted">{{ 'sessions.signed_in' | transloco: { time: (session.created_at | date: timeFormat.pipeDateTime()) } }}</div>
+            <div class="small muted">{{ 'sessions.expires' | transloco: { time: (session.expires_at | date: timeFormat.pipeDateTime()) } }}</div>
           </div>
           @if (isOwn && !session.current) {
             <button type="button" class="btn ghost sm" [disabled]="busy()" [attr.data-testid]="'revoke-' + session.id" (click)="revoke(session)">

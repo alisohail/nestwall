@@ -8,6 +8,7 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
 import { ApiError } from '../../../core/api/api-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { TimeFormatService } from '../../../core/time-format/time-format.service';
 import { ChecklistItem, Task, TaskStatus } from '../../tasks/tasks.models';
 import { TaskConfirmComponent } from '../../tasks/task-confirm/task-confirm.component';
 import { TasksService } from '../../tasks/tasks.service';
@@ -28,6 +29,7 @@ export class MyTaskComponent {
   private tasks = inject(TasksService);
   private myTasks = inject(MyTasksService);
   private auth = inject(AuthService);
+  private timeFormat = inject(TimeFormatService);
 
   task = signal<Task | null>(null);
   loadState = signal<'loading' | 'ready' | 'error' | 'missing'>('loading');
@@ -142,7 +144,7 @@ export class MyTaskComponent {
 
   /** Clock time and weekday such as "Sat 5:00 pm", in the viewer's locale. */
   dueLabel(iso: string): string {
-    return new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(iso));
+    return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ weekday: 'short', hour: 'numeric', minute: '2-digit' })).format(new Date(iso));
   }
 
   /** Ticks or unticks one step. The response is the new task with the new version. */

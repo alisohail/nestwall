@@ -6,6 +6,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { Subscription, finalize } from 'rxjs';
 import { ApiError } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { BADGE_NOTE_MAX, CustomBadge } from '../badges/badges.models';
 import { BadgesService } from '../badges/badges.service';
 import { badgeErrorKey } from '../badges/badge-errors';
@@ -72,6 +73,7 @@ export class PointsComponent implements OnInit {
   private api = inject(RewardsService);
   private family = inject(FamilyService);
   private auth = inject(AuthService);
+  timeFormat = inject(TimeFormatService);
   private badges = inject(BadgesService);
   private destroyRef = inject(DestroyRef);
   private inflight?: Subscription;

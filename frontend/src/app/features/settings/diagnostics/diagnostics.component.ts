@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ApiClient, ApiError } from '../../../core/api/api-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { TimeFormatService } from '../../../core/time-format/time-format.service';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
@@ -58,6 +59,7 @@ export class DiagnosticsComponent {
   private api = inject(ApiClient);
   private auth = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  timeFormat = inject(TimeFormatService);
 
   permsReady = signal(false);
   canView = signal(false);
