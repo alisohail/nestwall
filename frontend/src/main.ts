@@ -2,7 +2,6 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { APP_INITIALIZER, ErrorHandler, isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideTransloco } from '@ngneat/transloco';
@@ -27,7 +26,6 @@ bootstrapApplication(AppComponent, {
       useFactory: (api: ApiClient) => () =>
         firstValueFrom(api.get('/api/v1/health/live').pipe(catchError(() => of(null)))),
     },
-    provideAnimations(),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
