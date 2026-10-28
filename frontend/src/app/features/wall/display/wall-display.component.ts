@@ -53,6 +53,7 @@ interface WeatherDayView {
   low: number;
   precip: number | null;
   wet: boolean;
+  unit: string;
 }
 
 interface WeatherTodayView extends WeatherDayView {
@@ -208,11 +209,15 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
       : null;
   });
 
+  readonly tempUnit = computed(() =>
+    this.summary()?.weather?.temperature_unit === "f" ? "°F" : "°C",
+  );
+
   readonly weatherToday = computed<WeatherTodayView | null>(() => {
     const forecast = this.forecast();
     if (!forecast) return null;
     return {
-      ...this.dayView(forecast.today),
+      ...this.dayView(forecast.today, this.tempUnit()),
       temp: Math.round(forecast.current.temperature),
       feels: Math.round(forecast.current.feels_like),
     };
@@ -221,7 +226,7 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
   readonly weatherTomorrow = computed<WeatherDayView | null>(() => {
     const forecast = this.forecast();
     return forecast && this.summary()?.options.show_tomorrow
-      ? this.dayView(forecast.tomorrow)
+      ? this.dayView(forecast.tomorrow, this.tempUnit())
       : null;
   });
 
@@ -750,7 +755,7 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
     return this.transloco.translate("wall.display.in_minutes", { minutes });
   }
 
-  private dayView(day: WeatherDay): WeatherDayView {
+  private dayView(day: WeatherDay, unit: string): WeatherDayView {
     return {
       condition: day.condition,
       label: this.transloco.translate(`weather.condition.${day.condition}`),
@@ -758,6 +763,7 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
       low: Math.round(day.low),
       precip: day.precip_chance,
       wet: WET.includes(day.condition),
+      unit,
     };
   }
 }
