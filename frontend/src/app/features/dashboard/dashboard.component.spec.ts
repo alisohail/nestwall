@@ -700,6 +700,20 @@ describe('DashboardComponent', () => {
         expect(el(fixture, 'kitchen-tablet')?.textContent).not.toContain('No kitchen tablet');
     });
 
+    it('shows a green dot when the paired tablet is online and red when offline', () => {
+        const paired: WallDeviceView = {
+            id: 'w1', name: 'Kitchen wall', status: 'online', paired_at: '2026-10-03T10:00:00Z', last_seen_at: null,
+        };
+        wallDevices.list.mockReturnValue(of([paired]));
+        let fixture = create();
+        expect(el(fixture, 'kitchen-tablet')?.querySelector('.tablet-dot.online')).not.toBeNull();
+
+        wallDevices.list.mockReturnValue(of([{ ...paired, status: 'offline' }]));
+        fixture = create();
+        expect(el(fixture, 'kitchen-tablet')?.querySelector('.tablet-dot')).not.toBeNull();
+        expect(el(fixture, 'kitchen-tablet')?.querySelector('.tablet-dot.online')).toBeNull();
+    });
+
     it('hides the kitchen tablet card when the wall list fails', () => {
         wallDevices.list.mockReturnValue(throwError(() => new Error('boom')));
 

@@ -303,6 +303,8 @@
 
         @if (pairedTablet(); as tablet) {
           <app-banner tone="info" icon="monitor" data-testid="kitchen-tablet">
+            <span class="tablet-dot" [class.online]="tablet.status === 'online'" role="img"
+              [attr.aria-label]="(tablet.status === 'online' ? 'settings.wall.status.online' : 'settings.wall.status.offline') | transloco"></span>
             <span>{{ 'dashboard.tablet.paired' | transloco: { name: tablet.name, date: when(tablet.paired_at!) } }}</span>
           </app-banner>
         } @else if (wallDevices()) {
