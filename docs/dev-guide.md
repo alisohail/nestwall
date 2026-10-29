@@ -8,6 +8,20 @@ This guide takes a new host from nothing to a running family planner. It covers 
 - Git, to get the code.
 - About 1 GB of free disk space for the images, plus room for the database and backups.
 - A host that stays on. The family reaches NestWall over the local network.
+- To build or test outside Docker: **Node.js 24** for the frontend (CI and the frontend image use Node 24, and `npm ci` expects it) and **Go 1.27.3** for the backend (the version in `backend/go.mod`). Docker builds need neither.
+
+## Stack
+
+| Part | Technology |
+|---|---|
+| Frontend | Angular 22 (standalone components, zoneless change detection, application builder), TypeScript 6 |
+| Frontend tests | Vitest 5 in browser mode (Playwright provider) for unit tests, Playwright for end-to-end tests |
+| Frontend tooling | ESLint 10 with typescript-eslint, Stylelint 17 |
+| Frontend serving | Nginx (Alpine), which proxies `/api` to the API container |
+| Backend | Go 1.27 HTTP API |
+| Database | SQLite encrypted with SQLCipher (`github.com/mutecomm/go-sqlcipher/v4`, built with cgo) |
+| Containers | Docker Compose, Alpine-based images (`node:24-alpine` to build the frontend, `golang` to build the API) |
+| CI | GitHub Actions on Node 24 and the Go version in `backend/go.mod` |
 
 NestWall runs as two containers:
 
