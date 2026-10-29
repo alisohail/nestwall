@@ -22,6 +22,9 @@
 # TypeScript cache
 *.tsbuildinfo
 
+# ESLint cache (lint --cache)
+.eslintcache
+
 # Go / backend build artefacts
 backend/bin/
 *.test
