@@ -104,7 +104,7 @@
 </section>
 
 @if (more(); as list) {
-  <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget && closeMore()">
+  <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeMore() : null">
     <div class="modal band-more" role="dialog" aria-modal="true" aria-labelledby="band-more-title" data-testid="band-more">
       <header class="band-more-head">
         <h2 id="band-more-title">

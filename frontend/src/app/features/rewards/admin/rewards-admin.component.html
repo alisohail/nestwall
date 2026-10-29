@@ -96,8 +96,8 @@
   }
 
   @if (deleteTarget(); as target) {
-    <div class="modal-bg" role="presentation" (click)="cancelDelete()">
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="reward-delete-title" data-testid="reward-delete-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? cancelDelete() : null">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="reward-delete-title" data-testid="reward-delete-dialog">
       <h2 id="reward-delete-title">{{ 'rewards.admin.deleteTitle' | transloco: { name: target.name } }}</h2>
       <p class="sub">{{ 'rewards.admin.deleteConfirm' | transloco }}</p>
 
@@ -119,8 +119,8 @@
   }
 
   @if (formOpen()) {
-    <div class="modal-bg" role="presentation" (click)="closeForm()">
-    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="reward-form-title" data-testid="reward-form" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeForm() : null">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="reward-form-title" data-testid="reward-form">
       <h2 id="reward-form-title">
         {{ (formTarget() ? 'rewards.admin.form.edit' : 'rewards.admin.form.new') | transloco }}
       </h2>

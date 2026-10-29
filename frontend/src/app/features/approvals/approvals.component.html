@@ -403,8 +403,8 @@
   }
 
   @if (confirmAllOpen()) {
-    <div class="modal-bg" (click)="confirmAllOpen.set(false)">
-      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="approve-all-title" data-testid="approve-all-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? confirmAllOpen.set(false) : null">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="approve-all-title" data-testid="approve-all-dialog">
       <h2 id="approve-all-title">{{ 'approvals.confirmAll.title' | transloco: { count: visibleCount() } }}</h2>
       <p class="muted">{{ 'approvals.confirmAll.body' | transloco }}</p>
       <ul class="confirm-list" data-testid="confirm-list">
@@ -449,8 +449,8 @@
   }
 
   @if (sendBackTitle(); as title) {
-    <div class="modal-bg" (click)="closeSendBack()">
-      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="send-back-title" data-testid="send-back-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeSendBack() : null">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="send-back-title" data-testid="send-back-dialog">
       <h2 id="send-back-title">{{ 'approvals.sendBack.title' | transloco: { title } }}</h2>
       @if (sendBackError(); as se) {
         <p class="hint err" role="alert" data-testid="send-back-error">{{ se | transloco }}</p>
@@ -490,8 +490,8 @@
   }
 
   @if (declineFor(); as target) {
-    <div class="modal-bg" (click)="closeDecline()">
-      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="decline-title" data-testid="decline-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeDecline() : null">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="decline-title" data-testid="decline-dialog">
       <h2 id="decline-title">{{ 'approvals.decline.title' | transloco: { reward: target.reward_name } }}</h2>
       <p class="muted">{{ 'approvals.decline.body' | transloco: { name: target.member_name, count: target.cost } }}</p>
       @if (declineError(); as de) {

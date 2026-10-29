@@ -1,5 +1,5 @@
-<div class="modal-bg" role="presentation" (click)="cancelled.emit()">
-  <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="remove-person-title" data-testid="remove-person" (click)="$event.stopPropagation()">
+<div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? cancelled.emit() : null">
+  <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="remove-person-title" data-testid="remove-person">
     <h2 id="remove-person-title">{{ 'tasks.remove.heading' | transloco: { title: title() } }}</h2>
 
     @if (people().length > 1) {

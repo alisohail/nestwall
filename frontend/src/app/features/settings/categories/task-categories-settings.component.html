@@ -84,7 +84,7 @@
 }
 
 @if (modalOpen()) {
-  <div class="modal-bg" (click)="$event.target === $event.currentTarget && closeModal()">
+  <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeModal() : null">
     <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="(editing() ? 'settings.categories.edit_title' : 'settings.categories.new_title') | transloco">
       <h2>{{ (editing() ? 'settings.categories.edit_title' : 'settings.categories.new_title') | transloco }}</h2>
 

@@ -117,8 +117,8 @@
         />
       }
     } @else if (pill().recurring) {
-      <div class="modal-bg" role="presentation" (click)="confirming.set(false)">
-        <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="delete-scope-title" data-testid="delete-scope" (click)="$event.stopPropagation()">
+      <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? confirming.set(false) : null">
+        <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="delete-scope-title" data-testid="delete-scope">
           <h2 id="delete-scope-title">{{ 'calendar.detail.delete_recurring_heading' | transloco }}</h2>
           <div class="scope" role="radiogroup" [attr.aria-labelledby]="'delete-scope-title'">
             <label class="opt">
