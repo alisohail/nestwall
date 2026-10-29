@@ -13,7 +13,6 @@ import { badgeErrorKey } from '../badges/badge-errors';
 import { BannerComponent } from '../../shared/ui/banner/banner.component';
 import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../shared/ui/error-state/error-state.component';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
 import { FamilyService, MemberDetail } from '../family/family.service';
 import { AvatarComponent } from '../../shared/avatar/avatar.component';
@@ -62,7 +61,6 @@ const MAX_REASON = 200;
         BannerComponent,
         EmptyStateComponent,
         ErrorStateComponent,
-        LoadingComponent,
         SkeletonComponent,
     ],
     templateUrl: './points.component.html',

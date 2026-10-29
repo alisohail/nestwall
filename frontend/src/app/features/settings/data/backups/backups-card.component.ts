@@ -9,7 +9,6 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { TimeFormatService } from '../../../../core/time-format/time-format.service';
 import { BannerComponent } from '../../../../shared/ui/banner/banner.component';
 import { IconComponent } from '../../../../shared/ui/icon/icon.component';
-import { LoadingComponent } from '../../../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../../../shared/ui/skeleton/skeleton.component';
 import { BackupRun, BackupStatus, BackupsService, ResetCounts } from './backups.service';
 
@@ -60,7 +59,7 @@ function resetErrorKey(err: ApiError): string {
 /** The Backups card on Settings > Data and backups: status, schedule, encryption, run now and the history. */
 @Component({
     selector: 'app-backups-card',
-    imports: [FormsModule, DatePipe, TranslocoModule, BannerComponent, IconComponent, LoadingComponent, SkeletonComponent],
+    imports: [FormsModule, DatePipe, TranslocoModule, BannerComponent, IconComponent, SkeletonComponent],
     templateUrl: './backups-card.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './backups-card.component.scss'

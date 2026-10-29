@@ -16,12 +16,11 @@ const MAX_POINTS = 100000;
 
 /** Parent settings for the sharing rules. Maps to the points settings mock (sharing card only). */
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
-import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../../shared/ui/skeleton/skeleton.component';
 
 @Component({
     selector: 'app-points-settings',
-    imports: [FormsModule, RouterLink, TranslocoModule, BannerComponent, LoadingComponent, SkeletonComponent],
+    imports: [FormsModule, RouterLink, TranslocoModule, BannerComponent, SkeletonComponent],
     templateUrl: './points-settings.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './points-settings.component.scss'

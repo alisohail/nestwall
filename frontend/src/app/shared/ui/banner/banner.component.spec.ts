@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BannerComponent } from './banner.component';
@@ -6,10 +6,10 @@ import { BannerComponent } from './banner.component';
 @Component({
     imports: [BannerComponent],
     changeDetection: ChangeDetectionStrategy.Eager,
-    template: `<app-banner [tone]="tone">Saved</app-banner>`
+    template: `<app-banner [tone]="tone()">Saved</app-banner>`
 })
 class HostComponent {
-  tone: 'info' | 'success' | 'warning' | 'error' = 'info';
+  readonly tone = signal<'info' | 'success' | 'warning' | 'error'>('info');
 }
 
 describe('BannerComponent', () => {
@@ -32,7 +32,7 @@ describe('BannerComponent', () => {
   });
 
   it('uses alert role for error', () => {
-    fixture.componentInstance.tone = 'error';
+    fixture.componentInstance.tone.set('error');
     fixture.detectChanges();
     const el = fixture.debugElement.query(By.css('.nw-banner')).nativeElement as HTMLElement;
     expect(el.getAttribute('role')).toBe('alert');
@@ -47,7 +47,7 @@ describe('BannerComponent', () => {
   it('uses an icon that matches the tone by default', () => {
     const icon = () => (fixture.debugElement.query(By.css('.nw-banner__icon')).nativeElement as HTMLElement).textContent?.trim();
     expect(icon()).toBe('info');
-    fixture.componentInstance.tone = 'error';
+    fixture.componentInstance.tone.set('error');
     fixture.detectChanges();
     expect(icon()).toBe('error');
   });

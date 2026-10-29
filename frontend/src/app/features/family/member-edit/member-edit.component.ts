@@ -16,6 +16,7 @@ import { COLOUR_PALETTE, ColourPickerComponent } from '../../../shared/ui/colour
 import { FamilyService, Gender, MemberDetail, RoleView, UpdateMemberRequest } from '../family.service';
 import { BIRTH_DATE_MIN, EMAIL_MAX, NAME_MAX, birthDateRange, todayIso } from '../../../shared/profile/profile-fields';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
+import { refreshOnFormChange } from '../../../shared/forms/refresh-on-form-change';
 
 const USER_ID_PATTERN = /^[a-zA-Z0-9._-]{3,32}$/;
 
@@ -71,6 +72,7 @@ export class MemberEditComponent implements OnInit, UnsavedChangesAware {
     pin: ['', [Validators.pattern(/^\d{4,8}$/)]],
     password: ['', [Validators.minLength(8), Validators.maxLength(256)]],
   });
+  private refreshOnForm = refreshOnFormChange(this.form);
 
   ngOnInit(): void {
     this.memberId = this.route.snapshot.paramMap.get('id') ?? '';

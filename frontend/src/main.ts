@@ -2,7 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
-import { APP_INITIALIZER, ErrorHandler, isDevMode, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, isDevMode, provideZonelessChangeDetection } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideTransloco } from '@ngneat/transloco';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -15,7 +15,8 @@ import { GlobalErrorHandler } from './app/core/errors/global-error-handler';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(),provideRouter(routes),
+    provideZonelessChangeDetection(),
+    provideRouter(routes),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     // Issue a GET first so the CSRF token header is captured before any POST (e.g. direct /login visit).

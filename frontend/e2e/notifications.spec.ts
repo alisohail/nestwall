@@ -139,7 +139,10 @@ test('child sees a bonus approval in the bell and clears it', async ({ browser, 
     await card.getByTestId('kid-bonus-finish').click();
 
     await page.goto('/bonus');
-    await page.getByTestId('bonus-approve').first().click();
+    await Promise.all([
+      page.waitForResponse((res) => /\/api\/v1\/bonus-claims\/[^/]+\/approve$/.test(new URL(res.url()).pathname) && res.ok()),
+      page.getByTestId('bonus-approve').first().click(),
+    ]);
 
     // The child's bell picks up the approval on its next refresh. Open it to refresh now.
     await childPage.goto('/my-tasks');

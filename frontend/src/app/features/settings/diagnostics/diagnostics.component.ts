@@ -6,7 +6,6 @@ import { ApiClient, ApiError } from '../../../core/api/api-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { TimeFormatService } from '../../../core/time-format/time-format.service';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
@@ -50,7 +49,7 @@ const BADGE_CLASS: Record<Tone, string> = { ok: 'ok', warn: 'amber', bad: 'err' 
 /** Parent diagnostics page: version, migrations, backups and calendar sync health (`settings.view`). */
 @Component({
     selector: 'app-diagnostics',
-    imports: [TranslocoModule, DatePipe, BannerComponent, IconComponent, LoadErrorComponent, LoadingComponent],
+    imports: [TranslocoModule, DatePipe, BannerComponent, LoadErrorComponent, LoadingComponent],
     templateUrl: './diagnostics.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './diagnostics.component.scss'

@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, catchError, from, of, switchMap } from 'rxjs';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
 import { WallScrollCueDirective } from '../wall/display/wall-scroll-cue.directive';
 import { currentDeviceLocation } from './device-location';
@@ -73,7 +72,7 @@ function sceneFor(condition: WeatherCondition | undefined): WeatherScene {
  */
 @Component({
     selector: 'app-weather-tile',
-    imports: [TranslocoModule, RouterLink, LoadingComponent, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
+    imports: [TranslocoModule, RouterLink, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
     templateUrl: './weather-tile.component.html',
     styleUrl: './weather-tile.component.scss',
     changeDetection: ChangeDetectionStrategy.Eager,
