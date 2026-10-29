@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnDestroy, OnInit, TemplateRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnDestroy, OnInit, TemplateRef, ViewChild, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -42,11 +42,11 @@ const PLACEHOLDERS = ['{{subject}}', '{{body}}', '{{logo_url}}', '{{app_url}}', 
  * server stores one set for the whole family.
  */
 @Component({
-  selector: 'app-notifications-settings',
-  standalone: true,
-  imports: [TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './notifications-settings.component.html',
-  styleUrl: './notifications-settings.component.scss',
+    selector: 'app-notifications-settings',
+    imports: [TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './notifications-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './notifications-settings.component.scss'
 })
 export class NotificationsSettingsComponent implements OnInit, OnDestroy, UnsavedChangesAware {
   private api = inject(NotificationsSettingsService);

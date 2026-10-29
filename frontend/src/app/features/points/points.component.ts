@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -13,7 +13,6 @@ import { badgeErrorKey } from '../badges/badge-errors';
 import { BannerComponent } from '../../shared/ui/banner/banner.component';
 import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../shared/ui/error-state/error-state.component';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
 import { FamilyService, MemberDetail } from '../family/family.service';
 import { AvatarComponent } from '../../shared/avatar/avatar.component';
@@ -53,21 +52,20 @@ const MAX_POINTS = 100000;
 const MAX_REASON = 200;
 
 @Component({
-  selector: 'app-points',
-  standalone: true,
-  imports: [
-    AvatarComponent,
-    DatePipe,
-    FormsModule,
-    TranslocoModule,
-    BannerComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LoadingComponent,
-    SkeletonComponent,
-  ],
-  templateUrl: './points.component.html',
-  styleUrl: './points.component.scss',
+    selector: 'app-points',
+    imports: [
+        AvatarComponent,
+        DatePipe,
+        FormsModule,
+        TranslocoModule,
+        BannerComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        SkeletonComponent,
+    ],
+    templateUrl: './points.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './points.component.scss'
 })
 export class PointsComponent implements OnInit {
   private api = inject(RewardsService);

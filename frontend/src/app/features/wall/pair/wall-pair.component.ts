@@ -6,6 +6,7 @@ import {
   inject,
   signal,
   viewChildren,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { TranslocoModule } from "@ngneat/transloco";
@@ -27,11 +28,11 @@ function toKeyChar(raw: string): string | null {
 }
 
 @Component({
-  selector: "app-wall-pair",
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: "./wall-pair.component.html",
-  styleUrl: "./wall-pair.component.scss",
+    selector: "app-wall-pair",
+    imports: [RouterLink, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: "./wall-pair.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./wall-pair.component.scss"
 })
 export class WallPairComponent implements AfterViewInit {
   private pairService = inject(WallPairService);

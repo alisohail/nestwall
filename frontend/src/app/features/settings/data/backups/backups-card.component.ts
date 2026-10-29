@@ -1,5 +1,5 @@
-import { DOCUMENT, DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit, computed, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -9,7 +9,6 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { TimeFormatService } from '../../../../core/time-format/time-format.service';
 import { BannerComponent } from '../../../../shared/ui/banner/banner.component';
 import { IconComponent } from '../../../../shared/ui/icon/icon.component';
-import { LoadingComponent } from '../../../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../../../shared/ui/skeleton/skeleton.component';
 import { BackupRun, BackupStatus, BackupsService, ResetCounts } from './backups.service';
 
@@ -59,17 +58,18 @@ function resetErrorKey(err: ApiError): string {
 
 /** The Backups card on Settings > Data and backups: status, schedule, encryption, run now and the history. */
 @Component({
-  selector: 'app-backups-card',
-  standalone: true,
-  imports: [FormsModule, DatePipe, TranslocoModule, BannerComponent, IconComponent, LoadingComponent, SkeletonComponent],
-  templateUrl: './backups-card.component.html',
-  styleUrl: './backups-card.component.scss',
+    selector: 'app-backups-card',
+    imports: [FormsModule, DatePipe, TranslocoModule, BannerComponent, IconComponent, SkeletonComponent],
+    templateUrl: './backups-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './backups-card.component.scss'
 })
 export class BackupsCardComponent implements OnInit {
   private api = inject(BackupsService);
   private auth = inject(AuthService);
   timeFormat = inject(TimeFormatService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   private document = inject(DOCUMENT);
 
   /** Restore needs `backup.restore` and reset needs `data.reset`. The server checks both too. */
@@ -289,6 +289,7 @@ export class BackupsCardComponent implements OnInit {
           // The password field is cleared on failure, so the prompt stays open for a retry.
           this.downloadPassword = '';
           this.downloadError.set(errorKey(err, 'download_failed'));
+          this.cdr.markForCheck();
         },
       });
   }
@@ -350,6 +351,7 @@ export class BackupsCardComponent implements OnInit {
           // The password is cleared on failure, so the dialog stays open for a retry.
           this.restorePassword = '';
           this.restoreError.set(errorKey(err, 'restore_failed'));
+          this.cdr.markForCheck();
         },
       });
   }
@@ -414,6 +416,7 @@ export class BackupsCardComponent implements OnInit {
           this.resetPassword = '';
           this.resetting.set(false);
           this.resetError.set(resetErrorKey(err));
+          this.cdr.markForCheck();
         },
       });
   }

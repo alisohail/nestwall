@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -16,15 +16,16 @@ import { COLOUR_PALETTE, ColourPickerComponent } from '../../../shared/ui/colour
 import { FamilyService, Gender, MemberDetail, RoleView, UpdateMemberRequest } from '../family.service';
 import { BIRTH_DATE_MIN, EMAIL_MAX, NAME_MAX, birthDateRange, todayIso } from '../../../shared/profile/profile-fields';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
+import { refreshOnFormChange } from '../../../shared/forms/refresh-on-form-change';
 
 const USER_ID_PATTERN = /^[a-zA-Z0-9._-]{3,32}$/;
 
 @Component({
-  selector: 'app-member-edit',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent, OwnPasswordComponent, PhotoEditorComponent, ColourPickerComponent],
-  templateUrl: './member-edit.component.html',
-  styleUrl: './member-edit.component.scss',
+    selector: 'app-member-edit',
+    imports: [ReactiveFormsModule, RouterLink, TranslocoModule, AvatarComponent, IconComponent, LoadingComponent, LoadErrorComponent, OwnPasswordComponent, PhotoEditorComponent, ColourPickerComponent],
+    templateUrl: './member-edit.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './member-edit.component.scss'
 })
 export class MemberEditComponent implements OnInit, UnsavedChangesAware {
   private fb = inject(FormBuilder);
@@ -71,6 +72,7 @@ export class MemberEditComponent implements OnInit, UnsavedChangesAware {
     pin: ['', [Validators.pattern(/^\d{4,8}$/)]],
     password: ['', [Validators.minLength(8), Validators.maxLength(256)]],
   });
+  private refreshOnForm = refreshOnFormChange(this.form);
 
   ngOnInit(): void {
     this.memberId = this.route.snapshot.paramMap.get('id') ?? '';

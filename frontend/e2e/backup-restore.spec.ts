@@ -21,7 +21,13 @@ test('parent runs a backup and restores it, and the app shows it is restarting',
   const card = page.getByTestId('backups-card');
   await expect(card).toBeVisible();
 
+  // A backup takes longer than the default expect timeout, so wait for the run response first.
+  const ran = page.waitForResponse(
+    (r) => r.request().method() === 'POST' && r.url().endsWith('/settings/backups/run'),
+    { timeout: 60_000 },
+  );
   await card.getByTestId('backups-run').click();
+  await ran;
   await expect(card.getByTestId('backups-run-ok')).toBeVisible();
 
   // Restore the newest history row.

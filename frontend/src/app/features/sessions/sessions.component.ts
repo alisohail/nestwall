@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -12,11 +12,11 @@ import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { SessionView, SessionsService } from './sessions.service';
 
 @Component({
-  selector: 'app-sessions',
-  standalone: true,
-  imports: [DatePipe, TranslocoModule, LoadingComponent, LoadErrorComponent],
-  templateUrl: './sessions.component.html',
-  styleUrl: './sessions.component.scss',
+    selector: 'app-sessions',
+    imports: [DatePipe, TranslocoModule, LoadingComponent, LoadErrorComponent],
+    templateUrl: './sessions.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './sessions.component.scss'
 })
 export class SessionsComponent implements OnInit {
   /** Set by a parent to manage a child's sessions. Null shows the signed-in user's own sessions. */

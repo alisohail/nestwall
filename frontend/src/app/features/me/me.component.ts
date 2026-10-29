@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, computed } from '@angular/core';
+import { Component, DestroyRef, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -15,23 +15,23 @@ import { MyPointsComponent } from './my-points/my-points.component';
 import { MeProfileStatsComponent } from './profile-stats/profile-stats.component';
 
 @Component({
-  selector: 'app-me',
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    RouterLink,
-    SessionsComponent,
-    AvatarComponent,
-    PhotoEditorComponent,
-    IconComponent,
-    MyPointsComponent,
-    MyBadgesCardComponent,
-    MyDetailsComponent,
-    OwnPasswordComponent,
-    MeProfileStatsComponent,
-  ],
-  templateUrl: './me.component.html',
-  styleUrl: './me.component.scss',
+    selector: 'app-me',
+    imports: [
+        TranslocoModule,
+        RouterLink,
+        SessionsComponent,
+        AvatarComponent,
+        PhotoEditorComponent,
+        IconComponent,
+        MyPointsComponent,
+        MyBadgesCardComponent,
+        MyDetailsComponent,
+        OwnPasswordComponent,
+        MeProfileStatsComponent,
+    ],
+    templateUrl: './me.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './me.component.scss'
 })
 export class MeComponent {
   auth = inject(AuthService);

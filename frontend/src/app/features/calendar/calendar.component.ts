@@ -1,5 +1,5 @@
-import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { Subject, catchError, finalize, of, switchMap, tap } from 'rxjs';
@@ -80,11 +80,11 @@ export interface MonthCell extends GridDay {
 
 /** Month view follows the mock. Day and week views are app-style lists and columns. */
 @Component({
-  selector: 'app-calendar',
-  standalone: true,
-  imports: [TranslocoModule, AvatarComponent, IconComponent, DayDialogComponent, EventDetailComponent, EventDialogComponent],
-  templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.scss',
+    selector: 'app-calendar',
+    imports: [TranslocoModule, AvatarComponent, IconComponent, DayDialogComponent, EventDetailComponent, EventDialogComponent],
+    templateUrl: './calendar.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './calendar.component.scss'
 })
 export class CalendarComponent implements OnInit {
   private auth = inject(AuthService);

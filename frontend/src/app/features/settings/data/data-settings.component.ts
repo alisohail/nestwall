@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+
+import { Component, DestroyRef, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, concatMap, finalize, from, map } from 'rxjs';
@@ -18,11 +18,11 @@ interface ExportFile {
 
 /** Data and backups: the backups card and the "Export for reading" card. Reset comes in a later step. */
 @Component({
-  selector: 'app-data-settings',
-  standalone: true,
-  imports: [TranslocoModule, BannerComponent, IconComponent, LoadingComponent, BackupsCardComponent],
-  templateUrl: './data-settings.component.html',
-  styleUrl: './data-settings.component.scss',
+    selector: 'app-data-settings',
+    imports: [TranslocoModule, BannerComponent, IconComponent, LoadingComponent, BackupsCardComponent],
+    templateUrl: './data-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './data-settings.component.scss'
 })
 export class DataSettingsComponent {
   private api = inject(ApiClient);

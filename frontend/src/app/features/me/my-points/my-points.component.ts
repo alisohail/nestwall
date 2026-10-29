@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { forkJoin } from 'rxjs';
@@ -25,11 +25,11 @@ function weekdayLabel(weekStart: string, index: number): string {
 
 /** This week's points chart and recent entries, shown on the Me page for a child. */
 @Component({
-  selector: 'app-my-points',
-  standalone: true,
-  imports: [TranslocoModule, DatePipe, BannerComponent, IconComponent, SkeletonComponent],
-  templateUrl: './my-points.component.html',
-  styleUrl: './my-points.component.scss',
+    selector: 'app-my-points',
+    imports: [TranslocoModule, DatePipe, BannerComponent, IconComponent, SkeletonComponent],
+    templateUrl: './my-points.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './my-points.component.scss'
 })
 export class MyPointsComponent implements OnInit {
   private rewards = inject(RewardsService);

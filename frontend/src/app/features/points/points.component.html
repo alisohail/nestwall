@@ -181,8 +181,8 @@
   </section>
 
   @if (manualOpen()) {
-    <div class="modal-bg" role="presentation" (click)="closeManual()">
-    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="manual-title" data-testid="manual-form" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeManual() : null">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="manual-title" data-testid="manual-form">
       <h2 id="manual-title">{{ 'points.manual.title' | transloco }}</h2>
 
       @if (manualError(); as me) {
@@ -251,8 +251,8 @@
   }
 
   @if (awardOpen()) {
-    <div class="modal-bg" role="presentation" (click)="closeAward()">
-    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="award-title" data-testid="award-form" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeAward() : null">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="award-title" data-testid="award-form">
       <h2 id="award-title">{{ 'settings.badges.award_title' | transloco }}</h2>
 
       @if (awardError(); as ae) {
@@ -333,8 +333,8 @@
   }
 
   @if (reverseTarget(); as target) {
-    <div class="modal-bg" role="presentation" (click)="closeReverse()">
-    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="reverse-title" data-testid="reverse-form" (click)="$event.stopPropagation()">
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeReverse() : null">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="reverse-title" data-testid="reverse-form">
       <h2 id="reverse-title">{{ 'points.reverse.title' | transloco }}</h2>
       <p class="muted">{{ 'points.reverse.body' | transloco }}</p>
       <p class="bold">{{ target.reason || target.reward_name || '' }} ({{ amountText(target) }})</p>

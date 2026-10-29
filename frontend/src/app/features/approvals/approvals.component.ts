@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -9,7 +9,6 @@ import { BannerComponent } from '../../shared/ui/banner/banner.component';
 import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../shared/ui/error-state/error-state.component';
 import { IconComponent } from '../../shared/ui/icon/icon.component';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
 import { BonusClaim, BonusTask } from '../bonus/bonus.models';
 import { TimeFormatService } from '../../core/time-format/time-format.service';
@@ -46,21 +45,20 @@ const BONUS_NOTE_MAX = 200;
 
 /** Parent review queue: task completions, reward requests and the decision history. */
 @Component({
-  selector: 'app-approvals',
-  standalone: true,
-  imports: [
-    FormsModule,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    IconComponent,
-    LoadingComponent,
-    SkeletonComponent,
-  ],
-  templateUrl: './approvals.component.html',
-  styleUrl: './approvals.component.scss',
+    selector: 'app-approvals',
+    imports: [
+        FormsModule,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        IconComponent,
+        SkeletonComponent,
+    ],
+    templateUrl: './approvals.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './approvals.component.scss'
 })
 export class ApprovalsComponent {
   private tasksApi = inject(TasksService);

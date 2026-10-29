@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { clockIn } from '../calendar.dates';
@@ -7,11 +7,11 @@ import type { MonthPill } from '../calendar.component';
 
 /** Every item on one day, opened from "+N more". Picking an item hands it back to the month page. */
 @Component({
-  selector: 'app-day-dialog',
-  standalone: true,
-  imports: [TranslocoModule, IconComponent],
-  templateUrl: './day-dialog.component.html',
-  styleUrl: './day-dialog.component.scss',
+    selector: 'app-day-dialog',
+    imports: [TranslocoModule, IconComponent],
+    templateUrl: './day-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './day-dialog.component.scss'
 })
 export class DayDialogComponent {
   private displayZone = inject(DisplayZoneService);

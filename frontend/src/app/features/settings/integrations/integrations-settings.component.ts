@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -42,11 +42,11 @@ function relativeTime(iso: string, now: number): string {
 
 /** API tokens: list with scopes, last used and expiry, create with scopes and a lifetime, show the token once, and revoke. */
 @Component({
-  selector: 'app-integrations-settings',
-  standalone: true,
-  imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './integrations-settings.component.html',
-  styleUrl: './integrations-settings.component.scss',
+    selector: 'app-integrations-settings',
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './integrations-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './integrations-settings.component.scss'
 })
 export class IntegrationsSettingsComponent {
   private tokensApi = inject(ApiTokensService);

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -30,21 +30,21 @@ interface Notice {
 }
 
 @Component({
-  selector: 'app-rewards',
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    DatePipe,
-    RouterLink,
-    RewardsAdminComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    LoadErrorComponent,
-    IconComponent,
-    LoadingComponent,
-  ],
-  templateUrl: './rewards.component.html',
-  styleUrl: './rewards.component.scss',
+    selector: 'app-rewards',
+    imports: [
+        TranslocoModule,
+        DatePipe,
+        RouterLink,
+        RewardsAdminComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        LoadErrorComponent,
+        IconComponent,
+        LoadingComponent,
+    ],
+    templateUrl: './rewards.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './rewards.component.scss'
 })
 export class RewardsComponent implements OnInit {
   protected auth = inject(AuthService);

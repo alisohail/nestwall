@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AuthService } from '../../core/auth/auth.service';
@@ -11,19 +11,19 @@ import { MyDetailsComponent } from '../me/my-details/my-details.component';
 
 /** The parent's own profile page (`/profile`), laid out as in the profile mock. */
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    AvatarComponent,
-    PhotoEditorComponent,
-    IconComponent,
-    MyDetailsComponent,
-    OwnPasswordComponent,
-    SessionsComponent,
-  ],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+    selector: 'app-profile',
+    imports: [
+        TranslocoModule,
+        AvatarComponent,
+        PhotoEditorComponent,
+        IconComponent,
+        MyDetailsComponent,
+        OwnPasswordComponent,
+        SessionsComponent,
+    ],
+    templateUrl: './profile.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
   auth = inject(AuthService);

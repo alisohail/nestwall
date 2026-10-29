@@ -1,9 +1,8 @@
-import { Component, DestroyRef, OnInit, computed, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, catchError, from, of, switchMap } from 'rxjs';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
 import { WallScrollCueDirective } from '../wall/display/wall-scroll-cue.directive';
 import { currentDeviceLocation } from './device-location';
@@ -72,12 +71,12 @@ function sceneFor(condition: WeatherCondition | undefined): WeatherScene {
  * Parents see a link to set up the location when it is missing; others see a neutral hint.
  */
 @Component({
-  selector: 'app-weather-tile',
-  standalone: true,
-  imports: [TranslocoModule, RouterLink, LoadingComponent, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
-  templateUrl: './weather-tile.component.html',
-  styleUrl: './weather-tile.component.scss',
-  host: { class: 'weather-tile' },
+    selector: 'app-weather-tile',
+    imports: [TranslocoModule, RouterLink, SkeletonComponent, WeatherIconComponent, WallScrollCueDirective],
+    templateUrl: './weather-tile.component.html',
+    styleUrl: './weather-tile.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    host: { class: 'weather-tile' }
 })
 export class WeatherTileComponent implements OnInit {
   private weather = inject(WeatherService);

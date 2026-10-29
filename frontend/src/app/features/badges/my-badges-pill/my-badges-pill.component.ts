@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -20,11 +20,11 @@ export interface PillView {
  * the child's kid dashboard showcase is on. Stays hidden while loading or on error.
  */
 @Component({
-  selector: 'app-my-badges-pill',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule],
-  templateUrl: './my-badges-pill.component.html',
-  styleUrl: './my-badges-pill.component.scss',
+    selector: 'app-my-badges-pill',
+    imports: [RouterLink, TranslocoModule],
+    templateUrl: './my-badges-pill.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './my-badges-pill.component.scss'
 })
 export class MyBadgesPillComponent implements OnInit {
   private readonly badges = inject(BadgesService);

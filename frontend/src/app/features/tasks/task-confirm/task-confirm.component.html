@@ -1,5 +1,5 @@
-<div class="modal-bg" (click)="cancelled.emit()">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="task-confirm-title" data-testid="task-confirm" (click)="$event.stopPropagation()">
+<div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? cancelled.emit() : null">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="task-confirm-title" data-testid="task-confirm">
     <h2 id="task-confirm-title">{{ heading() }}</h2>
     @if (message()) {
       <p class="muted">{{ message() }}</p>

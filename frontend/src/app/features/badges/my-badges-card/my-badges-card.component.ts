@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -22,11 +22,11 @@ const MAX_TILES = 6;
 
 /** Me block for a child: earned count, up to six recent badges and a link to the full page. */
 @Component({
-  selector: 'app-my-badges-card',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule, BannerComponent, SkeletonComponent],
-  templateUrl: './my-badges-card.component.html',
-  styleUrl: './my-badges-card.component.scss',
+    selector: 'app-my-badges-card',
+    imports: [RouterLink, TranslocoModule, BannerComponent, SkeletonComponent],
+    templateUrl: './my-badges-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './my-badges-card.component.scss'
 })
 export class MyBadgesCardComponent implements OnInit {
   private readonly badges = inject(BadgesService);

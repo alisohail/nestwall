@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -81,12 +81,12 @@ const FALLBACK_META: KindMeta = { icon: 'bell', tone: 'neutral' };
 
 /** Header bell: unread count, a short list of recent notifications, and browser alerts for new ones. */
 @Component({
-  selector: 'app-notification-bell',
-  standalone: true,
-  imports: [TranslocoModule, RouterLink, DatePipe, IconComponent, SkeletonComponent],
-  templateUrl: './notification-bell.component.html',
-  styleUrl: './notification-bell.component.scss',
-  host: { class: 'notification-bell' },
+    selector: 'app-notification-bell',
+    imports: [TranslocoModule, RouterLink, DatePipe, IconComponent, SkeletonComponent],
+    templateUrl: './notification-bell.component.html',
+    styleUrl: './notification-bell.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    host: { class: 'notification-bell' }
 })
 export class NotificationBellComponent {
   private api = inject(ApiClient);

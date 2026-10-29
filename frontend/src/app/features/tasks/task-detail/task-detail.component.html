@@ -1,5 +1,5 @@
-<div class="modal-bg" (click)="closed.emit()">
-<section class="modal detail" role="dialog" aria-modal="true" aria-labelledby="task-view-title" aria-live="polite" data-testid="task-detail" (click)="$event.stopPropagation()">
+<div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closed.emit() : null">
+<section class="modal detail" role="dialog" aria-modal="true" aria-labelledby="task-view-title" aria-live="polite" data-testid="task-detail">
   <div class="close-row">
     <button type="button" class="icon-btn" data-testid="task-view-close" [attr.aria-label]="'common.close' | transloco" (click)="closed.emit()">
       <span class="material-icons" aria-hidden="true">close</span>

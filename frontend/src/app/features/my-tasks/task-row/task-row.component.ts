@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { remaining } from '../../tasks/tasks.format';
@@ -10,11 +10,11 @@ import { TimeFormatService } from '../../../core/time-format/time-format.service
  * Projected content (for example an action button) renders inside the card on the right.
  */
 @Component({
-  selector: 'app-task-row',
-  standalone: true,
-  imports: [RouterLink, TranslocoModule],
-  templateUrl: './task-row.component.html',
-  styleUrl: './task-row.component.scss',
+    selector: 'app-task-row',
+    imports: [RouterLink, TranslocoModule],
+    templateUrl: './task-row.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './task-row.component.scss'
 })
 export class TaskRowComponent {
   item = input.required<MyTaskItem>();

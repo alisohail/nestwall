@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, DestroyRef, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
+
 import { Router } from '@angular/router';
 import {
   ReactiveFormsModule,
@@ -31,11 +31,11 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 }
 
 @Component({
-  selector: 'app-setup',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: './setup.component.html',
-  styleUrl: './setup.component.scss',
+    selector: 'app-setup',
+    imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: './setup.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './setup.component.scss'
 })
 export class SetupComponent {
   private fb = inject(FormBuilder);

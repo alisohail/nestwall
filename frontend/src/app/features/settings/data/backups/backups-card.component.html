@@ -302,8 +302,8 @@
       }
 
       @if (restoreOpen() && !overlayVisible()) {
-        <div class="modal-bg" role="presentation" (click)="closeRestore()">
-          <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="restore-title" data-testid="backups-restore-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeRestore() : null">
+          <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="restore-title" data-testid="backups-restore-dialog">
             <h2 id="restore-title">{{ 'settings.data.backups.restore_title' | transloco }}</h2>
             @if (restoreFile(); as file) {
               <p class="muted" data-testid="backups-restore-message">
@@ -365,8 +365,8 @@
       }
 
       @if (resetOpen() && !overlayVisible()) {
-        <div class="modal-bg" role="presentation" (click)="closeReset()">
-          <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="reset-title" data-testid="reset-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeReset() : null">
+          <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="reset-title" data-testid="reset-dialog">
             <h2 id="reset-title">{{ 'settings.data.reset.dialog_title' | transloco }}</h2>
             <p class="muted">{{ 'settings.data.reset.dialog_desc' | transloco }}</p>
 

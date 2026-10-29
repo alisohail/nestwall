@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AuthService } from '../../core/auth/auth.service';
@@ -21,11 +21,11 @@ function matchingPasswords(group: AbstractControl): ValidationErrors | null {
  * Used on the profile page and in the Family profile dialog for the signed-in parent.
  */
 @Component({
-  selector: 'app-own-password',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: './own-password.component.html',
-  styleUrl: './own-password.component.scss',
+    selector: 'app-own-password',
+    imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: './own-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './own-password.component.scss'
 })
 export class OwnPasswordComponent {
   private fb = inject(FormBuilder);

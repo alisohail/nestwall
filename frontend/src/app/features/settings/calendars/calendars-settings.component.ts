@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -28,11 +28,11 @@ const SYNC_ERROR_CODES = ['invalid_url', 'link_not_allowed', 'too_large', 'inval
 
 /** All calendars in one list: manual calendars and imported ICS calendars. Add, edit name and colour, and delete. */
 @Component({
-  selector: 'app-calendars-settings',
-  standalone: true,
-  imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
-  templateUrl: './calendars-settings.component.html',
-  styleUrl: './calendars-settings.component.scss',
+    selector: 'app-calendars-settings',
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
+    templateUrl: './calendars-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './calendars-settings.component.scss'
 })
 export class CalendarsSettingsComponent {
   private calendar = inject(CalendarService);

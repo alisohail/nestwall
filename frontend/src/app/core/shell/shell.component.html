@@ -131,7 +131,7 @@
   </nav>
 
   @if (moreOpen() && overflowItems().length) {
-    <div class="more-scrim" (click)="moreOpen.set(false)"></div>
+    <div class="more-scrim" role="presentation" (click)="moreOpen.set(false)"></div>
     <div class="more-sheet" role="menu" [attr.aria-label]="'shell.nav.more' | transloco">
       @for (item of overflowItems(); track item.path) {
         <a [routerLink]="item.path" routerLinkActive="active" role="menuitem" (click)="moreOpen.set(false)">

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { forkJoin } from 'rxjs';
@@ -15,11 +15,11 @@ export interface ProfileStats {
 
 /** Points and streak tiles for the child's profile card on the Me page. */
 @Component({
-  selector: 'app-me-profile-stats',
-  standalone: true,
-  imports: [TranslocoModule, SkeletonComponent],
-  templateUrl: './profile-stats.component.html',
-  styleUrl: './profile-stats.component.scss',
+    selector: 'app-me-profile-stats',
+    imports: [TranslocoModule, SkeletonComponent],
+    templateUrl: './profile-stats.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './profile-stats.component.scss'
 })
 export class MeProfileStatsComponent implements OnInit {
   private rewards = inject(RewardsService);

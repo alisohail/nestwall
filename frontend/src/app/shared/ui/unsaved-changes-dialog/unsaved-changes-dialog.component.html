@@ -1,12 +1,11 @@
 @if (unsaved.pending()) {
-  <div class="modal-bg" role="presentation" (click)="unsaved.stay()">
+  <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? unsaved.stay() : null">
     <section
       class="modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="unsaved-title"
       data-testid="unsaved-dialog"
-      (click)="$event.stopPropagation()"
     >
       <h2 id="unsaved-title">{{ 'common.unsaved_title' | transloco }}</h2>
       <p class="sub">{{ 'common.unsaved_body' | transloco }}</p>

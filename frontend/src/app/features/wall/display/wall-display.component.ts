@@ -6,6 +6,7 @@ import {
   computed,
   inject,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslocoModule, TranslocoService } from "@ngneat/transloco";
@@ -116,16 +117,16 @@ interface AgendaRow {
 }
 
 @Component({
-  selector: "app-wall-display",
-  standalone: true,
-  imports: [
-    TranslocoModule,
-    LoadingComponent,
-    WeatherIconComponent,
-    WallScrollCueDirective,
-  ],
-  templateUrl: "./wall-display.component.html",
-  styleUrl: "./wall-display.component.scss",
+    selector: "app-wall-display",
+    imports: [
+        TranslocoModule,
+        LoadingComponent,
+        WeatherIconComponent,
+        WallScrollCueDirective,
+    ],
+    templateUrl: "./wall-display.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./wall-display.component.scss"
 })
 export class WallDisplayComponent implements OnInit, OnDestroy {
   private display = inject(WallDisplayService);

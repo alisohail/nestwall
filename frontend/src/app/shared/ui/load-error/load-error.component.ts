@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ApiError } from '../../../core/api/api-client.service';
 import { ErrorPageComponent } from '../error-page/error-page.component';
@@ -14,11 +14,11 @@ interface LoadErrorReason {
  * (network, access, missing, server or other) and offers a retry.
  */
 @Component({
-  selector: 'app-load-error',
-  standalone: true,
-  host: { role: 'alert' },
-  imports: [TranslocoModule, ErrorPageComponent],
-  template: `
+    selector: 'app-load-error',
+    host: { role: 'alert' },
+    imports: [TranslocoModule, ErrorPageComponent],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    template: `
     <app-error-page
       [icon]="reason().icon"
       tone="danger"
@@ -31,7 +31,7 @@ interface LoadErrorReason {
         {{ 'errors.actions.try_again' | transloco }}
       </button>
     </app-error-page>
-  `,
+  `
 })
 export class LoadErrorComponent {
   readonly error = input<ApiError | null | undefined>(null);

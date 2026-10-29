@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -41,22 +41,22 @@ interface ViewTarget {
 
 /** Family task list with filters, a View popup per task and an Edit page per task. */
 @Component({
-  selector: 'app-tasks',
-  standalone: true,
-  imports: [
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LoadingComponent,
-    RemovePersonConfirmComponent,
-    TaskConfirmComponent,
-    TaskDetailComponent,
-  ],
-  templateUrl: './tasks.component.html',
-  styleUrl: './tasks.component.scss',
+    selector: 'app-tasks',
+    imports: [
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LoadingComponent,
+        RemovePersonConfirmComponent,
+        TaskConfirmComponent,
+        TaskDetailComponent,
+    ],
+    templateUrl: './tasks.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './tasks.component.scss'
 })
 export class TasksComponent {
   private service = inject(TasksService);

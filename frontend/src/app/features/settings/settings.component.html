@@ -56,7 +56,7 @@
 </div>
 
 @if (sheetOpen()) {
-  <div class="sheet-bg" (click)="$event.target === $event.currentTarget && sheetOpen.set(false)">
+  <div class="sheet-bg" role="presentation" (click)="$event.target === $event.currentTarget ? sheetOpen.set(false) : null">
     <div class="sheet" role="dialog" aria-modal="true" [attr.aria-label]="'settings.nav.label' | transloco">
       <div class="sheet-head">
         <span class="grow sheet-title">{{ 'settings.nav.label' | transloco }}</span>

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, OnChanges, OnInit, SimpleChanges, WritableSignal, computed, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnChanges, OnInit, SimpleChanges, WritableSignal, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -48,11 +48,11 @@ interface BandFilter {
 
 /** Today and coming up, from the calendar range. Events only; tasks stay on the Tasks pages. */
 @Component({
-  selector: 'app-agenda-band',
-  standalone: true,
-  imports: [TranslocoModule, NgTemplateOutlet, AvatarComponent, IconComponent, EventDetailComponent, SkeletonComponent],
-  templateUrl: './agenda-band.component.html',
-  styleUrl: './agenda-band.component.scss',
+    selector: 'app-agenda-band',
+    imports: [TranslocoModule, NgTemplateOutlet, AvatarComponent, IconComponent, EventDetailComponent, SkeletonComponent],
+    templateUrl: './agenda-band.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './agenda-band.component.scss'
 })
 export class AgendaBandComponent implements OnInit, OnChanges {
   private calendar = inject(CalendarService);

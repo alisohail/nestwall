@@ -1,4 +1,4 @@
-import { Component, computed, input, model } from '@angular/core';
+import { Component, computed, input, model, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { BannerComponent } from '../../../../shared/ui/banner/banner.component';
 import { formatDay } from '../../tasks.format';
@@ -13,11 +13,11 @@ const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
 /** Repeat rule editor with a live list of the next dates the series creates. */
 @Component({
-  selector: 'app-repeat-builder',
-  standalone: true,
-  imports: [TranslocoModule, BannerComponent],
-  templateUrl: './repeat-builder.component.html',
-  styleUrl: './repeat-builder.component.scss',
+    selector: 'app-repeat-builder',
+    imports: [TranslocoModule, BannerComponent],
+    templateUrl: './repeat-builder.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './repeat-builder.component.scss'
 })
 export class RepeatBuilderComponent {
   state = model.required<RepeatState>();

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -7,7 +7,6 @@ import { catchError, finalize, of } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
-import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { SkeletonComponent } from '../../../shared/ui/skeleton/skeleton.component';
 import { FamilyService, MemberDetail } from '../../family/family.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
@@ -69,11 +68,11 @@ function clock(hhmm: string): string {
 
 /** Publishes a bonus task for one day, with an optional show-from time and end time. */
 @Component({
-  selector: 'app-bonus-new',
-  standalone: true,
-  imports: [FormsModule, RouterLink, TranslocoModule, AvatarComponent, BannerComponent, LoadingComponent, SkeletonComponent],
-  templateUrl: './bonus-new.component.html',
-  styleUrl: './bonus-new.component.scss',
+    selector: 'app-bonus-new',
+    imports: [FormsModule, RouterLink, TranslocoModule, AvatarComponent, BannerComponent, SkeletonComponent],
+    templateUrl: './bonus-new.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './bonus-new.component.scss'
 })
 export class BonusNewComponent implements UnsavedChangesAware {
   private api = inject(BonusService);

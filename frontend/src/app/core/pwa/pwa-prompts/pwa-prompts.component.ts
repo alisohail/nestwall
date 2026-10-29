@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SwUpdate } from '@angular/service-worker';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -13,11 +13,11 @@ interface BeforeInstallPromptEvent extends Event {
 
 /** Offers to install the app and to reload when a new version is ready. */
 @Component({
-  selector: 'app-pwa-prompts',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './pwa-prompts.component.html',
-  styleUrl: './pwa-prompts.component.scss',
+    selector: 'app-pwa-prompts',
+    imports: [TranslocoModule],
+    templateUrl: './pwa-prompts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './pwa-prompts.component.scss'
 })
 export class PwaPromptsComponent {
   private readonly swUpdate = inject(SwUpdate);

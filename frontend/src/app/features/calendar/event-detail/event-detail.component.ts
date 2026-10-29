@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, inject, input, output, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
@@ -25,11 +25,11 @@ function dateIn(iso: string, zone: string): string {
 
 /** Details of one calendar item. Events can be edited here; task deadlines open the task. */
 @Component({
-  selector: 'app-event-detail',
-  standalone: true,
-  imports: [TranslocoModule, IconComponent, AvatarComponent, TaskConfirmComponent, RemovePersonConfirmComponent],
-  templateUrl: './event-detail.component.html',
-  styleUrl: './event-detail.component.scss',
+    selector: 'app-event-detail',
+    imports: [TranslocoModule, IconComponent, AvatarComponent, TaskConfirmComponent, RemovePersonConfirmComponent],
+    templateUrl: './event-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './event-detail.component.scss'
 })
 export class EventDetailComponent {
   private router = inject(Router);

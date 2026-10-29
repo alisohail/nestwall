@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, HostListener, computed, effect, inject, input, output, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, computed, effect, inject, input, output, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { ApiError } from '../../core/api/api-client.service';
@@ -60,11 +60,11 @@ function uploadErrorKey(err: ApiError): string {
  * then saves it, or goes back to the letter. Hosts open it with @if and close it on (closed).
  */
 @Component({
-  selector: 'app-photo-editor',
-  standalone: true,
-  imports: [TranslocoModule, AvatarComponent, IconComponent],
-  templateUrl: './photo-editor.component.html',
-  styleUrl: './photo-editor.component.scss',
+    selector: 'app-photo-editor',
+    imports: [TranslocoModule, AvatarComponent, IconComponent],
+    templateUrl: './photo-editor.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './photo-editor.component.scss'
 })
 export class PhotoEditorComponent {
   private avatars = inject(AvatarService);

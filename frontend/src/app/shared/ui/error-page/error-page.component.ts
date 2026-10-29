@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 
 export type ErrorPageTone = 'danger' | 'calm' | 'warm';
@@ -8,11 +8,11 @@ export type ErrorPageTone = 'danger' | 'calm' | 'warm';
  * Projected content is the action row (buttons or links).
  */
 @Component({
-  selector: 'app-error-page',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './error-page.component.html',
-  styleUrl: './error-page.component.scss',
+    selector: 'app-error-page',
+    imports: [TranslocoModule],
+    templateUrl: './error-page.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './error-page.component.scss'
 })
 export class ErrorPageComponent {
   readonly icon = input.required<string>();

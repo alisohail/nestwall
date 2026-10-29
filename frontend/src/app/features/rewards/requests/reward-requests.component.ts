@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -20,11 +20,11 @@ interface Notice {
 
 /** Every reward request the child has made, newest first, one page at a time. */
 @Component({
-  selector: 'app-reward-requests',
-  standalone: true,
-  imports: [DatePipe, RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
-  templateUrl: './reward-requests.component.html',
-  styleUrl: './reward-requests.component.scss',
+    selector: 'app-reward-requests',
+    imports: [DatePipe, RouterLink, TranslocoModule, BannerComponent, LoadErrorComponent, LoadingComponent],
+    templateUrl: './reward-requests.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './reward-requests.component.scss'
 })
 export class RewardRequestsComponent implements OnInit {
   protected auth = inject(AuthService);

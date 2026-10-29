@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, ElementRef, ViewChild, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -61,15 +61,16 @@ import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.com
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
-  selector: 'app-bonus-templates-settings',
-  standalone: true,
-  imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
-  templateUrl: './bonus-templates-settings.component.html',
-  styleUrl: './bonus-templates-settings.component.scss',
+    selector: 'app-bonus-templates-settings',
+    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    templateUrl: './bonus-templates-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './bonus-templates-settings.component.scss'
 })
 export class BonusTemplatesSettingsComponent implements UnsavedChangesAware {
   private service = inject(TasksService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   /** The values as last loaded or saved. Anything else counts as unsaved. */
   private defaultsBaseline = '';
   private editorBaseline = '';
@@ -149,6 +150,7 @@ export class BonusTemplatesSettingsComponent implements UnsavedChangesAware {
     this.defaultsEnds = defaults.ends ?? '';
     this.defaultsApproval = approvalChoice(defaults.approval_required);
     this.defaultsBaseline = this.defaultsSnapshot();
+    this.cdr.markForCheck();
   }
 
   hasUnsavedChanges(): boolean {
@@ -346,6 +348,7 @@ export class BonusTemplatesSettingsComponent implements UnsavedChangesAware {
             this.creating.set(false);
             this.form = formOf(saved);
             this.editorBaseline = this.editorSnapshot();
+            this.cdr.markForCheck();
             this.submitted.set(false);
             this.saved.set(true);
             resolve(true);

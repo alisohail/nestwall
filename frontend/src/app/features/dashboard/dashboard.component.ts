@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -45,21 +45,21 @@ const NO_ITEMS: DashboardItem[] = [];
 
 /** Parent home. Shows the day's band, counts, people progress, approvals, bonus tasks and recent activity. */
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    IconComponent,
-    LoadingComponent,
-    LoadErrorComponent,
-    AgendaBandComponent,
-    WeatherTileComponent,
-  ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+    selector: 'app-dashboard',
+    imports: [
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        IconComponent,
+        LoadingComponent,
+        LoadErrorComponent,
+        AgendaBandComponent,
+        WeatherTileComponent,
+    ],
+    templateUrl: './dashboard.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
   private service = inject(DashboardService);

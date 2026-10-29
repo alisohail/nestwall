@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -59,21 +59,21 @@ export interface BonusListRow {
 
 /** Parent Bonus tasks page. Today's tasks with the claim state and the approval actions. */
 @Component({
-  selector: 'app-bonus',
-  standalone: true,
-  imports: [
-    FormsModule,
-    NgTemplateOutlet,
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    BannerComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LoadingComponent,
-  ],
-  templateUrl: './bonus.component.html',
-  styleUrl: './bonus.component.scss',
+    selector: 'app-bonus',
+    imports: [
+        FormsModule,
+        NgTemplateOutlet,
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        BannerComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LoadingComponent,
+    ],
+    templateUrl: './bonus.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './bonus.component.scss'
 })
 export class BonusComponent {
   private api = inject(BonusService);

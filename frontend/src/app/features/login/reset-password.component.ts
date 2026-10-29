@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -15,11 +15,11 @@ type ResetState = 'form' | 'done' | 'invalid';
  * session out, so the user goes to sign in again.
  */
 @Component({
-  selector: 'app-reset-password',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslocoModule, BannerComponent],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.scss',
+    selector: 'app-reset-password',
+    imports: [ReactiveFormsModule, RouterLink, TranslocoModule, BannerComponent],
+    templateUrl: './reset-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './reset-password.component.scss'
 })
 export class ResetPasswordComponent {
   private fb = inject(FormBuilder);

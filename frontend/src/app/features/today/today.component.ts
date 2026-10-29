@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -57,24 +57,24 @@ export interface PartGroup {
 
 /** Child home. Today's progress, streak, catch-up, today's tasks grouped by part of day, and tomorrow. */
 @Component({
-  selector: 'app-today',
-  standalone: true,
-  imports: [
-    LoadingComponent,
-    SkeletonComponent,
-    RouterLink,
-    TranslocoModule,
-    AvatarComponent,
-    LoadErrorComponent,
-    TaskRowComponent,
-    TodayTaskComponent,
-    MyBadgesPillComponent,
-    KidBonusListComponent,
-    AllDoneComponent,
-    WeatherTileComponent,
-  ],
-  templateUrl: './today.component.html',
-  styleUrl: './today.component.scss',
+    selector: 'app-today',
+    imports: [
+        LoadingComponent,
+        SkeletonComponent,
+        RouterLink,
+        TranslocoModule,
+        AvatarComponent,
+        LoadErrorComponent,
+        TaskRowComponent,
+        TodayTaskComponent,
+        MyBadgesPillComponent,
+        KidBonusListComponent,
+        AllDoneComponent,
+        WeatherTileComponent,
+    ],
+    templateUrl: './today.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './today.component.scss'
 })
 export class TodayComponent {
   private service = inject(MyTasksService);

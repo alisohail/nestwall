@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@ngneat/transloco';
 import { AvatarService } from './avatar.service';
 
@@ -7,12 +7,12 @@ export type AvatarDisplaySize = 'chip' | 'xs' | 'sm' | 'list' | 'nav' | 'md' | '
 
 /** Shows a member's picture, or their initial on the member colour when there is no picture. */
 @Component({
-  selector: 'app-avatar',
-  standalone: true,
-  imports: [TranslocoModule],
-  templateUrl: './avatar.component.html',
-  styleUrl: './avatar.component.scss',
-  host: { '[attr.title]': 'name()' },
+    selector: 'app-avatar',
+    imports: [TranslocoModule],
+    templateUrl: './avatar.component.html',
+    styleUrl: './avatar.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    host: { '[attr.title]': 'name()' }
 })
 export class AvatarComponent {
   private avatars = inject(AvatarService);

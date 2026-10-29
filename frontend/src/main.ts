@@ -1,9 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { APP_INITIALIZER, ErrorHandler, isDevMode } from '@angular/core';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
+import { APP_INITIALIZER, ErrorHandler, isDevMode, provideZonelessChangeDetection } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideTransloco } from '@ngneat/transloco';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -16,9 +15,10 @@ import { GlobalErrorHandler } from './app/core/errors/global-error-handler';
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     // Issue a GET first so the CSRF token header is captured before any POST (e.g. direct /login visit).
     {
       provide: APP_INITIALIZER,
@@ -27,7 +27,6 @@ bootstrapApplication(AppComponent, {
       useFactory: (api: ApiClient) => () =>
         firstValueFrom(api.get('/api/v1/health/live').pipe(catchError(() => of(null)))),
     },
-    provideAnimations(),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',

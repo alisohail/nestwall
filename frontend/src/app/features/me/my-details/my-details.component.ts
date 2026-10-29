@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -10,11 +10,11 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
 
 @Component({
-  selector: 'app-my-details',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
-  templateUrl: './my-details.component.html',
-  styleUrl: './my-details.component.scss',
+    selector: 'app-my-details',
+    imports: [ReactiveFormsModule, TranslocoModule, BannerComponent, LoadingComponent],
+    templateUrl: './my-details.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './my-details.component.scss'
 })
 export class MyDetailsComponent implements UnsavedChangesAware {
   private fb = inject(FormBuilder);

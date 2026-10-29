@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, HostListener, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -30,16 +30,17 @@ import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.com
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
-  selector: 'app-task-categories-settings',
-  standalone: true,
-  imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
-  templateUrl: './task-categories-settings.component.html',
-  styleUrl: './task-categories-settings.component.scss',
+    selector: 'app-task-categories-settings',
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
+    templateUrl: './task-categories-settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './task-categories-settings.component.scss'
 })
 export class TaskCategoriesSettingsComponent implements UnsavedChangesAware {
   private service = inject(TasksService);
   private transloco = inject(TranslocoService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   /** The part-of-day times as last loaded or saved. Anything else counts as unsaved. */
   private baseline = '';
 
@@ -98,6 +99,7 @@ export class TaskCategoriesSettingsComponent implements UnsavedChangesAware {
     this.settings.set(settings);
     this.partTimes = { ...settings.part_of_day };
     this.baseline = this.snapshot();
+    this.cdr.markForCheck();
   }
 
   // Category list

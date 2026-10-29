@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 
 export type BannerTone = 'info' | 'success' | 'warning' | 'error';
 
@@ -18,6 +18,7 @@ const DEFAULT_ICON: Record<BannerTone, string> = {
   selector: 'app-banner',
   standalone: true,
   templateUrl: './banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './banner.component.scss',
 })
 export class BannerComponent {

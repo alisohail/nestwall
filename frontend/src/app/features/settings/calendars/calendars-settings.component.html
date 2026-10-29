@@ -134,7 +134,7 @@
 }
 
 @if (modalOpen()) {
-  <div class="modal-bg" (click)="closeOnBackdrop($event)">
+  <div class="modal-bg" role="presentation" (click)="closeOnBackdrop($event)">
     <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="(isEditing() ? 'settings.calendars.edit_title' : 'settings.calendars.new_title') | transloco">
         <h2>{{ (isEditing() ? 'settings.calendars.edit_title' : 'settings.calendars.new_title') | transloco }}</h2>
 
