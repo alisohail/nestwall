@@ -577,7 +577,7 @@ describe('DashboardComponent', () => {
         const row = el(fixture, 'reward-row');
         expect(row?.textContent).toContain('Reward: Pick dessert');
         expect(row?.textContent).toContain('40 points');
-        expect(el(fixture, 'review-btn')?.getAttribute('href')).toBe('/approvals');
+        expect(el(fixture, 'review-btn')?.getAttribute('href')).toBe('/approvals?tab=requests');
     });
 
     it('shows points earned this week on the tile and per person', () => {

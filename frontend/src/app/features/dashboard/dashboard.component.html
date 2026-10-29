@@ -262,6 +262,7 @@
               <a
                 class="btn soft sm"
                 routerLink="/approvals"
+                [queryParams]="{ tab: 'requests' }"
                 data-testid="review-btn"
                 [attr.aria-label]="'dashboard.approvals.review_label' | transloco: { name: r.reward_name, member: r.member_name }"
               >
