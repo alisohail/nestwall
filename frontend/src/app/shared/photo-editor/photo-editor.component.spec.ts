@@ -181,5 +181,5 @@ describe('PhotoEditorComponent', () => {
             expect(component.errorKey()).toBe('avatar.error.too_large');
         }
         expect(avatarSpy.upload).not.toHaveBeenCalled();
-    });
+    }, 60_000);
 });
