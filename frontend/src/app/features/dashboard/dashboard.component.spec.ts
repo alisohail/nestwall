@@ -16,6 +16,7 @@ import { TasksService } from '../tasks/tasks.service';
 import { DashboardComponent } from './dashboard.component';
 import { ParentDashboard } from './dashboard.models';
 import { DashboardService } from './dashboard.service';
+import { WallDeviceView, WallDevicesService } from '../settings/wall-devices/wall-devices.service';
 
 const member = {
     member_id: 'm1',
@@ -195,6 +196,7 @@ describe('DashboardComponent', () => {
     let bonus: MockedObject<BonusService>;
     let calendar: MockedObject<CalendarService>;
     let family: MockedObject<FamilyService>;
+    let wallDevices: MockedObject<WallDevicesService>;
 
     beforeEach(async () => {
         dashboards = mockOf<DashboardService>({
@@ -217,6 +219,10 @@ describe('DashboardComponent', () => {
             listMembers: vi.fn().mockName("FamilyService.listMembers")
         });
         family.listMembers.mockReturnValue(of({ members: [] }));
+        wallDevices = mockOf<WallDevicesService>({
+            list: vi.fn().mockName("WallDevicesService.list")
+        });
+        wallDevices.list.mockReturnValue(of([]));
 
         await TestBed.configureTestingModule({
             imports: [DashboardComponent, getTranslocoTestingModule()],
@@ -229,6 +235,7 @@ describe('DashboardComponent', () => {
                 { provide: BonusService, useValue: bonus },
                 { provide: CalendarService, useValue: calendar },
                 { provide: FamilyService, useValue: family },
+                { provide: WallDevicesService, useValue: wallDevices },
             ],
         }).compileComponents();
     });
@@ -679,6 +686,26 @@ describe('DashboardComponent', () => {
         const fixture = create();
 
         expect(el(fixture, 'kitchen-tablet')?.textContent).toContain('No kitchen tablet is paired yet.');
+    });
+
+    it('shows the paired kitchen tablet by name', () => {
+        const paired: WallDeviceView = {
+            id: 'w1', name: 'Kitchen wall', status: 'online', paired_at: '2026-10-03T10:00:00Z', last_seen_at: null,
+        };
+        wallDevices.list.mockReturnValue(of([{ ...paired, id: 'w0', name: 'Old wall', paired_at: null, status: 'pending' }, paired]));
+
+        const fixture = create();
+
+        expect(el(fixture, 'kitchen-tablet')?.textContent).toContain('Kitchen wall is paired');
+        expect(el(fixture, 'kitchen-tablet')?.textContent).not.toContain('No kitchen tablet');
+    });
+
+    it('hides the kitchen tablet card when the wall list fails', () => {
+        wallDevices.list.mockReturnValue(throwError(() => new Error('boom')));
+
+        const fixture = create();
+
+        expect(el(fixture, 'kitchen-tablet')).toBeNull();
     });
 
     it('approves a copy and reloads the dashboard', () => {

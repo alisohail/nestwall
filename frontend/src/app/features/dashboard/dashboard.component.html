@@ -301,9 +301,15 @@
           </a>
         </section>
 
-        <app-banner tone="info" icon="monitor" data-testid="kitchen-tablet">
-          <span>{{ 'dashboard.tablet.empty' | transloco }}</span>
-        </app-banner>
+        @if (pairedTablet(); as tablet) {
+          <app-banner tone="info" icon="monitor" data-testid="kitchen-tablet">
+            <span>{{ 'dashboard.tablet.paired' | transloco: { name: tablet.name, date: when(tablet.paired_at!) } }}</span>
+          </app-banner>
+        } @else if (wallDevices()) {
+          <app-banner tone="info" icon="monitor" data-testid="kitchen-tablet">
+            <span>{{ 'dashboard.tablet.empty' | transloco }}</span>
+          </app-banner>
+        }
       </div>
     </div>
   } @else if (loadState() === 'error') {

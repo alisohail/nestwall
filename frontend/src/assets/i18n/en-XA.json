@@ -838,7 +838,8 @@
       "empty": "[=== Aadd faamily meembers too seee theeir progresss. ===]"
     },
     "tablet": {
-      "empty": "[=== No kiitchen tabblet iis paaired yeet. ===]"
+      "empty": "[=== No kiitchen tabblet iis paaired yeet. ===]",
+      "paired": "[=== {{ name }} iis paaired, siince {{ date }}. ===]"
     },
     "approvals": {
       "title": "[=== Neeeds yoour aapprovaal ===]",

@@ -813,7 +813,8 @@
       "empty": "Add family members to see their progress."
     },
     "tablet": {
-      "empty": "No kitchen tablet is paired yet."
+      "empty": "No kitchen tablet is paired yet.",
+      "paired": "{{ name }} is paired, since {{ date }}."
     },
     "approvals": {
       "title": "Needs your approval",

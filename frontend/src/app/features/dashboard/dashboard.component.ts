@@ -16,6 +16,7 @@ import { BonusService } from '../bonus/bonus.service';
 import { BonusClaim, BonusTask } from '../bonus/bonus.models';
 import { taskErrorKey } from '../tasks/tasks.format';
 import { TasksService } from '../tasks/tasks.service';
+import { WallDeviceView, WallDevicesService } from '../settings/wall-devices/wall-devices.service';
 import { DashboardActivity, DashboardApproval, DashboardItem, DashboardPerson, ParentDashboard } from './dashboard.models';
 import { DashboardService } from './dashboard.service';
 
@@ -67,6 +68,7 @@ export class DashboardComponent {
   private destroyRef = inject(DestroyRef);
   private auth = inject(AuthService);
   private bonusApi = inject(BonusService);
+  private wallDevicesApi = inject(WallDevicesService);
   private timeFormat = inject(TimeFormatService);
 
   /** Only parents with settings access can set up the weather location. Hint only; the server enforces it. */
@@ -81,6 +83,10 @@ export class DashboardComponent {
   /** Today's bonus tasks without cancelled ones. Null until the first load finishes. */
   bonusTasks = signal<BonusTask[] | null>(null);
   bonusError = signal(false);
+  /** Wall devices the family has set up. Null until loaded, or when loading failed (the tablet card then stays hidden). */
+  wallDevices = signal<WallDeviceView[] | null>(null);
+  /** The paired kitchen wall, if any. Waiting devices that were never paired do not count. */
+  pairedTablet = computed(() => this.wallDevices()?.find((device) => device.paired_at !== null) ?? null);
   bonusRows = computed<DashboardBonusRow[]>(() => (this.bonusTasks() ?? []).map((task) => this.bonusRow(task)));
   /** Key of the approval in progress, so a second click cannot send the same request twice. */
   approving = signal<string | null>(null);
@@ -143,6 +149,17 @@ export class DashboardComponent {
         },
       });
     this.loadBonus();
+    this.loadWallDevices();
+  }
+
+  private loadWallDevices(): void {
+    this.wallDevicesApi
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (devices) => this.wallDevices.set(devices),
+        error: () => this.wallDevices.set(null),
+      });
   }
 
   /** Loads today's bonus tasks. A failure hides the list and shows a short message; the rest of the page still works. */
