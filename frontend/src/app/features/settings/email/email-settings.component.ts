@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnDestroy, OnInit, TemplateRef, ViewChild, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnDestroy, OnInit, TemplateRef, ViewChild, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -61,6 +61,7 @@ export class EmailSettingsComponent implements OnInit, OnDestroy, UnsavedChanges
   private api = inject(EmailSettingsService);
   private auth = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   private header = inject(SettingsHeaderService);
   /** The values as last loaded or saved. Anything else counts as unsaved. */
   private baseline = '';
@@ -254,6 +255,7 @@ export class EmailSettingsComponent implements OnInit, OnDestroy, UnsavedChanges
     this.ready.set(s.ready);
     this.provider.set(providerOf(s.host));
     this.baseline = this.snapshot();
+    this.cdr.markForCheck();
   }
 
   private snapshot(): string {

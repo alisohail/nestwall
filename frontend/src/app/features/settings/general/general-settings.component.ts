@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -45,6 +45,7 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
   private auth = inject(AuthService);
   private family = inject(FamilyService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   /** The values as last loaded or saved. Anything else counts as unsaved. */
   private baseline = '';
 
@@ -102,6 +103,7 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
         this.canManageFamily.set(this.auth.can('family.manage'));
         this.canManageTime.set(this.auth.can('settings.manage'));
         this.familyDraft = this.familyName();
+        this.cdr.markForCheck();
       });
     this.load();
   }
@@ -165,6 +167,7 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
           this.auth.setFamilyName(res.family_name);
           this.familyDraft = res.family_name;
           this.familySaving.set(false);
+          this.cdr.markForCheck();
         },
         error: () => {
           this.familySaving.set(false);
@@ -247,6 +250,7 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
       this.detectError.set(`settings.general.detect_error.${kind}`);
     } finally {
       this.detecting.set(false);
+      this.cdr.markForCheck();
     }
   }
 
@@ -294,6 +298,7 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
     this.animation = s.animation;
     this.hasLocation.set(s.latitude !== null && s.longitude !== null);
     this.baseline = this.snapshot();
+    this.cdr.markForCheck();
   }
 
   private snapshot(): string {

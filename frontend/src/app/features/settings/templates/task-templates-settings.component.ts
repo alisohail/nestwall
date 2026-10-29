@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, ViewChild, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, ElementRef, ViewChild, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -46,6 +46,7 @@ export class TaskTemplatesSettingsComponent implements UnsavedChangesAware {
   private family = inject(FamilyService);
   private transloco = inject(TranslocoService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   /** The values as last loaded or saved. Anything else counts as unsaved. */
   private defaultsBaseline = '';
   private editorBaseline = '';
@@ -131,6 +132,7 @@ export class TaskTemplatesSettingsComponent implements UnsavedChangesAware {
     this.defaultsMissedUnit = defaults.missed_after?.unit ?? 'days';
     this.defaultsApproval = approvalChoice(defaults.approval_required);
     this.defaultsBaseline = this.defaultsSnapshot();
+    this.cdr.markForCheck();
   }
 
   hasUnsavedChanges(): boolean {
@@ -335,6 +337,7 @@ export class TaskTemplatesSettingsComponent implements UnsavedChangesAware {
             this.creating.set(false);
             this.form = templateToForm(saved);
             this.editorBaseline = this.editorSnapshot();
+            this.cdr.markForCheck();
             this.submitted.set(false);
             this.saved.set(true);
             resolve(true);

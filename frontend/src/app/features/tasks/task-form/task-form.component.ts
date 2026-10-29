@@ -6,6 +6,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, catchError, concatMap, forkJoin, from, map, of, toArray } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
+import { refreshOnFormChange } from '../../../shared/forms/refresh-on-form-change';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
 import { ErrorStateComponent } from '../../../shared/ui/error-state/error-state.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
@@ -111,6 +112,8 @@ export class TaskFormComponent implements UnsavedChangesAware {
     penalty_unit: ['percent' as PenaltyUnit],
   });
   readonly f = this.form.controls;
+  /** Programmatic patches (template or saved task loads) must refresh validity in the view. */
+  private refreshOnForm = refreshOnFormChange(this.form);
 
   formValue = toSignal(this.form.valueChanges.pipe(map(() => this.form.getRawValue())), { initialValue: this.form.getRawValue() });
   dueDate = toSignal(this.f.due_date.valueChanges, { initialValue: this.today });

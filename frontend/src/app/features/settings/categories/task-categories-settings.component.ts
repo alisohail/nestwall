@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, HostListener, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
@@ -40,6 +40,7 @@ export class TaskCategoriesSettingsComponent implements UnsavedChangesAware {
   private service = inject(TasksService);
   private transloco = inject(TranslocoService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   /** The part-of-day times as last loaded or saved. Anything else counts as unsaved. */
   private baseline = '';
 
@@ -98,6 +99,7 @@ export class TaskCategoriesSettingsComponent implements UnsavedChangesAware {
     this.settings.set(settings);
     this.partTimes = { ...settings.part_of_day };
     this.baseline = this.snapshot();
+    this.cdr.markForCheck();
   }
 
   // Category list

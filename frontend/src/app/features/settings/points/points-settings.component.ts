@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -29,6 +29,7 @@ export class PointsSettingsComponent implements UnsavedChangesAware {
   private sharing = inject(SharingService);
   private rewards = inject(RewardsService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   /** The sharing rules and the spending default as last loaded or saved. */
   private baseline = '';
   private spendBaseline = '';
@@ -77,6 +78,7 @@ export class PointsSettingsComponent implements UnsavedChangesAware {
           this.approvalDefault = s.approval_required_default;
           this.spendBaseline = this.spendSnapshot();
           this.spendState.set('ready');
+          this.cdr.markForCheck();
         },
         error: (err: ApiError) => {
           this.spendError.set(settingsErrorKey(err));
@@ -106,6 +108,7 @@ export class PointsSettingsComponent implements UnsavedChangesAware {
             this.approvalDefault = s.approval_required_default;
             this.spendBaseline = this.spendSnapshot();
             this.spendSaved.set(true);
+            this.cdr.markForCheck();
             resolve(true);
           },
           error: (err: ApiError) => {
@@ -166,6 +169,7 @@ export class PointsSettingsComponent implements UnsavedChangesAware {
     this.notifyRecipient = s.notify_recipient;
     this.notifyParents = s.notify_parents;
     this.baseline = this.snapshot();
+    this.cdr.markForCheck();
   }
 
   private snapshot(): string {

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit, computed, inject, signal, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
@@ -69,6 +69,7 @@ export class BackupsCardComponent implements OnInit {
   private auth = inject(AuthService);
   timeFormat = inject(TimeFormatService);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
   private document = inject(DOCUMENT);
 
   /** Restore needs `backup.restore` and reset needs `data.reset`. The server checks both too. */
@@ -288,6 +289,7 @@ export class BackupsCardComponent implements OnInit {
           // The password field is cleared on failure, so the prompt stays open for a retry.
           this.downloadPassword = '';
           this.downloadError.set(errorKey(err, 'download_failed'));
+          this.cdr.markForCheck();
         },
       });
   }
@@ -349,6 +351,7 @@ export class BackupsCardComponent implements OnInit {
           // The password is cleared on failure, so the dialog stays open for a retry.
           this.restorePassword = '';
           this.restoreError.set(errorKey(err, 'restore_failed'));
+          this.cdr.markForCheck();
         },
       });
   }
@@ -413,6 +416,7 @@ export class BackupsCardComponent implements OnInit {
           this.resetPassword = '';
           this.resetting.set(false);
           this.resetError.set(resetErrorKey(err));
+          this.cdr.markForCheck();
         },
       });
   }
