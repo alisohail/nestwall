@@ -562,9 +562,11 @@ describe('DashboardComponent', () => {
         const fixture = create();
 
         const tile = el(fixture, 'stat-waiting');
-        expect(tile?.getAttribute('href')).toBe('/approvals');
+        expect(tile?.querySelector('a.stat-link')?.getAttribute('href')).toBe('/approvals');
         expect(tile?.textContent).toContain('Task (1)');
         expect(tile?.textContent).toContain('Rewards (1)');
+        expect(el(fixture, 'stat-waiting-tasks')?.getAttribute('href')).toBe('/approvals?tab=tasks');
+        expect(el(fixture, 'stat-waiting-rewards')?.getAttribute('href')).toBe('/approvals?tab=requests');
         expect(el(fixture, 'approvals-all')?.textContent).toContain('See all 2');
         expect(el(fixture, 'approvals-all')?.getAttribute('href')).toBe('/approvals');
     });

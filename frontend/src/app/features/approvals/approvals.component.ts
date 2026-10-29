@@ -1,6 +1,7 @@
 import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Observable, catchError, concatMap, from, map, of, toArray } from 'rxjs';
 import { ApiError } from '../../core/api/api-client.service';
@@ -20,6 +21,7 @@ import { TaskListItem } from '../tasks/tasks.models';
 import { TasksService } from '../tasks/tasks.service';
 
 export type ApprovalTab = 'tasks' | 'requests' | 'history';
+const APPROVAL_TABS: readonly string[] = ['tasks', 'requests', 'history'];
 type LoadState = 'loading' | 'ready' | 'error';
 
 /** A translation key with its parameters, shown in the notice banner. */
@@ -66,6 +68,7 @@ export class ApprovalsComponent {
   private rewardsApi = inject(RewardsService);
   private familyApi = inject(FamilyService);
   private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
   private timeFormat = inject(TimeFormatService);
 
   readonly maxNote = NOTE_MAX;
@@ -149,6 +152,10 @@ export class ApprovalsComponent {
     this.loadBonus();
     this.loadRequests();
     this.loadHistory(true);
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const tab = params.get('tab');
+      if (tab && APPROVAL_TABS.includes(tab)) this.tab.set(tab as ApprovalTab);
+    });
   }
 
   setTab(tab: ApprovalTab): void {

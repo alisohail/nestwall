@@ -61,24 +61,26 @@
           </div>
         </div>
       </div>
-      <a class="card stat stat-link" routerLink="/approvals" data-testid="stat-waiting">
-        <p class="stat-label">{{ 'dashboard.stats.waiting' | transloco }}</p>
-        <div class="stat-main">
-          <div class="stat-body">
-            <p class="stat-value" [class.warn]="waitingTotal() > 0">{{ waitingTotal() }}</p>
-            @if (waitingTotal() > 0) {
-              <div class="meter" aria-hidden="true">
-                <i class="tasks" [style.flex-grow]="d.summary.waiting_approval"></i>
-                <i class="rewards" [style.flex-grow]="d.summary.waiting_reward_requests"></i>
-              </div>
-            }
-            <p class="stat-sub">
-              <span class="stat-chip tasks">{{ 'dashboard.stats.waiting_sub_tasks' | transloco: { count: d.summary.waiting_approval } }}</span>
-              <span class="stat-chip rewards">{{ 'dashboard.stats.waiting_sub_rewards' | transloco: { count: d.summary.waiting_reward_requests } }}</span>
-            </p>
+      <div class="card stat" data-testid="stat-waiting">
+        <a class="stat-link" routerLink="/approvals">
+          <p class="stat-label">{{ 'dashboard.stats.waiting' | transloco }}</p>
+          <div class="stat-main">
+            <div class="stat-body">
+              <p class="stat-value" [class.warn]="waitingTotal() > 0">{{ waitingTotal() }}</p>
+              @if (waitingTotal() > 0) {
+                <div class="meter" aria-hidden="true">
+                  <i class="tasks" [style.flex-grow]="d.summary.waiting_approval"></i>
+                  <i class="rewards" [style.flex-grow]="d.summary.waiting_reward_requests"></i>
+                </div>
+              }
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
+        <p class="stat-sub">
+          <a class="stat-chip tasks" routerLink="/approvals" [queryParams]="{ tab: 'tasks' }" data-testid="stat-waiting-tasks">{{ 'dashboard.stats.waiting_sub_tasks' | transloco: { count: d.summary.waiting_approval } }}</a>
+          <a class="stat-chip rewards" routerLink="/approvals" [queryParams]="{ tab: 'requests' }" data-testid="stat-waiting-rewards">{{ 'dashboard.stats.waiting_sub_rewards' | transloco: { count: d.summary.waiting_reward_requests } }}</a>
+        </p>
+      </div>
       <div class="card stat" data-testid="stat-points">
         <p class="stat-label">{{ 'dashboard.stats.points_week' | transloco }}</p>
         <div class="stat-main">
