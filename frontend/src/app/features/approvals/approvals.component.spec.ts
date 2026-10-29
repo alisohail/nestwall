@@ -2,7 +2,8 @@ import type { MockedObject } from "vitest";
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NEVER, of, throwError } from 'rxjs';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { BehaviorSubject, NEVER, of, throwError } from 'rxjs';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
 import { BonusTask } from '../bonus/bonus.models';
 import { BonusService } from '../bonus/bonus.service';
@@ -77,6 +78,7 @@ describe('ApprovalsComponent', () => {
     let tasks: MockedObject<TasksService>;
     let rewards: MockedObject<RewardsService>;
     let bonus: MockedObject<BonusService>;
+    let queryParams: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
     function build(): void {
         fixture = TestBed.createComponent(ApprovalsComponent);
@@ -110,6 +112,7 @@ describe('ApprovalsComponent', () => {
     }
 
     beforeEach(async () => {
+        queryParams = new BehaviorSubject(convertToParamMap({}));
         tasks = mockOf<TasksService>({
             list: vi.fn().mockName("TasksService.list"),
             approve: vi.fn().mockName("TasksService.approve"),
@@ -142,6 +145,7 @@ describe('ApprovalsComponent', () => {
             providers: [
                 provideHttpClient(withXhr()),
                 provideHttpClientTesting(),
+                { provide: ActivatedRoute, useValue: { queryParamMap: queryParams } },
                 { provide: TasksService, useValue: tasks },
                 { provide: RewardsService, useValue: rewards },
                 { provide: BonusService, useValue: bonus },
@@ -191,6 +195,19 @@ describe('ApprovalsComponent', () => {
         expect(steps?.length).toBe(2);
         expect(steps?.[0].querySelector('.box')?.classList.contains('on')).toBe(true);
         expect(steps?.[1].querySelector('.box')?.classList.contains('on')).toBe(false);
+    });
+
+    it('should open the tab named in the tab query param', () => {
+        queryParams.next(convertToParamMap({ tab: 'requests' }));
+        build();
+        expect(el('[data-testid="panel-requests"]')).toBeTruthy();
+        expect(el('[data-testid="tab-requests"]')?.getAttribute('aria-selected')).toBe('true');
+    });
+
+    it('should ignore an unknown tab query param', () => {
+        queryParams.next(convertToParamMap({ tab: 'nope' }));
+        build();
+        expect(el('[data-testid="panel-tasks"]')).toBeTruthy();
     });
 
     it('should switch between tabs and keep aria-selected in step', () => {

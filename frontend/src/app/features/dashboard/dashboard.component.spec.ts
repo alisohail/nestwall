@@ -16,6 +16,7 @@ import { TasksService } from '../tasks/tasks.service';
 import { DashboardComponent } from './dashboard.component';
 import { ParentDashboard } from './dashboard.models';
 import { DashboardService } from './dashboard.service';
+import { WallDeviceView, WallDevicesService } from '../settings/wall-devices/wall-devices.service';
 
 const member = {
     member_id: 'm1',
@@ -195,6 +196,7 @@ describe('DashboardComponent', () => {
     let bonus: MockedObject<BonusService>;
     let calendar: MockedObject<CalendarService>;
     let family: MockedObject<FamilyService>;
+    let wallDevices: MockedObject<WallDevicesService>;
 
     beforeEach(async () => {
         dashboards = mockOf<DashboardService>({
@@ -217,6 +219,10 @@ describe('DashboardComponent', () => {
             listMembers: vi.fn().mockName("FamilyService.listMembers")
         });
         family.listMembers.mockReturnValue(of({ members: [] }));
+        wallDevices = mockOf<WallDevicesService>({
+            list: vi.fn().mockName("WallDevicesService.list")
+        });
+        wallDevices.list.mockReturnValue(of([]));
 
         await TestBed.configureTestingModule({
             imports: [DashboardComponent, getTranslocoTestingModule()],
@@ -229,6 +235,7 @@ describe('DashboardComponent', () => {
                 { provide: BonusService, useValue: bonus },
                 { provide: CalendarService, useValue: calendar },
                 { provide: FamilyService, useValue: family },
+                { provide: WallDevicesService, useValue: wallDevices },
             ],
         }).compileComponents();
     });
@@ -555,9 +562,11 @@ describe('DashboardComponent', () => {
         const fixture = create();
 
         const tile = el(fixture, 'stat-waiting');
-        expect(tile?.getAttribute('href')).toBe('/approvals');
+        expect(tile?.querySelector('a.stat-link')?.getAttribute('href')).toBe('/approvals');
         expect(tile?.textContent).toContain('Task (1)');
         expect(tile?.textContent).toContain('Rewards (1)');
+        expect(el(fixture, 'stat-waiting-tasks')?.getAttribute('href')).toBe('/approvals?tab=tasks');
+        expect(el(fixture, 'stat-waiting-rewards')?.getAttribute('href')).toBe('/approvals?tab=requests');
         expect(el(fixture, 'approvals-all')?.textContent).toContain('See all 2');
         expect(el(fixture, 'approvals-all')?.getAttribute('href')).toBe('/approvals');
     });
@@ -568,7 +577,7 @@ describe('DashboardComponent', () => {
         const row = el(fixture, 'reward-row');
         expect(row?.textContent).toContain('Reward: Pick dessert');
         expect(row?.textContent).toContain('40 points');
-        expect(el(fixture, 'review-btn')?.getAttribute('href')).toBe('/approvals');
+        expect(el(fixture, 'review-btn')?.getAttribute('href')).toBe('/approvals?tab=requests');
     });
 
     it('shows points earned this week on the tile and per person', () => {
@@ -675,10 +684,49 @@ describe('DashboardComponent', () => {
         expect(el(fixture, 'person-count')?.textContent).toContain('Nothing due this week');
     });
 
-    it('shows the kitchen tablet as not paired yet', () => {
+    it('shows the wall status card with an empty message when no wall is paired', () => {
         const fixture = create();
 
-        expect(el(fixture, 'kitchen-tablet')?.textContent).toContain('No kitchen tablet is paired yet.');
+        expect(el(fixture, 'wall-status')?.textContent).toContain('Wall Devices Status');
+        expect(el(fixture, 'wall-status')?.textContent).toContain('No wall devices are paired yet.');
+        expect(el(fixture, 'wall-status')?.querySelector('a')?.textContent).toContain('Manage');
+    });
+
+    it('lists only paired devices by name with their online or offline state', () => {
+        const paired: WallDeviceView = {
+            id: 'w1', name: 'Kitchen wall', status: 'online', paired_at: '2026-10-03T10:00:00Z', last_seen_at: null,
+        };
+        wallDevices.list.mockReturnValue(of([{ ...paired, id: 'w0', name: 'Old wall', paired_at: null, status: 'pending' }, paired]));
+
+        const fixture = create();
+
+        const rows = fixture.nativeElement.querySelectorAll('[data-testid="wall-status-row"]');
+        expect(rows.length).toBe(1);
+        expect(rows[0].textContent).toContain('Kitchen wall is online');
+        expect(rows[0].querySelector('.wall-icon.online')).not.toBeNull();
+        expect(el(fixture, 'wall-status')?.textContent).not.toContain('No wall devices');
+    });
+
+    it('marks an offline device without the online colour', () => {
+        const paired: WallDeviceView = {
+            id: 'w1', name: 'Kitchen wall', status: 'offline', paired_at: '2026-10-03T10:00:00Z', last_seen_at: null,
+        };
+        wallDevices.list.mockReturnValue(of([paired]));
+
+        const fixture = create();
+
+        const row = el(fixture, 'wall-status-row');
+        expect(row?.textContent).toContain('Kitchen wall is offline');
+        expect(row?.querySelector('.wall-icon')).not.toBeNull();
+        expect(row?.querySelector('.wall-icon.online')).toBeNull();
+    });
+
+    it('hides the wall status card when the wall list fails', () => {
+        wallDevices.list.mockReturnValue(throwError(() => new Error('boom')));
+
+        const fixture = create();
+
+        expect(el(fixture, 'wall-status')).toBeNull();
     });
 
     it('approves a copy and reloads the dashboard', () => {
