@@ -812,9 +812,14 @@
       "points_label": "{{ points }} points this week",
       "empty": "Add family members to see their progress."
     },
-    "tablet": {
-      "empty": "No kitchen tablet is paired yet.",
-      "paired": "{{ name }} is paired, since {{ date }}."
+    "wall": {
+      "title": "Wall Devices Status",
+      "manage": "Manage",
+      "online": "{{ name }} is online",
+      "offline": "{{ name }} is offline",
+      "last_seen": "Last seen {{ date }}",
+      "never_seen": "Never seen",
+      "empty": "No wall devices are paired yet."
     },
     "approvals": {
       "title": "Needs your approval",

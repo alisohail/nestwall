@@ -682,13 +682,15 @@ describe('DashboardComponent', () => {
         expect(el(fixture, 'person-count')?.textContent).toContain('Nothing due this week');
     });
 
-    it('shows the kitchen tablet as not paired yet', () => {
+    it('shows the wall status card with an empty message when no wall is paired', () => {
         const fixture = create();
 
-        expect(el(fixture, 'kitchen-tablet')?.textContent).toContain('No kitchen tablet is paired yet.');
+        expect(el(fixture, 'wall-status')?.textContent).toContain('Wall Devices Status');
+        expect(el(fixture, 'wall-status')?.textContent).toContain('No wall devices are paired yet.');
+        expect(el(fixture, 'wall-status')?.querySelector('a')?.textContent).toContain('Manage');
     });
 
-    it('shows the paired kitchen tablet by name', () => {
+    it('lists only paired devices by name with their online or offline state', () => {
         const paired: WallDeviceView = {
             id: 'w1', name: 'Kitchen wall', status: 'online', paired_at: '2026-10-03T10:00:00Z', last_seen_at: null,
         };
@@ -696,30 +698,33 @@ describe('DashboardComponent', () => {
 
         const fixture = create();
 
-        expect(el(fixture, 'kitchen-tablet')?.textContent).toContain('Kitchen wall is paired');
-        expect(el(fixture, 'kitchen-tablet')?.textContent).not.toContain('No kitchen tablet');
+        const rows = fixture.nativeElement.querySelectorAll('[data-testid="wall-status-row"]');
+        expect(rows.length).toBe(1);
+        expect(rows[0].textContent).toContain('Kitchen wall is online');
+        expect(rows[0].querySelector('.wall-icon.online')).not.toBeNull();
+        expect(el(fixture, 'wall-status')?.textContent).not.toContain('No wall devices');
     });
 
-    it('shows a green dot when the paired tablet is online and red when offline', () => {
+    it('marks an offline device without the online colour', () => {
         const paired: WallDeviceView = {
-            id: 'w1', name: 'Kitchen wall', status: 'online', paired_at: '2026-10-03T10:00:00Z', last_seen_at: null,
+            id: 'w1', name: 'Kitchen wall', status: 'offline', paired_at: '2026-10-03T10:00:00Z', last_seen_at: null,
         };
         wallDevices.list.mockReturnValue(of([paired]));
-        let fixture = create();
-        expect(el(fixture, 'kitchen-tablet')?.querySelector('.tablet-dot.online')).not.toBeNull();
 
-        wallDevices.list.mockReturnValue(of([{ ...paired, status: 'offline' }]));
-        fixture = create();
-        expect(el(fixture, 'kitchen-tablet')?.querySelector('.tablet-dot')).not.toBeNull();
-        expect(el(fixture, 'kitchen-tablet')?.querySelector('.tablet-dot.online')).toBeNull();
+        const fixture = create();
+
+        const row = el(fixture, 'wall-status-row');
+        expect(row?.textContent).toContain('Kitchen wall is offline');
+        expect(row?.querySelector('.wall-icon')).not.toBeNull();
+        expect(row?.querySelector('.wall-icon.online')).toBeNull();
     });
 
-    it('hides the kitchen tablet card when the wall list fails', () => {
+    it('hides the wall status card when the wall list fails', () => {
         wallDevices.list.mockReturnValue(throwError(() => new Error('boom')));
 
         const fixture = create();
 
-        expect(el(fixture, 'kitchen-tablet')).toBeNull();
+        expect(el(fixture, 'wall-status')).toBeNull();
     });
 
     it('approves a copy and reloads the dashboard', () => {

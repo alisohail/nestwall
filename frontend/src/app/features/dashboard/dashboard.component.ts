@@ -83,10 +83,10 @@ export class DashboardComponent {
   /** Today's bonus tasks without cancelled ones. Null until the first load finishes. */
   bonusTasks = signal<BonusTask[] | null>(null);
   bonusError = signal(false);
-  /** Wall devices the family has set up. Null until loaded, or when loading failed (the tablet card then stays hidden). */
+  /** Wall devices the family has set up. Null until loaded, or when loading failed (the card then stays hidden). */
   wallDevices = signal<WallDeviceView[] | null>(null);
-  /** The paired kitchen wall, if any. Waiting devices that were never paired do not count. */
-  pairedTablet = computed(() => this.wallDevices()?.find((device) => device.paired_at !== null) ?? null);
+  /** Paired wall devices only. Waiting devices that were never paired are left out. */
+  pairedDevices = computed(() => (this.wallDevices() ?? []).filter((device) => device.paired_at !== null));
   bonusRows = computed<DashboardBonusRow[]>(() => (this.bonusTasks() ?? []).map((task) => this.bonusRow(task)));
   /** Key of the approval in progress, so a second click cannot send the same request twice. */
   approving = signal<string | null>(null);

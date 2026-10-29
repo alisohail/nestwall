@@ -301,16 +301,22 @@
           </a>
         </section>
 
-        @if (pairedTablet(); as tablet) {
-          <app-banner tone="info" icon="monitor" data-testid="kitchen-tablet">
-            <span class="tablet-dot" [class.online]="tablet.status === 'online'" role="img"
-              [attr.aria-label]="(tablet.status === 'online' ? 'settings.wall.status.online' : 'settings.wall.status.offline') | transloco"></span>
-            <span>{{ 'dashboard.tablet.paired' | transloco: { name: tablet.name, date: when(tablet.paired_at!) } }}</span>
-          </app-banner>
-        } @else if (wallDevices()) {
-          <app-banner tone="info" icon="monitor" data-testid="kitchen-tablet">
-            <span>{{ 'dashboard.tablet.empty' | transloco }}</span>
-          </app-banner>
+        @if (wallDevices()) {
+          <section class="card wall-status-card" aria-labelledby="wall-status-title" data-testid="wall-status">
+            <div class="card-head">
+              <h2 id="wall-status-title">{{ 'dashboard.wall.title' | transloco }}</h2>
+              <a class="link" routerLink="/settings/admin/wall" data-testid="wall-status-manage">{{ 'dashboard.wall.manage' | transloco }}</a>
+            </div>
+            @for (device of pairedDevices(); track device.id) {
+              <div class="wall-row" data-testid="wall-status-row"
+                [attr.title]="device.last_seen_at ? ('dashboard.wall.last_seen' | transloco: { date: when(device.last_seen_at) }) : ('dashboard.wall.never_seen' | transloco)">
+                <span class="wall-icon" [class.online]="device.status === 'online'" aria-hidden="true"><app-icon name="monitor" [size]="20" /></span>
+                <span>{{ (device.status === 'online' ? 'dashboard.wall.online' : 'dashboard.wall.offline') | transloco: { name: device.name } }}</span>
+              </div>
+            } @empty {
+              <p class="nw-empty-note" data-testid="wall-status-empty">{{ 'dashboard.wall.empty' | transloco }}</p>
+            }
+          </section>
         }
       </div>
     </div>

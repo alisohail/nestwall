@@ -121,18 +121,20 @@
 .meter i.tasks { background: var(--nw-color-warning); }
 .meter i.rewards { background: var(--nw-color-primary); }
 
-.tablet-dot {
-  display: inline-block;
-  width: 0.6em;
-  height: 0.6em;
-  margin-right: 0.4em;
-  border-radius: 50%;
-  vertical-align: middle;
-  background: var(--nw-color-error);
+.wall-row {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  padding: var(--nw-space-2) 0;
 }
 
-.tablet-dot.online {
-  background: var(--nw-color-success);
+.wall-icon {
+  display: inline-flex;
+  color: var(--nw-color-error);
+}
+
+.wall-icon.online {
+  color: var(--nw-color-success);
 }
 
 .stat-chip {

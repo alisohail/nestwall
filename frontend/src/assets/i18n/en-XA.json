@@ -837,9 +837,14 @@
       "points_label": "[=== {{ points }} poiints thiis weeek ===]",
       "empty": "[=== Aadd faamily meembers too seee theeir progresss. ===]"
     },
-    "tablet": {
-      "empty": "[=== No kiitchen tabblet iis paaired yeet. ===]",
-      "paired": "[=== {{ name }} iis paaired, siince {{ date }}. ===]"
+    "wall": {
+      "title": "[=== Wall Deviices Stattus ===]",
+      "manage": "[=== Maanaage ===]",
+      "online": "[=== {{ name }} iis oonliine ===]",
+      "offline": "[=== {{ name }} iis oofflliine ===]",
+      "last_seen": "[=== Laast seeen {{ date }} ===]",
+      "never_seen": "[=== Neever seeen ===]",
+      "empty": "[=== No waall deevices aare paaired yeet. ===]"
     },
     "approvals": {
       "title": "[=== Neeeds yoour aapprovaal ===]",
