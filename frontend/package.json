@@ -25,27 +25,28 @@
     "@angular/service-worker": "^22.2.3",
     "@ngneat/transloco": "^6.0.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.6.0",
-    "zone.js": "~0.15.1"
+    "tslib": "^2.6.0"
   },
   "devDependencies": {
     "@angular/build": "^22.2.5",
     "@angular/cli": "^22.2.5",
     "@angular/compiler-cli": "^22.2.3",
+    "@eslint/js": "^10.0.0",
     "@playwright/test": "^1.64.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.19.2",
     "@vitest/browser-playwright": "^5.0.5",
     "angular-eslint": "^22.6.0",
     "axe-core": "^4.14.0",
-    "eslint": "^9.15.0",
+    "eslint": "^10.13.0",
     "istanbul-lib-instrument": "^6.0.3",
     "material-icons": "^1.13.14",
-    "stylelint": "^16.0.0",
-    "stylelint-config-standard-scss": "^13.0.0",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard-scss": "^17.0.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "8.16.0",
-    "vitest": "^5.0.0"
+    "typescript-eslint": "^8.72.1",
+    "vitest": "^5.0.0",
+    "zone.js": "^0.16.3"
   },
   "allowScripts": {
     "esbuild@0.23.0": true,

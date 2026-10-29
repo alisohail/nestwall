@@ -117,7 +117,9 @@
             "lintFilePatterns": [
               "src/**/*.ts",
               "src/**/*.html"
-            ]
+            ],
+            "cache": true,
+            "cacheStrategy": "content"
           }
         }
       }

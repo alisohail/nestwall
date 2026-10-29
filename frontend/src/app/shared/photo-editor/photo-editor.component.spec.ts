@@ -15,7 +15,8 @@ async function pictureFile(width: number, height: number, type: string): Promise
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    const blob = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b as Blob), type));
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type));
+    if (!blob) throw new Error(`toBlob returned null for ${width}x${height} ${type}`);
     return new File([blob], 'pic', { type });
 }
 
