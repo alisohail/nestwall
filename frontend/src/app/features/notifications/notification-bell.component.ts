@@ -6,6 +6,7 @@ import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { interval } from 'rxjs';
 import { ApiClient } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { PushService } from '../../core/push/push.service';
 import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { IconComponent, IconName } from '../../shared/ui/icon/icon.component';
 import { SkeletonComponent } from '../../shared/ui/skeleton/skeleton.component';
@@ -94,6 +95,7 @@ export class NotificationBellComponent {
   private destroyRef = inject(DestroyRef);
   private transloco = inject(TranslocoService);
   private auth = inject(AuthService);
+  private push = inject(PushService);
   timeFormat = inject(TimeFormatService);
 
   /** Only users who can view family settings get the link to the notification settings page. */
@@ -118,6 +120,9 @@ export class NotificationBellComponent {
     typeof Notification === 'undefined' ? 'unsupported' : Notification.permission,
   );
 
+  /** Whether this browser receives Web Push, which shows alerts even when the app is closed. */
+  readonly pushSubscribed = signal(false);
+
   readonly badge = computed(() => (this.unread() > 99 ? '99+' : String(this.unread())));
 
   /** Ids already seen. Null until the first load, so existing notices do not raise browser alerts. */
@@ -127,6 +132,7 @@ export class NotificationBellComponent {
   constructor() {
     this.refresh();
     this.connectStream();
+    void this.push.isSubscribed().then((subscribed) => this.pushSubscribed.set(subscribed));
     interval(POLL_INTERVAL_MS)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.refresh());
@@ -158,7 +164,7 @@ export class NotificationBellComponent {
     this.open.update((v) => !v);
     if (this.open()) {
       this.placePanel();
-      this.requestBrowserPermission();
+      void this.enableAlerts();
       this.refresh();
     }
   }
@@ -213,20 +219,27 @@ export class NotificationBellComponent {
       });
   }
 
-  /** Asks for browser permission once, from a user gesture (opening the bell). */
-  private requestBrowserPermission(): void {
-    if (!this.browserSupported() || Notification.permission !== 'default') return;
-    void Notification.requestPermission().then(() => this.permission.set(Notification.permission));
-  }
-
-  /** Lets the user grant browser alerts explicitly. Hidden once decided or when unsupported. */
-  enableBrowserAlerts(): void {
+  /**
+   * Asks for notification permission if undecided, then subscribes this browser to Web Push. Called
+   * from a user gesture (opening the bell or the enable button), which browsers require for the prompt.
+   */
+  async enableAlerts(): Promise<void> {
     if (!this.browserSupported()) return;
-    void Notification.requestPermission().then(() => this.permission.set(Notification.permission));
+    if (Notification.permission === 'default') await Notification.requestPermission();
+    this.permission.set(Notification.permission);
+    if (Notification.permission !== 'granted') return;
+    try {
+      this.pushSubscribed.set(await this.push.subscribe());
+    } catch {
+      this.pushSubscribed.set(false);
+    }
   }
 
+  /** Shown until permission is decided, and again when granted but this browser has no push subscription. */
   showEnableAlerts(): boolean {
-    return this.browserSupported() && this.permission() === 'default';
+    if (!this.browserSupported()) return false;
+    if (this.permission() === 'default') return true;
+    return this.permission() === 'granted' && this.push.supported && !this.pushSubscribed();
   }
 
   /**
@@ -240,6 +253,8 @@ export class NotificationBellComponent {
     list.forEach((n) => seen.add(n.id));
     this.seen = seen;
     if (first || !this.browserEnabled || !this.browserSupported()) return;
+    // Web Push already shows these alerts, including on phones where new Notification() is unavailable.
+    if (this.pushSubscribed()) return;
     if (Notification.permission !== 'granted') return;
 
     fresh.slice(0, MAX_BROWSER_PER_REFRESH).forEach((n) => {

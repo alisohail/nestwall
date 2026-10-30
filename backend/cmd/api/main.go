@@ -32,6 +32,7 @@ import (
 	"nestwall/backend/internal/platform/db"
 	"nestwall/backend/internal/platform/logger"
 	"nestwall/backend/internal/platform/server"
+	"nestwall/backend/internal/push"
 	"nestwall/backend/internal/scheduler"
 )
 
@@ -94,6 +95,13 @@ func main() {
 		defer close(digestDone)
 		digester.Run(workerCtx)
 	}()
+	// Pending notices go to subscribed phones and browsers on their own short loop.
+	pushSender := push.NewSender(conn, clk, log, cfg.App.URL)
+	pushDone := make(chan struct{})
+	go func() {
+		defer close(pushDone)
+		pushSender.Run(workerCtx, push.DefaultPollInterval)
+	}()
 	// Event reminders are checked every ReminderPollInterval. Each one is sent once, as an in-app notice.
 	reminders := calendar.NewReminders(conn, clk, log)
 	remindersDone := make(chan struct{})
@@ -120,6 +128,7 @@ func main() {
 	<-workerDone
 	<-outboxDone
 	<-digestDone
+	<-pushDone
 	<-remindersDone
 	<-backupDone
 	if err != nil {
