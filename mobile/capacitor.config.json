@@ -1,0 +1,11 @@
+{
+  "appId": "com.nestwall.app",
+  "appName": "NestWall",
+  "webDir": "www",
+  "server": {
+    "allowNavigation": ["*"]
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

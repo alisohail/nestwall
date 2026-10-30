@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <title>NestWall</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f4f7f6;
+        color: #1d2b27;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      main {
+        width: min(440px, calc(100vw - 32px));
+        padding: 28px 24px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 24px;
+      }
+      p {
+        margin: 0 0 20px;
+        color: #51625c;
+        line-height: 1.5;
+      }
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #b9c8c2;
+        border-radius: 10px;
+      }
+      button {
+        margin-top: 16px;
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        background: #0f7a63;
+        border: 0;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .error {
+        min-height: 20px;
+        margin: 10px 0 0;
+        color: #b3261e;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Connect to NestWall</h1>
+      <p>Enter the address of your NestWall server, for example <strong>https://nestwall.example.com</strong>. You can change it later.</p>
+      <form id="setup-form" novalidate>
+        <label for="server-url">Server address</label>
+        <input id="server-url" name="serverUrl" type="url" inputmode="url" autocomplete="url" placeholder="https://" required />
+        <p id="error" class="error" role="alert"></p>
+        <button type="submit">Connect</button>
+      </form>
+    </main>
+    <script src="setup.js"></script>
+  </body>
+</html>

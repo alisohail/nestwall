@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
+import { NATIVE_SERVER_PICKER_URL, isNativeShell } from '../../../core/native/native-shell';
 
 /** One row of the Configuration menu. A null path means the page is not built yet. */
 export interface SettingsHubItem {
@@ -23,6 +24,10 @@ export class SettingsHubComponent {
    * Built pages come first, then the rest of the mock order. Points and Badges are not in the mock
    * but are kept so their pages stay reachable.
    */
+  /** Only the Android app has a server picker, so the row is hidden in the browser. */
+  readonly isNative = isNativeShell();
+  readonly serverPickerUrl = NATIVE_SERVER_PICKER_URL;
+
   readonly familySetup: readonly SettingsHubItem[] = [
     { key: 'general', path: 'general', labelKey: 'settings.nav.general', icon: 'tune' },
     { key: 'templates', path: 'templates', labelKey: 'settings.nav.templates', icon: 'description' },

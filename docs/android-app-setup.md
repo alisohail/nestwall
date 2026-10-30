@@ -1,0 +1,87 @@
+# Android app setup
+
+The Android app is a thin native shell. On first launch it asks for your NestWall server address (HTTPS only), then loads that server in a full-screen WebView. The app's Settings page has a **Change server address** row to point it at a different instance.
+
+This guide covers building the debug APK, installing it, and the prerequisites. The shell lives in [mobile/](../mobile/).
+
+## What is and isn't in the app yet
+
+- Done: server-address screen, full-screen WebView, change-server row (Settings > System, shown only inside the app).
+- Not yet: native push notifications (Firebase Cloud Messaging) and Play Store upload automation. Until native push lands, alerts come through Web Push, which needs HTTPS and works on Android Chrome.
+
+## Prerequisites
+
+| Tool | Version | Notes |
+| --- | --- | --- |
+| Node.js | 20 or newer | Installs the Capacitor CLI |
+| JDK | 21 | Set `JAVA_HOME` to the JDK folder |
+| Android SDK | platform 36, build-tools 36.0.0, platform-tools | Set `ANDROID_HOME` |
+
+On Windows, the SDK normally lives at `%LOCALAPPDATA%\Android\Sdk`. Install the command-line tools, then:
+
+```powershell
+sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+sdkmanager --licenses
+```
+
+Android Studio also works and installs the same packages.
+
+## Build the debug APK
+
+Run these from the repository root.
+
+```powershell
+cd mobile
+npm install
+npx cap sync android
+cd android
+$env:JAVA_HOME = "C:\Program Files\Microsoft\jdk-21.0.13.21-hotspot"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+.\gradlew.bat assembleDebug
+```
+
+Output: `mobile/android/app/build/outputs/apk/debug/app-debug.apk`.
+
+Run `npx cap sync android` again after changing [capacitor.config.json](../mobile/capacitor.config.json) or the files in `mobile/www/`.
+
+To install on a phone with USB debugging enabled:
+
+```powershell
+adb install -r app\build\outputs\apk\debug\app-debug.apk
+```
+
+## First launch
+
+1. Open NestWall. Enter your server address, for example `https://nestwall.example.com`. Plain `http://` is refused.
+2. The app saves the address and loads the server. On later launches it goes straight to the saved server.
+3. To switch servers, open **Settings > System > Change server address**.
+
+The server must have HTTPS enabled (see [install-guide.md](./install-guide.md#https-and-phone-notifications)). Android Chrome will not deliver notifications over plain HTTP.
+
+## Troubleshooting
+
+- **Gradle cannot find the SDK.** Check `ANDROID_HOME`, or add `mobile/android/local.properties` with `sdk.dir=C:\\Users\\<you>\\AppData\\Local\\Android\\Sdk`. The file is git-ignored.
+- **Gradle cannot find Java.** Check `JAVA_HOME` points to JDK 21, not a Java 8 or 17 install.
+- **The server link opens in the browser instead of the app.** The config must keep `server.allowNavigation: ["*"]`. Run `npx cap sync android` after editing it.
+- **Blank page after entering a server.** Confirm the address opens in Chrome on the phone and the certificate is trusted.
+
+## Signing a release build
+
+Release builds need a keystore. Keep it out of git.
+
+1. Create the keystore once, and store it somewhere safe outside the repository:
+
+   ```powershell
+   keytool -genkeypair -v -keystore nestwall-release.jks -alias nestwall -keyalg RSA -keysize 2048 -validity 10000
+   ```
+
+2. Back up the keystore and its passwords. Google Play needs the same signing key for every future update.
+3. Build with `.\gradlew.bat bundleRelease` to produce an `.aab` for Play Console.
+
+The Gradle project does not read the keystore yet. Add a `signingConfigs` block in `mobile/android/app/build.gradle` that reads the keystore path and passwords from environment variables or `local.properties`, then point the release build type at it. Without it, `bundleRelease` produces an unsigned bundle that Play rejects.
+
+The `*.jks` and `*.keystore` patterns are not ignored in `.gitignore`, so never commit them.
+
+## Google Play upload
+
+The first upload is manual: create the app in Play Console, upload the `.aab`, and complete the store listing. After that, release automation can upload new versions. That workflow is not added yet.

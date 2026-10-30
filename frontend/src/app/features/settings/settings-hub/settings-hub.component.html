@@ -31,4 +31,11 @@
     <span class="menu-name">{{ 'settings.diagnostics.title' | transloco }}</span>
     <span class="material-icons chev" aria-hidden="true">chevron_right</span>
   </a>
+  @if (isNative) {
+    <a class="menu-item" [href]="serverPickerUrl" data-testid="settings-change-server">
+      <span class="menu-ico material-icons" aria-hidden="true">dns</span>
+      <span class="menu-name">{{ 'settings.hub.changeServer' | transloco }}</span>
+      <span class="material-icons chev" aria-hidden="true">chevron_right</span>
+    </a>
+  }
 </nav>

@@ -1922,7 +1922,8 @@
       "admin": "Templates, categories, points and badges",
       "setup": "Configuration",
       "tools": "System",
-      "soon": "Coming soon"
+      "soon": "Coming soon",
+      "changeServer": "Change server address"
     },
     "close": "Close",
     "kind": {
