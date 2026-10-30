@@ -6,12 +6,11 @@
     <meta name="color-scheme" content="light" />
     <title>NestWall</title>
     <script>
-      // Runs before first paint: a saved server opens straight away, so the setup form never flashes.
+      // Runs before first paint. A saved server is checked by setup.js first, so the form stays hidden until then.
       (function () {
         var saved = localStorage.getItem('nestwall.serverUrl');
         if (saved && !new URLSearchParams(location.search).has('change')) {
           document.documentElement.style.visibility = 'hidden';
-          location.replace(saved);
         }
       })();
     </script>
@@ -65,6 +64,10 @@
         border: 0;
         border-radius: 10px;
         cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: default;
       }
       .error {
         min-height: 20px;

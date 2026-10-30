@@ -7,6 +7,6 @@
     "cleartext": true
   },
   "android": {
-    "allowMixedContent": false
+    "allowMixedContent": true
   }
 }
