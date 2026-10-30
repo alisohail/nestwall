@@ -1,11 +1,13 @@
 import { AfterViewInit, Component, DestroyRef, ElementRef, HostListener, OnInit, computed, inject, input, output, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { Observable } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
 import { FamilyService, MemberDetail } from '../../family/family.service';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { TimeInputComponent } from '../../../shared/ui/time-input/time-input.component';
 import { todayIso } from '../../tasks/tasks.format';
 import { RepeatBuilderComponent } from '../../tasks/task-form/repeat-builder/repeat-builder.component';
 import { RepeatState, buildRule, defaultRepeat, repeatProblem } from '../../tasks/task-form/recurrence';
@@ -62,7 +64,7 @@ function errorKey(err: ApiError): string {
  */
 @Component({
     selector: 'app-event-dialog',
-    imports: [TranslocoModule, IconComponent, RepeatBuilderComponent, AvatarComponent],
+    imports: [FormsModule, TranslocoModule, IconComponent, RepeatBuilderComponent, AvatarComponent, TimeInputComponent],
     templateUrl: './event-dialog.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './event-dialog.component.scss'
@@ -203,14 +205,6 @@ export class EventDialogComponent implements OnInit, AfterViewInit {
   onDate(e: Event): void {
     this.date.set(targetValue(e));
     if (!this.occurrenceMode()) this.anchorOn(this.date());
-  }
-
-  onStart(e: Event): void {
-    this.startTime.set(targetValue(e));
-  }
-
-  onEnd(e: Event): void {
-    this.endTime.set(targetValue(e));
   }
 
   onAllDay(e: Event): void {

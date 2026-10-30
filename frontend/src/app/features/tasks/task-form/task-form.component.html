@@ -158,7 +158,7 @@
           </div>
           <div class="field">
             <label for="task-time">{{ 'tasks.form.due_time' | transloco }}</label>
-            <input id="task-time" class="input" type="time" formControlName="due_time" />
+            <app-time-input inputId="task-time" [label]="'tasks.form.due_time' | transloco" formControlName="due_time" />
           </div>
         </div>
 

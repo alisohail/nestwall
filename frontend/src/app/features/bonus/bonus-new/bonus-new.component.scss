@@ -95,15 +95,16 @@
     max-width: 100%;
   }
 
-  &.time-input {
-    width: 10rem;
-    max-width: 100%;
-  }
-
   &:focus-visible {
     outline: 3px solid var(--nw-color-primary);
     outline-offset: 2px;
   }
+}
+
+app-time-input {
+  display: block;
+  width: 14rem;
+  max-width: 100%;
 }
 
 .window {

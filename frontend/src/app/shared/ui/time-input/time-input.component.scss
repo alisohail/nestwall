@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.time-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.time-part {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.time-period {
+  flex: 0 0 auto;
+}
+
+.time-sep {
+  font-weight: 600;
+}

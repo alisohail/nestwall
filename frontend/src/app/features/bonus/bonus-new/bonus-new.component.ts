@@ -8,6 +8,7 @@ import { ApiError } from '../../../core/api/api-client.service';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
 import { SkeletonComponent } from '../../../shared/ui/skeleton/skeleton.component';
+import { TimeInputComponent } from '../../../shared/ui/time-input/time-input.component';
 import { FamilyService, MemberDetail } from '../../family/family.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { BonusClaimMode } from '../bonus.models';
@@ -69,7 +70,7 @@ function clock(hhmm: string): string {
 /** Publishes a bonus task for one day, with an optional show-from time and end time. */
 @Component({
     selector: 'app-bonus-new',
-    imports: [FormsModule, RouterLink, TranslocoModule, AvatarComponent, BannerComponent, SkeletonComponent],
+    imports: [FormsModule, RouterLink, TranslocoModule, AvatarComponent, BannerComponent, SkeletonComponent, TimeInputComponent],
     templateUrl: './bonus-new.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './bonus-new.component.scss'

@@ -134,6 +134,21 @@ describe('EventDialogComponent', () => {
         fixture.detectChanges();
     }
 
+    /** Picks a 24-hour time through the time-input menus, in the default 12-hour style. */
+    function setTime(fixture: ComponentFixture<EventDialogComponent>, testId: string, value: string): void {
+        const [hour, minute] = value.split(':').map(Number);
+        const pick = (menu: string, menuValue: string): void => {
+            const select = el<HTMLSelectElement>(fixture, testId)?.querySelector<HTMLSelectElement>(`[data-testid="${menu}"]`);
+            if (!select) throw new Error(`missing ${menu}`);
+            select.value = menuValue;
+            select.dispatchEvent(new Event('change'));
+        };
+        pick('time-hour', String((hour % 12) || 12).padStart(2, '0'));
+        pick('time-minute', String(minute).padStart(2, '0'));
+        pick('time-period', hour >= 12 ? 'PM' : 'AM');
+        fixture.detectChanges();
+    }
+
     function save(fixture: ComponentFixture<EventDialogComponent>): void {
         el(fixture, 'event-save')?.click();
         fixture.detectChanges();
@@ -411,12 +426,13 @@ describe('EventDialogComponent', () => {
         expect(el(fixture, 'event-error')).not.toBeNull();
     });
 
-    it('ends the next day when the end time is earlier than the start time', () => {
+    it('ends the next day when the end time is earlier than the start time', async () => {
         const fixture = create();
+        await fixture.whenStable();
 
         type(fixture, 'event-title', 'Party');
-        type(fixture, 'event-start', '22:00');
-        type(fixture, 'event-end', '01:00');
+        setTime(fixture, 'event-start', '22:00');
+        setTime(fixture, 'event-end', '01:00');
         save(fixture);
 
         const body = vi.mocked(calendar.createEvent).mock.lastCall![0];
@@ -427,12 +443,13 @@ describe('EventDialogComponent', () => {
         expect(el(fixture, 'event-error')).toBeNull();
     });
 
-    it('does not save when the end time equals the start time', () => {
+    it('does not save when the end time equals the start time', async () => {
         const fixture = create();
+        await fixture.whenStable();
 
         type(fixture, 'event-title', 'Swim');
-        type(fixture, 'event-start', '10:00');
-        type(fixture, 'event-end', '10:00');
+        setTime(fixture, 'event-start', '10:00');
+        setTime(fixture, 'event-end', '10:00');
         save(fixture);
 
         expect(calendar.createEvent).not.toHaveBeenCalled();

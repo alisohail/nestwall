@@ -239,14 +239,13 @@
       <div class="window">
         <div class="fld">
           <label class="fld-label" for="bonus-show">{{ 'bonus.new.showLabel' | transloco }}</label>
-          <input
-            id="bonus-show"
-            class="input time-input"
-            type="time"
-            name="show"
+          <app-time-input
+            inputId="bonus-show"
+            name="show_at"
+            [label]="'bonus.new.showLabel' | transloco"
             [ngModel]="showAt()"
             (ngModelChange)="showAt.set($event)"
-            aria-describedby="bonus-show-hint"
+            describedBy="bonus-show-hint"
             data-testid="bonus-show"
           />
           <p class="fld-hint" id="bonus-show-hint">{{ 'bonus.new.showHint' | transloco }}</p>
@@ -254,15 +253,14 @@
 
         <div class="fld">
           <label class="fld-label" for="bonus-ends">{{ 'bonus.new.endsLabel' | transloco }}</label>
-          <input
-            id="bonus-ends"
-            class="input time-input"
-            type="time"
-            name="ends"
+          <app-time-input
+            inputId="bonus-ends"
+            name="ends_at"
+            [label]="'bonus.new.endsLabel' | transloco"
             [ngModel]="endsAt()"
             (ngModelChange)="endsAt.set($event)"
-            [attr.aria-invalid]="attempted() && windowError() ? 'true' : null"
-            aria-describedby="bonus-ends-hint"
+            [invalid]="attempted() && !!windowError()"
+            describedBy="bonus-ends-hint"
             data-testid="bonus-ends"
           />
           @if (attempted() && windowError(); as e) {
