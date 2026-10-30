@@ -71,8 +71,12 @@
       }
       localStorage.setItem(STORAGE_KEY, server);
       var watch = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.NestWallWatch;
-      if (watch && server !== saved) {
-        watch.stop();
+      if (watch) {
+        // The watcher runs here, on the shell origin, because remote server pages have no Capacitor bridge.
+        if (server !== saved) {
+          watch.stop();
+        }
+        watch.start({ serverUrl: server }).catch(function () {});
       }
       window.location.replace(server);
     });

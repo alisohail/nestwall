@@ -60,7 +60,7 @@ Plain `http://` sends the login and session cookie unencrypted, so use it only o
 
 ## Notifications
 
-Once you open the app and sign in, it starts a foreground watcher. The watcher keeps a connection to your server open, so alerts such as a new task submission or a reward request arrive even when the app is closed. Android shows a quiet, persistent "Watching for new NestWall alerts" notice while it runs. This needs no Firebase project and no keys.
+Once the app connects to your server, it starts a foreground watcher. It waits quietly until you sign in, so you can sign in after the app has opened. The watcher keeps a connection to your server open, so alerts such as a new task submission or a reward request arrive even when the app is closed. Android shows a quiet, persistent "Watching for new NestWall alerts" notice while it runs. This needs no Firebase project and no keys.
 
 - The watcher starts when the app opens. It does not restart after a phone reboot until you open the app again.
 - Tapping the notice or an alert opens the app.

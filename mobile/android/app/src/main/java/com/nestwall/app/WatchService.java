@@ -106,8 +106,8 @@ public class WatchService extends Service {
         streamOnce();
         backoff = MIN_BACKOFF_MS;
       } catch (SignedOut e) {
-        stopWatching();
-        return;
+        // Keep retrying slowly: the user may sign in on the server page after the watcher starts.
+        backoff = MAX_BACKOFF_MS;
       } catch (Exception e) {
         backoff = Math.min(backoff * 2, MAX_BACKOFF_MS);
       }

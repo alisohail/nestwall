@@ -1,8 +1,11 @@
 /** Address of the Android shell's setup screen. It lives on the shell's own origin. */
 export const NATIVE_SERVER_PICKER_URL = 'https://localhost/?change=1';
 
-/** True when this page runs inside the NestWall Android app (Capacitor WebView). */
+/** True when this page runs inside the NestWall Android app. Remote server pages have no Capacitor bridge, so the WebView user agent carries a token. */
 export function isNativeShell(): boolean {
+  if (navigator.userAgent.includes('NestWallNative')) {
+    return true;
+  }
   const cap = (window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
   return cap?.isNativePlatform?.() === true;
 }
