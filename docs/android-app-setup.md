@@ -1,6 +1,6 @@
 # Android app setup
 
-The Android app is a thin native shell. On first launch it asks for your NestWall server address (HTTPS only), then loads that server in a full-screen WebView. The app's Settings page has a **Change server address** row to point it at a different instance.
+The Android app is a thin native shell. On first launch it asks for your NestWall server address (`https://` or `http://`), then loads that server in a full-screen WebView. The app's Settings page has a **Change server address** row to point it at a different instance.
 
 This guide covers building the debug APK, installing it, and the prerequisites. The shell lives in [mobile/](../mobile/).
 
@@ -52,11 +52,11 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 
 ## First launch
 
-1. Open NestWall. Enter your server address, for example `https://nestwall.example.com`. Plain `http://` is refused.
+1. Open NestWall. Enter your server address, for example `https://nestwall.example.com` or a LAN address such as `http://192.168.1.10:8080`.
 2. The app saves the address and loads the server. On later launches it goes straight to the saved server.
 3. To switch servers, open **Settings > System > Change server address**.
 
-The server must have HTTPS enabled (see [install-guide.md](./install-guide.md#https-and-phone-notifications)).
+Plain `http://` sends the login and session cookie unencrypted, so use it only on a network you trust. Use HTTPS for any server reachable from the internet. Browser bell alerts still need HTTPS (see [install-guide.md](./install-guide.md#https-and-phone-notifications)). The native watcher works over either.
 
 ## Notifications
 

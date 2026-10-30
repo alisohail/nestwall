@@ -3,7 +3,8 @@
   "appName": "NestWall",
   "webDir": "www",
   "server": {
-    "allowNavigation": ["*"]
+    "allowNavigation": ["*"],
+    "cleartext": true
   },
   "android": {
     "allowMixedContent": false

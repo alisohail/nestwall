@@ -22,8 +22,8 @@ public class WatchPlugin extends Plugin {
   @PluginMethod
   public void start(PluginCall call) {
     String serverUrl = call.getString("serverUrl");
-    if (serverUrl == null || !serverUrl.startsWith("https://")) {
-      call.reject("serverUrl must be an https address");
+    if (serverUrl == null || !(serverUrl.startsWith("https://") || serverUrl.startsWith("http://"))) {
+      call.reject("serverUrl must start with http:// or https://");
       return;
     }
     if (getPermissionState("notifications") != PermissionState.GRANTED) {

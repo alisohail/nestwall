@@ -17,8 +17,8 @@
     } catch (e) {
       return null;
     }
-    // Plain http is refused: the app and the server both need HTTPS.
-    if (url.protocol !== 'https:') {
+    // Accept both http and https so LAN servers without a certificate work.
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') {
       return null;
     }
     return url.origin + url.pathname.replace(/\/+$/, '');
@@ -28,7 +28,7 @@
     event.preventDefault();
     var server = normalise(input.value);
     if (!server) {
-      error.textContent = 'Enter a full address that starts with https://';
+      error.textContent = 'Enter a full address that starts with http:// or https://';
       input.focus();
       return;
     }
