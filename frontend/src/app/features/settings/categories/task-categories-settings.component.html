@@ -59,15 +59,15 @@
     <div class="grid mt-s">
       <div class="tile">
         <span class="name"><span class="material-icons" aria-hidden="true">wb_sunny</span> {{ 'settings.categories.morning' | transloco }}</span>
-        <input class="input" type="time" [attr.aria-label]="'settings.categories.morning' | transloco" [(ngModel)]="partTimes.morning_start" />
+        <app-time-input [label]="'settings.categories.morning' | transloco" [(ngModel)]="partTimes.morning_start" />
       </div>
       <div class="tile">
         <span class="name"><span class="material-icons" aria-hidden="true">school</span> {{ 'settings.categories.after_school' | transloco }}</span>
-        <input class="input" type="time" [attr.aria-label]="'settings.categories.after_school' | transloco" [(ngModel)]="partTimes.after_school_start" />
+        <app-time-input [label]="'settings.categories.after_school' | transloco" [(ngModel)]="partTimes.after_school_start" />
       </div>
       <div class="tile">
         <span class="name"><span class="material-icons" aria-hidden="true">nights_stay</span> {{ 'settings.categories.evening' | transloco }}</span>
-        <input class="input" type="time" [attr.aria-label]="'settings.categories.evening' | transloco" [(ngModel)]="partTimes.evening_start" />
+        <app-time-input [label]="'settings.categories.evening' | transloco" [(ngModel)]="partTimes.evening_start" />
       </div>
     </div>
 

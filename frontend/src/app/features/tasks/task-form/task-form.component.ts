@@ -15,6 +15,7 @@ import { formatDay, formatTime, taskErrorKey, todayIso } from '../tasks.format';
 import { ChecklistItem, PartOfDay, PenaltyUnit, Priority, Task, TaskCategory, TaskPatchRequest, TaskRequest, TaskTemplate, TaskTemplateRequest } from '../tasks.models';
 import { TasksService } from '../tasks.service';
 import { RepeatBuilderComponent } from './repeat-builder/repeat-builder.component';
+import { TimeInputComponent } from '../../../shared/ui/time-input/time-input.component';
 import { RepeatState, buildRule, defaultRepeat, repeatProblem } from './recurrence';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
 
@@ -45,6 +46,7 @@ function expiryParts(minutes: number | null): { value: number | null; unit: Expi
         ErrorStateComponent,
         LoadingComponent,
         RepeatBuilderComponent,
+        TimeInputComponent,
     ],
     templateUrl: './task-form.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,

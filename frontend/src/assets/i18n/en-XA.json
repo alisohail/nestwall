@@ -11,7 +11,12 @@
     "unsaved_title": "[=== Reediirect wiithoout saaving? ===]",
     "unsaved_body": "[=== Yoour chaanges haave noot beeen saaved. If yoou reediirect noow, thhey wiill beee loost. ===]",
     "unsaved_stay": "[=== Caancel ===]",
-    "unsaved_leave": "[=== Reediirect ===]"
+    "unsaved_leave": "[=== Reediirect ===]",
+    "time_hour": "[=== Hoouur ===]",
+    "time_minute": "[=== Miinuute ===]",
+    "time_period": "[=== AM oor PM ===]",
+    "time_am": "[=== AM ===]",
+    "time_pm": "[=== PM ===]"
   },
   "loading": {
     "default": "[=== Loaading... ===]",

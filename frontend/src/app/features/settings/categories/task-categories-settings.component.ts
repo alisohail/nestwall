@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, DestroyRef, HostListener, inject, signal,
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
+import { TimeInputComponent } from '../../../shared/ui/time-input/time-input.component';
 import { finalize, forkJoin } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
@@ -31,7 +32,7 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
     selector: 'app-task-categories-settings',
-    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent],
+    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, ColourPickerComponent, TimeInputComponent],
     templateUrl: './task-categories-settings.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-categories-settings.component.scss'

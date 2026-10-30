@@ -101,14 +101,16 @@ func Notify(ctx context.Context, q Querier, n Notice, now time.Time) (bool, erro
 		return false, fmt.Errorf("load recipient: %w", err)
 	}
 	pending := s.Email && !isChild
+	// A push is sent later by the push worker, so the transaction never waits on the network.
+	pushPending := s.Browser
 	var subject any
 	if n.SubjectID != "" {
 		subject = n.SubjectID
 	}
 	if _, err := q.ExecContext(ctx,
-		`INSERT INTO notifications (id, family_id, recipient_id, kind, subject_member_id, body, email_pending, created_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-		ids.New(), n.FamilyID, n.RecipientID, n.Kind, subject, n.Body, pending, now,
+		`INSERT INTO notifications (id, family_id, recipient_id, kind, subject_member_id, body, email_pending, push_pending, created_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		ids.New(), n.FamilyID, n.RecipientID, n.Kind, subject, n.Body, pending, pushPending, now,
 	); err != nil {
 		return false, fmt.Errorf("insert notification: %w", err)
 	}

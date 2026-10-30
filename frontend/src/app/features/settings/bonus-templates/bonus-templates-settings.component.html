@@ -41,7 +41,7 @@
       </div>
       <div class="field">
         <label class="field-label" for="bdef-show-from">{{ 'settings.bonus.show_from' | transloco }}</label>
-        <input id="bdef-show-from" class="input" type="time" [(ngModel)]="defaultsShowFrom" />
+        <app-time-input inputId="bdef-show-from" [label]="'settings.bonus.show_from' | transloco" [(ngModel)]="defaultsShowFrom" />
       </div>
       <div class="field">
         <label class="field-label" for="bdef-ends">{{ 'settings.bonus.ends' | transloco }}</label>

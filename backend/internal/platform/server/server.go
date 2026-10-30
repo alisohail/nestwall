@@ -32,6 +32,7 @@ import (
 	"nestwall/backend/internal/notifications"
 	"nestwall/backend/internal/permissions"
 	"nestwall/backend/internal/platform/clock"
+	"nestwall/backend/internal/push"
 	"nestwall/backend/internal/platform/config"
 	"nestwall/backend/internal/platform/logger"
 	"nestwall/backend/internal/rewards"
@@ -121,6 +122,12 @@ func New(cfg *config.Config, log *slog.Logger, clk clock.Clock, pool *sql.DB, ou
 	mux.Handle("GET /api/v1/notifications/settings", permMiddleware(permissions.PermSettingsView, notificationHandlers.GetSettings))
 	mux.Handle("PUT /api/v1/notifications/settings", permMiddleware(permissions.PermSettingsManage, notificationHandlers.PutSettings))
 	mux.Handle("POST /api/v1/notifications/settings/preview", permMiddleware(permissions.PermSettingsManage, notificationHandlers.PreviewTemplate))
+
+	// Web Push subscriptions. Each signed-in member manages only their own devices.
+	pushHandlers := push.NewHandlers(pool, clk, log)
+	mux.HandleFunc("GET /api/v1/push/public-key", permissions.Authenticated(pool, clk)(pushHandlers.PublicKey))
+	mux.HandleFunc("POST /api/v1/push/subscribe", permissions.Authenticated(pool, clk)(pushHandlers.Subscribe))
+	mux.HandleFunc("POST /api/v1/push/unsubscribe", permissions.Authenticated(pool, clk)(pushHandlers.Unsubscribe))
 
 	// Profile picture routes.
 	avatarHandlers := avatars.NewHandlers(pool, avatarDir, log)

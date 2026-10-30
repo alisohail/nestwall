@@ -349,9 +349,9 @@ func deliverReminder(ctx context.Context, tx *sql.Tx, d dueReminder, now time.Ti
 		body := reminderBody(d.title, d.minutes)
 		for _, recipient := range recipients {
 			if _, err := tx.ExecContext(ctx,
-				`INSERT INTO notifications (id, family_id, recipient_id, kind, subject_member_id, body, email_pending, created_at)
-				 VALUES (?, ?, ?, ?, NULL, ?, 0, ?)`,
-				ids.New(), d.familyID, recipient, reminderKind, body, dbTime(now)); err != nil {
+				`INSERT INTO notifications (id, family_id, recipient_id, kind, subject_member_id, body, email_pending, push_pending, created_at)
+				 VALUES (?, ?, ?, ?, NULL, ?, 0, ?, ?)`,
+				ids.New(), d.familyID, recipient, reminderKind, body, settings.Browser, dbTime(now)); err != nil {
 				return fmt.Errorf("insert reminder notice: %w", err)
 			}
 		}

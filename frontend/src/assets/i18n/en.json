@@ -11,7 +11,12 @@
     "unsaved_title": "Redirect without saving?",
     "unsaved_body": "Your changes have not been saved. If you redirect now, they will be lost.",
     "unsaved_stay": "Cancel",
-    "unsaved_leave": "Redirect"
+    "unsaved_leave": "Redirect",
+    "time_hour": "Hour",
+    "time_minute": "Minute",
+    "time_period": "AM or PM",
+    "time_am": "AM",
+    "time_pm": "PM"
   },
   "loading": {
     "default": "Loading...",

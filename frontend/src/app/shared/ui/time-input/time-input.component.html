@@ -1,0 +1,45 @@
+<div class="time-picker" role="group" [attr.aria-label]="label()">
+  <select
+    #hourMenu
+    class="select time-part"
+    data-testid="time-hour"
+    [id]="inputId()"
+    [attr.aria-label]="'common.time_hour' | transloco"
+    [attr.aria-describedby]="describedBy()"
+    [attr.aria-invalid]="invalid() ? 'true' : null"
+    [disabled]="disabled()"
+    (change)="setHour(hourMenu.value)"
+  >
+    <option value="">--</option>
+    @for (h of hourOptions(); track h) {
+      <option [value]="h" [selected]="h === hourSelect()">{{ h }}</option>
+    }
+  </select>
+  <span class="time-sep" aria-hidden="true">:</span>
+  <select
+    #minuteMenu
+    class="select time-part"
+    data-testid="time-minute"
+    [attr.aria-label]="'common.time_minute' | transloco"
+    [disabled]="disabled()"
+    (change)="setMinute(minuteMenu.value)"
+  >
+    <option value="">--</option>
+    @for (m of minuteOptions; track m) {
+      <option [value]="m" [selected]="m === minute()">{{ m }}</option>
+    }
+  </select>
+  @if (twelveHour()) {
+    <select
+      #periodMenu
+      class="select time-period"
+      data-testid="time-period"
+      [attr.aria-label]="'common.time_period' | transloco"
+      [disabled]="disabled()"
+      (change)="setPeriod(periodMenu.value === 'PM')"
+    >
+      <option value="AM" [selected]="!pm()">{{ 'common.time_am' | transloco }}</option>
+      <option value="PM" [selected]="pm()">{{ 'common.time_pm' | transloco }}</option>
+    </select>
+  }
+</div>

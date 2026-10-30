@@ -179,7 +179,7 @@
           </div>
           <div class="field">
             <label class="field-label" for="tpl-due">{{ 'settings.templates.due_time' | transloco }}</label>
-            <input id="tpl-due" class="input" type="time" [(ngModel)]="form.due_time" />
+            <app-time-input inputId="tpl-due" [label]="'settings.templates.due_time' | transloco" [(ngModel)]="form.due_time" />
           </div>
         </div>
 

@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
+import { TimeInputComponent } from '../../../shared/ui/time-input/time-input.component';
 import { finalize, forkJoin } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
@@ -62,7 +63,7 @@ import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
     selector: 'app-bonus-templates-settings',
-    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, TimeInputComponent],
     templateUrl: './bonus-templates-settings.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './bonus-templates-settings.component.scss'

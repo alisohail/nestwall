@@ -44,14 +44,14 @@
 
       @if (!allDay()) {
         <div class="grid g2">
-          <label class="field">
+          <div class="field">
             <span class="field-label">{{ 'calendar.event.start' | transloco }}</span>
-            <input class="input" type="time" name="start_time" data-testid="event-start" [value]="startTime()" (input)="onStart($event)" />
-          </label>
-          <label class="field">
+            <app-time-input data-testid="event-start" name="start_time" [label]="'calendar.event.start' | transloco" [ngModel]="startTime()" (ngModelChange)="startTime.set($event)" />
+          </div>
+          <div class="field">
             <span class="field-label">{{ 'calendar.event.end' | transloco }}</span>
-            <input class="input" type="time" name="end_time" data-testid="event-end" [value]="endTime()" (input)="onEnd($event)" />
-          </label>
+            <app-time-input data-testid="event-end" name="end_time" [label]="'calendar.event.end' | transloco" [ngModel]="endTime()" (ngModelChange)="endTime.set($event)" />
+          </div>
         </div>
       }
 

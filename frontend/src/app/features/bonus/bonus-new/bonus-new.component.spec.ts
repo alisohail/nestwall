@@ -67,6 +67,23 @@ describe('BonusNewComponent', () => {
         fixture.detectChanges();
     }
 
+    /** Picks a 24-hour time through the time-input menus, in the default 12-hour style. */
+    function setTime(selector: string, value: string): void {
+        const [hour, minute] = value.split(':').map(Number);
+        const host = el<HTMLElement>(selector);
+        const pick = (menu: string, menuValue: string): void => {
+            const select = host?.querySelector<HTMLSelectElement>(`[data-testid="${menu}"]`);
+            if (select) {
+                select.value = menuValue;
+                select.dispatchEvent(new Event('change'));
+            }
+        };
+        pick('time-hour', String((hour % 12) || 12).padStart(2, '0'));
+        pick('time-minute', String(minute).padStart(2, '0'));
+        pick('time-period', hour >= 12 ? 'PM' : 'AM');
+        fixture.detectChanges();
+    }
+
     beforeEach(async () => {
         api = mockOf<BonusService>({
             list: vi.fn().mockName("BonusService.list"),
@@ -203,8 +220,8 @@ describe('BonusNewComponent', () => {
         familyZone = 'America/New_York';
         await build();
         typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-        typeInto('[data-testid="bonus-show"]', '09:00');
-        typeInto('[data-testid="bonus-ends"]', '18:30');
+        setTime('[data-testid="bonus-show"]', '09:00');
+        setTime('[data-testid="bonus-ends"]', '18:30');
         click('[data-testid="bonus-publish"]');
         const body = vi.mocked(api.create).mock.lastCall![0];
         expect(body.show_from).toBe('2026-10-13T13:00:00Z');
@@ -214,8 +231,8 @@ describe('BonusNewComponent', () => {
     it('should block an end time before the show time', async () => {
         await build();
         typeInto('[data-testid="bonus-title"]', 'Read a chapter');
-        typeInto('[data-testid="bonus-show"]', '10:00');
-        typeInto('[data-testid="bonus-ends"]', '09:00');
+        setTime('[data-testid="bonus-show"]', '10:00');
+        setTime('[data-testid="bonus-ends"]', '09:00');
         click('[data-testid="bonus-publish"]');
         expect(api.create).not.toHaveBeenCalled();
         expect(fixture.nativeElement.textContent).toContain('Pick a later end time');
