@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light" />
     <title>NestWall</title>
+    <script>
+      // Runs before first paint: a saved server opens straight away, so the setup form never flashes.
+      (function () {
+        var saved = localStorage.getItem('nestwall.serverUrl');
+        if (saved && !new URLSearchParams(location.search).has('change')) {
+          document.documentElement.style.visibility = 'hidden';
+          location.replace(saved);
+        }
+      })();
+    </script>
     <style>
       body {
         margin: 0;
