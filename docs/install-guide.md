@@ -138,6 +138,32 @@ NestWall also makes its own backups inside `database/backups` on a schedule. Kee
 - Avoid changing the `database` folder while NestWall is running.
 - **Port already in use on a NAS:** NAS systems and download or media apps can use common ports such as 8080. If the default `5842` is taken, pick another free port such as `8090` and set `WEB_PORT=8090`, then use `:8090` in `APP_URL` and in the browser address. Check the port first from the NAS terminal with `ss -ltn | grep :8090` (no output means it's free).
 
+## HTTPS and phone notifications
+
+Phone notifications (shown in the phone's notification centre, even when NestWall is closed) need the app to open over `https://`. Browsers do not offer Web Push on plain `http://` addresses, except `localhost`. To turn them on:
+
+1. Put NestWall behind a reverse proxy that has a certificate, for example Caddy, Nginx Proxy Manager, or the NAS's built-in reverse proxy. Forward it to the `web` port (`WEB_PORT`).
+2. Set `APP_URL` in `.env` to the `https://` address, then run `docker compose -f compose.release.yaml up -d` again.
+3. On the phone, open the app, tap the bell, and allow notifications when asked.
+
+Example Caddyfile (replace the host name and port):
+
+```
+nestwall.example.com {
+    reverse_proxy 127.0.0.1:5842
+}
+```
+
+If you use Nginx, turn buffering off for the live updates stream, or new notices will only appear after a delay:
+
+```
+location /api/v1/notifications/stream {
+    proxy_pass http://127.0.0.1:5842;
+    proxy_buffering off;
+    proxy_cache off;
+}
+```
+
 ## Problems and fixes
 
 | What you see | What to do |
@@ -147,6 +173,7 @@ NestWall also makes its own backups inside `database/backups` on a schedule. Kee
 | `api` never says `healthy` | Run `docker compose -f compose.release.yaml logs --tail 100 api`. Most often `DB_KEY` or `SESSION_SECRET` is missing from `.env`. If the log says `unable to open database file` and `database/nestwall.db` is missing, the `database` folder is not writable by uid `100`. Run `sudo chown -R 100:101 database` (see Step 1), then `docker compose -f compose.release.yaml up -d`. |
 | `pull` says `unauthorized` or `denied` | The published images must be public on GitHub. Ask the project owner, or run `docker login ghcr.io` with a GitHub account that can read them. |
 | Phones cannot open the page | Use the computer's network address (not `localhost`) in `APP_URL` and in the browser. |
+| No notifications on the phone (not in the bell) | Phone notifications need the `https://` address (see [HTTPS and phone notifications](#https-and-phone-notifications)). Open the bell once and allow notifications. Check that the family's browser notifications switch is on in settings. |
 | The page looks out of date after an update | Close the browser tab and reopen it. If it still looks old, clear the site data for the address and reload. |
 
 If something else goes wrong, copy the output of `docker compose -f compose.release.yaml logs --tail 100` and send it to the project owner. Do not send your `.env` file.
