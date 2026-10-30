@@ -6,8 +6,8 @@ This guide covers building the debug APK, installing it, and the prerequisites. 
 
 ## What is and isn't in the app yet
 
-- Done: server-address screen, full-screen WebView, change-server row (Settings > System, shown only inside the app).
-- Not yet: native push notifications (Firebase Cloud Messaging) and Play Store upload automation. Until native push lands, alerts come through Web Push, which needs HTTPS and works on Android Chrome.
+- Done: server-address screen, full-screen WebView, change-server row (Settings > System, shown only inside the app), background alerts (see Notifications below).
+- Not yet: Firebase push and Play Store upload automation. Alerts currently come from the background watcher, not from Google's push service.
 
 ## Prerequisites
 
@@ -56,7 +56,17 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 2. The app saves the address and loads the server. On later launches it goes straight to the saved server.
 3. To switch servers, open **Settings > System > Change server address**.
 
-The server must have HTTPS enabled (see [install-guide.md](./install-guide.md#https-and-phone-notifications)). Android Chrome will not deliver notifications over plain HTTP.
+The server must have HTTPS enabled (see [install-guide.md](./install-guide.md#https-and-phone-notifications)).
+
+## Notifications
+
+Once you open the app and sign in, it starts a foreground watcher. The watcher keeps a connection to your server open, so alerts such as a new task submission or a reward request arrive even when the app is closed. Android shows a quiet, persistent "Watching for new NestWall alerts" notice while it runs. This needs no Firebase project and no keys.
+
+- The watcher starts when the app opens. It does not restart after a phone reboot until you open the app again.
+- Tapping the notice or an alert opens the app.
+- Alerts follow the same on/off setting as the in-app bell.
+- Changing the server stops the old watcher, and the new server's watcher starts when its page loads.
+- Android 15 and later require a special-use foreground service. For Play Console, declare it as "Keeping a connection to a self-hosted family server so members get alerts while the app is closed".
 
 ## Troubleshooting
 

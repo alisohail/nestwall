@@ -4,4 +4,7 @@
     <string name="title_activity_main">NestWall</string>
     <string name="package_name">com.nestwall.app</string>
     <string name="custom_url_scheme">com.nestwall.app</string>
+    <string name="watch_channel_name">Background watch</string>
+    <string name="watch_notice">Watching for new NestWall alerts</string>
+    <string name="alerts_channel_name">NestWall alerts</string>
 </resources>

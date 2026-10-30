@@ -6,6 +6,7 @@ import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { interval } from 'rxjs';
 import { ApiClient } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { isNativeShell, startNativeWatch } from '../../core/native/native-shell';
 import { PushService } from '../../core/push/push.service';
 import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { IconComponent, IconName } from '../../shared/ui/icon/icon.component';
@@ -132,6 +133,7 @@ export class NotificationBellComponent {
   constructor() {
     this.refresh();
     this.connectStream();
+    if (isNativeShell()) startNativeWatch();
     void this.push.isSubscribed().then((subscribed) => this.pushSubscribed.set(subscribed));
     interval(POLL_INTERVAL_MS)
       .pipe(takeUntilDestroyed(this.destroyRef))

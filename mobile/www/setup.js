@@ -33,6 +33,10 @@
       return;
     }
     localStorage.setItem(STORAGE_KEY, server);
+    var watch = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.NestWallWatch;
+    if (watch && server !== saved) {
+      watch.stop();
+    }
     window.location.replace(server);
   });
 })();
