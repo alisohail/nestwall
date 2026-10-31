@@ -13,7 +13,17 @@ describe('PwaPromptsComponent', () => {
         versions = new Subject<VersionEvent>();
         TestBed.configureTestingModule({
             imports: [PwaPromptsComponent, getTranslocoTestingModule()],
-            providers: [{ provide: SwUpdate, useValue: { isEnabled: swEnabled, versionUpdates: versions.asObservable() } }],
+            providers: [
+                {
+                    provide: SwUpdate,
+                    useValue: {
+                        isEnabled: swEnabled,
+                        versionUpdates: versions.asObservable(),
+                        checkForUpdate: vi.fn().mockResolvedValue(false),
+                        activateUpdate: vi.fn().mockResolvedValue(true),
+                    },
+                },
+            ],
         });
         fixture = TestBed.createComponent(PwaPromptsComponent);
         fixture.detectChanges();

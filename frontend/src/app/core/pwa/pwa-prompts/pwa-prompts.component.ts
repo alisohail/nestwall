@@ -49,6 +49,7 @@ export class PwaPromptsComponent {
           takeUntilDestroyed(),
         )
         .subscribe(() => this.updateReady.set(true));
+      void this.swUpdate.checkForUpdate();
     }
   }
 
@@ -63,7 +64,8 @@ export class PwaPromptsComponent {
     this.hideInstall();
   }
 
-  reload(): void {
+  async reload(): Promise<void> {
+    await this.swUpdate.activateUpdate();
     document.location.reload();
   }
 
