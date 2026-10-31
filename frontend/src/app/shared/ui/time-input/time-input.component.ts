@@ -1,16 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, forwardRef, HostListener, inject, input, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, forwardRef, HostListener, inject, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { TranslocoModule } from '@ngneat/transloco';
+import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 
 import { TimeFormatService } from '../../../core/time-format/time-format.service';
 
 const CLOCK = /^([01]\d|2[0-3]):([0-5]\d)$/;
+/** Typed time such as 9:30, 21:30, 9:30 pm or 9:30a. */
+const TYPED = /^\s*(\d{1,2})(?::(\d{2}))?\s*([ap]m?)?\s*$/i;
 const MINUTE_STEP = 5;
 const pad = (n: number): string => String(n).padStart(2, '0');
 
 /**
- * Time of day picked from a single button that opens a small panel of hours, minutes and AM/PM.
- * The family's 12h or 24h setting decides the panel layout. The value is always 24-hour HH:mm,
+ * Time of day typed into a field, or set with steppers in a popup that opens from the field.
+ * The family's 12h or 24h setting decides the popup layout. The value is always 24-hour HH:mm,
  * or an empty string until both hour and minute are chosen.
  */
 @Component({
@@ -24,7 +26,7 @@ const pad = (n: number): string => String(n).padStart(2, '0');
 export class TimeInputComponent implements ControlValueAccessor {
   private readonly clock = inject(TimeFormatService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
-  private readonly trigger = viewChild.required<ElementRef<HTMLButtonElement>>('trigger');
+  private readonly transloco = inject(TranslocoService);
   readonly twelveHour = this.clock.twelveHour;
 
   /** Accessible name for the group, for example the field label. */
@@ -35,30 +37,30 @@ export class TimeInputComponent implements ControlValueAccessor {
   readonly describedBy = input<string | null>(null);
   readonly invalid = input(false);
 
-  readonly minuteOptions = computed(() => {
-    const steps = Array.from({ length: 60 / MINUTE_STEP }, (_, i) => pad(i * MINUTE_STEP));
-    const minute = this.minute();
-    // Keep a minute that is not on a step (for example 07 from an older entry) visible and selected.
-    return !minute || steps.includes(minute) ? steps : [...steps, minute].sort();
-  });
-  readonly hourOptions = computed(() => {
-    const twelve = this.twelveHour();
-    return Array.from({ length: twelve ? 12 : 24 }, (_, i) => pad(twelve ? i + 1 : i));
-  });
-
   /** 24-hour hour and minute. Empty string means not chosen yet. */
-  private readonly hour = signal('');
+  readonly hour = signal('');
   readonly minute = signal('');
   /** In 12-hour mode, true for PM. Kept apart from the hour so choosing AM/PM first still sticks. */
   readonly pm = signal(false);
   readonly disabled = signal(false);
   readonly open = signal(false);
+  /** Text the user is typing. Null when the field shows the chosen time. */
+  readonly draft = signal<string | null>(null);
 
-  /** The hour menu value in the family's clock style. */
+  /** The hour in the family's clock style. */
   readonly hourSelect = computed(() => {
     const hour = this.hour();
     if (!hour) return '';
     return this.twelveHour() ? pad(Number(hour) % 12 || 12) : hour;
+  });
+
+  readonly displayText = computed(() => {
+    const text = this.draft();
+    if (text !== null) return text;
+    if (!this.hour()) return '';
+    if (!this.twelveHour()) return `${this.hour()}:${this.minute()}`;
+    const period = this.transloco.translate(this.pm() ? 'common.time_pm' : 'common.time_am');
+    return `${this.hourSelect()}:${this.minute()} ${period}`;
   });
 
   private onChange: (value: string) => void = () => undefined;
@@ -83,19 +85,6 @@ export class TimeInputComponent implements ControlValueAccessor {
     this.disabled.set(isDisabled);
   }
 
-  setHour(value: string): void {
-    this.hour.set(this.toTwentyFourHour(value));
-    if (!this.minute()) this.minute.set('00');
-    this.commit();
-  }
-
-  /** Choosing a minute completes the time, so the panel closes. */
-  setMinute(value: string): void {
-    this.minute.set(value);
-    this.commit();
-    this.close();
-  }
-
   setPeriod(isPm: boolean): void {
     this.pm.set(isPm);
     if (this.hour()) this.hour.set(this.toTwentyFourHour(this.hourSelect()));
@@ -109,13 +98,78 @@ export class TimeInputComponent implements ControlValueAccessor {
     this.close();
   }
 
-  toggle(): void {
+  openPanel(): void {
     if (this.disabled()) return;
-    this.open.update((isOpen) => !isOpen);
+    this.open.set(true);
   }
 
   close(): void {
     this.open.set(false);
+  }
+
+  onInput(text: string): void {
+    this.draft.set(text);
+  }
+
+  onEnter(): void {
+    this.commitText();
+    this.close();
+  }
+
+  /** Applies typed text such as 9:30, 21:30 or 9:30 pm. Text that cannot be read is dropped. */
+  commitText(): void {
+    const text = this.draft();
+    if (text === null) return;
+    this.draft.set(null);
+    if (!text.trim()) {
+      this.hour.set('');
+      this.minute.set('');
+      this.commit();
+      return;
+    }
+    const match = TYPED.exec(text);
+    if (!match) return;
+    let hour = Number(match[1]);
+    const minute = Number(match[2] ?? 0);
+    const period = match[3]?.toLowerCase();
+    if (minute > 59) return;
+    if (period) {
+      if (hour < 1 || hour > 12) return;
+      hour = (hour % 12) + (period.startsWith('p') ? 12 : 0);
+    } else if (this.twelveHour() && hour <= 12) {
+      hour = (hour % 12) + (this.pm() ? 12 : 0);
+    } else if (hour > 23) {
+      return;
+    }
+    this.pm.set(hour >= 12);
+    this.hour.set(pad(hour));
+    this.minute.set(pad(minute));
+    this.commit();
+  }
+
+  /** Up or down one hour. In 12-hour mode the hour wraps inside its AM or PM half. */
+  stepHour(delta: number): void {
+    if (!this.hour()) {
+      this.ensureTime();
+      this.commit();
+      return;
+    }
+    this.shiftHour(delta);
+    this.commit();
+  }
+
+  /** Up or down one 5-minute step. Off-step minutes snap to the next step in that direction, and passing 59 or 00 moves the hour. */
+  stepMinute(delta: number): void {
+    this.ensureTime();
+    const minute = Number(this.minute());
+    const next =
+      delta > 0
+        ? (Math.floor(minute / MINUTE_STEP) * MINUTE_STEP + MINUTE_STEP) % 60
+        : (Math.ceil(minute / MINUTE_STEP) * MINUTE_STEP - MINUTE_STEP + 60) % 60;
+    const wrapped = delta > 0 ? next <= minute : next >= minute;
+    if (wrapped) this.shiftHour(delta);
+    this.minute.set(pad(next));
+    this.commit();
   }
 
   @HostListener('document:pointerdown', ['$event.target'])
@@ -123,11 +177,31 @@ export class TimeInputComponent implements ControlValueAccessor {
     if (this.open() && !this.host.nativeElement.contains(target as Node)) this.close();
   }
 
+  /** Closes when focus moves to something outside the field, such as the next form field. */
+  onFocusOut(event: FocusEvent): void {
+    const next = event.relatedTarget as Node | null;
+    if (next && !this.host.nativeElement.contains(next)) this.close();
+  }
+
   @HostListener('keydown.escape')
   onEscape(): void {
-    if (!this.open()) return;
-    this.close();
-    this.trigger().nativeElement.focus();
+    if (this.open()) this.close();
+  }
+
+  /** Moves the hour without committing. In 12-hour mode it wraps inside its AM or PM half. */
+  private shiftHour(delta: number): void {
+    if (this.twelveHour()) {
+      const next = ((Number(this.hourSelect()) - 1 + delta + 12) % 12) + 1;
+      this.hour.set(this.toTwentyFourHour(pad(next)));
+    } else {
+      this.hour.set(pad((Number(this.hour()) + delta + 24) % 24));
+    }
+  }
+
+  /** Sets a default time when none is chosen yet, so the first step has something to move from. */
+  private ensureTime(): void {
+    if (!this.hour()) this.hour.set(this.toTwentyFourHour('09'));
+    if (!this.minute()) this.minute.set('00');
   }
 
   /** Converts a menu hour to 24-hour, using the current AM/PM choice in 12-hour mode. */
@@ -141,3 +215,4 @@ export class TimeInputComponent implements ControlValueAccessor {
     this.onTouched();
   }
 }
+

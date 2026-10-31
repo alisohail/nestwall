@@ -1,8 +1,9 @@
-<div class="time-field" [class.open]="open()">
-  <button
-    #trigger
-    type="button"
-    class="select time-trigger"
+<div class="time-field" [class.open]="open()" (focusout)="onFocusOut($event)">
+  <input
+    type="text"
+    inputmode="numeric"
+    autocomplete="off"
+    class="select time-input"
     data-testid="time-trigger"
     aria-haspopup="dialog"
     [id]="inputId()"
@@ -10,56 +11,46 @@
     [attr.aria-label]="label()"
     [attr.aria-describedby]="describedBy()"
     [attr.aria-invalid]="invalid() ? 'true' : null"
+    [attr.placeholder]="twelveHour() ? 'h:mm' : 'HH:mm'"
+    [value]="displayText()"
     [disabled]="disabled()"
-    (click)="toggle()"
-  >
-    @if (hour()) {
-      <span class="time-value">{{ hourSelect() }}:{{ minute() }}</span>
-      @if (twelveHour()) {
-        <span class="time-period-label">{{ (pm() ? 'common.time_pm' : 'common.time_am') | transloco }}</span>
-      }
-    } @else {
-      <span class="time-placeholder">{{ 'common.time_choose' | transloco }}</span>
-    }
-  </button>
+    (click)="openPanel()"
+    (focus)="openPanel()"
+    (input)="onInput($any($event.target).value)"
+    (blur)="commitText()"
+    (keydown.enter)="onEnter()"
+  />
   @if (open()) {
+    <div class="time-scrim" aria-hidden="true" (click)="close()"></div>
     <div class="time-panel" role="dialog" data-testid="time-panel" [attr.aria-label]="label()">
-      @if (twelveHour()) {
-        <div class="period-toggle" role="group" [attr.aria-label]="'common.time_period' | transloco">
-          <button type="button" data-testid="time-period-AM" [attr.aria-pressed]="!pm()" [class.selected]="!pm()" (click)="setPeriod(false)">
-            {{ 'common.time_am' | transloco }}
-          </button>
-          <button type="button" data-testid="time-period-PM" [attr.aria-pressed]="pm()" [class.selected]="pm()" (click)="setPeriod(true)">
-            {{ 'common.time_pm' | transloco }}
-          </button>
+      <div class="stepper">
+        <div class="col">
+          <button type="button" class="arrow" data-testid="time-hour-up" [attr.aria-label]="'common.time_hour_up' | transloco" (click)="stepHour(1)">▲</button>
+          <div class="val" data-testid="time-hour-value">{{ hourSelect() || '--' }}</div>
+          <button type="button" class="arrow" data-testid="time-hour-down" [attr.aria-label]="'common.time_hour_down' | transloco" (click)="stepHour(-1)">▼</button>
         </div>
-      }
-      <div class="cells hours" role="group" [attr.aria-label]="'common.time_hour' | transloco">
-        @for (h of hourOptions(); track h) {
-          <button
-            type="button"
-            [attr.data-testid]="'time-hour-' + h"
-            [attr.aria-pressed]="h === hourSelect()"
-            [class.selected]="h === hourSelect()"
-            (click)="setHour(h)"
-          >{{ h }}</button>
-        }
-      </div>
-      <div class="cells minutes" role="group" [attr.aria-label]="'common.time_minute' | transloco">
-        @for (m of minuteOptions(); track m) {
-          <button
-            type="button"
-            [attr.data-testid]="'time-minute-' + m"
-            [attr.aria-pressed]="m === minute()"
-            [class.selected]="m === minute()"
-            (click)="setMinute(m)"
-          >{{ m }}</button>
+        <div class="colon" aria-hidden="true">:</div>
+        <div class="col">
+          <button type="button" class="arrow" data-testid="time-minute-up" [attr.aria-label]="'common.time_minute_up' | transloco" (click)="stepMinute(1)">▲</button>
+          <div class="val" data-testid="time-minute-value">{{ minute() || '--' }}</div>
+          <button type="button" class="arrow" data-testid="time-minute-down" [attr.aria-label]="'common.time_minute_down' | transloco" (click)="stepMinute(-1)">▼</button>
+        </div>
+        @if (twelveHour()) {
+          <div class="period-toggle" role="group" [attr.aria-label]="'common.time_period' | transloco">
+            <button type="button" data-testid="time-period-AM" [attr.aria-pressed]="!pm()" [class.selected]="!pm()" (click)="setPeriod(false)">
+              {{ 'common.time_am' | transloco }}
+            </button>
+            <button type="button" data-testid="time-period-PM" [attr.aria-pressed]="pm()" [class.selected]="pm()" (click)="setPeriod(true)">
+              {{ 'common.time_pm' | transloco }}
+            </button>
+          </div>
         }
       </div>
       <div class="panel-actions">
         @if (hour()) {
           <button type="button" class="link" data-testid="time-clear" (click)="clear()">{{ 'common.time_clear' | transloco }}</button>
         }
+        <button type="button" class="link" data-testid="time-done" (click)="close()">{{ 'common.time_done' | transloco }}</button>
       </div>
     </div>
   }

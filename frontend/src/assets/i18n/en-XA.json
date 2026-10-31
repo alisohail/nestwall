@@ -18,7 +18,12 @@
     "time_am": "[=== AM ===]",
     "time_pm": "[=== PM ===]",
     "time_choose": "[=== Chooose tiime ===]",
-    "time_clear": "[=== Clear ===]"
+    "time_clear": "[=== Clear ===]",
+    "time_done": "[=== Done ===]",
+    "time_hour_up": "[=== Increaase hoouur ===]",
+    "time_hour_down": "[=== Decreaase hoouur ===]",
+    "time_minute_up": "[=== Increaase miinuute ===]",
+    "time_minute_down": "[=== Decreaase miinuute ===]"
   },
   "loading": {
     "default": "[=== Loaading... ===]",
