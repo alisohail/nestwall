@@ -1,5 +1,16 @@
 apply plugin: 'com.android.application'
 
+def nestwallVersion = file('../VERSION').text.trim()
+def nestwallVersionParts = nestwallVersion.tokenize('.').collect { it.toInteger() }
+
+androidComponents {
+    onVariants(selector().withBuildType('release')) { variant ->
+        variant.outputs.each { output ->
+            output.outputFileName.set("official-nestwall-${nestwallVersion}.apk")
+        }
+    }
+}
+
 android {
     namespace = "com.nestwall.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +18,8 @@ android {
         applicationId "com.nestwall.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode nestwallVersionParts[0] * 10000 + nestwallVersionParts[1] * 100 + nestwallVersionParts[2]
+        versionName nestwallVersion
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +27,21 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (findProperty('NESTWALL_KEYSTORE_FILE')) {
+                storeFile file(findProperty('NESTWALL_KEYSTORE_FILE'))
+                storePassword findProperty('NESTWALL_KEYSTORE_PASSWORD')
+                keyAlias findProperty('NESTWALL_KEY_ALIAS')
+                keyPassword findProperty('NESTWALL_KEY_PASSWORD')
+            }
+        }
+    }
     buildTypes {
         release {
+            if (findProperty('NESTWALL_KEYSTORE_FILE')) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
