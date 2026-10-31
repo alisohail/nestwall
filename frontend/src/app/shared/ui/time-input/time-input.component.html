@@ -1,45 +1,66 @@
-<div class="time-picker" role="group" [attr.aria-label]="label()">
-  <select
-    #hourMenu
-    class="select time-part"
-    data-testid="time-hour"
+<div class="time-field" [class.open]="open()">
+  <button
+    #trigger
+    type="button"
+    class="select time-trigger"
+    data-testid="time-trigger"
+    aria-haspopup="dialog"
     [id]="inputId()"
-    [attr.aria-label]="'common.time_hour' | transloco"
+    [attr.aria-expanded]="open()"
+    [attr.aria-label]="label()"
     [attr.aria-describedby]="describedBy()"
     [attr.aria-invalid]="invalid() ? 'true' : null"
     [disabled]="disabled()"
-    (change)="setHour(hourMenu.value)"
+    (click)="toggle()"
   >
-    <option value="">--</option>
-    @for (h of hourOptions(); track h) {
-      <option [value]="h" [selected]="h === hourSelect()">{{ h }}</option>
+    @if (hour()) {
+      <span class="time-value">{{ hourSelect() }}:{{ minute() }}</span>
+      @if (twelveHour()) {
+        <span class="time-period-label">{{ (pm() ? 'common.time_pm' : 'common.time_am') | transloco }}</span>
+      }
+    } @else {
+      <span class="time-placeholder">{{ 'common.time_choose' | transloco }}</span>
     }
-  </select>
-  <span class="time-sep" aria-hidden="true">:</span>
-  <select
-    #minuteMenu
-    class="select time-part"
-    data-testid="time-minute"
-    [attr.aria-label]="'common.time_minute' | transloco"
-    [disabled]="disabled()"
-    (change)="setMinute(minuteMenu.value)"
-  >
-    <option value="">--</option>
-    @for (m of minuteOptions; track m) {
-      <option [value]="m" [selected]="m === minute()">{{ m }}</option>
-    }
-  </select>
-  @if (twelveHour()) {
-    <select
-      #periodMenu
-      class="select time-period"
-      data-testid="time-period"
-      [attr.aria-label]="'common.time_period' | transloco"
-      [disabled]="disabled()"
-      (change)="setPeriod(periodMenu.value === 'PM')"
-    >
-      <option value="AM" [selected]="!pm()">{{ 'common.time_am' | transloco }}</option>
-      <option value="PM" [selected]="pm()">{{ 'common.time_pm' | transloco }}</option>
-    </select>
+  </button>
+  @if (open()) {
+    <div class="time-panel" role="dialog" data-testid="time-panel" [attr.aria-label]="label()">
+      @if (twelveHour()) {
+        <div class="period-toggle" role="group" [attr.aria-label]="'common.time_period' | transloco">
+          <button type="button" data-testid="time-period-AM" [attr.aria-pressed]="!pm()" [class.selected]="!pm()" (click)="setPeriod(false)">
+            {{ 'common.time_am' | transloco }}
+          </button>
+          <button type="button" data-testid="time-period-PM" [attr.aria-pressed]="pm()" [class.selected]="pm()" (click)="setPeriod(true)">
+            {{ 'common.time_pm' | transloco }}
+          </button>
+        </div>
+      }
+      <div class="cells hours" role="group" [attr.aria-label]="'common.time_hour' | transloco">
+        @for (h of hourOptions(); track h) {
+          <button
+            type="button"
+            [attr.data-testid]="'time-hour-' + h"
+            [attr.aria-pressed]="h === hourSelect()"
+            [class.selected]="h === hourSelect()"
+            (click)="setHour(h)"
+          >{{ h }}</button>
+        }
+      </div>
+      <div class="cells minutes" role="group" [attr.aria-label]="'common.time_minute' | transloco">
+        @for (m of minuteOptions(); track m) {
+          <button
+            type="button"
+            [attr.data-testid]="'time-minute-' + m"
+            [attr.aria-pressed]="m === minute()"
+            [class.selected]="m === minute()"
+            (click)="setMinute(m)"
+          >{{ m }}</button>
+        }
+      </div>
+      <div class="panel-actions">
+        @if (hour()) {
+          <button type="button" class="link" data-testid="time-clear" (click)="clear()">{{ 'common.time_clear' | transloco }}</button>
+        }
+      </div>
+    </div>
   }
 </div>

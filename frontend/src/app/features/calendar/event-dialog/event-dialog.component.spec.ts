@@ -134,18 +134,24 @@ describe('EventDialogComponent', () => {
         fixture.detectChanges();
     }
 
-    /** Picks a 24-hour time through the time-input menus, in the default 12-hour style. */
+    /** Picks a 24-hour time through the time-input panel, in the default 12-hour style. */
     function setTime(fixture: ComponentFixture<EventDialogComponent>, testId: string, value: string): void {
         const [hour, minute] = value.split(':').map(Number);
-        const pick = (menu: string, menuValue: string): void => {
-            const select = el<HTMLSelectElement>(fixture, testId)?.querySelector<HTMLSelectElement>(`[data-testid="${menu}"]`);
-            if (!select) throw new Error(`missing ${menu}`);
-            select.value = menuValue;
-            select.dispatchEvent(new Event('change'));
+        const host = el<HTMLElement>(fixture, testId);
+        if (!host) throw new Error(`missing ${testId}`);
+        const tap = (cellId: string): void => {
+            if (!host.querySelector('[data-testid="time-panel"]')) {
+                (host.querySelector('[data-testid="time-trigger"]') as HTMLButtonElement).click();
+                fixture.detectChanges();
+            }
+            const cell = host.querySelector<HTMLButtonElement>(`[data-testid="${cellId}"]`);
+            if (!cell) throw new Error(`missing ${cellId}`);
+            cell.click();
+            fixture.detectChanges();
         };
-        pick('time-hour', String((hour % 12) || 12).padStart(2, '0'));
-        pick('time-minute', String(minute).padStart(2, '0'));
-        pick('time-period', hour >= 12 ? 'PM' : 'AM');
+        tap(hour >= 12 ? 'time-period-PM' : 'time-period-AM');
+        tap(`time-hour-${String((hour % 12) || 12).padStart(2, '0')}`);
+        tap(`time-minute-${String(minute).padStart(2, '0')}`);
         fixture.detectChanges();
     }
 

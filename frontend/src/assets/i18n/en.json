@@ -16,7 +16,9 @@
     "time_minute": "Minute",
     "time_period": "AM or PM",
     "time_am": "AM",
-    "time_pm": "PM"
+    "time_pm": "PM",
+    "time_choose": "Choose time",
+    "time_clear": "Clear"
   },
   "loading": {
     "default": "Loading...",

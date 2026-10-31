@@ -1,15 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, forwardRef, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, forwardRef, HostListener, inject, input, signal, viewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { TimeFormatService } from '../../../core/time-format/time-format.service';
 
 const CLOCK = /^([01]\d|2[0-3]):([0-5]\d)$/;
+const MINUTE_STEP = 5;
 const pad = (n: number): string => String(n).padStart(2, '0');
 
 /**
- * Time of day chosen from hour, minute and AM/PM menus. Native time inputs follow the phone's clock,
- * so this control follows the family's 12h or 24h setting instead. The value is always 24-hour HH:mm,
+ * Time of day picked from a single button that opens a small panel of hours, minutes and AM/PM.
+ * The family's 12h or 24h setting decides the panel layout. The value is always 24-hour HH:mm,
  * or an empty string until both hour and minute are chosen.
  */
 @Component({
@@ -22,6 +23,8 @@ const pad = (n: number): string => String(n).padStart(2, '0');
 })
 export class TimeInputComponent implements ControlValueAccessor {
   private readonly clock = inject(TimeFormatService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly trigger = viewChild.required<ElementRef<HTMLButtonElement>>('trigger');
   readonly twelveHour = this.clock.twelveHour;
 
   /** Accessible name for the group, for example the field label. */
@@ -32,7 +35,12 @@ export class TimeInputComponent implements ControlValueAccessor {
   readonly describedBy = input<string | null>(null);
   readonly invalid = input(false);
 
-  readonly minuteOptions: readonly string[] = Array.from({ length: 60 }, (_, i) => pad(i));
+  readonly minuteOptions = computed(() => {
+    const steps = Array.from({ length: 60 / MINUTE_STEP }, (_, i) => pad(i * MINUTE_STEP));
+    const minute = this.minute();
+    // Keep a minute that is not on a step (for example 07 from an older entry) visible and selected.
+    return !minute || steps.includes(minute) ? steps : [...steps, minute].sort();
+  });
   readonly hourOptions = computed(() => {
     const twelve = this.twelveHour();
     return Array.from({ length: twelve ? 12 : 24 }, (_, i) => pad(twelve ? i + 1 : i));
@@ -44,6 +52,7 @@ export class TimeInputComponent implements ControlValueAccessor {
   /** In 12-hour mode, true for PM. Kept apart from the hour so choosing AM/PM first still sticks. */
   readonly pm = signal(false);
   readonly disabled = signal(false);
+  readonly open = signal(false);
 
   /** The hour menu value in the family's clock style. */
   readonly hourSelect = computed(() => {
@@ -75,20 +84,50 @@ export class TimeInputComponent implements ControlValueAccessor {
   }
 
   setHour(value: string): void {
-    this.hour.set(value ? this.toTwentyFourHour(value) : '');
-    if (value && !this.minute()) this.minute.set('00');
+    this.hour.set(this.toTwentyFourHour(value));
+    if (!this.minute()) this.minute.set('00');
     this.commit();
   }
 
+  /** Choosing a minute completes the time, so the panel closes. */
   setMinute(value: string): void {
     this.minute.set(value);
     this.commit();
+    this.close();
   }
 
   setPeriod(isPm: boolean): void {
     this.pm.set(isPm);
     if (this.hour()) this.hour.set(this.toTwentyFourHour(this.hourSelect()));
     this.commit();
+  }
+
+  clear(): void {
+    this.hour.set('');
+    this.minute.set('');
+    this.commit();
+    this.close();
+  }
+
+  toggle(): void {
+    if (this.disabled()) return;
+    this.open.update((isOpen) => !isOpen);
+  }
+
+  close(): void {
+    this.open.set(false);
+  }
+
+  @HostListener('document:pointerdown', ['$event.target'])
+  onOutsidePointer(target: EventTarget | null): void {
+    if (this.open() && !this.host.nativeElement.contains(target as Node)) this.close();
+  }
+
+  @HostListener('keydown.escape')
+  onEscape(): void {
+    if (!this.open()) return;
+    this.close();
+    this.trigger().nativeElement.focus();
   }
 
   /** Converts a menu hour to 24-hour, using the current AM/PM choice in 12-hour mode. */

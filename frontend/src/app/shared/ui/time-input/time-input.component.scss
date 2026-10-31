@@ -2,22 +2,106 @@
   display: block;
 }
 
-.time-picker {
+.time-field {
+  position: relative;
+}
+
+.time-trigger {
   display: flex;
   align-items: center;
   gap: 6px;
-  min-width: 0;
+  width: 100%;
+  text-align: left;
 }
 
-.time-part {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.time-period {
-  flex: 0 0 auto;
-}
-
-.time-sep {
+.time-value {
+  font-variant-numeric: tabular-nums;
   font-weight: 600;
+}
+
+.time-period-label {
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-sm);
+}
+
+.time-placeholder {
+  color: var(--nw-color-on-surface-variant);
+}
+
+.time-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  display: grid;
+  gap: 10px;
+  width: max(16rem, 100%);
+  padding: 12px;
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-md);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  box-shadow: 0 4px 16px var(--nw-color-shadow-raised);
+}
+
+.period-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-md);
+  overflow: hidden;
+}
+
+.cells {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.period-toggle button,
+.cells button {
+  min-height: 2.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--nw-color-on-surface);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--nw-color-surface-variant);
+  }
+
+  &.selected {
+    background: var(--nw-color-primary-container);
+    color: var(--nw-color-on-primary-container);
+    font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--nw-color-primary);
+    outline-offset: -3px;
+  }
+}
+
+.cells button {
+  border-radius: var(--nw-radius-sm);
+}
+
+.period-toggle button + button {
+  border-left: 1px solid var(--nw-color-outline);
+}
+
+.panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 1.5rem;
+}
+
+.link {
+  border: 0;
+  background: transparent;
+  color: var(--nw-color-primary);
+  font: inherit;
+  cursor: pointer;
 }

@@ -16,7 +16,9 @@
     "time_minute": "[=== Miinuute ===]",
     "time_period": "[=== AM oor PM ===]",
     "time_am": "[=== AM ===]",
-    "time_pm": "[=== PM ===]"
+    "time_pm": "[=== PM ===]",
+    "time_choose": "[=== Chooose tiime ===]",
+    "time_clear": "[=== Clear ===]"
   },
   "loading": {
     "default": "[=== Loaading... ===]",

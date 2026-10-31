@@ -67,20 +67,22 @@ describe('BonusNewComponent', () => {
         fixture.detectChanges();
     }
 
-    /** Picks a 24-hour time through the time-input menus, in the default 12-hour style. */
+    /** Picks a 24-hour time through the time-input panel, in the default 12-hour style. */
     function setTime(selector: string, value: string): void {
         const [hour, minute] = value.split(':').map(Number);
         const host = el<HTMLElement>(selector);
-        const pick = (menu: string, menuValue: string): void => {
-            const select = host?.querySelector<HTMLSelectElement>(`[data-testid="${menu}"]`);
-            if (select) {
-                select.value = menuValue;
-                select.dispatchEvent(new Event('change'));
+        if (!host) throw new Error(`missing ${selector}`);
+        const tap = (cellId: string): void => {
+            if (!host.querySelector('[data-testid="time-panel"]')) {
+                (host.querySelector('[data-testid="time-trigger"]') as HTMLButtonElement).click();
+                fixture.detectChanges();
             }
+            (host.querySelector(`[data-testid="${cellId}"]`) as HTMLButtonElement).click();
+            fixture.detectChanges();
         };
-        pick('time-hour', String((hour % 12) || 12).padStart(2, '0'));
-        pick('time-minute', String(minute).padStart(2, '0'));
-        pick('time-period', hour >= 12 ? 'PM' : 'AM');
+        tap(hour >= 12 ? 'time-period-PM' : 'time-period-AM');
+        tap(`time-hour-${String((hour % 12) || 12).padStart(2, '0')}`);
+        tap(`time-minute-${String(minute).padStart(2, '0')}`);
         fixture.detectChanges();
     }
 
