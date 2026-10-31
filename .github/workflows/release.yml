@@ -23,6 +23,7 @@ jobs:
     outputs:
       version: ${{ steps.bump.outputs.version }}
       release: ${{ steps.check.outputs.release }}
+      android_version: ${{ steps.android.outputs.version }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v7
@@ -45,17 +46,28 @@ jobs:
         if: ${{ steps.check.outputs.release == 'true' }}
         run: echo "version=$(scripts/bump-version.sh)" >> "$GITHUB_OUTPUT"
 
+      - name: Bump Android version from mobile/android commits
+        id: android
+        if: ${{ steps.check.outputs.release == 'true' }}
+        run: echo "version=$(scripts/bump-android-version.sh)" >> "$GITHUB_OUTPUT"
+
       - name: Commit, tag and push
         if: ${{ steps.check.outputs.release == 'true' }}
         env:
           VERSION: ${{ steps.bump.outputs.version }}
+          ANDROID_VERSION: ${{ steps.android.outputs.version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add VERSION frontend/package.json frontend/package-lock.json deploy/compose.yaml
+          tags=("v$VERSION")
+          if [ -n "$ANDROID_VERSION" ]; then
+            git add mobile/android/VERSION
+            tags+=("android-v$ANDROID_VERSION")
+          fi
           git commit -m "chore(release): v$VERSION [skip ci]"
-          git tag "v$VERSION"
-          git push origin HEAD:main "v$VERSION"
+          for tag in "${tags[@]}"; do git tag "$tag"; done
+          git push origin HEAD:main "${tags[@]}"
 
   publish:
     needs: bump
@@ -66,3 +78,13 @@ jobs:
     permissions:
       contents: write
       packages: write
+
+  android:
+    needs: bump
+    if: ${{ needs.bump.outputs.android_version != '' }}
+    uses: ./.github/workflows/android-release.yml
+    with:
+      version: ${{ needs.bump.outputs.android_version }}
+    secrets: inherit
+    permissions:
+      contents: write

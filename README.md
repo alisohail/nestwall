@@ -135,6 +135,12 @@ Never commit `.env`. It is git-ignored because it holds your keys.
 
 Families who only want to run NestWall can skip the source code. Download [compose.release.yaml](compose.release.yaml) and [.env.example](.env.example) into one folder, rename the copy to `.env`, set `DB_KEY` and `SESSION_SECRET`, and start it with `docker compose -f compose.release.yaml up -d`. The step-by-step guide, which works on Windows, macOS, Linux and NAS boxes, is in [install-guide.md](docs/install-guide.md).
 
+### Android app
+
+Download the latest signed APK from the [NestWall Android releases](https://github.com/alisohail/nestwall/releases?q=NestWall+Android). Each Android release is titled `NestWall Android <version>` and attaches `official-nestwall-<version>.apk`. Open it on your phone and allow installs from your browser when Android asks. The app connects to your own NestWall server, so run the server first.
+
+[![Get it on Android](https://img.shields.io/badge/Android-Download%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/alisohail/nestwall/releases?q=NestWall+Android)
+
 ## Releases
 
 Versions follow semantic versioning and are read from [VERSION](VERSION).
@@ -142,6 +148,7 @@ Versions follow semantic versioning and are read from [VERSION](VERSION).
 - Every push to `main` bumps the version from the commits since the last `v*` tag. `feat` bumps the minor version, `feat!` or a `BREAKING CHANGE:` footer bumps the major version, and anything else bumps the patch version. The bump is committed back to `main`, tagged `v<version>`, and published.
 - Pushing a `v*.*.*` tag publishes that tag.
 - Publishing builds `linux/amd64` images and pushes them to GitHub Container Registry as `ghcr.io/alisohail/nestwall-api` and `ghcr.io/alisohail/nestwall-web`. Each image gets the tags `X.Y.Z`, `X.Y` and `latest`. A GitHub Release is created for the tag.
-- The workflows are in [.github/workflows/](.github/workflows/) and [scripts/bump-version.sh](scripts/bump-version.sh).
+- The Android app has its own version in [mobile/android/VERSION](mobile/android/VERSION). It bumps only when commits touch `mobile/android/`, and each bump publishes a GitHub Release tagged `android-v<version>` with the signed APK attached.
+- The workflows are in [.github/workflows/](.github/workflows/) and [scripts/bump-version.sh](scripts/bump-version.sh) and [scripts/bump-android-version.sh](scripts/bump-android-version.sh).
 - For the steps to release and roll back, see [release-guide.md](docs/release-guide.md).
 

@@ -22,6 +22,11 @@ Pushing to `main` runs [release.yml](../.github/workflows/release.yml):
 1. It computes the new version from the commits since the last tag.
 2. It commits `VERSION`, `frontend/package.json` and `frontend/package-lock.json` back to `main` as `chore(release): vX.Y.Z [skip ci]` and creates the tag `vX.Y.Z`.
 3. It calls [docker-publish.yml](../.github/workflows/docker-publish.yml), which builds and pushes the images and creates the GitHub Release with generated notes.
+4. If commits touched `mobile/android/` since the last `android-v*` tag, it bumps [mobile/android/VERSION](../mobile/android/VERSION) with [scripts/bump-android-version.sh](../scripts/bump-android-version.sh), commits it with the server release, and tags `android-vX.Y.Z`. It then calls [android-release.yml](../.github/workflows/android-release.yml), which builds the signed APK and publishes a GitHub Release titled `NestWall Android X.Y.Z` with `official-nestwall-X.Y.Z.apk` attached.
+
+The Android version is separate from the server version. It is the Android `versionName`, and its `versionCode` is `MAJOR*10000 + MINOR*100 + PATCH`, so each new APK installs over the last one. The first Android release publishes the current version without bumping it.
+
+The signing secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`) must be set in GitHub Actions. Keep a backup of the keystore outside GitHub, because the same key must sign every future APK.
 
 Notes:
 
