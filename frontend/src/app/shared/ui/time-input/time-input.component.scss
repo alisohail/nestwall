@@ -32,7 +32,7 @@
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  z-index: 20;
+  z-index: var(--nw-z-popover);
   display: grid;
   gap: 10px;
   width: max(16rem, 100%);
