@@ -36,7 +36,7 @@ jobs:
       - name: Check for new commits
         id: check
         run: |
-          last_tag=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)
+          last_tag=$(git describe --tags --abbrev=0 --match 'nestwall-api-v*' 2>/dev/null || true)
           count=$(git rev-list --count "${last_tag:+$last_tag..}HEAD")
           echo "New commits since ${last_tag:-the first commit}: $count"
           if [ "$count" -gt 0 ]; then echo "release=true" >> "$GITHUB_OUTPUT"; else echo "release=false" >> "$GITHUB_OUTPUT"; fi
@@ -60,10 +60,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add VERSION frontend/package.json frontend/package-lock.json deploy/compose.yaml
-          tags=("v$VERSION")
+          tags=("nestwall-api-v$VERSION" "nestwall-web-v$VERSION")
           if [ -n "$ANDROID_VERSION" ]; then
             git add mobile/android/VERSION
-            tags+=("android-v$ANDROID_VERSION")
+            tags+=("nestwall-android-v$ANDROID_VERSION")
           fi
           git commit -m "chore(release): v$VERSION [skip ci]"
           for tag in "${tags[@]}"; do git tag "$tag"; done

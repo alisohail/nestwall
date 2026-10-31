@@ -9,8 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alisohail/nestwall/releases/latest"><img src="https://img.shields.io/github/v/release/alisohail/nestwall" alt="Latest release"></a>
-  <a href="https://github.com/alisohail/nestwall/releases?q=NestWall+Android"><img src="https://img.shields.io/github/v/release/alisohail/nestwall?filter=android-v*&label=android" alt="Latest Android release"></a>
+  <a href="https://github.com/alisohail/nestwall/releases?q=NestWall+API"><img src="https://img.shields.io/github/v/release/alisohail/nestwall?filter=nestwall-api-v*&label=nestwall-api" alt="Latest API release"></a>
+  <a href="https://github.com/alisohail/nestwall/releases?q=NestWall+Web"><img src="https://img.shields.io/github/v/release/alisohail/nestwall?filter=nestwall-web-v*&label=nestwall-web" alt="Latest Web release"></a>
+  <a href="https://github.com/alisohail/nestwall/releases?q=NestWall+Android"><img src="https://img.shields.io/github/v/release/alisohail/nestwall?filter=nestwall-android-v*&label=android" alt="Latest Android release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/alisohail/nestwall" alt="License"></a>
   <a href="https://github.com/alisohail/nestwall/actions/workflows/ci.yml"><img src="https://github.com/alisohail/nestwall/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/alisohail/nestwall/actions/workflows/release.yml"><img src="https://github.com/alisohail/nestwall/actions/workflows/release.yml/badge.svg" alt="Release"></a>
@@ -154,10 +155,9 @@ Download the latest signed APK from the [NestWall Android releases](https://gith
 
 Versions follow semantic versioning and are read from [VERSION](VERSION).
 
-- Every push to `main` bumps the version from the commits since the last `v*` tag. `feat` bumps the minor version, `feat!` or a `BREAKING CHANGE:` footer bumps the major version, and anything else bumps the patch version. The bump is committed back to `main`, tagged `v<version>`, and published.
-- Pushing a `v*.*.*` tag publishes that tag.
-- Publishing builds `linux/amd64` images and pushes them to GitHub Container Registry as `ghcr.io/alisohail/nestwall-api` and `ghcr.io/alisohail/nestwall-web`. Each image gets the tags `X.Y.Z`, `X.Y` and `latest`. A GitHub Release is created for the tag.
-- The Android app has its own version in [mobile/android/VERSION](mobile/android/VERSION). It bumps only when commits touch `mobile/android/`, and each bump publishes a GitHub Release tagged `android-v<version>` with the signed APK attached.
+- Every push to `main` bumps the server version from the commits since the last `nestwall-api-v*` tag. `feat` bumps the minor version, `feat!` or a `BREAKING CHANGE:` footer bumps the major version, and anything else bumps the patch version. The bump is committed back to `main`, tagged `nestwall-api-v<version>` and `nestwall-web-v<version>`, and published.
+- Publishing builds `linux/amd64` images and pushes them to GitHub Container Registry as `ghcr.io/alisohail/nestwall-api` and `ghcr.io/alisohail/nestwall-web`. Each image gets the tags `X.Y.Z`, `X.Y` and `latest`. Each image has its own GitHub Release: `NestWall API <version>` and `NestWall Web <version>`.
+- The Android app has its own version in [mobile/android/VERSION](mobile/android/VERSION). It bumps only when commits touch `mobile/android/`, and each bump publishes a GitHub Release tagged `nestwall-android-v<version>` with the signed APK attached.
 - The workflows are in [.github/workflows/](.github/workflows/) and [scripts/bump-version.sh](scripts/bump-version.sh) and [scripts/bump-android-version.sh](scripts/bump-android-version.sh).
 - For the steps to release and roll back, see [release-guide.md](docs/release-guide.md).
 

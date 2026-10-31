@@ -1,12 +1,10 @@
 name: Docker publish
 
 on:
-  push:
-    tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to publish without the v, for example 0.2.0. The tag v<version> must exist.'
+        description: 'Version to publish without a prefix, for example 0.2.0. The tags nestwall-api-v<version> and nestwall-web-v<version> must exist.'
         required: true
         type: string
   workflow_call:
@@ -29,9 +27,8 @@ jobs:
         id: resolve
         env:
           INPUT_VERSION: ${{ inputs.version }}
-          REF_NAME: ${{ github.ref_name }}
         run: |
-          v="${INPUT_VERSION:-${REF_NAME#v}}"
+          v="$INPUT_VERSION"
           if [[ ! "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Version must be MAJOR.MINOR.PATCH, got '$v'" >&2
             exit 1
@@ -54,7 +51,7 @@ jobs:
       - name: Checkout the release tag
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.version && format('v{0}', inputs.version) || github.ref }}
+          ref: ${{ format('nestwall-api-v{0}', inputs.version) }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -98,10 +95,14 @@ jobs:
     needs: [version, publish]
     runs-on: ubuntu-latest
     steps:
-      - name: Create the GitHub release if it does not exist
+      - name: Create the GitHub releases if they do not exist
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: v${{ needs.version.outputs.version }}
+          VERSION: ${{ needs.version.outputs.version }}
         run: |
-          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 \
-            || gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --title "$TAG" --generate-notes
+          for pair in "nestwall-api:NestWall API" "nestwall-web:NestWall Web"; do
+            tag="${pair%%:*}-v$VERSION"
+            title="${pair#*:} $VERSION"
+            gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 \
+              || gh release create "$tag" --repo "$GITHUB_REPOSITORY" --verify-tag --title "$title" --generate-notes
+          done
