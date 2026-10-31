@@ -18,7 +18,12 @@
     "time_am": "AM",
     "time_pm": "PM",
     "time_choose": "Choose time",
-    "time_clear": "Clear"
+    "time_clear": "Clear",
+    "time_done": "Done",
+    "time_hour_up": "Increase hour",
+    "time_hour_down": "Decrease hour",
+    "time_minute_up": "Increase minute",
+    "time_minute_down": "Decrease minute"
   },
   "loading": {
     "default": "Loading...",
