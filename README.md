@@ -8,6 +8,15 @@
   <strong>A self-hosted family planner for phones, tablets, a wall display and the web.</strong>
 </p>
 
+<p align="center">
+  <a href="https://github.com/alisohail/nestwall/releases/latest"><img src="https://img.shields.io/github/v/release/alisohail/nestwall" alt="Latest release"></a>
+  <a href="https://github.com/alisohail/nestwall/releases?q=NestWall+Android"><img src="https://img.shields.io/github/v/release/alisohail/nestwall?filter=android-v*&label=android" alt="Latest Android release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/alisohail/nestwall" alt="License"></a>
+  <a href="https://github.com/alisohail/nestwall/actions/workflows/ci.yml"><img src="https://github.com/alisohail/nestwall/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/alisohail/nestwall/actions/workflows/release.yml"><img src="https://github.com/alisohail/nestwall/actions/workflows/release.yml/badge.svg" alt="Release"></a>
+  <a href="https://github.com/alisohail/nestwall/actions/workflows/codeql.yml"><img src="https://github.com/alisohail/nestwall/actions/workflows/codeql.yml/badge.svg" alt="CodeQL"></a>
+</p>
+
 NestWall keeps the family's chores, tasks, rewards and calendar in one place that you host yourself.
 Kids earn points and rewards, parents stay in control, and a wall display in the hallway shows what is due today.
 
