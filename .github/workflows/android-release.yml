@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Android version without the android-v prefix, for example 1.0.0. The tag android-v<version> must exist.'
+        description: 'Android version without the nestwall-android-v prefix, for example 1.0.0. The tag nestwall-android-v<version> must exist.'
         required: true
         type: string
   workflow_call:
@@ -24,7 +24,7 @@ jobs:
       - name: Checkout the Android release tag
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.version && format('android-v{0}', inputs.version) || github.ref }}
+          ref: ${{ inputs.version && format('nestwall-android-v{0}', inputs.version) || github.ref }}
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -67,8 +67,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version || github.ref_name }}
         run: |
-          version="${VERSION#android-v}"
-          tag="android-v$version"
+          version="${VERSION#nestwall-android-v}"
+          tag="nestwall-android-v$version"
           apk="mobile/android/app/build/outputs/apk/release/official-nestwall-${version}.apk"
           test -f "$apk"
           gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 \

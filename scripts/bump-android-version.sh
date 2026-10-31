@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bumps mobile/android/VERSION from the commits that touched mobile/android since the last android-v* tag.
+# Bumps mobile/android/VERSION from the commits that touched mobile/android since the last nestwall-android-v* tag.
 # Prints the new version, or nothing when the Android app has no changes. The first release uses the current version.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -11,7 +11,7 @@ if [[ ! "$current" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
   exit 1
 fi
 
-last_tag=$(git describe --tags --abbrev=0 --match 'android-v*' 2>/dev/null || true)
+last_tag=$(git describe --tags --abbrev=0 --match 'nestwall-android-v*' 2>/dev/null || true)
 if [[ -z "$last_tag" ]]; then
   echo "$current"
   exit 0

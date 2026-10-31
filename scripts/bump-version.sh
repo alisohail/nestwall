@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bumps VERSION (MAJOR.MINOR.PATCH) from the commits since the last v* tag and prints the new version.
+# Bumps VERSION (MAJOR.MINOR.PATCH) from the commits since the last nestwall-api-v* tag and prints the new version.
 # Conventional commits: "feat" bumps MINOR, "!" or "BREAKING CHANGE" bumps MAJOR, anything else bumps PATCH.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -13,7 +13,7 @@ major=${BASH_REMATCH[1]}
 minor=${BASH_REMATCH[2]}
 patch=${BASH_REMATCH[3]}
 
-last_tag=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)
+last_tag=$(git describe --tags --abbrev=0 --match 'nestwall-api-v*' 2>/dev/null || true)
 log=$(git log "${last_tag:+$last_tag..}HEAD" --format='%s%n%b')
 
 bump=patch

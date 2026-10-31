@@ -5,7 +5,7 @@ This guide is for maintainers. It covers how a new NestWall version is numbered,
 ## How versions work
 
 - The version lives in [VERSION](../VERSION) as `MAJOR.MINOR.PATCH`, for example `0.1.0`, and is copied to [frontend/package.json](../frontend/package.json) and [frontend/package-lock.json](../frontend/package-lock.json) on each release. Do not edit it by hand for normal releases.
-- Versions follow [semantic versioning](https://semver.org/). The bump is computed from the commit messages since the last `v*` tag by [scripts/bump-version.sh](../scripts/bump-version.sh):
+- Versions follow [semantic versioning](https://semver.org/). The bump is computed from the commit messages since the last `nestwall-api-v*` tag by [scripts/bump-version.sh](../scripts/bump-version.sh):
 
 | Commit message | Bump | Example |
 |---|---|---|
@@ -20,9 +20,9 @@ If several commits are pending, the highest bump wins.
 Pushing to `main` runs [release.yml](../.github/workflows/release.yml):
 
 1. It computes the new version from the commits since the last tag.
-2. It commits `VERSION`, `frontend/package.json` and `frontend/package-lock.json` back to `main` as `chore(release): vX.Y.Z [skip ci]` and creates the tag `vX.Y.Z`.
-3. It calls [docker-publish.yml](../.github/workflows/docker-publish.yml), which builds and pushes the images and creates the GitHub Release with generated notes.
-4. If commits touched `mobile/android/` since the last `android-v*` tag, it bumps [mobile/android/VERSION](../mobile/android/VERSION) with [scripts/bump-android-version.sh](../scripts/bump-android-version.sh), commits it with the server release, and tags `android-vX.Y.Z`. It then calls [android-release.yml](../.github/workflows/android-release.yml), which builds the signed APK and publishes a GitHub Release titled `NestWall Android X.Y.Z` with `official-nestwall-X.Y.Z.apk` attached.
+2. It commits `VERSION`, `frontend/package.json` and `frontend/package-lock.json` back to `main` as `chore(release): vX.Y.Z [skip ci]` and creates the tags `nestwall-api-vX.Y.Z` and `nestwall-web-vX.Y.Z`.
+3. It calls [docker-publish.yml](../.github/workflows/docker-publish.yml), which builds and pushes the images and creates two GitHub Releases, `NestWall API X.Y.Z` and `NestWall Web X.Y.Z`, with generated notes.
+4. If commits touched `mobile/android/` since the last `nestwall-android-v*` tag, it bumps [mobile/android/VERSION](../mobile/android/VERSION) with [scripts/bump-android-version.sh](../scripts/bump-android-version.sh), commits it with the server release, and tags `nestwall-android-vX.Y.Z`. It then calls [android-release.yml](../.github/workflows/android-release.yml), which builds the signed APK and publishes a GitHub Release titled `NestWall Android X.Y.Z` with `official-nestwall-X.Y.Z.apk` attached.
 
 The Android version is separate from the server version. It is the Android `versionName`, and its `versionCode` is `MAJOR*10000 + MINOR*100 + PATCH`, so each new APK installs over the last one. The first Android release publishes the current version without bumping it.
 
@@ -38,18 +38,18 @@ Notes:
 
 Use this when you want to publish a version that already has a tag, or to retry a failed publish.
 
-- **Republish an existing tag:** in GitHub, open **Actions > Publish Docker images > Run workflow** and enter the version without the `v`, for example `0.2.0`. The tag `v0.2.0` must exist.
-- **Publish by pushing a tag:** `git tag v0.2.0 && git push origin v0.2.0`. This runs the publish workflow for that tag.
+- **Republish an existing tag:** in GitHub, open **Actions > Publish Docker images > Run workflow** and enter the version without a prefix, for example `0.2.0`. The tags `nestwall-api-v0.2.0` and `nestwall-web-v0.2.0` must exist. Its release job creates the two GitHub Releases if they are missing.
+- **Republish the Android app:** in GitHub, open **Actions > Android release > Run workflow** and enter the version without a prefix, for example `1.0.1`. The tag `nestwall-android-v1.0.1` must exist.
 - **Run the bump again:** in GitHub, open **Actions > Release > Run workflow**. This computes a new version from the commits since the last tag and releases it. If there are no new commits since the last tag, the run skips the release and the publish.
 
 ## What gets published
 
-Each release publishes two images for `linux/amd64`:
+Each server release publishes two images for `linux/amd64`:
 
 - `ghcr.io/alisohail/nestwall-api`
 - `ghcr.io/alisohail/nestwall-web`
 
-Each image has the tags `X.Y.Z`, `X.Y` and `latest`. The GitHub Release for the tag lists the changes.
+Each image has the tags `X.Y.Z`, `X.Y` and `latest`. The releases on GitHub are `NestWall API X.Y.Z`, `NestWall Web X.Y.Z` and, when the Android app changes, `NestWall Android X.Y.Z`. The releases list the changes and attach the APK for Android.
 
 ## Before you release
 
