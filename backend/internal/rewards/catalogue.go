@@ -198,9 +198,9 @@ func (f *rewardFields) normaliseLimit() *fieldError {
 		return fail("limit_count", "set it with limit_period, or clear both")
 	}
 	switch *f.LimitPeriod {
-	case "day", "week", "total":
+	case "day", "week", "month", "total":
 	default:
-		return fail("limit_period", "must be day, week or total")
+		return fail("limit_period", "must be day, week, month or total")
 	}
 	if *f.LimitCount < 1 || *f.LimitCount > maxLimitCount {
 		return fail("limit_count", "must be a whole number from 1 to 1000")

@@ -286,6 +286,44 @@ func TestRedeemDailyLimitCountsOnlyLiveRequests(t *testing.T) {
 	}
 }
 
+func TestRedeemMonthlyLimitResetsOnFirstOfMonth(t *testing.T) {
+	f := newCatFixture(t)
+	child := f.addChild(f.fam.FamilyID, "Ana")
+	fund(t, f, child.memberID, 100)
+	rw := f.create(f.parent, `{"name":"Trip treat","cost":5,"limit_period":"month","limit_count":1}`)
+
+	if _, err := f.redeemAt(time.Date(2026, 10, 10, 9, 0, 0, 0, time.UTC), child, rw.ID, "m1"); err != nil {
+		t.Fatalf("first in October: %v", err)
+	}
+	if _, err := f.redeemAt(time.Date(2026, 10, 31, 23, 0, 0, 0, time.UTC), child, rw.ID, "m2"); !errors.Is(err, ErrLimitReached) {
+		t.Fatalf("last evening of October: err = %v, want ErrLimitReached", err)
+	}
+	if _, err := f.redeemAt(time.Date(2026, 11, 1, 0, 30, 0, 0, time.UTC), child, rw.ID, "m3"); err != nil {
+		t.Fatalf("first minute of November: %v", err)
+	}
+	if _, err := f.redeemAt(time.Date(2026, 11, 15, 12, 0, 0, 0, time.UTC), child, rw.ID, "m4"); !errors.Is(err, ErrLimitReached) {
+		t.Fatalf("mid November: err = %v, want ErrLimitReached", err)
+	}
+}
+
+func TestPeriodStartMonthUsesFamilyZone(t *testing.T) {
+	auckland, err := time.LoadLocation("Pacific/Auckland")
+	if err != nil {
+		t.Fatalf("load zone: %v", err)
+	}
+	// 2026-11-01 00:30 UTC is already 1 November in Auckland, so the month starts 1 November there.
+	local := time.Date(2026, 11, 1, 0, 30, 0, 0, time.UTC).In(auckland)
+	want := time.Date(2026, 11, 1, 0, 0, 0, 0, auckland)
+	if got := periodStart("month", local); !got.Equal(want) {
+		t.Fatalf("periodStart(month) = %v, want %v", got, want)
+	}
+	// Mid-month days map back to the first of the same month.
+	mid := time.Date(2026, 2, 17, 9, 0, 0, 0, time.UTC)
+	if got := periodStart("month", mid); !got.Equal(time.Date(2026, 2, 1, 0, 0, 0, 0, time.UTC)) {
+		t.Fatalf("periodStart(month, mid-Feb) = %v", got)
+	}
+}
+
 func TestApproveMovesPendingToApproved(t *testing.T) {
 	f := newCatFixture(t)
 	child := f.addChild(f.fam.FamilyID, "Ana")

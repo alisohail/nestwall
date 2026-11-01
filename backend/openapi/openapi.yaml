@@ -5259,8 +5259,7 @@ components:
         limit_period:
           type: string
           nullable: true
-          enum: [day, week, total]
-          description: Set together with limit_count, or both null.
+          enum: [day, week, month, total]
         limit_count:
           type: integer
           nullable: true
@@ -5294,7 +5293,7 @@ components:
       properties:
         period:
           type: string
-          enum: [day, week, total]
+          enum: [day, week, month, total]
         count:
           type: integer
     Reward:

@@ -251,7 +251,7 @@ func TestCatalogueValidation(t *testing.T) {
 		{"unknown status", `{"name":"x","cost":10,"status":"paused"}`, "validation_failed"},
 		{"limit without count", `{"name":"x","cost":10,"limit_period":"day"}`, "validation_failed"},
 		{"limit without period", `{"name":"x","cost":10,"limit_count":2}`, "validation_failed"},
-		{"unknown limit period", `{"name":"x","cost":10,"limit_period":"month","limit_count":1}`, "validation_failed"},
+		{"unknown limit period", `{"name":"x","cost":10,"limit_period":"year","limit_count":1}`, "validation_failed"},
 		{"limit count zero", `{"name":"x","cost":10,"limit_period":"day","limit_count":0}`, "validation_failed"},
 		{"bad date", `{"name":"x","cost":10,"available_from":"2026-13-01"}`, "validation_failed"},
 		{"window reversed", `{"name":"x","cost":10,"available_from":"2026-10-12","available_until":"2026-10-10"}`, "validation_failed"},

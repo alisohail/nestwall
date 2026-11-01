@@ -1338,11 +1338,13 @@
         "none": "[=== No limit ===]",
         "day": "[=== {{ count }} a day ===]",
         "week": "[=== {{ count }} a week ===]",
+        "month": "[=== {{ count }} a month ===]",
         "total": "[=== {{ count }} in total ===]"
       },
       "period": {
         "day": "[=== Per day ===]",
         "week": "[=== Per week ===]",
+        "month": "[=== Per month ===]",
         "total": "[=== Total ===]"
       },
       "days": {

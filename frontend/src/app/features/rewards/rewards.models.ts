@@ -1,5 +1,5 @@
 export type RewardStatus = 'active' | 'inactive';
-export type LimitPeriod = 'day' | 'week' | 'total';
+export type LimitPeriod = 'day' | 'week' | 'month' | 'total';
 
 /** A reward from the catalogue, as the signed-in user may see it. Matches the Reward schema. */
 export interface Reward {
