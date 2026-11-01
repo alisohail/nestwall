@@ -59,7 +59,7 @@ export class RewardsAdminComponent implements OnInit {
 
   readonly dayKeys = DAY_KEYS;
   readonly statuses: RewardStatus[] = ['active', 'inactive'];
-  readonly periods: LimitPeriod[] = ['day', 'week', 'total'];
+  readonly periods: LimitPeriod[] = ['day', 'week', 'month', 'total'];
   readonly sorts: RewardSort[] = ['name', 'points-asc', 'points-desc'];
 
   loadState = signal<LoadState>('loading');

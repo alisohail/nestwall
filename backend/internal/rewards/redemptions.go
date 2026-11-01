@@ -390,7 +390,8 @@ func familyLocation(ctx context.Context, q catalogueDB, familyID string) (*time.
 }
 
 // periodStart returns the start of the limit period that local falls in. A day starts at local
-// midnight and a week starts on Monday. A total limit counts from the beginning of time.
+// midnight, a week starts on Monday and a month starts on its first day. A total limit counts from
+// the beginning of time.
 func periodStart(period string, local time.Time) time.Time {
 	y, m, d := local.Date()
 	switch period {
@@ -399,6 +400,8 @@ func periodStart(period string, local time.Time) time.Time {
 	case "week":
 		offset := (int(local.Weekday()) + 6) % 7
 		return time.Date(y, m, d-offset, 0, 0, 0, 0, local.Location())
+	case "month":
+		return time.Date(y, m, 1, 0, 0, 0, 0, local.Location())
 	}
 	return time.Time{}
 }

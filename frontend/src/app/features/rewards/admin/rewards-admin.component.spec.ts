@@ -160,6 +160,17 @@ describe('RewardsAdminComponent', () => {
         expect(api.create).toHaveBeenCalledWith(expect.objectContaining({ approval_required: true }));
     });
 
+    it('should send a monthly limit as month with its count', () => {
+        build();
+        const c = fixture.componentInstance;
+        c.openNew();
+        c.draft.name = 'Movie night';
+        c.draft.limitPeriod = 'month';
+        c.draft.limitCount = 2;
+        c.save();
+        expect(api.create).toHaveBeenCalledWith(expect.objectContaining({ limit_period: 'month', limit_count: 2 }));
+    });
+
     it('should send a day selection as days and all seven days as null', () => {
         build();
         const c = fixture.componentInstance;
