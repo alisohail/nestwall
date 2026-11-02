@@ -74,6 +74,40 @@ describe('TaskFormComponent points', () => {
         expect(update).not.toHaveBeenCalled();
     });
 
+    it('opens the scope popup when a repeating task is saved from the form', async () => {
+        Object.defineProperty(component, 'editing', { value: true });
+        const update = vi.fn().mockReturnValue(of({}));
+        (TestBed.inject(TasksService) as unknown as { update: typeof update }).update = update;
+        const task = {
+            id: 't1',
+            version: 3,
+            repeats: true,
+            title: 'Feed the cat',
+            description: null,
+            category_id: null,
+            due_date: '2026-11-02',
+            due_time: null,
+            start_time: null,
+            priority: 'normal',
+            part_of_day: null,
+            points: 5,
+            reminder_minutes: null,
+            expires_after_minutes: null,
+            penalty_unit: null,
+            penalty_value: null,
+            checklist: [],
+            assignees: [{ member_id: 'm1', status: 'to_do' }],
+        } as unknown as Task;
+        component.task.set(task);
+        (component as unknown as { fillFromTask: (t: unknown) => void }).fillFromTask(task);
+        component.save();
+        await fixture.whenStable();
+        expect(component.saveError()).toBeNull();
+        expect(component.scopePrompt()).toBe(true);
+        expect(update).not.toHaveBeenCalled();
+        component.settleScope(null);
+    });
+
     it('preselects the assignees when editing an assigned task', () => {
         const task = {
             id: 't1',
