@@ -317,7 +317,7 @@
                 >
               </button>
               @if (!item.archived) {
-                @if (item.status === "to_do" && auth.can("tasks.manage")) {
+                @if (item.status === "to_do" && tab() !== "expired" && auth.can("tasks.manage")) {
                   <button
                     type="button"
                     class="icon-btn sm danger"
