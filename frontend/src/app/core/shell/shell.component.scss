@@ -155,6 +155,21 @@
   .kid-rail {
     display: none;
   }
+  /* Phone and tablet hide the sidebar, so the version sits above the bottom nav. */
+  .app-version-mobile {
+    display: block;
+  }
+}
+
+.app-version-mobile {
+  display: none;
+  position: fixed;
+  right: 12px;
+  bottom: calc(56px + env(safe-area-inset-bottom) + 4px);
+  z-index: var(--nw-z-nav);
+  font-size: var(--nw-text-xs);
+  color: var(--nw-color-on-surface-variant);
+  pointer-events: none;
 }
 
 .avatar-link {

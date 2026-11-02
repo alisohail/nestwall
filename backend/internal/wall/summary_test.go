@@ -198,6 +198,7 @@ func TestSummaryListsOnlyChildTasksWithOverdueFirstAndDoneLast(t *testing.T) {
 	addCopy(t, s, s.childMemberID, "Feed cat", "2026-10-09", "2026-10-09 17:00:00+00:00", "past_due", "rejected", "2026-10-09 18:00:00+00:00")
 	addCopy(t, s, s.childMemberID, "Old submitted", "2026-10-09", "2026-10-09 07:00:00+00:00", "past_due", "submitted", "2026-10-09 07:30:00+00:00")
 	addCopy(t, s, s.childMemberID, "Missed", "2026-10-08", "2026-10-08 07:00:00+00:00", "missed", "to_do", "")
+	addCopy(t, s, s.childMemberID, "Missed today", today, "2026-10-10 05:00:00+00:00", "missed", "to_do", "")
 	addCopy(t, s, s.childMemberID, "Read", today, "2026-10-10 12:00:00+00:00", "scheduled", "to_do", "")
 	addCopy(t, s, s.childMemberID, "Lunch dishes", today, "2026-10-10 18:00:00+00:00", "scheduled", "to_do", "")
 	addCopy(t, s, s.childMemberID, "Tidy", today, "2026-10-10 08:00:00+00:00", "scheduled", "skipped", "")

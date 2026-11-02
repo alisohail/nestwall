@@ -237,9 +237,18 @@
         <app-banner tone="error">{{ key | transloco }}</app-banner>
       }
       @if (hasLocation()) {
-        <button type="button" class="btn soft" data-testid="weather-remove" [disabled]="busy()" (click)="removeLocation()">
+        <button type="button" class="btn soft" data-testid="weather-remove" [disabled]="busy()" (click)="confirmingRemoveLocation.set(true)">
           {{ 'settings.general.remove' | transloco }}
         </button>
+      }
+      @if (confirmingRemoveLocation()) {
+        <app-confirm-dialog
+          [heading]="'settings.general.remove_confirm_heading' | transloco"
+          [message]="'settings.general.remove_confirm_message' | transloco"
+          [confirmLabel]="'settings.general.remove' | transloco"
+          (confirmed)="confirmingRemoveLocation.set(false); removeLocation()"
+          (cancelled)="confirmingRemoveLocation.set(false)"
+        />
       }
         <button type="button" class="btn primary" data-testid="weather-save" [disabled]="busy() || !hasUnsavedChanges()" (click)="save()">
           {{ 'settings.common.save' | transloco }}

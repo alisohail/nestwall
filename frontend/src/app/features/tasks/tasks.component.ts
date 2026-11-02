@@ -29,7 +29,7 @@ import {
   taskErrorKey,
   todayIso,
 } from './tasks.format';
-import { ChecklistItem, TaskCategory, TaskListItem, TaskStatus } from './tasks.models';
+import { ChecklistItem, TaskCategory, TaskListItem, TaskStatus, TaskTabCounts } from './tasks.models';
 import { TasksService } from './tasks.service';
 
 const PAGE_SIZE = 20;
@@ -78,6 +78,8 @@ export class TasksComponent {
   today = signal(todayIso(new Date(), this.auth.currentUser()?.family?.timezone));
 
   readonly tabs = TASK_TABS;
+  /** Count per tab, or null until the first load. A tab shows no count while it is null. */
+  tabCounts = signal<TaskTabCounts | null>(null);
   memberFilter = signal('');
   tab = signal<TaskTab>('today');
   categoryFilter = signal('');
@@ -355,12 +357,24 @@ export class TasksComponent {
     }
   }
 
+  /** Loads the per-tab counts. A failure leaves the tabs without counts rather than showing an error. */
+  private loadCounts(): void {
+    this.service
+      .counts(this.memberFilter() || undefined)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (counts) => this.tabCounts.set(counts),
+        error: () => this.tabCounts.set(null),
+      });
+  }
+
   private fetch(): void {
     const seq = ++this.requestSeq;
     const page = this.pageIndex();
     this.today.set(todayIso(new Date(), this.auth.currentUser()?.family?.timezone));
     this.listError.set(null);
     this.loadState.set('loading');
+    this.loadCounts();
     this.service
       .list({
         member: this.memberFilter() || undefined,

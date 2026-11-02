@@ -913,7 +913,9 @@
       "cancelTask": "Delete",
       "cancelTitle": "Delete {{ title }}?",
       "cancelBody": "The task leaves the schedule and shows in Past as cancelled. No points are posted.",
-      "cancelConfirm": "Delete"
+      "cancelConfirm": "Delete",
+      "cancel_confirm_heading": "Delete this bonus task?",
+      "cancel_confirm_message": "The task leaves the schedule and shows in Past as cancelled. No points are posted."
     },
     "noteHint": "Up to {{ max }} characters. The child sees it.",
     "notice": {
@@ -1167,6 +1169,8 @@
     }
   },
   "avatar": {
+    "remove_confirm_heading": "Remove this picture?",
+    "remove_confirm_message": "The current picture will be removed. You can add a new one at any time.",
     "alt": "Profile picture of {{ name }}",
     "upload": "Upload a picture",
     "take_photo": "Take a photo",
@@ -2073,6 +2077,8 @@
       "password_stored": "Stored encrypted. It can't be shown again once saved.",
       "password_replace": "Replace",
       "password_remove": "Remove",
+      "password_remove_confirm_heading": "Remove the stored password?",
+      "password_remove_confirm_message": "The saved password is deleted. You can enter a new one at any time.",
       "password_cancel": "Cancel",
       "password_undo": "Undo",
       "password_clear_pending": "The saved password will be removed when you save.",
@@ -2457,6 +2463,8 @@
       "points": "points"
     },
     "templates": {
+      "delete_confirm_heading": "Delete this template?",
+      "delete_confirm_message": "The template is removed. Tasks already created from it are not changed.",
       "defaults_title": "Regular task defaults",
       "defaults_hint": "New templates start from these values. Each template can override them.",
       "missed_after": "Missed after",
@@ -2670,6 +2678,8 @@
       "time_required": "Set a time for each part of the day."
     },
     "general": {
+      "remove_confirm_heading": "Remove the weather location?",
+      "remove_confirm_message": "The saved location is removed. You can set it again at any time.",
       "family_title": "Family",
       "family_hint": "The family name shown in the app.",
       "family_save": "Save family name",
@@ -2834,6 +2844,11 @@
       "message": "This copy will be marked as skipped and no points are awarded.",
       "confirm": "Skip"
     },
+    "mark_missed": {
+      "heading": "Mark as missed?",
+      "message": "This task will be marked as missed for everyone who has not finished it. The penalty, if any, applies.",
+      "confirm": "Mark as missed"
+    },
     "detail": {
       "loading": "Loading task…",
       "error": "Could not load this task.",
@@ -2847,7 +2862,8 @@
       "penalty_percent": "−{{value}}% ({{points}} pts) if missed",
       "penalty_points": "−{{points}} pts if missed",
       "checklist": "Checklist {{done}} of {{total}}",
-      "skip": "Skip today"
+      "skip": "Skip today",
+      "mark_missed": "Mark as missed"
     },
     "priority": {
       "low": "Low",
@@ -2918,6 +2934,8 @@
       }
     },
     "form": {
+      "checklist_remove_heading": "Remove this checklist item?",
+      "checklist_remove_message": "The item is removed from the checklist.",
       "new_title": "New task",
       "edit_title": "Edit task",
       "new_sub": "Set who does it, when, and what happens if it is late.",
@@ -2944,12 +2962,18 @@
       "bonus_link": "Create a bonus task",
       "bonus_later": "bonus tasks are not available yet",
       "when": "When",
-      "date": "Date",
       "due_time": "Due time",
+      "start_time": "Start time",
+      "reminder": "Reminder",
+      "reminder_none": "No reminder",
+      "reminder_minutes": "{{ minutes }} minutes before",
       "repeat": "Repeat",
       "repeat_hint": "One occurrence is created for each date in the rule.",
       "repeat_edit_note": "Repeats can only be set when the task is created.",
-      "repeat_locked": "This task is part of a repeating series. Editing a series isn't available yet, so saving is turned off.",
+      "edit_scope": "Apply changes to",
+      "edit_scope_this": "Only this task",
+      "edit_scope_series": "The whole repeating series",
+      "edit_scope_note": "A whole-series edit changes the title, points and other details. Dates, times and expiry stay with each day.",
       "past_due": "If it isn't done on time",
       "past_due_badge": "Past due rules",
       "past_due_intro": "After the due time the task becomes past due. The child sees how long is left and what happens if they miss it.",

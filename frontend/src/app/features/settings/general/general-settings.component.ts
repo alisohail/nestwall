@@ -9,6 +9,7 @@ import { FAMILY_TIMEZONES } from '../../../core/timezones';
 import { DisplayZoneService } from '../../../core/timezone/display-zone.service';
 import { FamilyService } from '../../family/family.service';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { currentDeviceLocation } from '../../weather/device-location';
@@ -35,7 +36,7 @@ function roundCoord(value: number): number {
 /** Family-wide settings. The weather section sets the location and units for the forecast. */
 @Component({
     selector: 'app-general-settings',
-    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    imports: [FormsModule, TranslocoModule, BannerComponent, ConfirmDialogComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './general-settings.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './general-settings.component.scss'
@@ -84,6 +85,7 @@ export class GeneralSettingsComponent implements UnsavedChangesAware {
   loadApiError = signal<ApiError | null>(null);
   busy = signal(false);
   saved = signal(false);
+  confirmingRemoveLocation = signal(false);
   saveError = signal<string | null>(null);
   hasLocation = signal(false);
   detecting = signal(false);

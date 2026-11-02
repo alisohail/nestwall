@@ -31,7 +31,9 @@
       [attr.data-testid]="'tasks-tab-' + t"
       (click)="setTab(t)"
     >
-      {{ "tasks.tabs." + t | transloco }}
+      {{ "tasks.tabs." + t | transloco }}@if (tabCounts(); as counts) {
+        <span class="tab-count" [attr.data-testid]="'tasks-tab-count-' + t">({{ counts[t] }})</span>
+      }
     </button>
   }
 </div>
@@ -195,7 +197,7 @@
               </span>
               @if (tab() === "expired") {
                 <span class="badge err" data-testid="task-expired-tag">{{
-                  "tasks.status.expired" | transloco
+                  "tasks.status.overdue" | transloco
                 }}</span>
               } @else if (isOverdue(item)) {
                 <span class="badge err">{{

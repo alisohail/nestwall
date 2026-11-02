@@ -16,6 +16,9 @@ type Settings = ReturnType<TasksService['settings']>;
 type Members = ReturnType<FamilyService['listMembers']>;
 
 const regular: TaskTemplate = {
+  start_time: null,
+  repeat_state: null,
+  checklist: null,
     id: 't1',
     kind: 'regular',
     name: 'Feed the dog',

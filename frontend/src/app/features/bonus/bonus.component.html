@@ -449,7 +449,7 @@
             type="button"
             class="btn danger"
             [disabled]="busy() !== null"
-            (click)="cancelTask(t)"
+            (click)="pendingCancel.set(t)"
             data-testid="bonus-cancel-confirm"
           >
             {{ "bonus.edit.cancelConfirm" | transloco }}
@@ -464,6 +464,16 @@
             {{ "bonus.edit.back" | transloco }}
           </button>
         </div>
+        @if (pendingCancel()?.id === t.id) {
+          <app-confirm-dialog
+            [heading]="'bonus.edit.cancel_confirm_heading' | transloco"
+            [message]="'bonus.edit.cancel_confirm_message' | transloco"
+            [confirmLabel]="'bonus.edit.cancelConfirm' | transloco"
+            [busy]="busy() !== null"
+            (confirmed)="pendingCancel.set(null); cancelTask(t)"
+            (cancelled)="pendingCancel.set(null)"
+          />
+        }
       } @else {
         <form
           class="edit-form"

@@ -264,6 +264,8 @@ describe('GeneralSettingsComponent', () => {
         await settle();
         el<HTMLButtonElement>('[data-testid="weather-remove"]')?.click();
         fixture.detectChanges();
+        el<HTMLButtonElement>('[data-testid="confirm-dialog-ok"]')?.click();
+        fixture.detectChanges();
         expect(weather.saveSettings).toHaveBeenCalledWith({
             location_name: null,
             latitude: null,

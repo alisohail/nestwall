@@ -42,9 +42,14 @@ const (
 
 // templateColumns lists the columns that scanTemplate reads, in order. The last column is the
 // lower-cased name, which the list cursor sorts on.
-const templateColumns = `id, kind, name, title, description, category_id, part_of_day, priority, due_time,
+const templateColumns = `id, kind, name, title, description, category_id, part_of_day, priority, due_time, start_time,
 	reminder_minutes_before, late_points_percent, default_points, approval_required,
-	expires_after_minutes, penalty_value, penalty_unit, version, lower(name)`
+	expires_after_minutes, penalty_value, penalty_unit, repeat_state, checklist, version, lower(name)`
+
+const (
+	maxTemplateChecklistItems = 50
+	maxTemplateRepeatState    = 2000
+)
 
 // template is the API view of a task template. Its defaults are flattened into the object.
 type template struct {
@@ -64,9 +69,14 @@ type templateFields struct {
 	PartOfDay             *string  `json:"part_of_day"`
 	Priority              *string  `json:"priority"`
 	DueTime               *string  `json:"due_time"`
+	StartTime             *string  `json:"start_time"`
 	ReminderMinutesBefore *int     `json:"reminder_minutes_before"`
 	LatePointsPercent     *int     `json:"late_points_percent"`
 	DefaultAssigneeIDs    []string `json:"default_assignee_ids"`
+	// RepeatState is the repeat builder's settings as the client sent them. The server stores
+	// it as given and does not interpret it.
+	RepeatState json.RawMessage `json:"repeat_state"`
+	Checklist   []string        `json:"checklist"`
 	Defaults
 }
 
@@ -111,6 +121,15 @@ func (f *templateFields) normalise() error {
 	if f.DueTime != nil && !dueTimePattern.MatchString(*f.DueTime) {
 		return &FieldError{Field: "due_time", Reason: "invalid"}
 	}
+	if f.StartTime != nil && !dueTimePattern.MatchString(*f.StartTime) {
+		return &FieldError{Field: "start_time", Reason: "invalid"}
+	}
+	if f.StartTime != nil && f.DueTime != nil && *f.StartTime > *f.DueTime {
+		return &FieldError{Field: "start_time", Reason: "after_due"}
+	}
+	if err := f.normaliseSchedule(); err != nil {
+		return err
+	}
 	if f.ReminderMinutesBefore != nil && *f.ReminderMinutesBefore < 0 {
 		return &FieldError{Field: "reminder_minutes_before", Reason: "negative"}
 	}
@@ -135,6 +154,45 @@ func (f *templateFields) normalise() error {
 	return f.Defaults.Validate()
 }
 
+// normaliseSchedule checks the repeat state and the checklist. A "null" repeat state means none.
+// Blank checklist items are dropped.
+func (f *templateFields) normaliseSchedule() error {
+	if string(f.RepeatState) == "null" {
+		f.RepeatState = nil
+	}
+	if len(f.RepeatState) > 0 {
+		if len(f.RepeatState) > maxTemplateRepeatState || !json.Valid(f.RepeatState) || f.RepeatState[0] != '{' {
+			return &FieldError{Field: "repeat_state", Reason: "invalid"}
+		}
+	}
+
+	checklist, err := normaliseChecklist(f.Checklist)
+	if err != nil {
+		return err
+	}
+	f.Checklist = checklist
+	return nil
+}
+
+// normaliseChecklist trims the items, drops blank ones and checks the limits.
+func normaliseChecklist(raw []string) ([]string, error) {
+	items := []string{}
+	for _, item := range raw {
+		text := strings.TrimSpace(item)
+		if text == "" {
+			continue
+		}
+		if utf8.RuneCountInString(text) > maxChecklistText {
+			return nil, &FieldError{Field: "checklist", Reason: "too_long"}
+		}
+		items = append(items, text)
+	}
+	if len(items) > maxTemplateChecklistItems {
+		return nil, &FieldError{Field: "checklist", Reason: "too_many"}
+	}
+	return items, nil
+}
+
 // normaliseKind defaults the kind to regular and checks it. A bonus template cannot carry a
 // penalty, because a bonus task never penalises (PBI M4-10).
 func (f *templateFields) normaliseKind() error {
@@ -157,9 +215,17 @@ func (f *templateFields) normaliseKind() error {
 // columnArgs returns the values of the editable columns, in the order the INSERT and UPDATE
 // statements use.
 func (f templateFields) columnArgs() []any {
-	return []any{f.Name, f.Title, f.Description, f.CategoryID, f.PartOfDay, f.Priority, f.DueTime,
+	var repeatState, checklist any
+	if len(f.RepeatState) > 0 {
+		repeatState = string(f.RepeatState)
+	}
+	if len(f.Checklist) > 0 {
+		b, _ := json.Marshal(f.Checklist)
+		checklist = string(b)
+	}
+	return []any{f.Name, f.Title, f.Description, f.CategoryID, f.PartOfDay, f.Priority, f.DueTime, f.StartTime,
 		f.ReminderMinutesBefore, f.LatePointsPercent, f.Points, f.ApprovalRequired,
-		f.ExpiresAfterMinutes, f.PenaltyValue, f.PenaltyUnit}
+		f.ExpiresAfterMinutes, f.PenaltyValue, f.PenaltyUnit, repeatState, checklist}
 }
 
 // trimText trims an optional text field in place. Blank text becomes nil.
@@ -208,9 +274,21 @@ func checkReferences(ctx context.Context, q querier, familyID string, f template
 
 // scanTemplate reads a row in templateColumns order. key receives the lower-cased name.
 func scanTemplate(s rowScanner, t *template, key *string) error {
-	return s.Scan(&t.ID, &t.Kind, &t.Name, &t.Title, &t.Description, &t.CategoryID, &t.PartOfDay, &t.Priority, &t.DueTime,
-		&t.ReminderMinutesBefore, &t.LatePointsPercent, &t.Points, &t.ApprovalRequired,
-		&t.ExpiresAfterMinutes, &t.PenaltyValue, &t.PenaltyUnit, &t.Version, key)
+	var repeatState, checklist sql.NullString
+	if err := s.Scan(&t.ID, &t.Kind, &t.Name, &t.Title, &t.Description, &t.CategoryID, &t.PartOfDay, &t.Priority, &t.DueTime,
+		&t.StartTime, &t.ReminderMinutesBefore, &t.LatePointsPercent, &t.Points, &t.ApprovalRequired,
+		&t.ExpiresAfterMinutes, &t.PenaltyValue, &t.PenaltyUnit, &repeatState, &checklist, &t.Version, key); err != nil {
+		return err
+	}
+	if repeatState.Valid {
+		t.RepeatState = json.RawMessage(repeatState.String)
+	}
+	if checklist.Valid {
+		if err := json.Unmarshal([]byte(checklist.String), &t.Checklist); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // loadTemplate reads one template of the family with its default assignees. It returns
@@ -460,10 +538,10 @@ func (h *Handlers) CreateTemplate(w http.ResponseWriter, r *http.Request) {
 	args = append(args, userID)
 	if _, err := tx.ExecContext(ctx,
 		`INSERT INTO task_templates (
-			id, family_id, kind, name, title, description, category_id, part_of_day, priority, due_time,
+			id, family_id, kind, name, title, description, category_id, part_of_day, priority, due_time, start_time,
 			reminder_minutes_before, late_points_percent, default_points, approval_required,
-			expires_after_minutes, penalty_value, penalty_unit, created_by
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			expires_after_minutes, penalty_value, penalty_unit, repeat_state, checklist, created_by
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		args...,
 	); err != nil {
 		h.internalError(w, "insert template", err)
@@ -551,9 +629,9 @@ func (h *Handlers) UpdateTemplate(w http.ResponseWriter, r *http.Request) {
 	args := append(req.columnArgs(), id, familyID, current.Version)
 	res, err := tx.ExecContext(ctx,
 		`UPDATE task_templates SET
-			name = ?, title = ?, description = ?, category_id = ?, part_of_day = ?, priority = ?, due_time = ?,
+			name = ?, title = ?, description = ?, category_id = ?, part_of_day = ?, priority = ?, due_time = ?, start_time = ?,
 			reminder_minutes_before = ?, late_points_percent = ?, default_points = ?, approval_required = ?,
-			expires_after_minutes = ?, penalty_value = ?, penalty_unit = ?,
+			expires_after_minutes = ?, penalty_value = ?, penalty_unit = ?, repeat_state = ?, checklist = ?,
 			version = version + 1, updated_at = strftime('%Y-%m-%d %H:%M:%f+00:00', 'now')
 		WHERE id = ? AND family_id = ? AND version = ?`,
 		args...,

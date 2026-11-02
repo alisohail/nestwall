@@ -81,6 +81,7 @@ type taskFields struct {
 	PartOfDay             *string  `json:"part_of_day"`
 	Priority              *string  `json:"priority"`
 	DueDate               *string  `json:"due_date"`
+	StartTime             *string  `json:"start_time"`
 	DueTime               *string  `json:"due_time"`
 	ReminderMinutesBefore *int     `json:"reminder_minutes_before"`
 	LatePointsPercent     *int     `json:"late_points_percent"`
@@ -128,6 +129,16 @@ func (f *taskFields) normalise() error {
 	}
 	if f.DueTime != nil && !dueTimePattern.MatchString(*f.DueTime) {
 		return &FieldError{Field: "due_time", Reason: "invalid"}
+	}
+	if err := trimText(&f.StartTime, "start_time", 5); err != nil {
+		return err
+	}
+	if f.StartTime != nil && !dueTimePattern.MatchString(*f.StartTime) {
+		return &FieldError{Field: "start_time", Reason: "invalid"}
+	}
+	// Both times are on the same day, so the start must not come after the due time.
+	if f.StartTime != nil && f.DueTime != nil && *f.StartTime > *f.DueTime {
+		return &FieldError{Field: "start_time", Reason: "after_due"}
 	}
 	if f.ReminderMinutesBefore != nil && *f.ReminderMinutesBefore < 0 {
 		return &FieldError{Field: "reminder_minutes_before", Reason: "negative"}
@@ -212,6 +223,7 @@ func applyPrefill(ctx context.Context, q querier, familyID string, req *createTa
 		f.PartOfDay = first(f.PartOfDay, tpl.PartOfDay)
 		f.Priority = first(f.Priority, tpl.Priority)
 		f.DueTime = first(f.DueTime, tpl.DueTime)
+		f.StartTime = first(f.StartTime, tpl.StartTime)
 		f.ReminderMinutesBefore = first(f.ReminderMinutesBefore, tpl.ReminderMinutesBefore)
 		f.LatePointsPercent = first(f.LatePointsPercent, tpl.LatePointsPercent)
 		if len(f.AssigneeIDs) == 0 {
@@ -328,6 +340,7 @@ func fieldsOf(t task) taskFields {
 		PartOfDay:             t.PartOfDay,
 		Priority:              t.Priority,
 		DueDate:               t.DueDate,
+		StartTime:             t.StartTime,
 		DueTime:               t.DueTime,
 		ReminderMinutesBefore: t.ReminderMinutesBefore,
 		LatePointsPercent:     t.LatePointsPercent,
@@ -351,12 +364,12 @@ func insertDefinition(ctx context.Context, tx *sql.Tx, familyID, userID, zoneNam
 	}
 	_, err := tx.ExecContext(ctx,
 		`INSERT INTO task_definitions (id, family_id, title, description, category_id, part_of_day, priority,
-			time_zone, starts_on, due_time, points, approval_required, expires_after_minutes,
+			time_zone, starts_on, start_time, due_time, points, approval_required, expires_after_minutes,
 			penalty_value, penalty_unit, late_points_percent, reminder_minutes_before, template_id, created_by,
 			recurrence_rule)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		definitionID, familyID, *f.Title, f.Description, f.CategoryID, f.PartOfDay, *f.Priority,
-		zoneName, *f.DueDate, f.DueTime, *f.Points, *f.ApprovalRequired, f.ExpiresAfterMinutes,
+		zoneName, *f.DueDate, f.StartTime, f.DueTime, *f.Points, *f.ApprovalRequired, f.ExpiresAfterMinutes,
 		f.PenaltyValue, f.PenaltyUnit, f.LatePointsPercent, f.ReminderMinutesBefore, templateID, userID,
 		ruleArg,
 	)
@@ -626,17 +639,62 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		web.RespondError(w, http.StatusConflict, "task_archived", "This task is archived and cannot be changed", nil)
 		return
 	}
-	if current.Repeats {
-		web.RespondError(w, http.StatusConflict, "repeat_edit_unsupported", "A repeating task cannot be edited yet", nil)
-		return
-	}
 	if !checkIfMatch(w, r, current.Version) {
 		return
 	}
 
+	editScope := r.URL.Query().Get("scope")
+	series := current.Repeats && editScope == "series"
+	seriesStartsOn := ""
+	if current.Repeats {
+		switch editScope {
+		case "occurrence":
+			if _, err := DetachOccurrence(ctx, tx, familyID, userID, id, h.clock.Now()); err != nil {
+				h.respondFailure(w, "detach occurrence", err)
+				return
+			}
+			current, err = loadTask(ctx, tx, familyID, id, "")
+			if err != nil {
+				h.internalError(w, "reload detached task", err)
+				return
+			}
+		case "series":
+			_, seriesRow, err := loadSeriesOccurrence(ctx, tx, familyID, id)
+			if err != nil {
+				h.respondFailure(w, "load series", err)
+				return
+			}
+			seriesStartsOn = seriesRow.startsOn
+		default:
+			web.RespondError(w, http.StatusConflict, "repeat_scope_required",
+				"Choose whether to edit only this task or the whole series", nil)
+			return
+		}
+	}
+
 	req := fieldsOf(current)
+	cloneString := func(s *string) *string {
+		if s == nil {
+			return nil
+		}
+		v := *s
+		return &v
+	}
+	if series {
+		// fieldsOf shares these pointers with current, so decoding would overwrite the stored schedule.
+		req.DueDate = cloneString(current.DueDate)
+		req.DueTime = cloneString(current.DueTime)
+		req.StartTime = cloneString(current.StartTime)
+	}
 	if !decodeBody(w, r, &req) {
 		return
+	}
+	if series {
+		// A series edit changes content only. Date, times and expiry stay with each occurrence.
+		req.DueDate = cloneString(current.DueDate)
+		req.DueTime = cloneString(current.DueTime)
+		req.StartTime = cloneString(current.StartTime)
+		req.ExpiresAfterMinutes = current.ExpiresAfterMinutes
 	}
 	if err := req.normalise(); err != nil {
 		respondValidation(w, err)
@@ -669,15 +727,19 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	expires := occurrenceExpiry(due, zone, req.ExpiresAfterMinutes, family.MissedAfter)
 	dueText, expiresText := occurrenceTimes(due, expires)
 
+	startsOn := *req.DueDate
+	if series {
+		startsOn = seriesStartsOn
+	}
 	res, err := tx.ExecContext(ctx,
 		`UPDATE task_definitions SET title = ?, description = ?, category_id = ?, part_of_day = ?,
-			priority = ?, time_zone = ?, starts_on = ?, due_time = ?, points = ?, approval_required = ?,
+			priority = ?, time_zone = ?, starts_on = ?, start_time = ?, due_time = ?, points = ?, approval_required = ?,
 			expires_after_minutes = ?, penalty_value = ?, penalty_unit = ?, late_points_percent = ?,
 			reminder_minutes_before = ?, version = version + 1,
 			updated_at = strftime('%Y-%m-%d %H:%M:%f+00:00', 'now')
 		 WHERE id = ? AND family_id = ? AND version = ?`,
 		*req.Title, req.Description, req.CategoryID, req.PartOfDay,
-		*req.Priority, zoneName, *req.DueDate, req.DueTime, *req.Points, *req.ApprovalRequired,
+		*req.Priority, zoneName, startsOn, req.StartTime, req.DueTime, *req.Points, *req.ApprovalRequired,
 		req.ExpiresAfterMinutes, req.PenaltyValue, req.PenaltyUnit, req.LatePointsPercent,
 		req.ReminderMinutesBefore,
 		current.definitionID, familyID, current.Version,

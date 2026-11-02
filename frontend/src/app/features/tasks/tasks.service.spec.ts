@@ -96,6 +96,16 @@ describe("TasksService", () => {
     req.flush(null);
   });
 
+  it("loads tab counts for the named member, or for everyone", () => {
+    service.counts("m2").subscribe();
+    const req = http.expectOne("/api/v1/tasks/counts?member=m2");
+    expect(req.request.method).toBe("GET");
+    req.flush({});
+
+    service.counts().subscribe();
+    http.expectOne("/api/v1/tasks/counts").flush({});
+  });
+
   it("restores an archived task and sends its version as If-Match", () => {
     service.restore("t1", 4).subscribe();
     const req = http.expectOne("/api/v1/tasks/t1/unarchive");

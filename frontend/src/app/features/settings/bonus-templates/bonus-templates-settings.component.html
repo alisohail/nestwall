@@ -190,9 +190,19 @@
           <p class="saved" role="status">{{ 'settings.common.saved' | transloco }}</p>
         }
 
+        @if (confirmingDelete()) {
+          <app-confirm-dialog
+            [heading]="'settings.templates.delete_confirm_heading' | transloco"
+            [message]="'settings.templates.delete_confirm_message' | transloco"
+            [confirmLabel]="'settings.common.delete' | transloco"
+            (confirmed)="confirmingDelete.set(false); remove()"
+            (cancelled)="confirmingDelete.set(false)"
+          />
+        }
+
         <div class="foot">
           @if (current()) {
-            <button type="button" class="btn danger danger-zone" data-testid="bonus-tpl-delete" [disabled]="deleting()" (click)="remove()">{{ 'settings.common.delete' | transloco }}</button>
+            <button type="button" class="btn danger danger-zone" data-testid="bonus-tpl-delete" [disabled]="deleting()" (click)="confirmingDelete.set(true)">{{ 'settings.common.delete' | transloco }}</button>
           }
           <button type="button" class="btn ghost" (click)="closeEditor()">{{ 'settings.common.cancel' | transloco }}</button>
           <button type="button" class="btn primary" data-testid="bonus-tpl-save" [disabled]="saving() || !editorDirty()" (click)="save()">{{ 'settings.templates.save' | transloco }}</button>

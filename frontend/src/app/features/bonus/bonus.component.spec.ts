@@ -343,6 +343,8 @@ describe("BonusComponent", () => {
         expect(el('[data-testid="bonus-edit-panel"]')).toBeTruthy();
         expect(api.cancel).not.toHaveBeenCalled();
         click('[data-testid="bonus-cancel-confirm"]');
+        expect(api.cancel).not.toHaveBeenCalled();
+        click('[data-testid="confirm-dialog-ok"]');
         expect(api.cancel).toHaveBeenCalledWith("t1", 1);
     });
 
@@ -356,6 +358,8 @@ describe("BonusComponent", () => {
         expect(el('[data-testid="bonus-edit-panel"]')).toBeTruthy();
         expect(api.cancel).not.toHaveBeenCalled();
         click('[data-testid="bonus-cancel-confirm"]');
+        expect(api.cancel).not.toHaveBeenCalled();
+        click('[data-testid="confirm-dialog-ok"]');
         expect(api.cancel).toHaveBeenCalledWith("t3", 1);
     });
 

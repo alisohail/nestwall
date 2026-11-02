@@ -58,12 +58,13 @@ function formOf(template: TaskTemplate): BonusTemplateForm {
 
 /** Bonus task templates. Each template prefills a bonus task when it is published. Changing one never changes published tasks. */
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
     selector: 'app-bonus-templates-settings',
-    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent, TimeInputComponent],
+    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, BannerComponent, ConfirmDialogComponent, LoadingComponent, LoadErrorComponent, TimeInputComponent],
     templateUrl: './bonus-templates-settings.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './bonus-templates-settings.component.scss'
@@ -110,6 +111,7 @@ export class BonusTemplatesSettingsComponent implements UnsavedChangesAware {
   saving = signal(false);
   saved = signal(false);
   deleting = signal(false);
+  confirmingDelete = signal(false);
   editorError = signal<string | null>(null);
 
   @ViewChild('editorCol') editorCol?: ElementRef<HTMLElement>;

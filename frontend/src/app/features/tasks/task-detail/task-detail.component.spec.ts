@@ -1,9 +1,10 @@
 import type { MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { getTranslocoTestingModule } from '../../../core/transloco/transloco-testing.module';
 import { TasksService } from '../tasks.service';
+import { Task } from '../tasks.models';
 import { mockOf } from '../../../testing/mock-of';
 import { TaskDetailComponent } from './task-detail.component';
 
@@ -13,7 +14,8 @@ describe('TaskDetailComponent', () => {
 
     beforeEach(async () => {
         service = mockOf<TasksService>({
-            get: vi.fn().mockName("TasksService.get")
+            get: vi.fn().mockName("TasksService.get"),
+            markMissed: vi.fn().mockName("TasksService.markMissed")
         });
         service.get.mockReturnValue(throwError(() => ({ code: 'server', status: 500 })));
 
@@ -46,5 +48,27 @@ describe('TaskDetailComponent', () => {
 
         expect(service.get).toHaveBeenCalledTimes(2);
         expect(el.querySelector('app-load-error')).not.toBeNull();
+    });
+
+    it('offers mark as missed only while some copy is still open', () => {
+        const c = fixture.componentInstance;
+        c.task.set({ id: 't1', archived: false, version: 2, assignees: [{ member_id: 'm1', status: 'to_do' }] } as unknown as Task);
+        expect(c.canMarkMissed()).toBe(true);
+
+        c.task.set({ id: 't1', archived: false, version: 2, assignees: [{ member_id: 'm1', status: 'approved' }] } as unknown as Task);
+        expect(c.canMarkMissed()).toBe(false);
+    });
+
+    it('marks the task missed with its version and tells the list to refresh', () => {
+        const c = fixture.componentInstance;
+        const changed = vi.fn();
+        c.changed.subscribe(changed);
+        service.markMissed.mockReturnValue(of({} as Task));
+        c.task.set({ id: 't1', archived: false, version: 2, assignees: [{ member_id: 'm1', status: 'to_do' }] } as unknown as Task);
+
+        c.markMissed();
+
+        expect(service.markMissed).toHaveBeenCalledWith('t1', 2);
+        expect(changed).toHaveBeenCalledTimes(1);
     });
 });

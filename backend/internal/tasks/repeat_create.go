@@ -15,7 +15,8 @@ import (
 // one-off task. The due date is the first day of the series.
 type repeatCreateRequest struct {
 	createTaskRequest
-	RecurrenceRule string `json:"recurrence_rule"`
+	RecurrenceRule string   `json:"recurrence_rule"`
+	Checklist      []string `json:"checklist"`
 }
 
 // repeatCreated is the response to a new repeating task. FirstTask is the earliest occurrence in
@@ -43,6 +44,12 @@ func (h *Handlers) CreateRepeat(w http.ResponseWriter, r *http.Request) {
 		respondValidation(w, err)
 		return
 	}
+	checklist, err := normaliseChecklist(req.Checklist)
+	if err != nil {
+		respondValidation(w, err)
+		return
+	}
+	req.Checklist = checklist
 	rule, err := ValidateRule(req.RecurrenceRule)
 	if err != nil {
 		respondValidation(w, err)
@@ -85,6 +92,10 @@ func (h *Handlers) CreateRepeat(w http.ResponseWriter, r *http.Request) {
 		h.internalError(w, "insert repeat assignees", err)
 		return
 	}
+	if err := insertDefinitionChecklist(ctx, tx, familyID, definitionID, req.Checklist); err != nil {
+		h.internalError(w, "insert repeat checklist", err)
+		return
+	}
 	generated, err := GenerateWindow(ctx, tx, familyID, definitionID, h.clock.Now(), DefaultWindowDays)
 	if err != nil {
 		h.internalError(w, "generate repeat occurrences", err)
@@ -117,6 +128,21 @@ func (h *Handlers) CreateRepeat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	web.RespondJSON(w, http.StatusCreated, resp)
+}
+
+// insertDefinitionChecklist stores the checklist of a repeating task on the definition. Each
+// generated occurrence copies it.
+func insertDefinitionChecklist(ctx context.Context, tx *sql.Tx, familyID, definitionID string, items []string) error {
+	for i, text := range items {
+		if _, err := tx.ExecContext(ctx,
+			`INSERT INTO task_checklist_items (id, family_id, task_definition_id, sort_order, item_text)
+			 VALUES (?, ?, ?, ?, ?)`,
+			ids.New(), familyID, definitionID, i, text,
+		); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // firstOccurrenceID returns the earliest occurrence of a definition in the family.

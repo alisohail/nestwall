@@ -108,6 +108,10 @@
     </div>
   </div>
 
+  @if (appVersion()) {
+    <div class="app-version-mobile" data-testid="app-version-mobile">v{{ appVersion() }}</div>
+  }
+
   <!-- Mobile Bottom Nav -->
   <nav class="bottomnav" aria-label="Mobile navigation">
     @for (item of visibleMobileItems(); track item.path) {

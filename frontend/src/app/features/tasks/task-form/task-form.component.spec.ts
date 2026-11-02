@@ -76,6 +76,12 @@ describe('TaskFormComponent points', () => {
         expect(fixture.nativeElement.querySelector('input[formcontrolname="points"]').getAttribute('aria-invalid')).toBe('true');
     });
 
+    it('adds to a numeric points value instead of joining digits', () => {
+        component.f.points.setValue('2' as unknown as number);
+        component.bumpPoints(1);
+        expect(component.f.points.value).toBe(3);
+    });
+
     it('sends 0 points when the value is 0', () => {
         component.f.title.setValue('Make bed');
         component.f.assignees.setValue(['k1']);

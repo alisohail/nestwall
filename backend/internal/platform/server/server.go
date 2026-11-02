@@ -217,6 +217,7 @@ func New(cfg *config.Config, log *slog.Logger, clk clock.Clock, pool *sql.DB, ou
 	// tasks.view at own level; the handler checks the scope itself (readScope).
 	// Changes need tasks.manage, so children get 403.
 	mux.HandleFunc("GET /api/v1/tasks", permissions.Authenticated(pool, clk)(taskHandlers.ListTasks))
+	mux.HandleFunc("GET /api/v1/tasks/counts", permissions.Authenticated(pool, clk)(taskHandlers.CountTasks))
 	mux.HandleFunc("GET /api/v1/tasks/{id}", permissions.Authenticated(pool, clk)(taskHandlers.GetTask))
 	mux.Handle("POST /api/v1/tasks", permMiddleware(permissions.PermTasksManage, taskHandlers.CreateTask))
 	mux.Handle("POST /api/v1/task-definitions", permMiddleware(permissions.PermTasksManage, taskHandlers.CreateRepeat))
@@ -233,6 +234,7 @@ func New(cfg *config.Config, log *slog.Logger, clk clock.Clock, pool *sql.DB, ou
 	mux.Handle("POST /api/v1/tasks/{id}/approve", permMiddleware(permissions.PermTasksApprove, taskHandlers.Approve))
 	mux.Handle("POST /api/v1/tasks/{id}/reject", permMiddleware(permissions.PermTasksApprove, taskHandlers.Reject))
 	mux.Handle("POST /api/v1/tasks/{id}/skip", permMiddleware(permissions.PermTasksManage, taskHandlers.Skip))
+	mux.Handle("POST /api/v1/tasks/{id}/miss", permMiddleware(permissions.PermTasksManage, taskHandlers.MarkMissedByParent))
 	mux.Handle("POST /api/v1/tasks/{id}/reopen", permMiddleware(permissions.PermTasksManage, taskHandlers.Reopen))
 	mux.Handle("POST /api/v1/tasks/{id}/withdraw", permMiddleware(permissions.PermTasksComplete, taskHandlers.Withdraw))
 	mux.Handle("PUT /api/v1/tasks/{id}/checklist/{item}", permMiddleware(permissions.PermTasksComplete, taskHandlers.TickChecklist))

@@ -35,6 +35,7 @@ export interface Task extends TaskDefaults {
   part_of_day: PartOfDay | null;
   priority: Priority;
   due_date: string;
+  start_time: string | null;
   due_time: string | null;
   due_at: string;
   expires_at: string | null;
@@ -58,6 +59,17 @@ export interface TaskListItem extends Task {
 export interface ListTasksResponse {
   tasks: TaskListItem[];
   next_cursor: string | null;
+}
+
+/** How many tasks each tab lists, from GET /api/v1/tasks/counts. */
+export interface TaskTabCounts {
+  overdue: number;
+  today: number;
+  upcoming: number;
+  submitted: number;
+  approved: number;
+  expired: number;
+  archived: number;
 }
 
 export interface TaskListParams {
@@ -97,9 +109,13 @@ export interface TaskTemplate extends TaskDefaults {
   part_of_day: PartOfDay | null;
   priority: Priority | null;
   due_time: string | null;
+  start_time: string | null;
   reminder_minutes_before: number | null;
   late_points_percent: number | null;
   default_assignee_ids: string[];
+  /** The repeat builder's settings. Null for a one-off template. */
+  repeat_state: Record<string, unknown> | null;
+  checklist: string[] | null;
   version: number;
 }
 
@@ -181,6 +197,7 @@ export interface TaskRequest extends Partial<TaskDefaults> {
   part_of_day?: PartOfDay | null;
   priority?: Priority | null;
   due_date?: string | null;
+  start_time?: string | null;
   due_time?: string | null;
   reminder_minutes_before?: number | null;
   late_points_percent?: number | null;
@@ -189,6 +206,7 @@ export interface TaskRequest extends Partial<TaskDefaults> {
 
 export interface RepeatCreateRequest extends TaskRequest {
   recurrence_rule: string;
+  checklist?: string[];
 }
 
 export interface RepeatCreated {
@@ -206,6 +224,7 @@ export interface TaskPatchRequest {
   part_of_day?: PartOfDay | null;
   priority?: Priority | null;
   due_date?: string;
+  start_time?: string | null;
   due_time?: string | null;
   reminder_minutes_before?: number | null;
   late_points_percent?: number | null;
@@ -227,7 +246,10 @@ export interface TaskTemplateRequest extends Partial<TaskDefaults> {
   part_of_day?: PartOfDay | null;
   priority?: Priority | null;
   due_time?: string | null;
+  start_time?: string | null;
   reminder_minutes_before?: number | null;
   late_points_percent?: number | null;
   default_assignee_ids?: string[] | null;
+  repeat_state?: Record<string, unknown> | null;
+  checklist?: string[] | null;
 }
