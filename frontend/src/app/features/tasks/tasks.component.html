@@ -191,8 +191,14 @@
                 } @else {
                   {{ formatDay(item.due_date) }}
                 }
+                @if (item.start_time) {
+                  {{ "tasks.detail.start_at" | transloco: { time: formatTime(item.start_time) } }}
+                }
+                @if (item.start_time && item.due_time) {
+                  –
+                }
                 @if (item.due_time) {
-                  {{ formatTime(item.due_time) }}
+                  {{ "tasks.detail.end_at" | transloco: { time: formatTime(item.due_time) } }}
                 }
               </span>
               @if (tab() === "expired") {

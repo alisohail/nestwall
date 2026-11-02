@@ -101,20 +101,27 @@ export class TaskFormComponent implements UnsavedChangesAware {
   visibleTemplates = computed(() => (this.templatesExpanded() ? this.templates() : this.templates().slice(0, TEMPLATE_CHIPS)));
 
   activeMembers = computed(() => this.members().filter((m) => m.status === 'active'));
-  /** Edit scope for a repeating task: this one occurrence, or the whole series (content only). */
-  editScope = signal<'occurrence' | 'series'>('occurrence');
-  /** Schedule inputs a whole-series edit cannot change. Each occurrence keeps its own date and time. */
-  private readonly seriesLockedControls = ['due_date', 'due_time', 'start_time', 'expires_value', 'expires_unit'] as const;
+  /** Set while the Save popup asks whether a repeating task's edit applies to this task or the whole series. */
+  scopePrompt = signal(false);
+  scopeChoice = signal<'occurrence' | 'series'>('occurrence');
+  private scopeResolver: ((scope: 'occurrence' | 'series' | null) => void) | null = null;
 
-  setEditScope(scope: 'occurrence' | 'series'): void {
-    this.editScope.set(scope);
-    for (const name of this.seriesLockedControls) {
-      const control = this.form.get(name);
-      if (!control) continue;
-      if (scope === 'series') control.disable({ emitEvent: false });
-      else control.enable({ emitEvent: false });
-    }
+  /** Resolves with the chosen scope, or null when the user cancels. */
+  private chooseScope(): Promise<'occurrence' | 'series' | null> {
+    this.scopeChoice.set('occurrence');
+    this.scopePrompt.set(true);
+    return new Promise((resolve) => {
+      this.scopeResolver = resolve;
+    });
   }
+
+  settleScope(scope: 'occurrence' | 'series' | null): void {
+    this.scopePrompt.set(false);
+    const resolve = this.scopeResolver;
+    this.scopeResolver = null;
+    resolve?.(scope);
+  }
+
   checklistLocked = computed(() => (this.task()?.assignees ?? []).some((a) => a.status !== 'to_do' && a.status !== 'rejected'));
 
   form = this.fb.group({
@@ -416,12 +423,14 @@ export class TaskFormComponent implements UnsavedChangesAware {
     });
   }
 
-  private saveEdit(): Promise<boolean> {
+  private async saveEdit(): Promise<boolean> {
     const task = this.task();
-    if (!task) return Promise.resolve(false);
+    if (!task) return false;
+    const scope = task.repeats ? await this.chooseScope() : null;
+    if (task.repeats && !scope) return false;
     this.begin();
     return new Promise<boolean>((resolve) => {
-      this.service.update(task.id, this.patchBody(), task.version, task.repeats ? this.editScope() : undefined).subscribe({
+      this.service.update(task.id, this.patchBody(), task.version, scope ?? undefined).subscribe({
         next: () => resolve(this.finish()),
         error: (err) => resolve(this.fail(err)),
       });

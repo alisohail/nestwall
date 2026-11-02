@@ -8,6 +8,7 @@ import { getTranslocoTestingModule } from '../../../core/transloco/transloco-tes
 import { FamilyService } from '../../family/family.service';
 import { TasksService } from '../tasks.service';
 import { TaskFormComponent } from './task-form.component';
+import type { Task } from '../tasks.models';
 
 describe('TaskFormComponent points', () => {
     let fixture: ComponentFixture<TaskFormComponent>;
@@ -49,6 +50,28 @@ describe('TaskFormComponent points', () => {
         expect(component.f.points.value).toBe(0);
         expect(pointsInput().value).toBe('0');
         expect(pointsInput().placeholder).toBe('');
+    });
+
+    it('asks which copies to change before saving a repeating task', async () => {
+        const update = vi.fn().mockReturnValue(of({}));
+        (TestBed.inject(TasksService) as unknown as { update: typeof update }).update = update;
+        component.task.set({ id: 't1', version: 3, repeats: true, title: 'Feed the cat', checklist: [], assignees: [] } as unknown as Task);
+        const saving = (component as unknown as { saveEdit: () => Promise<boolean> }).saveEdit();
+        expect(component.scopePrompt()).toBe(true);
+        expect(update).not.toHaveBeenCalled();
+        component.settleScope('series');
+        await expect(saving).resolves.toBe(true);
+        expect(update).toHaveBeenCalledWith('t1', expect.any(Object), 3, 'series');
+    });
+
+    it('does not save a repeating task when the scope prompt is cancelled', async () => {
+        const update = vi.fn().mockReturnValue(of({}));
+        (TestBed.inject(TasksService) as unknown as { update: typeof update }).update = update;
+        component.task.set({ id: 't1', version: 3, repeats: true, title: 'Feed the cat', checklist: [], assignees: [] } as unknown as Task);
+        const saving = (component as unknown as { saveEdit: () => Promise<boolean> }).saveEdit();
+        component.settleScope(null);
+        await expect(saving).resolves.toBe(false);
+        expect(update).not.toHaveBeenCalled();
     });
 
     it('preselects the assignees when editing an assigned task', () => {

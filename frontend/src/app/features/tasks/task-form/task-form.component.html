@@ -171,18 +171,7 @@
             <span class="hint">{{ 'tasks.form.repeat_hint' | transloco }}</span>
           </div>
         } @else if (task()?.repeats) {
-          <div class="scope" role="radiogroup" [attr.aria-label]="'tasks.form.edit_scope' | transloco" data-testid="edit-scope">
-            <p class="field-label">{{ 'tasks.form.edit_scope' | transloco }}</p>
-            <label class="opt">
-              <input type="radio" name="edit-scope" value="occurrence" data-testid="edit-scope-occurrence" [checked]="editScope() === 'occurrence'" (change)="setEditScope('occurrence')" />
-              <span>{{ 'tasks.form.edit_scope_this' | transloco }}</span>
-            </label>
-            <label class="opt">
-              <input type="radio" name="edit-scope" value="series" data-testid="edit-scope-series" [checked]="editScope() === 'series'" (change)="setEditScope('series')" />
-              <span>{{ 'tasks.form.edit_scope_series' | transloco }}</span>
-            </label>
-          </div>
-          <p class="hint scope-note">{{ 'tasks.form.edit_scope_note' | transloco }}</p>
+          <p class="hint">{{ 'tasks.form.edit_scope_note' | transloco }}</p>
         } @else {
           <p class="hint">{{ 'tasks.form.repeat_edit_note' | transloco }}</p>
         }
@@ -394,6 +383,29 @@
       {{ (editing ? 'tasks.form.save' : 'tasks.form.create') | transloco }}
     </button>
   </div>
+
+  @if (scopePrompt()) {
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? settleScope(null) : null">
+      <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="scope-prompt-title" data-testid="scope-prompt">
+        <h2 id="scope-prompt-title">{{ 'tasks.form.scope_heading' | transloco }}</h2>
+        <div class="scope" role="radiogroup" [attr.aria-label]="'tasks.form.edit_scope' | transloco">
+          <label class="opt">
+            <input type="radio" name="scope-prompt" value="occurrence" data-testid="scope-prompt-occurrence" [checked]="scopeChoice() === 'occurrence'" (change)="scopeChoice.set('occurrence')" />
+            <span>{{ 'tasks.form.edit_scope_this' | transloco }}</span>
+          </label>
+          <label class="opt">
+            <input type="radio" name="scope-prompt" value="series" data-testid="scope-prompt-series" [checked]="scopeChoice() === 'series'" (change)="scopeChoice.set('series')" />
+            <span>{{ 'tasks.form.edit_scope_series' | transloco }}</span>
+          </label>
+        </div>
+        <p class="hint">{{ 'tasks.form.edit_scope_note' | transloco }}</p>
+        <div class="confirm-actions">
+          <button type="button" class="btn ghost" data-testid="scope-prompt-cancel" (click)="settleScope(null)">{{ 'tasks.confirm.cancel' | transloco }}</button>
+          <button type="button" class="btn primary" data-testid="scope-prompt-save" (click)="settleScope(scopeChoice())">{{ 'tasks.form.scope_save' | transloco }}</button>
+        </div>
+      </div>
+    </div>
+  }
 
   @if (!editing && templateOpen()) {
     <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? templateOpen.set(false) : null">

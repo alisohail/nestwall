@@ -38,11 +38,24 @@
           } @else {
             {{ formatDay(task.due_date) }}
           }
-          @if (task.due_time) {
-            , {{ formatTime(task.due_time) }}
-          }
         </div>
       </div>
+      @if (task.start_time || task.due_time) {
+        <div>
+          <div class="label">{{ 'tasks.detail.time' | transloco }}</div>
+          <div class="fact-val">
+            @if (task.start_time) {
+              {{ "tasks.detail.start_at" | transloco: { time: formatTime(task.start_time) } }}
+            }
+            @if (task.start_time && task.due_time) {
+              –
+            }
+            @if (task.due_time) {
+              {{ "tasks.detail.end_at" | transloco: { time: formatTime(task.due_time) } }}
+            }
+          </div>
+        </div>
+      }
       <div>
         <div class="label">{{ 'tasks.detail.points' | transloco }}</div>
         <div class="fact-val">
