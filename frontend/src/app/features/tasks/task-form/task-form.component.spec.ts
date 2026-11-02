@@ -122,6 +122,23 @@ describe('TaskFormComponent points', () => {
         expect(component.f.assignees.value).toEqual(['m1', 'm2']);
     });
 
+    it('keeps saved checklist steps when an unrelated field is saved', () => {
+        const task = {
+            id: 't1',
+            title: 'Feed the cat',
+            due_date: '2026-11-02',
+            priority: 'normal',
+            points: 5,
+            checklist: [{ id: 's1', text: 'Feed' }, { id: 's2', text: 'Water' }],
+            assignees: [],
+        } as unknown as Task;
+        component.task.set(task);
+        (component as unknown as { fillFromTask: (t: unknown) => void }).fillFromTask(task);
+        expect(component.editItems()).toEqual([{ id: 's1', text: 'Feed' }, { id: 's2', text: 'Water' }]);
+        const body = (component as unknown as { patchBody: () => { checklist?: unknown } }).patchBody();
+        expect(body.checklist).toBeUndefined();
+    });
+
     it('rejects an empty points value as required', () => {
         component.f.points.setValue(null);
         expect(component.f.points.hasError('required')).toBe(true);

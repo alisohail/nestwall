@@ -293,6 +293,34 @@ func checkTaskRefs(ctx context.Context, q querier, familyID string, f taskFields
 
 // dueInstant returns when a task is due, in UTC. The date and optional time are local to the
 // family's zone. A task with no due time is due at the end of its day, 23:59:59 local.
+// rescheduleOccurrences applies a time of day and expiry to occurrences that keep their own dates.
+func rescheduleOccurrences(ctx context.Context, tx *sql.Tx, familyID string, ids []string, zone *time.Location,
+	dueTime *string, expiresAfter *int, missedAfter *MissedAfter) error {
+	for _, id := range ids {
+		var date string
+		if err := tx.QueryRowContext(ctx,
+			`SELECT due_date FROM task_occurrences WHERE family_id = ? AND id = ?`, familyID, id,
+		).Scan(&date); err != nil {
+			return err
+		}
+		due, err := dueInstant(date, dueTime, zone)
+		if err != nil {
+			return err
+		}
+		expires := occurrenceExpiry(due, zone, expiresAfter, missedAfter)
+		dueText, expiresText := occurrenceTimes(due, expires)
+		if _, err := tx.ExecContext(ctx,
+			`UPDATE task_occurrences SET due_at = ?, expires_at = ?, version = version + 1,
+				updated_at = strftime('%Y-%m-%d %H:%M:%f+00:00', 'now')
+			 WHERE family_id = ? AND id = ?`,
+			dueText, expiresText, familyID, id,
+		); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func dueInstant(date string, dueTime *string, zone *time.Location) (time.Time, error) {
 	day, err := time.ParseInLocation(dateLayout, date, zone)
 	if err != nil {
@@ -699,11 +727,8 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	}
 	req = body.taskFields
 	if series {
-		// A series edit changes content only. Date, times and expiry stay with each occurrence.
+		// A series edit keeps each occurrence's own date. Times of day and expiry apply to the series.
 		req.DueDate = cloneString(current.DueDate)
-		req.DueTime = cloneString(current.DueTime)
-		req.StartTime = cloneString(current.StartTime)
-		req.ExpiresAfterMinutes = current.ExpiresAfterMinutes
 	}
 	if err := req.normalise(); err != nil {
 		respondValidation(w, err)
@@ -808,6 +833,18 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
+		}
+	}
+
+	if series {
+		future, err := openFutureOccurrences(ctx, tx, familyID, current.definitionID, id, dbTime(h.clock.Now()))
+		if err != nil {
+			h.internalError(w, "load future occurrences for schedule", err)
+			return
+		}
+		if err := rescheduleOccurrences(ctx, tx, familyID, future, zone, req.DueTime, req.ExpiresAfterMinutes, family.MissedAfter); err != nil {
+			h.internalError(w, "reschedule future occurrences", err)
+			return
 		}
 	}
 
