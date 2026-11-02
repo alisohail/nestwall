@@ -57,10 +57,19 @@
       <p class="error" role="alert" data-testid="photo-error">{{ key | transloco }}</p>
     }
 
-    <button type="button" class="btn ghost wide" data-testid="photo-remove" [disabled]="saving() || !avatarId()" (click)="removePicture()">
+    <button type="button" class="btn ghost wide" data-testid="photo-remove" [disabled]="saving() || !avatarId()" (click)="confirmingRemove.set(true)">
       <app-icon name="trash" [size]="18" />
       <span>{{ removeLabel() }}</span>
     </button>
+    @if (confirmingRemove()) {
+      <app-confirm-dialog
+        [heading]="'avatar.remove_confirm_heading' | transloco"
+        [message]="'avatar.remove_confirm_message' | transloco"
+        [confirmLabel]="removeLabel()"
+        (confirmed)="confirmingRemove.set(false); removePicture()"
+        (cancelled)="confirmingRemove.set(false)"
+      />
+    }
 
     <div class="dialog-foot">
       <button type="button" class="btn ghost" data-testid="photo-cancel" [disabled]="saving()" (click)="cancel()">{{ 'avatar.cancel' | transloco }}</button>

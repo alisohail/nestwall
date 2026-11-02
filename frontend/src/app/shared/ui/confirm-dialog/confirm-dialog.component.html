@@ -1,0 +1,16 @@
+<div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? cancelled.emit() : null">
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-dialog-title" data-testid="confirm-dialog">
+    <h2 id="confirm-dialog-title">{{ heading() }}</h2>
+    @if (message()) {
+      <p class="muted">{{ message() }}</p>
+    }
+    <div class="foot">
+      <button type="button" class="btn ghost" data-testid="confirm-dialog-cancel" [disabled]="busy()" (click)="cancelled.emit()">
+        {{ 'common.cancel' | transloco }}
+      </button>
+      <button type="button" class="btn" [class.danger]="danger()" [class.primary]="!danger()" data-testid="confirm-dialog-ok" [disabled]="busy()" (click)="confirmed.emit()">
+        {{ confirmLabel() }}
+      </button>
+    </div>
+  </div>
+</div>

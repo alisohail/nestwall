@@ -8,6 +8,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
 import { refreshOnFormChange } from '../../../shared/forms/refresh-on-form-change';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { ErrorStateComponent } from '../../../shared/ui/error-state/error-state.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { FamilyService, MemberDetail } from '../../family/family.service';
@@ -18,6 +19,7 @@ import { RepeatBuilderComponent } from './repeat-builder/repeat-builder.componen
 import { TimeInputComponent } from '../../../shared/ui/time-input/time-input.component';
 import { RepeatState, buildRule, defaultRepeat, repeatProblem } from './recurrence';
 import { UnsavedChangesAware } from '../../../core/unsaved/unsaved-changes';
+import { REMINDER_OPTIONS } from '../../settings/settings.format';
 
 type ExpiryUnit = 'days' | 'hours';
 type LoadState = 'loading' | 'ready' | 'error';
@@ -25,6 +27,11 @@ type LoadState = 'loading' | 'ready' | 'error';
 const MINUTES_PER_HOUR = 60;
 const MINUTES_PER_DAY = 1440;
 const CHECKLIST_MAX = 200;
+/** One checklist step in the edit form. A new step has no id until the task is saved. */
+interface EditStep {
+  id: string | null;
+  text: string;
+}
 const TEMPLATE_CHIPS = 5;
 
 /** Splits stored minutes into the largest whole unit (days, else hours). */
@@ -43,6 +50,7 @@ function expiryParts(minutes: number | null): { value: number | null; unit: Expi
         TranslocoModule,
         AvatarComponent,
         BannerComponent,
+        ConfirmDialogComponent,
         ErrorStateComponent,
         LoadingComponent,
         RepeatBuilderComponent,
@@ -93,7 +101,27 @@ export class TaskFormComponent implements UnsavedChangesAware {
   visibleTemplates = computed(() => (this.templatesExpanded() ? this.templates() : this.templates().slice(0, TEMPLATE_CHIPS)));
 
   activeMembers = computed(() => this.members().filter((m) => m.status === 'active'));
-  repeatsLocked = computed(() => this.editing && this.task()?.repeats === true);
+  /** Set while the Save popup asks whether a repeating task's edit applies to this task or the whole series. */
+  scopePrompt = signal(false);
+  scopeChoice = signal<'occurrence' | 'series'>('occurrence');
+  private scopeResolver: ((scope: 'occurrence' | 'series' | null) => void) | null = null;
+
+  /** Resolves with the chosen scope, or null when the user cancels. */
+  private chooseScope(): Promise<'occurrence' | 'series' | null> {
+    this.scopeChoice.set('occurrence');
+    this.scopePrompt.set(true);
+    return new Promise((resolve) => {
+      this.scopeResolver = resolve;
+    });
+  }
+
+  settleScope(scope: 'occurrence' | 'series' | null): void {
+    this.scopePrompt.set(false);
+    const resolve = this.scopeResolver;
+    this.scopeResolver = null;
+    resolve?.(scope);
+  }
+
   checklistLocked = computed(() => (this.task()?.assignees ?? []).some((a) => a.status !== 'to_do' && a.status !== 'rejected'));
 
   form = this.fb.group({
@@ -103,7 +131,9 @@ export class TaskFormComponent implements UnsavedChangesAware {
     priority: ['normal' as Priority],
     part_of_day: ['anytime' as PartOfDay],
     due_date: [this.today, Validators.required],
+    start_time: [''],
     due_time: [''],
+    reminder_minutes_before: [null as number | null],
     assignees: [[] as string[], Validators.required],
     points: [0 as number | null, [Validators.required, Validators.min(0), Validators.max(1000)]],
     approval_required: [true],
@@ -114,6 +144,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
     penalty_unit: ['percent' as PenaltyUnit],
   });
   readonly f = this.form.controls;
+  readonly reminderOptions = REMINDER_OPTIONS;
   /** Programmatic patches (template or saved task loads) must refresh validity in the view. */
   private refreshOnForm = refreshOnFormChange(this.form);
 
@@ -126,6 +157,11 @@ export class TaskFormComponent implements UnsavedChangesAware {
   draftItems = signal<string[]>([]);
   newItemText = signal('');
   checklistError = signal<string | null>(null);
+  /** Edit mode: the checklist as staged in the form. It is saved with the rest of the task. */
+  editItems = signal<EditStep[]>([]);
+  /** Index of a saved step waiting for the user to confirm its removal. */
+  pendingRemove = signal<number | null>(null);
+
 
   templateOpen = signal(false);
   templateName = signal('');
@@ -133,7 +169,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
   templateSaved = signal(false);
 
   previewName = computed(() => this.members().find((m) => m.id === this.formValue().assignees[0])?.display_name ?? '');
-  previewSteps = computed(() => (this.editing ? (this.task()?.checklist?.length ?? 0) : this.draftItems().length));
+  previewSteps = computed(() => (this.editing ? this.editItems().length : this.draftItems().length));
 
   constructor() {
     this.f.category_id.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((id) => {
@@ -178,7 +214,9 @@ export class TaskFormComponent implements UnsavedChangesAware {
       ...(template.description !== null ? { description: template.description } : {}),
       ...(template.part_of_day !== null ? { part_of_day: template.part_of_day } : {}),
       ...(template.priority !== null ? { priority: template.priority } : {}),
+      ...(template.start_time !== null ? { start_time: template.start_time } : {}),
       ...(template.due_time !== null ? { due_time: template.due_time } : {}),
+      ...(template.reminder_minutes_before !== null ? { reminder_minutes_before: template.reminder_minutes_before } : {}),
       ...(template.late_points_percent !== null ? { late_points_percent: template.late_points_percent } : {}),
       ...(template.default_assignee_ids.length > 0 ? { assignees: [...template.default_assignee_ids] } : {}),
       ...(template.points !== null ? { points: template.points } : {}),
@@ -186,6 +224,12 @@ export class TaskFormComponent implements UnsavedChangesAware {
       ...(expiry ? { expires_value: expiry.value, expires_unit: expiry.unit } : {}),
       ...(template.penalty_value !== null ? { penalty_value: template.penalty_value, penalty_unit: template.penalty_unit ?? 'percent' } : {}),
     });
+    if (template.repeat_state) {
+      this.repeat.set({ ...defaultRepeat(this.today), ...(template.repeat_state as Partial<RepeatState>) });
+    }
+    if (template.checklist && template.checklist.length > 0) {
+      this.draftItems.set([...template.checklist]);
+    }
   }
 
   toggleAssignee(id: string): void {
@@ -195,7 +239,8 @@ export class TaskFormComponent implements UnsavedChangesAware {
   }
 
   bumpPoints(delta: number): void {
-    this.f.points.setValue(Math.max(0, (this.f.points.value ?? 0) + delta));
+    const current = Number(this.f.points.value ?? 0) || 0;
+    this.f.points.setValue(Math.max(0, current + delta));
   }
 
   inputValue(event: Event): string {
@@ -207,15 +252,9 @@ export class TaskFormComponent implements UnsavedChangesAware {
     if (!text || text.length > CHECKLIST_MAX) return;
     if (!this.editing) {
       this.draftItems.update((items) => [...items, text]);
-      this.newItemText.set('');
-      return;
+    } else {
+      this.editItems.update((items) => [...items, { id: null, text }]);
     }
-    const task = this.task();
-    if (!task) return;
-    this.service.addChecklistItem(task.id, text, task.version).subscribe({
-      next: (updated) => this.applyChecklist(updated),
-      error: (err) => this.checklistError.set(taskErrorKey(err)),
-    });
     this.newItemText.set('');
   }
 
@@ -223,14 +262,37 @@ export class TaskFormComponent implements UnsavedChangesAware {
     this.draftItems.update((items) => items.filter((_, i) => i !== index));
   }
 
-  renameItem(item: ChecklistItem, value: string): void {
+  renameStep(index: number, value: string): void {
     const text = value.trim();
-    const task = this.task();
-    if (!task || !text || text === item.text || text.length > CHECKLIST_MAX) return;
-    this.service.renameChecklistItem(task.id, item.id, text, task.version).subscribe({
-      next: (updated) => this.applyChecklist(updated),
-      error: (err) => this.checklistError.set(taskErrorKey(err)),
-    });
+    const step = this.editItems()[index];
+    if (!step || !text || text === step.text || text.length > CHECKLIST_MAX) return;
+    this.editItems.update((items) => items.map((s, i) => (i === index ? { ...s, text } : s)));
+  }
+
+  /** A saved step asks first. A step that is not saved yet can go straight away. */
+  askRemoveStep(index: number): void {
+    if (this.editItems()[index]?.id === null) this.removeStep(index);
+    else this.pendingRemove.set(index);
+  }
+
+  removeStep(index: number): void {
+    this.pendingRemove.set(null);
+    this.editItems.update((items) => items.filter((_, i) => i !== index));
+  }
+
+  confirmRemove(): void {
+    const index = this.pendingRemove();
+    if (index !== null) this.removeStep(index);
+  }
+
+  /** Done state comes from the server copy, since ticks save straight away. */
+  stepDone(step: EditStep): boolean {
+    return this.task()?.checklist?.find((item) => item.id === step.id)?.done ?? false;
+  }
+
+  toggleStep(step: EditStep): void {
+    const item = this.task()?.checklist?.find((c) => c.id === step.id);
+    if (item) this.toggleItem(item);
   }
 
   /** Ticks or unticks a step on the copy the form shows, so only that person's checklist changes. */
@@ -251,15 +313,6 @@ export class TaskFormComponent implements UnsavedChangesAware {
     });
   }
 
-  removeItem(item: ChecklistItem): void {
-    const task = this.task();
-    if (!task) return;
-    this.service.removeChecklistItem(task.id, item.id, task.version).subscribe({
-      next: (updated) => this.applyChecklist(updated),
-      error: (err) => this.checklistError.set(taskErrorKey(err)),
-    });
-  }
-
   save(): void {
     void this.saveChanges().then((ok) => {
       if (ok) void this.router.navigate(['/tasks'], { queryParams: this.backQuery });
@@ -271,7 +324,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
   }
 
   saveChanges(): Promise<boolean> {
-    if (this.saving() || this.repeatsLocked()) return Promise.resolve(false);
+    if (this.saving()) return Promise.resolve(false);
     this.saveError.set(null);
     this.form.markAllAsTouched();
     if (this.form.invalid) {
@@ -292,7 +345,9 @@ export class TaskFormComponent implements UnsavedChangesAware {
       description: v.description.trim() || null,
       part_of_day: v.part_of_day,
       priority: v.priority,
+      start_time: v.start_time || null,
       due_time: v.due_time || null,
+      reminder_minutes_before: v.reminder_minutes_before,
       late_points_percent: v.late_points_percent,
       default_assignee_ids: v.assignees,
       points: v.points,
@@ -300,6 +355,8 @@ export class TaskFormComponent implements UnsavedChangesAware {
       expires_after_minutes: this.expiryMinutes(v.expires_value, v.expires_unit),
       penalty_value: v.penalty_value,
       penalty_unit: v.penalty_value === null ? null : v.penalty_unit,
+      repeat_state: this.repeat().freq === 'none' ? null : { ...this.repeat() },
+      checklist: [...this.draftItems()],
     };
     this.templateSaving.set(true);
     this.service.createTemplate(body).subscribe({
@@ -324,10 +381,6 @@ export class TaskFormComponent implements UnsavedChangesAware {
     }
     const base = this.requestBody();
     if (this.repeat().freq !== 'none') {
-      if (this.draftItems().length > 0) {
-        this.saveError.set('tasks.form.error.checklist_repeat');
-        return Promise.resolve(false);
-      }
       const rule = buildRule(this.repeat(), this.f.due_date.value);
       if (!rule) {
         this.saveError.set('tasks.repeat.problem.interval');
@@ -335,7 +388,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
       }
       this.begin();
       return new Promise<boolean>((resolve) => {
-        this.service.createRepeat({ ...base, recurrence_rule: rule }).subscribe({
+        this.service.createRepeat({ ...base, recurrence_rule: rule, checklist: [...this.draftItems()] }).subscribe({
           next: () => resolve(this.finish()),
           error: (err) => resolve(this.fail(err)),
         });
@@ -370,12 +423,14 @@ export class TaskFormComponent implements UnsavedChangesAware {
     });
   }
 
-  private saveEdit(): Promise<boolean> {
+  private async saveEdit(): Promise<boolean> {
     const task = this.task();
-    if (!task) return Promise.resolve(false);
+    if (!task) return false;
+    const scope = task.repeats ? await this.chooseScope() : null;
+    if (task.repeats && !scope) return false;
     this.begin();
     return new Promise<boolean>((resolve) => {
-      this.service.update(task.id, this.patchBody(), task.version).subscribe({
+      this.service.update(task.id, this.patchBody(), task.version, scope ?? undefined).subscribe({
         next: () => resolve(this.finish()),
         error: (err) => resolve(this.fail(err)),
       });
@@ -410,8 +465,9 @@ export class TaskFormComponent implements UnsavedChangesAware {
       priority: task.priority,
       part_of_day: task.part_of_day ?? 'anytime',
       due_date: task.due_date,
+      start_time: task.start_time ?? '',
       due_time: task.due_time ?? '',
-      assignees: [...task.assignee_ids],
+      reminder_minutes_before: task.reminder_minutes_before,
       points: task.points,
       approval_required: task.approval_required ?? true,
       expires_value: expiry.value,
@@ -419,7 +475,8 @@ export class TaskFormComponent implements UnsavedChangesAware {
       late_points_percent: task.late_points_percent,
       penalty_value: task.penalty_value,
       penalty_unit: task.penalty_unit ?? 'percent',
-    });
+      assignees: task.assignees.map((a) => a.member_id),
+    });((task.checklist ?? []).map((item) => ({ id: item.id, text: item.text })));
   }
 
   private expiryMinutes(value: number | null, unit: ExpiryUnit): number | null {
@@ -437,6 +494,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
       priority: v.priority,
       due_date: v.due_date,
       due_time: v.due_time || null,
+      reminder_minutes_before: v.reminder_minutes_before,
       late_points_percent: v.late_points_percent,
       assignee_ids: v.assignees,
       points: v.points,
@@ -456,7 +514,9 @@ export class TaskFormComponent implements UnsavedChangesAware {
       part_of_day: v.part_of_day,
       priority: v.priority,
       due_date: v.due_date,
+      start_time: v.start_time || null,
       due_time: v.due_time || null,
+      reminder_minutes_before: v.reminder_minutes_before,
       late_points_percent: v.late_points_percent,
       assignee_ids: v.assignees,
       approval_required: v.approval_required,
@@ -465,7 +525,17 @@ export class TaskFormComponent implements UnsavedChangesAware {
       penalty_unit: v.penalty_value === null ? null : v.penalty_unit,
     };
     if (v.points !== null) patch.points = v.points;
+    if (this.checklistChanged()) {
+      patch.checklist = this.editItems().map((step) => ({ id: step.id, text: step.text.trim() }));
+    }
     return patch;
+  }
+
+  /** True when the staged steps differ from the saved checklist (text, order, or added and removed steps). */
+  private checklistChanged(): boolean {
+    const saved = this.task()?.checklist ?? [];
+    const staged = this.editItems();
+    return saved.length !== staged.length || saved.some((item, i) => item.id !== staged[i].id || item.text !== staged[i].text);
   }
 
   private begin(): void {
@@ -486,7 +556,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
   }
 
   private snapshot(): string {
-    return JSON.stringify({ form: this.form.getRawValue(), draft: this.draftItems(), repeat: this.repeat() });
+    return JSON.stringify({ form: this.form.getRawValue(), draft: this.draftItems(), steps: this.editItems(), repeat: this.repeat() });
   }
 
   readonly formatDay = formatDay;

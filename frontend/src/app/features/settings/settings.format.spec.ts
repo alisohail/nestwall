@@ -48,6 +48,9 @@ describe('settings format helpers', () => {
 
     describe('templates', () => {
         const template: TaskTemplate = {
+          start_time: null,
+          repeat_state: null,
+          checklist: null,
             id: 't1',
             kind: 'regular',
             name: 'Feed the cat',

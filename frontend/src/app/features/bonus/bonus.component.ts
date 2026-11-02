@@ -7,6 +7,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { ApiError } from '../../core/api/api-client.service';
 import { AvatarComponent } from '../../shared/avatar/avatar.component';
 import { BannerComponent } from '../../shared/ui/banner/banner.component';
+import { ConfirmDialogComponent } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../shared/ui/error-state/error-state.component';
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
@@ -67,6 +68,7 @@ export interface BonusListRow {
         TranslocoModule,
         AvatarComponent,
         BannerComponent,
+        ConfirmDialogComponent,
         EmptyStateComponent,
         ErrorStateComponent,
         LoadingComponent,
@@ -105,6 +107,8 @@ export class BonusComponent {
 
   /** Key of the single action in progress. Blocks a second send of the same decision. */
   readonly busy = signal<string | null>(null);
+  /** The unclaimed bonus task waiting for the user to confirm its cancellation. */
+  readonly pendingCancel = signal<BonusTask | null>(null);
   readonly notice = signal<{ key: string; params?: Record<string, string> } | null>(null);
   readonly error = signal<string | null>(null);
 

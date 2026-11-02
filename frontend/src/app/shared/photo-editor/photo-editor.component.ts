@@ -4,6 +4,7 @@ import { TranslocoModule } from '@ngneat/transloco';
 import { ApiError } from '../../core/api/api-client.service';
 import { AvatarComponent } from '../avatar/avatar.component';
 import { AvatarService, CropRect } from '../avatar/avatar.service';
+import { ConfirmDialogComponent } from '../ui/confirm-dialog/confirm-dialog.component';
 import { IconComponent } from '../ui/icon/icon.component';
 
 export const MAX_PICTURE_BYTES = 5 * 1024 * 1024;
@@ -61,7 +62,7 @@ function uploadErrorKey(err: ApiError): string {
  */
 @Component({
     selector: 'app-photo-editor',
-    imports: [TranslocoModule, AvatarComponent, IconComponent],
+    imports: [TranslocoModule, AvatarComponent, IconComponent, ConfirmDialogComponent],
     templateUrl: './photo-editor.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './photo-editor.component.scss'
@@ -98,6 +99,7 @@ export class PhotoEditorComponent {
   panY = signal(0.5);
   saving = signal(false);
   errorKey = signal<string | null>(null);
+  confirmingRemove = signal(false);
 
   crop = computed<CropRect | null>(() => {
     const img = this.image();
@@ -137,6 +139,7 @@ export class PhotoEditorComponent {
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
+    if (this.confirmingRemove()) return;
     this.cancel();
   }
 

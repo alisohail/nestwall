@@ -292,8 +292,50 @@ func insertGeneratedOccurrence(ctx context.Context, tx *sql.Tx, familyID, defini
 			return false, err
 		}
 	}
+	if err := copyDefinitionChecklist(ctx, tx, familyID, definitionID, occurrenceID); err != nil {
+		return false, err
+	}
 	return true, nil
 }
+
+// copyDefinitionChecklist gives a new occurrence its own copy of the definition's checklist.
+func copyDefinitionChecklist(ctx context.Context, tx *sql.Tx, familyID, definitionID, occurrenceID string) error {
+	rows, err := tx.QueryContext(ctx,
+		`SELECT sort_order, item_text FROM task_checklist_items
+		 WHERE family_id = ? AND task_definition_id = ? ORDER BY sort_order`,
+		familyID, definitionID,
+	)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	type item struct {
+		order int
+		text  string
+	}
+	var items []item
+	for rows.Next() {
+		var it item
+		if err := rows.Scan(&it.order, &it.text); err != nil {
+			return err
+		}
+		items = append(items, it)
+	}
+	if err := rows.Err(); err != nil {
+		return err
+	}
+	for _, it := range items {
+		if _, err := tx.ExecContext(ctx,
+			`INSERT INTO task_checklist_items (id, family_id, task_occurrence_id, sort_order, item_text)
+			 VALUES (?, ?, ?, ?, ?)`,
+			ids.New(), familyID, occurrenceID, it.order, it.text,
+		); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 
 // loadSkipDates returns the skip dates of a definition as a set of YYYY-MM-DD strings.
 func loadSkipDates(ctx context.Context, tx *sql.Tx, familyID, definitionID string) (map[string]bool, error) {

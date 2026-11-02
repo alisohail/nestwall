@@ -20,7 +20,7 @@ import (
 // Columns, in the order scanTaskRow reads them. The due and expiry times are returned in ISO
 // form for the API. CAST keeps the stored text, which the list cursor sorts on.
 const taskRowSelect = `SELECT o.id, d.id, d.title, d.description, d.category_id, d.part_of_day, d.priority,
-	o.due_date, d.due_time,
+	o.due_date, d.start_time, d.due_time,
 	strftime('%Y-%m-%dT%H:%M:%SZ', o.due_at), strftime('%Y-%m-%dT%H:%M:%SZ', o.expires_at),
 	d.reminder_minutes_before, d.late_points_percent, d.points, d.approval_required,
 	d.expires_after_minutes, d.penalty_value, d.penalty_unit, d.template_id, d.status, d.version,
@@ -45,7 +45,7 @@ type taskRow struct {
 // scanTaskRow reads one row in taskRowSelect order.
 func scanTaskRow(s rowScanner, r *taskRow) error {
 	if err := s.Scan(&r.ID, &r.definitionID, &r.Title, &r.Description, &r.CategoryID, &r.PartOfDay, &r.Priority,
-		&r.DueDate, &r.DueTime, &r.DueAt, &r.ExpiresAt,
+		&r.DueDate, &r.StartTime, &r.DueTime, &r.DueAt, &r.ExpiresAt,
 		&r.ReminderMinutesBefore, &r.LatePointsPercent, &r.Points, &r.ApprovalRequired,
 		&r.ExpiresAfterMinutes, &r.PenaltyValue, &r.PenaltyUnit, &r.TemplateID, &r.defStatus, &r.Version,
 		&r.Repeats, &r.memberID, &r.status, &r.assigneeID, &r.dueKey, &r.ArchivedAt); err != nil {

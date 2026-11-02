@@ -21,6 +21,7 @@ function makeTask(over: Partial<Task> = {}): Task {
         part_of_day: 'morning',
         priority: 'normal',
         due_date: todayIso(),
+        start_time: null,
         due_time: null,
         due_at: '2026-10-09T08:00:00Z',
         expires_at: null,

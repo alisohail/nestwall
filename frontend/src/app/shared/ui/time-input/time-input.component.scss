@@ -8,6 +8,15 @@
 
 .time-input {
   width: 100%;
+  min-height: 44px;
+  padding: 0 var(--nw-space-3);
+  border: 1px solid var(--nw-color-outline);
+  border-radius: var(--nw-radius-lg);
+  background: var(--nw-color-surface);
+  color: var(--nw-color-on-surface);
+  font: inherit;
+  font-size: 0.9375rem;
+  min-width: 0;
 }
 
 .stepper {

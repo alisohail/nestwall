@@ -349,7 +349,8 @@ func (h *Handlers) childTasks(ctx context.Context, familyID, memberID, today str
 		   JOIN task_occurrences o ON o.family_id = oa.family_id AND o.id = oa.task_occurrence_id
 		   JOIN task_definitions d ON d.family_id = o.family_id AND d.id = o.task_definition_id AND d.status = 'active'
 		  WHERE oa.family_id = ? AND oa.family_member_id = ? AND oa.status != 'skipped'
-		    AND (o.due_date = ? OR (o.due_date < ? AND o.status != 'missed' AND oa.status IN ('to_do', 'rejected')))`,
+		    AND ((o.due_date = ? AND NOT (o.status = 'missed' AND oa.status IN ('to_do', 'rejected')))
+		      OR (o.due_date < ? AND o.status != 'missed' AND oa.status IN ('to_do', 'rejected')))`,
 		dbTimeUTC, today, dbTimeUTC, familyID, memberID, today, today)
 	if err != nil {
 		return nil, err

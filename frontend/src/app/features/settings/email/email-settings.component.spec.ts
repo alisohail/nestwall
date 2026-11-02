@@ -150,6 +150,8 @@ describe('EmailSettingsComponent', () => {
 
         el<HTMLButtonElement>('[data-testid="email-password-remove"]')?.click();
         fixture.detectChanges();
+        el<HTMLButtonElement>('[data-testid="confirm-dialog-ok"]')?.click();
+        fixture.detectChanges();
         fixture.componentInstance.save();
         fixture.detectChanges();
 

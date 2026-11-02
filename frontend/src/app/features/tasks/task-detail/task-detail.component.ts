@@ -39,6 +39,7 @@ export class TaskDetailComponent {
   loadError = signal<ApiError | null>(null);
   actionError = signal<string | null>(null);
   confirmSkip = signal(false);
+  confirmMissed = signal(false);
   busy = signal(false);
 
   private refresh = signal(0);
@@ -54,6 +55,11 @@ export class TaskDetailComponent {
     return task.assignees.find((a) => a.member_id === this.memberId())?.status ?? null;
   });
   canSkip = computed(() => this.copyStatus() === 'to_do' && !this.task()?.archived);
+  canMarkMissed = computed(() => {
+    const task = this.task();
+    if (!task || task.archived) return false;
+    return task.assignees.some((a) => a.status === 'to_do' || a.status === 'rejected');
+  });
   today = todayIso(new Date(), this.auth.currentUser()?.family?.timezone);
 
   constructor() {
@@ -90,11 +96,35 @@ export class TaskDetailComponent {
       this.confirmSkip.set(false);
       return;
     }
+    if (this.confirmMissed()) {
+      this.confirmMissed.set(false);
+      return;
+    }
     this.closed.emit();
   }
 
   reload(): void {
     this.refresh.update((n) => n + 1);
+  }
+
+  markMissed(): void {
+    const task = this.task();
+    if (!task || this.busy()) return;
+    this.busy.set(true);
+    this.actionError.set(null);
+    this.service.markMissed(task.id, task.version).subscribe({
+      next: () => {
+        this.busy.set(false);
+        this.confirmMissed.set(false);
+        this.changed.emit();
+        this.reload();
+      },
+      error: (err) => {
+        this.busy.set(false);
+        this.confirmMissed.set(false);
+        this.actionError.set(taskErrorKey(err));
+      },
+    });
   }
 
   skipToday(): void {

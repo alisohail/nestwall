@@ -38,11 +38,24 @@
           } @else {
             {{ formatDay(task.due_date) }}
           }
-          @if (task.due_time) {
-            , {{ formatTime(task.due_time) }}
-          }
         </div>
       </div>
+      @if (task.start_time || task.due_time) {
+        <div>
+          <div class="label">{{ 'tasks.detail.time' | transloco }}</div>
+          <div class="fact-val">
+            @if (task.start_time) {
+              {{ "tasks.detail.start_at" | transloco: { time: formatTime(task.start_time) } }}
+            }
+            @if (task.start_time && task.due_time) {
+              –
+            }
+            @if (task.due_time) {
+              {{ "tasks.detail.end_at" | transloco: { time: formatTime(task.due_time) } }}
+            }
+          </div>
+        </div>
+      }
       <div>
         <div class="label">{{ 'tasks.detail.points' | transloco }}</div>
         <div class="fact-val">
@@ -110,6 +123,20 @@
         </button>
       </div>
     }
+
+    @if (canMarkMissed() && auth.can('tasks.manage')) {
+      <div class="row mt">
+        <button
+          type="button"
+          class="btn ghost grow"
+          data-testid="task-mark-missed"
+          [disabled]="busy()"
+          (click)="confirmMissed.set(true)"
+        >
+          {{ 'tasks.detail.mark_missed' | transloco }}
+        </button>
+      </div>
+    }
   } @else if (loadState() === 'error') {
     <app-load-error [error]="loadError()" (retry)="reload()" />
   } @else {
@@ -126,5 +153,16 @@
     [busy]="busy()"
     (confirmed)="skipToday()"
     (cancelled)="confirmSkip.set(false)"
+  />
+}
+
+@if (confirmMissed()) {
+  <app-task-confirm
+    [heading]="'tasks.mark_missed.heading' | transloco"
+    [message]="'tasks.mark_missed.message' | transloco"
+    [confirmLabel]="'tasks.mark_missed.confirm' | transloco"
+    [busy]="busy()"
+    (confirmed)="markMissed()"
+    (cancelled)="confirmMissed.set(false)"
   />
 }

@@ -17,6 +17,7 @@ import {
   TaskSettingsRequest,
   TaskSettingsResponse,
   TaskTemplate,
+  TaskTabCounts,
   TaskTemplateRequest,
   TemplateKind,
 } from "./tasks.models";
@@ -42,6 +43,12 @@ export class TasksService {
     );
   }
 
+  /** Counts of the tasks each tab lists, for the same member filter as the list. */
+  counts(member?: string): Observable<TaskTabCounts> {
+    const qs = member ? `?member=${encodeURIComponent(member)}` : "";
+    return this.api.get<TaskTabCounts>(`/api/v1/tasks/counts${qs}`);
+  }
+
   get(id: string, memberId?: string): Observable<Task> {
     const qs = memberId ? `?member_id=${encodeURIComponent(memberId)}` : "";
     return this.api.get<Task>(`/api/v1/tasks/${id}${qs}`);
@@ -55,13 +62,15 @@ export class TasksService {
     return this.api.post<RepeatCreated>("/api/v1/task-definitions", body);
   }
 
-  /** version is the task version the edit was based on. A stale version fails with 412. */
+  /** version is the task version the edit was based on. A stale version fails with 412. scope is required for a repeating task: "occurrence" changes only this task, "series" changes the whole repeat's content. */
   update(
     id: string,
     body: TaskPatchRequest,
     version: number,
+    scope?: "occurrence" | "series",
   ): Observable<Task> {
-    return this.api.patch<Task>(`/api/v1/tasks/${id}`, body, version);
+    const query = scope ? `?scope=${scope}` : "";
+    return this.api.patch<Task>(`/api/v1/tasks/${id}${query}`, body, version);
   }
 
   complete(id: string, memberId: string): Observable<Task> {
@@ -99,6 +108,10 @@ export class TasksService {
       { member_id: memberId },
       version,
     );
+  }
+
+  markMissed(id: string, version?: number): Observable<Task> {
+    return this.api.post<Task>(`/api/v1/tasks/${id}/miss`, {}, version);
   }
 
   addChecklistItem(

@@ -29,7 +29,7 @@ import {
   taskErrorKey,
   todayIso,
 } from './tasks.format';
-import { ChecklistItem, TaskCategory, TaskListItem, TaskStatus } from './tasks.models';
+import { ChecklistItem, TaskCategory, TaskListItem, TaskStatus, TaskTabCounts } from './tasks.models';
 import { TasksService } from './tasks.service';
 
 const PAGE_SIZE = 20;
@@ -78,6 +78,8 @@ export class TasksComponent {
   today = signal(todayIso(new Date(), this.auth.currentUser()?.family?.timezone));
 
   readonly tabs = TASK_TABS;
+  /** Count per tab, or null until the first load. A tab shows no count while it is null. */
+  tabCounts = signal<TaskTabCounts | null>(null);
   memberFilter = signal('');
   tab = signal<TaskTab>('today');
   categoryFilter = signal('');
@@ -86,6 +88,8 @@ export class TasksComponent {
   pendingComplete = signal<TaskListItem | null>(null);
   completing = signal(false);
   pendingArchive = signal<TaskListItem | null>(null);
+  pendingMissed = signal<TaskListItem | null>(null);
+  markingMissed = signal(false);
   pendingDelete = signal<TaskListItem | null>(null);
   deleting = signal(false);
   restoringId = signal<string | null>(null);
@@ -241,6 +245,31 @@ export class TasksComponent {
     this.pendingDelete.set(item);
   }
 
+  /** Forces an open task to missed for every assignee, for when the child cannot finish it. */
+  askMissed(item: TaskListItem): void {
+    if (item.status === 'to_do' && !item.archived) this.pendingMissed.set(item);
+  }
+
+  confirmMissed(): void {
+    const item = this.pendingMissed();
+    if (!item || this.markingMissed()) return;
+    this.markingMissed.set(true);
+    this.actionError.set(null);
+    this.service.markMissed(item.id, item.version).subscribe({
+      next: () => {
+        this.markingMissed.set(false);
+        this.pendingMissed.set(null);
+        this.refresh();
+      },
+      error: (err) => {
+        this.markingMissed.set(false);
+        this.pendingMissed.set(null);
+        this.actionError.set(taskErrorKey(err));
+        this.refresh();
+      },
+    });
+  }
+
   /** Permanently deletes an archived task. A stale version refreshes the list so the user sees the latest copy. */
   confirmDelete(): void {
     const item = this.pendingDelete();
@@ -355,12 +384,24 @@ export class TasksComponent {
     }
   }
 
+  /** Loads the per-tab counts. A failure leaves the tabs without counts rather than showing an error. */
+  private loadCounts(): void {
+    this.service
+      .counts(this.memberFilter() || undefined)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (counts) => this.tabCounts.set(counts),
+        error: () => this.tabCounts.set(null),
+      });
+  }
+
   private fetch(): void {
     const seq = ++this.requestSeq;
     const page = this.pageIndex();
     this.today.set(todayIso(new Date(), this.auth.currentUser()?.family?.timezone));
     this.listError.set(null);
     this.loadState.set('loading');
+    this.loadCounts();
     this.service
       .list({
         member: this.memberFilter() || undefined,

@@ -938,7 +938,9 @@
       "cancelTask": "[=== Deelete ===]",
       "cancelTitle": "[=== Deelete {{ title }}? ===]",
       "cancelBody": "[=== Thee taask leaaves thee scheedule aand shoows iin Paast aas caancelleed. Noo poiints aare posteed. ===]",
-      "cancelConfirm": "[=== Deelete ===]"
+      "cancelConfirm": "[=== Deelete ===]",
+      "cancel_confirm_heading": "[=== Delete this bonus task? ===]",
+      "cancel_confirm_message": "[=== The task leaves the schedule and shows in Past as cancelled. No points are posted. ===]"
     },
     "noteHint": "[=== Uup too {{ max }} chaaracters. Thee chiild seees iit. ===]",
     "notice": {
@@ -1192,6 +1194,8 @@
     }
   },
   "avatar": {
+    "remove_confirm_heading": "[=== Remove this picture? ===]",
+    "remove_confirm_message": "[=== The current picture will be removed. You can add a new one at any time. ===]",
     "alt": "[=== Profiile piicture of {{ name }} ===]",
     "upload": "[=== Uploaad aa piicture ===]",
     "take_photo": "[=== Taake aa phooto ===]",
@@ -2075,6 +2079,8 @@
       "diagnostics": "[=== Véŕšíöñ, baackups aand çåļéñðåŕ šýñç ===]"
     },
     "general": {
+      "remove_confirm_heading": "[=== Remove the weather location? ===]",
+      "remove_confirm_message": "[=== The saved location is removed. You can set it again at any time. ===]",
       "family_title": "[=== Fàmíľý ===]",
       "family_hint": "[=== Théé fàmíľý ñàmé shöwñ ïñ théé àpp. ===]",
       "family_save": "[=== Sàvé fàmíľý ñàmé ===]",
@@ -2147,6 +2153,8 @@
       "password_stored": "[=== Sttoreed encrypteed. ===]",
       "password_replace": "[=== Reeplaace ===]",
       "password_remove": "[=== Reemoove ===]",
+      "password_remove_confirm_heading": "[=== Remove the stored password? ===]",
+      "password_remove_confirm_message": "[=== The saved password is deleted. You can enter a new one at any time. ===]",
       "password_cancel": "[=== Caancel ===]",
       "password_undo": "[=== Undoo ===]",
       "password_clear_pending": "[=== Thee saaved paassword wiill bee reemoveed. ===]",
@@ -2525,6 +2533,8 @@
       "points": "[=== poiints ===]"
     },
     "templates": {
+      "delete_confirm_heading": "[=== Delete this template? ===]",
+      "delete_confirm_message": "[=== The template is removed. Tasks already created from it are not changed. ===]",
       "defaults_title": "[=== Reegulaar taask deefaaults ===]",
       "defaults_hint": "[=== Neew teemplaatees staart froom thees vaalues. Eaach teemplaatee caan oveerriide theem. ===]",
       "missed_after": "[=== Miissed aafteer ===]",
@@ -2794,6 +2804,7 @@
       "complete": "[=== Maark “{{title}}” aas doonee ===]",
       "view": "[=== Viiew “{{title}}” ===]",
       "edit": "[=== Eedit “{{title}}” ===]",
+      "mark_missed": "[=== Maark “{{title}}” aas miissed ===]",
       "delete": "[=== Deelete “{{title}}” ===]",
       "delete_permanent": "[=== Deelete “{{title}}” peermaaneently ===]",
       "restore": "[=== Reestoore “{{title}}” ===]",
@@ -2851,6 +2862,11 @@
       "message": "[=== Thiis coopy wiill bee maarkeed aas skiippeed aand noo pooiints aaree aawaardeed. ===]",
       "confirm": "[=== Skiip ===]"
     },
+    "mark_missed": {
+      "heading": "[=== Maark aas miissed? ===]",
+      "message": "[=== Thiis taask wiill bee maarkeed aas miissed foor eeveeryoone whoo haas noot fiinisheed iit. Thee peenaalty, iif aany, aappliies. ===]",
+      "confirm": "[=== Maark aas miissed ===]"
+    },
     "detail": {
       "loading": "[=== Looaadiing taask… ===]",
       "error": "[=== Coouuld noot looaad thiis taask. ===]",
@@ -2864,7 +2880,8 @@
       "penalty_percent": "[=== −{{value}}% ({{points}} pts) iif miisseed ===]",
       "penalty_points": "[=== −{{points}} pts iif miisseed ===]",
       "checklist": "[=== Cheeckliist {{done}} oof {{total}} ===]",
-      "skip": "[=== Skiip toodaay ===]"
+      "skip": "[=== Skiip toodaay ===]",
+      "mark_missed": "[=== Maark aas miissed ===]"
     },
     "priority": {
       "low": "[=== Loow ===]",
@@ -2935,6 +2952,8 @@
       }
     },
     "form": {
+      "checklist_remove_heading": "[=== Remove this checklist item? ===]",
+      "checklist_remove_message": "[=== The item is removed from the checklist. ===]",
       "new_title": "[=== Neew taask ===]",
       "edit_title": "[=== EEdiit taask ===]",
       "new_sub": "[=== Seet whoo dooees iit, wheen, aand whaat haappeens iif iit iis laatee. ===]",
@@ -2963,10 +2982,17 @@
       "when": "[=== Wheen ===]",
       "date": "[=== Daatee ===]",
       "due_time": "[=== Duuee tiimee ===]",
+      "start_time": "[=== Staart tiimee ===]",
+      "reminder": "[=== Reemiinder ===]",
+      "reminder_none": "[=== Noo reemiinder ===]",
+      "reminder_minutes": "[=== {{ minutes }} miinuutes beefoore ===]",
       "repeat": "[=== Reepeeaat ===]",
       "repeat_hint": "[=== OOnee ooccuurreencee iis creeaateed foor eeaach daatee iin thee ruulee. ===]",
       "repeat_edit_note": "[=== Reepeeaats caan oonly bee seet wheen thee taask iis creeaateed. ===]",
-      "repeat_locked": "[=== Thiis taask iis paart oof aa reepeeaatiing seeriiees. EEdiitiing aa seeriiees iisn't aavaaiilaablee yeet, soo saaviing iis tuurneed ooff. ===]",
+      "edit_scope": "[=== Appllyy chaanges too ===]",
+      "edit_scope_this": "[=== Oonly thiis taask ===]",
+      "edit_scope_series": "[=== Thee whoole reepeeaatiing seeriiees ===]",
+      "edit_scope_note": "[=== A wholee-seeriiees eedit chaanges thee tiitle, poiints aand otheer detaiils. Daates, tiimes aand eexpiiry staay wiith eeach daay. ===]",
       "past_due": "[=== IIf iit iisn't doonee oon tiimee ===]",
       "past_due_badge": "[=== Paast duuee ruulees ===]",
       "past_due_intro": "[=== AAfteer thee duuee tiimee thee taask beecoomees paast duuee. Thee chiild seeees hoow loong iis leeft aand whaat haappeens iif theey miiss iit. ===]",

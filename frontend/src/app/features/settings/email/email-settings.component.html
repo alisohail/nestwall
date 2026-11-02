@@ -122,10 +122,19 @@
                 <button type="button" class="btn ghost" data-testid="email-password-replace" (click)="replacePassword(); saved.set(false)">
                   {{ 'settings.email.password_replace' | transloco }}
                 </button>
-                <button type="button" class="btn ghost" data-testid="email-password-remove" (click)="removePassword(); saved.set(false)">
+                <button type="button" class="btn ghost" data-testid="email-password-remove" (click)="confirmingRemovePassword.set(true)">
                   {{ 'settings.email.password_remove' | transloco }}
                 </button>
               </div>
+              @if (confirmingRemovePassword()) {
+                <app-confirm-dialog
+                  [heading]="'settings.email.password_remove_confirm_heading' | transloco"
+                  [message]="'settings.email.password_remove_confirm_message' | transloco"
+                  [confirmLabel]="'settings.email.password_remove' | transloco"
+                  (confirmed)="confirmingRemovePassword.set(false); removePassword(); saved.set(false)"
+                  (cancelled)="confirmingRemovePassword.set(false)"
+                />
+              }
               <span class="hint">{{ 'settings.email.password_stored' | transloco }}</span>
             } @else if (passwordAction() === 'clear') {
               <div class="row">

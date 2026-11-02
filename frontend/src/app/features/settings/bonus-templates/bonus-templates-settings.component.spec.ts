@@ -29,6 +29,9 @@ const settingsResponse = {
 };
 
 const bonus: TaskTemplate = {
+  start_time: null,
+  repeat_state: null,
+  checklist: null,
     id: 't1',
     kind: 'bonus',
     name: 'Wash the car',
@@ -203,6 +206,7 @@ describe('BonusTemplatesSettingsComponent', () => {
         await build();
         await click('[data-testid="bonus-tpl-t1"]');
         await click('[data-testid="bonus-tpl-delete"]');
+        await click('[data-testid="confirm-dialog-ok"]');
         expect(tasks.deleteTemplate).toHaveBeenCalledWith('t1', 3);
     });
 });

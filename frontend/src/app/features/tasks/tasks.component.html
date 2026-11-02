@@ -31,7 +31,9 @@
       [attr.data-testid]="'tasks-tab-' + t"
       (click)="setTab(t)"
     >
-      {{ "tasks.tabs." + t | transloco }}
+      <span class="tab-label">{{ "tasks.tabs." + t | transloco }}</span>@if (tabCounts(); as counts) {
+        <span class="tab-count" [attr.data-testid]="'tasks-tab-count-' + t">{{ counts[t] }}</span>
+      }
     </button>
   }
 </div>
@@ -189,13 +191,19 @@
                 } @else {
                   {{ formatDay(item.due_date) }}
                 }
+                @if (item.start_time) {
+                  {{ "tasks.detail.start_at" | transloco: { time: formatTime(item.start_time) } }}
+                }
+                @if (item.start_time && item.due_time) {
+                  –
+                }
                 @if (item.due_time) {
-                  {{ formatTime(item.due_time) }}
+                  {{ "tasks.detail.end_at" | transloco: { time: formatTime(item.due_time) } }}
                 }
               </span>
               @if (tab() === "expired") {
                 <span class="badge err" data-testid="task-expired-tag">{{
-                  "tasks.status.expired" | transloco
+                  "tasks.status.overdue" | transloco
                 }}</span>
               } @else if (isOverdue(item)) {
                 <span class="badge err">{{
@@ -315,6 +323,19 @@
                 >
               </button>
               @if (!item.archived) {
+                @if (item.status === "to_do" && tab() !== "expired" && auth.can("tasks.manage")) {
+                  <button
+                    type="button"
+                    class="icon-btn sm danger"
+                    data-testid="task-mark-missed"
+                    [attr.aria-label]="
+                      'tasks.row.mark_missed' | transloco: { title: item.title }
+                    "
+                    (click)="askMissed(item)"
+                  >
+                    <span class="material-icons" aria-hidden="true">event_busy</span>
+                  </button>
+                }
                 @if (auth.can("tasks.manage")) {
                   <a
                     class="icon-btn sm"
@@ -362,7 +383,7 @@
                 @if (auth.can("tasks.manage")) {
                   <button
                     type="button"
-                    class="icon-btn sm"
+                    class="icon-btn sm danger"
                     data-testid="task-delete"
                     [attr.aria-label]="
                       'tasks.row.delete' | transloco: { title: item.title }
@@ -444,6 +465,17 @@
     [busy]="completing()"
     (confirmed)="confirmComplete()"
     (cancelled)="pendingComplete.set(null)"
+  />
+}
+
+@if (pendingMissed(); as item) {
+  <app-task-confirm
+    [heading]="'tasks.mark_missed.heading' | transloco"
+    [message]="'tasks.mark_missed.message' | transloco"
+    [confirmLabel]="'tasks.mark_missed.confirm' | transloco"
+    [busy]="markingMissed()"
+    (confirmed)="confirmMissed()"
+    (cancelled)="pendingMissed.set(null)"
   />
 }
 

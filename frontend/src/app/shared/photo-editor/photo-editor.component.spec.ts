@@ -131,6 +131,8 @@ describe('PhotoEditorComponent', () => {
         component.closed.subscribe(closed);
 
         (fixture.nativeElement.querySelector('[data-testid="photo-remove"]') as HTMLButtonElement).click();
+        fixture.detectChanges();
+        (fixture.nativeElement.querySelector('[data-testid="confirm-dialog-ok"]') as HTMLButtonElement).click();
 
         expect(avatarSpy.remove).toHaveBeenCalledWith('m2');
         expect(emitted).toEqual([null]);

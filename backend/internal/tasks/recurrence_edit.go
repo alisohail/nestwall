@@ -287,11 +287,11 @@ func copyDefinition(ctx context.Context, tx *sql.Tx, familyID, fromID, toID, sta
 	stamp := dbTime(now)
 	_, err := tx.ExecContext(ctx,
 		`INSERT INTO task_definitions (
-			id, family_id, template_id, title, description, icon, time_zone, starts_on, due_time,
+			id, family_id, template_id, title, description, icon, time_zone, starts_on, start_time, due_time,
 			recurrence_rule, points, priority, approval_required, penalty_value, penalty_unit,
 			expires_after_minutes, late_points_percent, reminder_minutes_before,
 			checklist_all_required, status, version, created_by, created_at, updated_at)
-		 SELECT ?, family_id, template_id, title, description, icon, time_zone, ?, due_time,
+		 SELECT ?, family_id, template_id, title, description, icon, time_zone, ?, start_time, due_time,
 			?, points, priority, approval_required, penalty_value, penalty_unit,
 			expires_after_minutes, late_points_percent, reminder_minutes_before,
 			checklist_all_required, 'active', 1, created_by, ?, ?

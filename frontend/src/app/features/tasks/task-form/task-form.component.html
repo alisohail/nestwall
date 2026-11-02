@@ -5,17 +5,6 @@
     </a>
     <h1>{{ (editing ? 'tasks.form.edit_title' : 'tasks.form.new_title') | transloco }}</h1>
   </div>
-  @if (loadState() === 'ready') {
-    <div class="actions">
-      @if (!editing) {
-        <button class="btn ghost" type="button" (click)="templateOpen.set(!templateOpen())">{{ 'tasks.form.save_template' | transloco }}</button>
-      }
-      <a class="btn ghost" [routerLink]="['/tasks']" [queryParams]="backQuery">{{ 'tasks.form.cancel' | transloco }}</a>
-      <button class="btn primary" type="submit" form="task-form" [disabled]="saving() || repeatsLocked() || !hasUnsavedChanges()">
-        {{ (editing ? 'tasks.form.save' : 'tasks.form.create') | transloco }}
-      </button>
-    </div>
-  }
 </header>
 
 @if (loadState() === 'loading') {
@@ -157,8 +146,21 @@
             <input id="task-date" class="input" type="date" formControlName="due_date" />
           </div>
           <div class="field">
+            <label for="task-start">{{ 'tasks.form.start_time' | transloco }}</label>
+            <app-time-input inputId="task-start" [label]="'tasks.form.start_time' | transloco" formControlName="start_time" />
+          </div>
+          <div class="field">
             <label for="task-time">{{ 'tasks.form.due_time' | transloco }}</label>
             <app-time-input inputId="task-time" [label]="'tasks.form.due_time' | transloco" formControlName="due_time" />
+          </div>
+          <div class="field">
+            <label for="task-reminder">{{ 'tasks.form.reminder' | transloco }}</label>
+            <select id="task-reminder" class="select" data-testid="task-reminder" formControlName="reminder_minutes_before">
+              <option [ngValue]="null">{{ 'tasks.form.reminder_none' | transloco }}</option>
+              @for (m of reminderOptions; track m) {
+                <option [ngValue]="m">{{ 'tasks.form.reminder_minutes' | transloco: { minutes: m } }}</option>
+              }
+            </select>
           </div>
         </div>
 
@@ -168,8 +170,8 @@
             <app-repeat-builder [(state)]="repeat" [startDate]="dueDate()" />
             <span class="hint">{{ 'tasks.form.repeat_hint' | transloco }}</span>
           </div>
-        } @else if (repeatsLocked()) {
-          <p class="notice" role="status">{{ 'tasks.form.repeat_locked' | transloco }}</p>
+        } @else if (task()?.repeats) {
+          <p class="hint">{{ 'tasks.form.edit_scope_note' | transloco }}</p>
         } @else {
           <p class="hint">{{ 'tasks.form.repeat_edit_note' | transloco }}</p>
         }
@@ -221,10 +223,8 @@
 
       <section class="card">
         <h3>{{ 'tasks.form.checklist' | transloco }}</h3>
-        @if (editing ? checklistLocked() : repeat().freq !== 'none') {
-          <p class="notice mt-s" role="status">
-            {{ (editing ? 'tasks.form.checklist_locked' : 'tasks.form.checklist_repeat_note') | transloco }}
-          </p>
+        @if (editing && checklistLocked()) {
+          <p class="notice mt-s" role="status">{{ 'tasks.form.checklist_locked' | transloco }}</p>
         }
         @if (checklistError(); as key) {
           <app-banner tone="error">{{ key | transloco }}</app-banner>
@@ -232,40 +232,49 @@
 
         @if (editing) {
           <ul class="checklist mt-s">
-            @for (item of task()?.checklist ?? []; track item.id) {
+            @for (step of editItems(); track $index) {
               <li>
                 <button
                   type="button"
                   class="box"
-                  [class.on]="item.done"
-                  [disabled]="checklistLocked() || pendingStep() !== null"
-                  [attr.aria-pressed]="item.done"
-                  [attr.aria-label]="item.text"
-                  (click)="toggleItem(item)"
+                  [class.on]="stepDone(step)"
+                  [disabled]="!step.id || checklistLocked() || pendingStep() !== null"
+                  [attr.aria-pressed]="stepDone(step)"
+                  [attr.aria-label]="step.text"
+                  (click)="toggleStep(step)"
                 >
-                  @if (item.done) {
+                  @if (stepDone(step)) {
                     <span class="material-icons">check</span>
                   }
                 </button>
                 <input
                   class="input grow"
-                  [value]="item.text"
+                  [value]="step.text"
                   [disabled]="checklistLocked()"
-                  [attr.aria-label]="item.text"
-                  (change)="renameItem(item, inputValue($event))"
+                  [attr.aria-label]="step.text"
+                  (change)="renameStep($index, inputValue($event))"
                 />
                 <button
                   type="button"
                   class="icon-btn"
                   [disabled]="checklistLocked()"
                   [attr.aria-label]="'tasks.form.checklist_remove' | transloco"
-                  (click)="removeItem(item)"
+                  (click)="askRemoveStep($index)"
                 >
                   <span class="material-icons">close</span>
                 </button>
               </li>
             }
           </ul>
+          @if (pendingRemove() !== null) {
+            <app-confirm-dialog
+              [heading]="'tasks.form.checklist_remove_heading' | transloco"
+              [message]="'tasks.form.checklist_remove_message' | transloco"
+              [confirmLabel]="'tasks.form.checklist_remove' | transloco"
+              (confirmed)="confirmRemove()"
+              (cancelled)="pendingRemove.set(null)"
+            />
+          }
         } @else {
           <ul class="checklist mt-s">
             @for (text of draftItems(); track $index) {
@@ -294,7 +303,7 @@
           <button
             type="button"
             class="btn soft sm"
-            [disabled]="!newItemText().trim() || checklistLocked() || (!editing && repeat().freq !== 'none')"
+            [disabled]="!newItemText().trim() || checklistLocked()"
             (click)="addItem()"
           >
             <span class="material-icons">add</span>{{ 'tasks.form.checklist_add' | transloco }}
@@ -340,24 +349,6 @@
         </label>
       </section>
 
-      @if (!editing && templateOpen()) {
-        <section class="card col">
-          <h3>{{ 'tasks.form.template_title' | transloco }}</h3>
-          <input
-            class="input"
-            type="text"
-            maxlength="100"
-            [value]="templateName()"
-            [placeholder]="'tasks.form.template_name' | transloco"
-            [attr.aria-label]="'tasks.form.template_name' | transloco"
-            (input)="templateName.set(inputValue($event))"
-          />
-          <button type="button" class="btn soft" [disabled]="!templateName().trim() || templateSaving()" (click)="saveTemplate()">
-            {{ 'tasks.form.template_save' | transloco }}
-          </button>
-        </section>
-      }
-
       <section class="card preview-card">
         <h3>{{ (previewName() ? 'tasks.form.preview_for' : 'tasks.form.preview') | transloco: { name: previewName() } }}</h3>
         <div class="row mt-s">
@@ -369,6 +360,73 @@
           · {{ 'tasks.form.steps' | transloco: { count: previewSteps() } }}
         </div>
       </section>
+
+      <div class="row wrap side-actions">
+        @if (!editing) {
+          <button type="button" class="btn ghost" data-testid="task-template-open" (click)="templateOpen.set(true)">
+            {{ 'tasks.form.save_template' | transloco }}
+          </button>
+        }
+      </div>
     </aside>
   </form>
+
+  <div class="form-bar">
+    <a class="btn ghost" data-testid="task-form-cancel" [routerLink]="['/tasks']" [queryParams]="backQuery">{{ 'tasks.form.cancel' | transloco }}</a>
+    <button
+      class="btn primary"
+      type="submit"
+      form="task-form"
+      data-testid="task-form-submit"
+      [disabled]="saving() || !hasUnsavedChanges()"
+    >
+      {{ (editing ? 'tasks.form.save' : 'tasks.form.create') | transloco }}
+    </button>
+  </div>
+
+  @if (scopePrompt()) {
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? settleScope(null) : null">
+      <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="scope-prompt-title" data-testid="scope-prompt">
+        <h2 id="scope-prompt-title">{{ 'tasks.form.scope_heading' | transloco }}</h2>
+        <div class="scope" role="radiogroup" [attr.aria-label]="'tasks.form.edit_scope' | transloco">
+          <label class="opt">
+            <input type="radio" name="scope-prompt" value="occurrence" data-testid="scope-prompt-occurrence" [checked]="scopeChoice() === 'occurrence'" (change)="scopeChoice.set('occurrence')" />
+            <span>{{ 'tasks.form.edit_scope_this' | transloco }}</span>
+          </label>
+          <label class="opt">
+            <input type="radio" name="scope-prompt" value="series" data-testid="scope-prompt-series" [checked]="scopeChoice() === 'series'" (change)="scopeChoice.set('series')" />
+            <span>{{ 'tasks.form.edit_scope_series' | transloco }}</span>
+          </label>
+        </div>
+        <p class="hint">{{ 'tasks.form.edit_scope_note' | transloco }}</p>
+        <div class="confirm-actions">
+          <button type="button" class="btn ghost" data-testid="scope-prompt-cancel" (click)="settleScope(null)">{{ 'tasks.confirm.cancel' | transloco }}</button>
+          <button type="button" class="btn primary" data-testid="scope-prompt-save" (click)="settleScope(scopeChoice())">{{ 'tasks.form.scope_save' | transloco }}</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (!editing && templateOpen()) {
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? templateOpen.set(false) : null">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="task-template-title" data-testid="task-template-dialog">
+        <h2 id="task-template-title">{{ 'tasks.form.template_title' | transloco }}</h2>
+        <input
+          class="input"
+          type="text"
+          maxlength="100"
+          [value]="templateName()"
+          [placeholder]="'tasks.form.template_name' | transloco"
+          [attr.aria-label]="'tasks.form.template_name' | transloco"
+          (input)="templateName.set(inputValue($event))"
+        />
+        <div class="foot">
+          <button type="button" class="btn ghost" (click)="templateOpen.set(false)">{{ 'tasks.form.cancel' | transloco }}</button>
+          <button type="button" class="btn primary" data-testid="task-template-save" [disabled]="!templateName().trim() || templateSaving()" (click)="saveTemplate()">
+            {{ 'tasks.form.template_save' | transloco }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
 }

@@ -32,12 +32,13 @@ import {
 
 /** Regular task templates and family defaults. Each template prefills only the fields it sets. */
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 
 @Component({
     selector: 'app-task-templates-settings',
-    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, AvatarComponent, BannerComponent, LoadingComponent, LoadErrorComponent, TimeInputComponent],
+    imports: [FormsModule, RouterLink, RouterLinkActive, TranslocoModule, AvatarComponent, BannerComponent, ConfirmDialogComponent, LoadingComponent, LoadErrorComponent, TimeInputComponent],
     templateUrl: './task-templates-settings.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-templates-settings.component.scss'
@@ -87,6 +88,7 @@ export class TaskTemplatesSettingsComponent implements UnsavedChangesAware {
   saving = signal(false);
   saved = signal(false);
   deleting = signal(false);
+  confirmingDelete = signal(false);
   editorError = signal<string | null>(null);
 
   @ViewChild('editorCol') editorCol?: ElementRef<HTMLElement>;

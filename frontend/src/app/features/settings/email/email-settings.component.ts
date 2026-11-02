@@ -6,6 +6,7 @@ import { finalize } from 'rxjs';
 import { ApiError } from '../../../core/api/api-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { BannerComponent } from '../../../shared/ui/banner/banner.component';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { settingsErrorKey } from '../settings.format';
@@ -52,7 +53,7 @@ const PORT_MAX = 65535;
 /** Family mail server. Parents set it up; the outbox sends with it once it is ready. */
 @Component({
     selector: 'app-email-settings',
-    imports: [FormsModule, TranslocoModule, BannerComponent, LoadingComponent, LoadErrorComponent],
+    imports: [FormsModule, TranslocoModule, BannerComponent, ConfirmDialogComponent, LoadingComponent, LoadErrorComponent],
     templateUrl: './email-settings.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './email-settings.component.scss'
@@ -80,6 +81,7 @@ export class EmailSettingsComponent implements OnInit, OnDestroy, UnsavedChanges
   canManage = signal(false);
   busy = signal(false);
   saved = signal(false);
+  confirmingRemovePassword = signal(false);
   saveError = signal<Message | null>(null);
   testing = signal(false);
   testResult = signal<{ tone: 'success' | 'error'; text: Message } | null>(null);
