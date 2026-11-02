@@ -243,46 +243,46 @@
 
         @if (editing) {
           <ul class="checklist mt-s">
-            @for (item of task()?.checklist ?? []; track item.id) {
+            @for (step of editItems(); track $index) {
               <li>
                 <button
                   type="button"
                   class="box"
-                  [class.on]="item.done"
-                  [disabled]="checklistLocked() || pendingStep() !== null"
-                  [attr.aria-pressed]="item.done"
-                  [attr.aria-label]="item.text"
-                  (click)="toggleItem(item)"
+                  [class.on]="stepDone(step)"
+                  [disabled]="!step.id || checklistLocked() || pendingStep() !== null"
+                  [attr.aria-pressed]="stepDone(step)"
+                  [attr.aria-label]="step.text"
+                  (click)="toggleStep(step)"
                 >
-                  @if (item.done) {
+                  @if (stepDone(step)) {
                     <span class="material-icons">check</span>
                   }
                 </button>
                 <input
                   class="input grow"
-                  [value]="item.text"
+                  [value]="step.text"
                   [disabled]="checklistLocked()"
-                  [attr.aria-label]="item.text"
-                  (change)="renameItem(item, inputValue($event))"
+                  [attr.aria-label]="step.text"
+                  (change)="renameStep($index, inputValue($event))"
                 />
                 <button
                   type="button"
                   class="icon-btn"
                   [disabled]="checklistLocked()"
                   [attr.aria-label]="'tasks.form.checklist_remove' | transloco"
-                  (click)="pendingRemove.set(item)"
+                  (click)="askRemoveStep($index)"
                 >
                   <span class="material-icons">close</span>
                 </button>
               </li>
             }
           </ul>
-          @if (pendingRemove(); as item) {
+          @if (pendingRemove() !== null) {
             <app-confirm-dialog
               [heading]="'tasks.form.checklist_remove_heading' | transloco"
               [message]="'tasks.form.checklist_remove_message' | transloco"
               [confirmLabel]="'tasks.form.checklist_remove' | transloco"
-              (confirmed)="pendingRemove.set(null); removeItem(item)"
+              (confirmed)="confirmRemove()"
               (cancelled)="pendingRemove.set(null)"
             />
           }
@@ -378,12 +378,12 @@
             {{ 'tasks.form.save_template' | transloco }}
           </button>
         }
-        <a class="btn ghost" data-testid="task-form-cancel" [routerLink]="['/tasks']" [queryParams]="backQuery">{{ 'tasks.form.cancel' | transloco }}</a>
       </div>
     </aside>
   </form>
 
   <div class="form-bar">
+    <a class="btn ghost" data-testid="task-form-cancel" [routerLink]="['/tasks']" [queryParams]="backQuery">{{ 'tasks.form.cancel' | transloco }}</a>
     <button
       class="btn primary"
       type="submit"

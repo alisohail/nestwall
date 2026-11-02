@@ -31,8 +31,8 @@
       [attr.data-testid]="'tasks-tab-' + t"
       (click)="setTab(t)"
     >
-      {{ "tasks.tabs." + t | transloco }}@if (tabCounts(); as counts) {
-        <span class="tab-count" [attr.data-testid]="'tasks-tab-count-' + t">({{ counts[t] }})</span>
+      <span class="tab-label">{{ "tasks.tabs." + t | transloco }}</span>@if (tabCounts(); as counts) {
+        <span class="tab-count" [attr.data-testid]="'tasks-tab-count-' + t">{{ counts[t] }}</span>
       }
     </button>
   }
@@ -317,6 +317,19 @@
                 >
               </button>
               @if (!item.archived) {
+                @if (item.status === "to_do" && auth.can("tasks.manage")) {
+                  <button
+                    type="button"
+                    class="icon-btn sm"
+                    data-testid="task-mark-missed"
+                    [attr.aria-label]="
+                      'tasks.row.mark_missed' | transloco: { title: item.title }
+                    "
+                    (click)="askMissed(item)"
+                  >
+                    <span class="material-icons" aria-hidden="true">event_busy</span>
+                  </button>
+                }
                 @if (auth.can("tasks.manage")) {
                   <a
                     class="icon-btn sm"
@@ -446,6 +459,17 @@
     [busy]="completing()"
     (confirmed)="confirmComplete()"
     (cancelled)="pendingComplete.set(null)"
+  />
+}
+
+@if (pendingMissed(); as item) {
+  <app-task-confirm
+    [heading]="'tasks.mark_missed.heading' | transloco"
+    [message]="'tasks.mark_missed.message' | transloco"
+    [confirmLabel]="'tasks.mark_missed.confirm' | transloco"
+    [busy]="markingMissed()"
+    (confirmed)="confirmMissed()"
+    (cancelled)="pendingMissed.set(null)"
   />
 }
 

@@ -604,6 +604,13 @@ func (h *Handlers) CreateTask(w http.ResponseWriter, r *http.Request) {
 	web.RespondJSON(w, http.StatusCreated, created)
 }
 
+// updateTaskRequest is the body of PATCH /api/v1/tasks/{id}. Checklist is applied only when it is
+// sent, and it replaces the list. Each step keeps its id when it was already there.
+type updateTaskRequest struct {
+	taskFields
+	Checklist *[]checklistEditItem `json:"checklist"`
+}
+
 // UpdateTask changes some fields of a one-off task (PATCH). If-Match must match the current
 // version when it is sent. Absent fields keep their value. When assignee_ids is sent the list is
 // replaced, and a removed person's copy is deleted even if they already acted on it.
@@ -686,9 +693,11 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		req.DueTime = cloneString(current.DueTime)
 		req.StartTime = cloneString(current.StartTime)
 	}
-	if !decodeBody(w, r, &req) {
+	body := updateTaskRequest{taskFields: req}
+	if !decodeBody(w, r, &body) {
 		return
 	}
+	req = body.taskFields
 	if series {
 		// A series edit changes content only. Date, times and expiry stay with each occurrence.
 		req.DueDate = cloneString(current.DueDate)
@@ -707,6 +716,24 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	if err := checkTaskRefs(ctx, tx, familyID, req); err != nil {
 		h.respondFailure(w, "check task references", err)
 		return
+	}
+
+	var checklist []checklistEditItem
+	if body.Checklist != nil {
+		items, err := validateChecklistEdit(*body.Checklist)
+		if err != nil {
+			respondValidation(w, err)
+			return
+		}
+		for _, a := range current.Assignees {
+			if a.Status != taskStatusToDo && a.Status != statusRejected {
+				web.RespondError(w, http.StatusConflict, "checklist_locked",
+					"The checklist can only change while everyone on the task is to do or rejected",
+					map[string]any{"status": a.Status})
+				return
+			}
+		}
+		checklist = items
 	}
 
 	zone, zoneName, err := familyZone(ctx, tx, familyID)
@@ -756,6 +783,32 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	if err := setAssignees(ctx, tx, familyID, current.definitionID, req.AssigneeIDs); err != nil {
 		h.internalError(w, "update task assignees", err)
 		return
+	}
+
+	if body.Checklist != nil {
+		// A series edit also changes the definition and the open future occurrences, matched by
+		// position because those copies have their own rows.
+		if err := replaceChecklistByID(ctx, tx, familyID, ownerOccurrence, id, checklist); err != nil {
+			h.internalError(w, "update task checklist", err)
+			return
+		}
+		if series {
+			if err := replaceChecklistByPosition(ctx, tx, familyID, ownerDefinition, current.definitionID, checklist); err != nil {
+				h.internalError(w, "update series checklist", err)
+				return
+			}
+			future, err := openFutureOccurrences(ctx, tx, familyID, current.definitionID, id, dbTime(h.clock.Now()))
+			if err != nil {
+				h.internalError(w, "load future occurrences for checklist", err)
+				return
+			}
+			for _, occID := range future {
+				if err := replaceChecklistByPosition(ctx, tx, familyID, ownerOccurrence, occID, checklist); err != nil {
+					h.internalError(w, "update future occurrence checklist", err)
+					return
+				}
+			}
+		}
 	}
 
 	if _, err := tx.ExecContext(ctx,

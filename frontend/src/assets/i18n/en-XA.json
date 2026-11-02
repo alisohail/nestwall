@@ -2804,6 +2804,7 @@
       "complete": "[=== Maark “{{title}}” aas doonee ===]",
       "view": "[=== Viiew “{{title}}” ===]",
       "edit": "[=== Eedit “{{title}}” ===]",
+      "mark_missed": "[=== Maark “{{title}}” aas miissed ===]",
       "delete": "[=== Deelete “{{title}}” ===]",
       "delete_permanent": "[=== Deelete “{{title}}” peermaaneently ===]",
       "restore": "[=== Reestoore “{{title}}” ===]",

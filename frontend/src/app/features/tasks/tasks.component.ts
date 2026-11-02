@@ -88,6 +88,8 @@ export class TasksComponent {
   pendingComplete = signal<TaskListItem | null>(null);
   completing = signal(false);
   pendingArchive = signal<TaskListItem | null>(null);
+  pendingMissed = signal<TaskListItem | null>(null);
+  markingMissed = signal(false);
   pendingDelete = signal<TaskListItem | null>(null);
   deleting = signal(false);
   restoringId = signal<string | null>(null);
@@ -241,6 +243,31 @@ export class TasksComponent {
 
   askDelete(item: TaskListItem): void {
     this.pendingDelete.set(item);
+  }
+
+  /** Forces an open task to missed for every assignee, for when the child cannot finish it. */
+  askMissed(item: TaskListItem): void {
+    if (item.status === 'to_do' && !item.archived) this.pendingMissed.set(item);
+  }
+
+  confirmMissed(): void {
+    const item = this.pendingMissed();
+    if (!item || this.markingMissed()) return;
+    this.markingMissed.set(true);
+    this.actionError.set(null);
+    this.service.markMissed(item.id, item.version).subscribe({
+      next: () => {
+        this.markingMissed.set(false);
+        this.pendingMissed.set(null);
+        this.refresh();
+      },
+      error: (err) => {
+        this.markingMissed.set(false);
+        this.pendingMissed.set(null);
+        this.actionError.set(taskErrorKey(err));
+        this.refresh();
+      },
+    });
   }
 
   /** Permanently deletes an archived task. A stale version refreshes the list so the user sees the latest copy. */

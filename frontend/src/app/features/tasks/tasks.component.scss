@@ -51,6 +51,27 @@ app-error-state {
   }
 }
 
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  margin-left: var(--nw-space-2);
+  padding: 0 var(--nw-space-2);
+  border-radius: 999px;
+  background: var(--nw-color-surface-variant);
+  color: var(--nw-color-on-surface-variant);
+  font-size: var(--nw-text-xs);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tab[aria-selected="true"] .tab-count {
+  background: var(--nw-color-primary);
+  color: var(--nw-color-on-primary);
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;

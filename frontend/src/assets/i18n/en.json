@@ -2785,7 +2785,7 @@
     },
     "row": {
       "complete": "Mark “{{title}}” as done",
-      "view": "View “{{title}}”",
+      "mark_missed": "Mark “{{title}}” as missed",
       "edit": "Edit “{{title}}”",
       "delete": "Delete “{{title}}”",
       "delete_permanent": "Delete “{{title}}” permanently",

@@ -27,6 +27,11 @@ type LoadState = 'loading' | 'ready' | 'error';
 const MINUTES_PER_HOUR = 60;
 const MINUTES_PER_DAY = 1440;
 const CHECKLIST_MAX = 200;
+/** One checklist step in the edit form. A new step has no id until the task is saved. */
+interface EditStep {
+  id: string | null;
+  text: string;
+}
 const TEMPLATE_CHIPS = 5;
 
 /** Splits stored minutes into the largest whole unit (days, else hours). */
@@ -145,8 +150,11 @@ export class TaskFormComponent implements UnsavedChangesAware {
   draftItems = signal<string[]>([]);
   newItemText = signal('');
   checklistError = signal<string | null>(null);
-  /** The saved checklist step waiting for the user to confirm its removal. */
-  pendingRemove = signal<ChecklistItem | null>(null);
+  /** Edit mode: the checklist as staged in the form. It is saved with the rest of the task. */
+  editItems = signal<EditStep[]>([]);
+  /** Index of a saved step waiting for the user to confirm its removal. */
+  pendingRemove = signal<number | null>(null);
+
 
   templateOpen = signal(false);
   templateName = signal('');
@@ -154,7 +162,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
   templateSaved = signal(false);
 
   previewName = computed(() => this.members().find((m) => m.id === this.formValue().assignees[0])?.display_name ?? '');
-  previewSteps = computed(() => (this.editing ? (this.task()?.checklist?.length ?? 0) : this.draftItems().length));
+  previewSteps = computed(() => (this.editing ? this.editItems().length : this.draftItems().length));
 
   constructor() {
     this.f.category_id.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((id) => {
@@ -237,15 +245,9 @@ export class TaskFormComponent implements UnsavedChangesAware {
     if (!text || text.length > CHECKLIST_MAX) return;
     if (!this.editing) {
       this.draftItems.update((items) => [...items, text]);
-      this.newItemText.set('');
-      return;
+    } else {
+      this.editItems.update((items) => [...items, { id: null, text }]);
     }
-    const task = this.task();
-    if (!task) return;
-    this.service.addChecklistItem(task.id, text, task.version).subscribe({
-      next: (updated) => this.applyChecklist(updated),
-      error: (err) => this.checklistError.set(taskErrorKey(err)),
-    });
     this.newItemText.set('');
   }
 
@@ -253,14 +255,37 @@ export class TaskFormComponent implements UnsavedChangesAware {
     this.draftItems.update((items) => items.filter((_, i) => i !== index));
   }
 
-  renameItem(item: ChecklistItem, value: string): void {
+  renameStep(index: number, value: string): void {
     const text = value.trim();
-    const task = this.task();
-    if (!task || !text || text === item.text || text.length > CHECKLIST_MAX) return;
-    this.service.renameChecklistItem(task.id, item.id, text, task.version).subscribe({
-      next: (updated) => this.applyChecklist(updated),
-      error: (err) => this.checklistError.set(taskErrorKey(err)),
-    });
+    const step = this.editItems()[index];
+    if (!step || !text || text === step.text || text.length > CHECKLIST_MAX) return;
+    this.editItems.update((items) => items.map((s, i) => (i === index ? { ...s, text } : s)));
+  }
+
+  /** A saved step asks first. A step that is not saved yet can go straight away. */
+  askRemoveStep(index: number): void {
+    if (this.editItems()[index]?.id === null) this.removeStep(index);
+    else this.pendingRemove.set(index);
+  }
+
+  removeStep(index: number): void {
+    this.pendingRemove.set(null);
+    this.editItems.update((items) => items.filter((_, i) => i !== index));
+  }
+
+  confirmRemove(): void {
+    const index = this.pendingRemove();
+    if (index !== null) this.removeStep(index);
+  }
+
+  /** Done state comes from the server copy, since ticks save straight away. */
+  stepDone(step: EditStep): boolean {
+    return this.task()?.checklist?.find((item) => item.id === step.id)?.done ?? false;
+  }
+
+  toggleStep(step: EditStep): void {
+    const item = this.task()?.checklist?.find((c) => c.id === step.id);
+    if (item) this.toggleItem(item);
   }
 
   /** Ticks or unticks a step on the copy the form shows, so only that person's checklist changes. */
@@ -278,15 +303,6 @@ export class TaskFormComponent implements UnsavedChangesAware {
         this.pendingStep.set(null);
         this.checklistError.set(taskErrorKey(err));
       },
-    });
-  }
-
-  removeItem(item: ChecklistItem): void {
-    const task = this.task();
-    if (!task) return;
-    this.service.removeChecklistItem(task.id, item.id, task.version).subscribe({
-      next: (updated) => this.applyChecklist(updated),
-      error: (err) => this.checklistError.set(taskErrorKey(err)),
     });
   }
 
@@ -451,6 +467,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
       penalty_value: task.penalty_value,
       penalty_unit: task.penalty_unit ?? 'percent',
     });
+    this.editItems.set((task.checklist ?? []).map((item) => ({ id: item.id, text: item.text })));
   }
 
   private expiryMinutes(value: number | null, unit: ExpiryUnit): number | null {
@@ -499,7 +516,17 @@ export class TaskFormComponent implements UnsavedChangesAware {
       penalty_unit: v.penalty_value === null ? null : v.penalty_unit,
     };
     if (v.points !== null) patch.points = v.points;
+    if (this.checklistChanged()) {
+      patch.checklist = this.editItems().map((step) => ({ id: step.id, text: step.text.trim() }));
+    }
     return patch;
+  }
+
+  /** True when the staged steps differ from the saved checklist (text, order, or added and removed steps). */
+  private checklistChanged(): boolean {
+    const saved = this.task()?.checklist ?? [];
+    const staged = this.editItems();
+    return saved.length !== staged.length || saved.some((item, i) => item.id !== staged[i].id || item.text !== staged[i].text);
   }
 
   private begin(): void {
@@ -520,7 +547,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
   }
 
   private snapshot(): string {
-    return JSON.stringify({ form: this.form.getRawValue(), draft: this.draftItems(), repeat: this.repeat() });
+    return JSON.stringify({ form: this.form.getRawValue(), draft: this.draftItems(), steps: this.editItems(), repeat: this.repeat() });
   }
 
   readonly formatDay = formatDay;

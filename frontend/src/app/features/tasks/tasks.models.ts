@@ -234,6 +234,8 @@ export interface TaskPatchRequest {
   expires_after_minutes?: number | null;
   penalty_value?: number | null;
   penalty_unit?: PenaltyUnit | null;
+  /** Sent only when the checklist changed. A step without an id is new. */
+  checklist?: { id: string | null; text: string }[];
 }
 
 export interface TaskTemplateRequest extends Partial<TaskDefaults> {
