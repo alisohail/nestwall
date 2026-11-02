@@ -171,7 +171,7 @@
             <span class="hint">{{ 'tasks.form.repeat_hint' | transloco }}</span>
           </div>
         } @else if (task()?.repeats) {
-          <div class="scope mt-s" role="radiogroup" [attr.aria-label]="'tasks.form.edit_scope' | transloco" data-testid="edit-scope">
+          <div class="scope" role="radiogroup" [attr.aria-label]="'tasks.form.edit_scope' | transloco" data-testid="edit-scope">
             <p class="field-label">{{ 'tasks.form.edit_scope' | transloco }}</p>
             <label class="opt">
               <input type="radio" name="edit-scope" value="occurrence" data-testid="edit-scope-occurrence" [checked]="editScope() === 'occurrence'" (change)="setEditScope('occurrence')" />
@@ -182,7 +182,7 @@
               <span>{{ 'tasks.form.edit_scope_series' | transloco }}</span>
             </label>
           </div>
-          <p class="hint">{{ 'tasks.form.edit_scope_note' | transloco }}</p>
+          <p class="hint scope-note">{{ 'tasks.form.edit_scope_note' | transloco }}</p>
         } @else {
           <p class="hint">{{ 'tasks.form.repeat_edit_note' | transloco }}</p>
         }

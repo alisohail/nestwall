@@ -217,6 +217,40 @@
   background: var(--nw-color-surface);
 }
 
+.scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--nw-space-5);
+  row-gap: var(--nw-space-2);
+  margin-top: var(--nw-space-2);
+
+  .field-label {
+    flex-basis: 100%;
+  }
+}
+
+.scope .opt {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-2);
+  min-height: 36px;
+  font-weight: 600;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--nw-color-primary);
+  }
+}
+
+.scope-note {
+  margin: var(--nw-space-2) 0 0;
+  line-height: 1.5;
+}
+
 .modal input {
   width: 100%;
   margin-top: var(--nw-space-3);

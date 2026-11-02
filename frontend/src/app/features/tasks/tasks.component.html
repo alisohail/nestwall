@@ -320,7 +320,7 @@
                 @if (item.status === "to_do" && auth.can("tasks.manage")) {
                   <button
                     type="button"
-                    class="icon-btn sm"
+                    class="icon-btn sm danger"
                     data-testid="task-mark-missed"
                     [attr.aria-label]="
                       'tasks.row.mark_missed' | transloco: { title: item.title }
@@ -377,7 +377,7 @@
                 @if (auth.can("tasks.manage")) {
                   <button
                     type="button"
-                    class="icon-btn sm"
+                    class="icon-btn sm danger"
                     data-testid="task-delete"
                     [attr.aria-label]="
                       'tasks.row.delete' | transloco: { title: item.title }

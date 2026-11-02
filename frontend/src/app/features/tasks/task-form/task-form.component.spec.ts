@@ -51,6 +51,20 @@ describe('TaskFormComponent points', () => {
         expect(pointsInput().placeholder).toBe('');
     });
 
+    it('preselects the assignees when editing an assigned task', () => {
+        const task = {
+            id: 't1',
+            title: 'Feed the cat',
+            due_date: '2026-11-02',
+            priority: 'normal',
+            points: 5,
+            checklist: [],
+            assignees: [{ member_id: 'm1' }, { member_id: 'm2' }],
+        } as unknown;
+        (component as unknown as { fillFromTask: (t: unknown) => void }).fillFromTask(task);
+        expect(component.f.assignees.value).toEqual(['m1', 'm2']);
+    });
+
     it('rejects an empty points value as required', () => {
         component.f.points.setValue(null);
         expect(component.f.points.hasError('required')).toBe(true);

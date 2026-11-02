@@ -466,8 +466,8 @@ export class TaskFormComponent implements UnsavedChangesAware {
       late_points_percent: task.late_points_percent,
       penalty_value: task.penalty_value,
       penalty_unit: task.penalty_unit ?? 'percent',
-    });
-    this.editItems.set((task.checklist ?? []).map((item) => ({ id: item.id, text: item.text })));
+      assignees: task.assignees.map((a) => a.member_id),
+    });((task.checklist ?? []).map((item) => ({ id: item.id, text: item.text })));
   }
 
   private expiryMinutes(value: number | null, unit: ExpiryUnit): number | null {
