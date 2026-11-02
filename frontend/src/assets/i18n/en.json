@@ -2976,7 +2976,7 @@
       "edit_scope": "Apply changes to",
       "edit_scope_this": "Only this task",
       "edit_scope_series": "The whole repeating series",
-      "edit_scope_note": "A whole-series edit changes the title, points and other details. Dates, times and expiry stay with each day.",
+      "edit_scope_note": "A whole-series edit changes the title, points and other details, plus the start time, end time and expiry for every open future day. Each day keeps its own date.",
       "scope_heading": "Apply these changes to",
       "scope_save": "Save changes",
       "past_due": "If it isn't done on time",
