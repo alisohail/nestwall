@@ -2809,7 +2809,6 @@
       "generic": "Something went wrong. Please try again.",
       "archived": "This task has been archived.",
       "missed": "This task has expired and can no longer be done.",
-      "checklist_locked": "Checklist items can't change after someone has started this task.",
       "not_due": "This task is not due yet. You can finish it on its due day.",
       "repeat_edit": "Editing a repeating series isn't available yet.",
       "not_archived": "Only an archived task can be deleted permanently. Archive it first.",
@@ -2839,16 +2838,6 @@
       "message_last": "This is the last person on the task, so the task is archived for everyone. History is kept.",
       "confirm": "Remove"
     },
-    "skip": {
-      "heading": "Skip today?",
-      "message": "This copy will be marked as skipped and no points are awarded.",
-      "confirm": "Skip"
-    },
-    "mark_missed": {
-      "heading": "Mark as missed?",
-      "message": "This task will be marked as missed for everyone who has not finished it. The penalty, if any, applies.",
-      "confirm": "Mark as missed"
-    },
     "detail": {
       "loading": "Loading task…",
       "error": "Could not load this task.",
@@ -2864,9 +2853,7 @@
       "approval_none": "No approval needed",
       "penalty_percent": "−{{value}}% ({{points}} pts) if missed",
       "penalty_points": "−{{points}} pts if missed",
-      "checklist": "Checklist {{done}} of {{total}}",
-      "skip": "Skip today",
-      "mark_missed": "Mark as missed"
+      "checklist": "Checklist {{done}} of {{total}}"
     },
     "priority": {
       "low": "Low",
@@ -3001,7 +2988,6 @@
       "checklist_placeholder": "Add a checklist item",
       "checklist_add": "Add item",
       "checklist_remove": "Remove item",
-      "checklist_locked": "Items can't change after someone has started this task.",
       "checklist_repeat_note": "Checklist items can't be added to a repeating task yet.",
       "checklist_partial": "The task was saved, but some checklist items could not be added. Add them again below.",
       "points_rules": "Points and rules",

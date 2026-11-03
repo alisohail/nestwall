@@ -484,7 +484,7 @@ func TestChecklistGatesCompletion(t *testing.T) {
 
 	rec = f.do(t, child, http.MethodPut, checklistPath(tk.ID, first),
 		map[string]any{"done": false}, ifMatch(done.Version))
-	expectError(t, rec, http.StatusConflict, "checklist_locked")
+	expectStatus(t, rec, http.StatusOK)
 }
 
 func TestStaleVersionAndUnassignedMembers(t *testing.T) {

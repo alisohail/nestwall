@@ -2619,7 +2619,7 @@ paths:
     post:
       tags: [Tasks]
       summary: Add a checklist item
-      description: Requires the `tasks.manage` permission. Appends an item to a one-off task's checklist. The step text is shared by everyone on the task, so it changes only while every assignee is `to_do` or `rejected`; otherwise the response is 409 checklist_locked (params.status). A missed or archived task returns 409. Send `If-Match` with the current version to avoid overwriting a newer change.
+      description: Requires the `tasks.manage` permission. Appends an item to a one-off task's checklist. The step text is shared by everyone on the task and can change at any time. A missed or archived task returns 409. Send `If-Match` with the current version to avoid overwriting a newer change.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -2657,7 +2657,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:
@@ -2683,7 +2683,7 @@ paths:
     put:
       tags: [Tasks]
       summary: Tick or untick a checklist item
-      description: Requires the `tasks.complete` permission. Sets one checklist item on a one-off task to done or not done for one person. The step text is shared by everyone assigned to the task, but the done state is kept per copy, so a tick changes only the copy it names. The copy checked is the signed-in member's own, or the copy named by `member_id` in the body; naming another member requires `tasks.manage` (403 forbidden otherwise). The checked copy must be `to_do` or `rejected`; otherwise the response is 409 checklist_locked (params.status). A missed occurrence returns 409 task_missed. Send `If-Match` with the current version to avoid overwriting a newer change.
+      description: Requires the `tasks.complete` permission. Sets one checklist item on a one-off task to done or not done for one person. The step text is shared by everyone assigned to the task, but the done state is kept per copy, so a tick changes only the copy it names. The copy checked is the signed-in member's own, or the copy named by `member_id` in the body; naming another member requires `tasks.manage` (403 forbidden otherwise). A missed occurrence returns 409 task_missed. Send `If-Match` with the current version to avoid overwriting a newer change.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -2721,7 +2721,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked for the caller (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:
@@ -2769,7 +2769,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:
@@ -2809,7 +2809,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:

@@ -223,9 +223,6 @@
 
       <section class="card">
         <h3>{{ 'tasks.form.checklist' | transloco }}</h3>
-        @if (editing && checklistLocked()) {
-          <p class="notice mt-s" role="status">{{ 'tasks.form.checklist_locked' | transloco }}</p>
-        }
         @if (checklistError(); as key) {
           <app-banner tone="error">{{ key | transloco }}</app-banner>
         }
@@ -238,7 +235,7 @@
                   type="button"
                   class="box"
                   [class.on]="stepDone(step)"
-                  [disabled]="!step.id || checklistLocked() || pendingStep() !== null"
+                  [disabled]="!step.id || pendingStep() !== null"
                   [attr.aria-pressed]="stepDone(step)"
                   [attr.aria-label]="step.text"
                   (click)="toggleStep(step)"
@@ -250,14 +247,12 @@
                 <input
                   class="input grow"
                   [value]="step.text"
-                  [disabled]="checklistLocked()"
                   [attr.aria-label]="step.text"
                   (change)="renameStep($index, inputValue($event))"
                 />
                 <button
                   type="button"
                   class="icon-btn"
-                  [disabled]="checklistLocked()"
                   [attr.aria-label]="'tasks.form.checklist_remove' | transloco"
                   (click)="askRemoveStep($index)"
                 >
@@ -303,7 +298,7 @@
           <button
             type="button"
             class="btn soft sm"
-            [disabled]="!newItemText().trim() || checklistLocked()"
+            [disabled]="!newItemText().trim()"
             (click)="addItem()"
           >
             <span class="material-icons">add</span>{{ 'tasks.form.checklist_add' | transloco }}

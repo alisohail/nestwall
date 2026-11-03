@@ -31,7 +31,6 @@ const CONFLICT_KEYS: Record<string, string> = {
   task_not_due: "tasks.error.not_due",
   task_not_archived: "tasks.error.not_archived",
   task_not_restorable: "tasks.error.not_restorable",
-  checklist_locked: "tasks.error.checklist_locked",
   repeat_edit_unsupported: "tasks.error.repeat_edit",
 };
 

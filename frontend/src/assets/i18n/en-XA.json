@@ -2827,7 +2827,6 @@
       "generic": "[=== Soomeethiing weent wroong. Pleeaasee try aagaaiin. ===]",
       "archived": "[=== Thiis taask haas beeeen aarchiiveed. ===]",
       "missed": "[=== Thiis taask haas eexpiireed aand caan noo loongeer bee doonee. ===]",
-      "checklist_locked": "[=== Cheeckliist iiteems caan't chaangee aafteer soomeeoonee haas staarteed thiis taask. ===]",
       "not_due": "[=== Thiis taask iis noot dooe yeet. Yoou caan finiish iit oon iits dooe daay. ===]",
       "repeat_edit": "[=== EEdiitiing aa reepeeaatiing seeriiees iisn't aavaaiilaablee yeet. ===]",
       "not_archived": "[=== Oonly aa aarchiiveed taask caan bee deeleted peermaaneently. Aarchiivee iit fiirst. ===]",
@@ -2857,16 +2856,6 @@
       "message_last": "[=== Thiis iis thee laast peersoon oon thee taask, soo thee taask iis aarchiiveed foor eeveeryoone. Hiistoory iis keept. ===]",
       "confirm": "[=== Reemoove ===]"
     },
-    "skip": {
-      "heading": "[=== Skiip toodaay? ===]",
-      "message": "[=== Thiis coopy wiill bee maarkeed aas skiippeed aand noo pooiints aaree aawaardeed. ===]",
-      "confirm": "[=== Skiip ===]"
-    },
-    "mark_missed": {
-      "heading": "[=== Maark aas miissed? ===]",
-      "message": "[=== Thiis taask wiill bee maarkeed aas miissed foor eeveeryoone whoo haas noot fiinisheed iit. Thee peenaalty, iif aany, aappliies. ===]",
-      "confirm": "[=== Maark aas miissed ===]"
-    },
     "detail": {
       "loading": "[=== Looaadiing taask… ===]",
       "error": "[=== Coouuld noot looaad thiis taask. ===]",
@@ -2879,9 +2868,7 @@
       "approval_none": "[=== Noo aapproovaal neeeedeed ===]",
       "penalty_percent": "[=== −{{value}}% ({{points}} pts) iif miisseed ===]",
       "penalty_points": "[=== −{{points}} pts iif miisseed ===]",
-      "checklist": "[=== Cheeckliist {{done}} oof {{total}} ===]",
-      "skip": "[=== Skiip toodaay ===]",
-      "mark_missed": "[=== Maark aas miissed ===]"
+      "checklist": "[=== Cheeckliist {{done}} oof {{total}} ===]"
     },
     "priority": {
       "low": "[=== Loow ===]",
@@ -3015,7 +3002,6 @@
       "checklist_placeholder": "[=== AAdd aa cheeckliist iiteem ===]",
       "checklist_add": "[=== AAdd iiteem ===]",
       "checklist_remove": "[=== Reemoovee iiteem ===]",
-      "checklist_locked": "[=== IIteems caan't chaangee aafteer soomeeoonee haas staarteed thiis taask. ===]",
       "checklist_repeat_note": "[=== Cheeckliist iiteems caan't bee aaddeed too aa reepeeaatiing taask yeet. ===]",
       "checklist_partial": "[=== Thee taask waas saaveed, buut soomee cheeckliist iiteems coouuld noot bee aaddeed. AAdd theem aagaaiin beeloow. ===]",
       "points_rules": "[=== Pooiints aand ruulees ===]",

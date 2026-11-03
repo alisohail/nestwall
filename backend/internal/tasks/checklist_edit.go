@@ -92,8 +92,7 @@ func (h *Handlers) RemoveChecklistItem(w http.ResponseWriter, r *http.Request) {
 		})
 }
 
-// editChecklist runs one checklist change on a one-off task. The checklist is shared, so it
-// changes only while every assignee is to do or rejected, and the task is not archived or
+// editChecklist runs one checklist change on a one-off task. The task must not be archived or
 // missed. It bumps the task version, writes the change and an audit row, and responds with the
 // reloaded task.
 func (h *Handlers) editChecklist(w http.ResponseWriter, r *http.Request, status int, action string,
@@ -132,15 +131,6 @@ func (h *Handlers) editChecklist(w http.ResponseWriter, r *http.Request, status 
 	if !checkIfMatch(w, r, current.Version) {
 		return
 	}
-	for _, a := range current.Assignees {
-		if a.Status != taskStatusToDo && a.Status != statusRejected {
-			web.RespondError(w, http.StatusConflict, "checklist_locked",
-				"The checklist can only change while everyone on the task is to do or rejected",
-				map[string]any{"status": a.Status})
-			return
-		}
-	}
-
 	occ, err := loadOccurrence(ctx, tx, familyID, id)
 	if err != nil {
 		h.internalError(w, "load occurrence for checklist change", err)

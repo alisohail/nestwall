@@ -750,14 +750,6 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 			respondValidation(w, err)
 			return
 		}
-		for _, a := range current.Assignees {
-			if a.Status != taskStatusToDo && a.Status != statusRejected {
-				web.RespondError(w, http.StatusConflict, "checklist_locked",
-					"The checklist can only change while everyone on the task is to do or rejected",
-					map[string]any{"status": a.Status})
-				return
-			}
-		}
 		checklist = items
 	}
 

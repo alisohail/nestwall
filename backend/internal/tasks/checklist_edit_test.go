@@ -63,7 +63,7 @@ func TestChecklistRejectsBadTextAndUnknownItem(t *testing.T) {
 	expectStatus(t, rec, http.StatusNotFound)
 }
 
-func TestChecklistLockedOnceAssigneeCompletes(t *testing.T) {
+func TestChecklistAddIsAllowedOnceAssigneeCompletes(t *testing.T) {
 	f := newFixture(t)
 	child := addChildMember(t, f, f.a.FamilyID)
 	tk := newActionTask(t, f, true, child.memberID)
@@ -73,7 +73,7 @@ func TestChecklistLockedOnceAssigneeCompletes(t *testing.T) {
 	done := decodeTask(t, rec.Body.Bytes())
 
 	rec = f.do(t, f.parent, http.MethodPost, checklistRoot(tk.ID), map[string]any{"text": "Late add"}, ifMatch(done.Version))
-	expectError(t, rec, http.StatusConflict, "checklist_locked")
+	expectStatus(t, rec, http.StatusCreated)
 }
 
 func TestParentTicksChildCopyOnBehalf(t *testing.T) {
@@ -108,5 +108,5 @@ func TestParentTicksChildCopyOnBehalf(t *testing.T) {
 
 	rec = f.do(t, f.parent, http.MethodPut, checklistPath(tk.ID, item),
 		map[string]any{"done": false, "member_id": child.memberID}, ifMatch(submitted.Version))
-	expectError(t, rec, http.StatusConflict, "checklist_locked")
+	expectStatus(t, rec, http.StatusOK)
 }

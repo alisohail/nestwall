@@ -1,6 +1,6 @@
 import type { MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { getTranslocoTestingModule } from '../../../core/transloco/transloco-testing.module';
 import { TasksService } from '../tasks.service';
@@ -14,8 +14,7 @@ describe('TaskDetailComponent', () => {
 
     beforeEach(async () => {
         service = mockOf<TasksService>({
-            get: vi.fn().mockName("TasksService.get"),
-            markMissed: vi.fn().mockName("TasksService.markMissed")
+            get: vi.fn().mockName("TasksService.get")
         });
         service.get.mockReturnValue(throwError(() => ({ code: 'server', status: 500 })));
 
@@ -50,25 +49,12 @@ describe('TaskDetailComponent', () => {
         expect(el.querySelector('app-load-error')).not.toBeNull();
     });
 
-    it('offers mark as missed only while some copy is still open', () => {
+    it('does not offer skip or mark as missed from the popup', () => {
         const c = fixture.componentInstance;
-        c.task.set({ id: 't1', archived: false, version: 2, assignees: [{ member_id: 'm1', status: 'to_do' }] } as unknown as Task);
-        expect(c.canMarkMissed()).toBe(true);
+        c.task.set({ id: 't1', title: 'Read', archived: false, version: 2, due_date: '2026-10-09', assignees: [{ member_id: 'm1', status: 'to_do' }] } as unknown as Task);
 
-        c.task.set({ id: 't1', archived: false, version: 2, assignees: [{ member_id: 'm1', status: 'approved' }] } as unknown as Task);
-        expect(c.canMarkMissed()).toBe(false);
-    });
-
-    it('marks the task missed with its version and tells the list to refresh', () => {
-        const c = fixture.componentInstance;
-        const changed = vi.fn();
-        c.changed.subscribe(changed);
-        service.markMissed.mockReturnValue(of({} as Task));
-        c.task.set({ id: 't1', archived: false, version: 2, assignees: [{ member_id: 'm1', status: 'to_do' }] } as unknown as Task);
-
-        c.markMissed();
-
-        expect(service.markMissed).toHaveBeenCalledWith('t1', 2);
-        expect(changed).toHaveBeenCalledTimes(1);
+        const el = fixture.nativeElement as HTMLElement;
+        expect(el.querySelector('[data-testid="task-skip"]')).toBeNull();
+        expect(el.querySelector('[data-testid="task-mark-missed"]')).toBeNull();
     });
 });
