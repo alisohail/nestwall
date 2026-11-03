@@ -49,14 +49,15 @@ func (a *TaskAwards) award(ctx context.Context, tx *sql.Tx, e tasks.Event) error
 	}
 
 	var points int
+	var title string
 	var latePercent sql.NullInt64
 	err := tx.QueryRowContext(ctx,
-		`SELECT d.points, d.late_points_percent
+		`SELECT d.points, d.title, d.late_points_percent
 		 FROM task_occurrences o
 		 JOIN task_definitions d ON d.family_id = o.family_id AND d.id = o.task_definition_id
 		 WHERE o.family_id = ? AND o.id = ?`,
 		e.FamilyID, e.TaskID,
-	).Scan(&points, &latePercent)
+	).Scan(&points, &title, &latePercent)
 	if err != nil {
 		return fmt.Errorf("read task points: %w", err)
 	}
@@ -70,6 +71,7 @@ func (a *TaskAwards) award(ctx context.Context, tx *sql.Tx, e tasks.Event) error
 		MemberID:       e.MemberID,
 		Type:           TaskAward,
 		Amount:         amount,
+		Reason:         title,
 		ReferenceType:  refTaskOccurrence,
 		ReferenceID:    e.TaskID,
 		IdempotencyKey: "task_award:" + e.TaskID + ":" + e.MemberID + ":" + e.CompletedAt,

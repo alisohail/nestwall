@@ -1468,11 +1468,11 @@
       }
     },
     "reverse": {
-      "action": "[=== Remove ===]",
+      "action": "[=== Reverse ===]",
       "title": "[=== Remove this entry? ===]",
       "body": "[=== A correction undoes these points, so the child's balance changes straight away. Each entry can be removed once. ===]",
       "reason": "[=== Reason (required) ===]",
-      "confirm": "[=== Remove ===]"
+      "confirm": "[=== Reverse ===]"
     },
     "delete": {
       "action": "[=== Delete ===]",
