@@ -8,6 +8,7 @@ import {
   MemberBalancesResponse,
   MyPointsResponse,
   PointsChangeResult,
+  PointsDeleteResult,
   PointsEntryPage,
   PointsEntryQuery,
   RedeemResult,
@@ -135,5 +136,10 @@ export class RewardsService {
   /** Undoes a penalty once, with a reason. */
   reversePenalty(entryId: string, reason: string): Observable<PointsChangeResult> {
     return this.api.post<PointsChangeResult>(`/api/v1/points/entries/${entryId}/reverse`, { reason });
+  }
+
+  /** Hard-deletes a points entry and any reversal of it. Only the points ledger changes. */
+  deletePointsEntry(entryId: string): Observable<PointsDeleteResult> {
+    return this.api.delete<PointsDeleteResult>(`/api/v1/points/entries/${entryId}`);
   }
 }

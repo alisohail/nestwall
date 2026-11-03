@@ -1428,7 +1428,12 @@
     "notice": {
       "saved": "[=== Points recorded. ===]",
       "replayed": "[=== This change was already recorded. ===]",
-      "reversed": "[=== Penalty reversed. ===]"
+      "reversed": "[=== Penalty reversed. ===]",
+      "reversedPenalty": "[=== Penalty removed. ===]",
+      "reversedBonus": "[=== Bonus removed. ===]",
+      "reversedAdjustment": "[=== Correction removed. ===]",
+      "reversedTask": "[=== Points removed. ===]",
+      "deleted": "[=== Entry deleted. The points are gone. ===]"
     },
     "filter": {
       "member": "[=== Filter by member ===]",
@@ -1469,6 +1474,12 @@
       "reason": "[=== Reason (required) ===]",
       "confirm": "[=== Remove ===]"
     },
+    "delete": {
+      "action": "[=== Delete ===]",
+      "title": "[=== Delete this entry permanently? ===]",
+      "body": "[=== The entry is removed from the history and the balance. Use this for an entry made by mistake. Only points change; the task, bonus or reward stays as it is. ===]",
+      "confirm": "[=== Delete ===]"
+    },
     "empty": {
       "title": "[=== No points yet ===]",
       "body": "[=== Points appear here after a task is completed or a change is made. ===]"
@@ -1486,7 +1497,7 @@
       "invalid": "[=== Check the details and try again. ===]",
       "generic": "[=== That did not work. Please try again. ===]",
       "alreadyReversed": "[=== This entry was already removed. ===]",
-      "notReversible": "[=== Only a penalty or a manual bonus can be removed. ===]",
+      "notReversible": "[=== Only a penalty, a bonus, a correction or a task award can be removed. ===]",
       "insufficientBalance": "[=== The child does not have enough points to remove this bonus. ===]",
       "notFound": "[=== That entry could not be found. ===]",
       "balances": "[=== We could not load the balances. ===]"

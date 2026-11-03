@@ -308,8 +308,13 @@ h2 {
   }
 }
 
-.reverse {
+.reverse,
+.delete {
   min-height: 44px;
+}
+
+.delete {
+  color: var(--nw-color-error);
 }
 
 @media (max-width: 700px) {
@@ -379,7 +384,8 @@ h2 {
     grid-area: action;
   }
 
-  .reverse {
+  .reverse,
+  .delete {
     justify-self: start;
   }
 }

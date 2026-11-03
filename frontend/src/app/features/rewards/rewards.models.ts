@@ -194,3 +194,9 @@ export interface PointsChangeResult {
   balance: number;
   replayed: boolean;
 }
+
+/** Response of a hard delete: the ledger rows removed and the member's balance afterwards. */
+export interface PointsDeleteResult {
+  removed: number;
+  balance: number;
+}

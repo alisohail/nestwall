@@ -167,6 +167,32 @@ func (h *Handlers) ReversePenaltyEntry(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// deleteEntryResponse describes the result of DELETE /api/v1/points/entries/{id}.
+type deleteEntryResponse struct {
+	Removed int64 `json:"removed"`
+	Balance int   `json:"balance"`
+}
+
+// DeletePointsEntry handles DELETE /api/v1/points/entries/{id}. It hard-deletes a ledger entry and the
+// reversal that undid it. Use it for an entry made by mistake; ReversePenaltyEntry keeps the record.
+func (h *Handlers) DeletePointsEntry(w http.ResponseWriter, r *http.Request) {
+	familyID, userID, _, ok := h.actor(w, r)
+	if !ok {
+		return
+	}
+
+	res, err := DeleteEntry(r.Context(), h.db, familyID, r.PathValue("id"), userID)
+	switch {
+	case errors.Is(err, ErrEntryNotFound):
+		web.RespondError(w, http.StatusNotFound, "entry_not_found", "Ledger entry not found", nil)
+		return
+	case err != nil:
+		h.internalError(w, "delete entry", err)
+		return
+	}
+	web.RespondJSON(w, http.StatusOK, deleteEntryResponse{Removed: res.Removed, Balance: res.Balance})
+}
+
 // actor returns the signed-in member's family and IDs. It writes the error response and returns
 // ok=false when the request may not continue.
 func (h *Handlers) actor(w http.ResponseWriter, r *http.Request) (familyID, userID, memberID string, ok bool) {

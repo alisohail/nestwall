@@ -281,6 +281,7 @@ func New(cfg *config.Config, log *slog.Logger, clk clock.Clock, pool *sql.DB, ou
 	rewardHandlers := rewards.NewHandlers(pool, clk, log)
 	mux.Handle("POST /api/v1/family/members/{id}/points", permMiddleware(permissions.PermRewardsManage, rewardHandlers.PostPoints))
 	mux.Handle("POST /api/v1/points/entries/{id}/reverse", permMiddleware(permissions.PermRewardsManage, rewardHandlers.ReversePenaltyEntry))
+	mux.Handle("DELETE /api/v1/points/entries/{id}", permMiddleware(permissions.PermRewardsManage, rewardHandlers.DeletePointsEntry))
 
 	// Catalogue. Children hold rewards.view (view level) and see only the rewards open to them;
 	// the handlers filter. Writes need rewards.manage, so children get 403.

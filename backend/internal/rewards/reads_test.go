@@ -205,6 +205,44 @@ func TestEarnedThisWeekDropsReversedBonusOfThatWeek(t *testing.T) {
 	}
 }
 
+func TestReverseTaskAwardDropsFromWeekOnce(t *testing.T) {
+	f := readFixture(t)
+	ana := f.addChild(f.fam.FamilyID, "Ana")
+	ctx := context.Background()
+	now := time.Date(2026, 10, 8, 12, 0, 0, 0, time.UTC)
+
+	postAt(t, f.db, time.Date(2026, 10, 5, 10, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: ana.memberID, Type: TaskAward, Amount: 6, IdempotencyKey: "t1"})
+	var awardID string
+	if err := f.db.QueryRowContext(ctx, `SELECT id FROM points_ledger WHERE family_id = ? AND entry_type = 'task_award'`, f.fam.FamilyID).Scan(&awardID); err != nil {
+		t.Fatalf("find award: %v", err)
+	}
+	before, err := EarnedThisWeek(ctx, f.db, f.fam.FamilyID, time.UTC, now)
+	if err != nil {
+		t.Fatalf("EarnedThisWeek before: %v", err)
+	}
+	if before[ana.memberID] != 6 {
+		t.Fatalf("earned before = %d, want 6", before[ana.memberID])
+	}
+
+	rev, err := ReversePenalty(ctx, f.db, now, f.fam.FamilyID, awardID, f.fam.ParentUserID, ana.memberID, "Duplicate approval")
+	if err != nil {
+		t.Fatalf("reverse task award: %v", err)
+	}
+	if rev.Amount != -6 || rev.Balance != 0 {
+		t.Fatalf("reversal amount = %d, balance = %d; want -6 and 0", rev.Amount, rev.Balance)
+	}
+	after, err := EarnedThisWeek(ctx, f.db, f.fam.FamilyID, time.UTC, now)
+	if err != nil {
+		t.Fatalf("EarnedThisWeek after: %v", err)
+	}
+	if after[ana.memberID] != 0 {
+		t.Errorf("earned after reversal = %d, want 0", after[ana.memberID])
+	}
+	if _, err := ReversePenalty(ctx, f.db, now, f.fam.FamilyID, awardID, f.fam.ParentUserID, ana.memberID, "Again"); err != ErrAlreadyReversed {
+		t.Fatalf("second reverse err = %v, want ErrAlreadyReversed", err)
+	}
+}
+
 func TestMemberBalancesParentOnlyAndActiveChildren(t *testing.T) {
 	f := readFixture(t)
 	ana := f.addChild(f.fam.FamilyID, "Ana")

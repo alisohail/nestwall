@@ -216,6 +216,55 @@ func TestReverseBonusRefusedWhenBalanceWouldGoNegative(t *testing.T) {
 	}
 }
 
+func TestDeleteEntryRemovesEntryAndItsReversal(t *testing.T) {
+	conn, f := penaltyDB(t)
+	ctx := context.Background()
+	grant(t, conn, f, 20, "g1")
+	pen, err := PostManual(ctx, conn, testNow, manualChange(f, Penalty, 5, "p1"))
+	if err != nil {
+		t.Fatalf("penalty: %v", err)
+	}
+	rev, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen.EntryID, f.ParentUserID, f.MemberID, "Mistake")
+	if err != nil {
+		t.Fatalf("reverse: %v", err)
+	}
+
+	// Deleting the penalty takes its reversal with it: two rows go, the balance stays 20.
+	del, err := DeleteEntry(ctx, conn, f.FamilyID, pen.EntryID, f.ParentUserID)
+	if err != nil {
+		t.Fatalf("delete penalty: %v", err)
+	}
+	if del.Removed != 2 || del.Balance != 20 {
+		t.Fatalf("removed = %d, balance = %d; want 2 and 20", del.Removed, del.Balance)
+	}
+	var left int
+	if err := conn.QueryRow(`SELECT COUNT(*) FROM points_ledger WHERE id IN (?, ?)`, pen.EntryID, rev.EntryID).Scan(&left); err != nil {
+		t.Fatalf("count rows: %v", err)
+	}
+	if left != 0 {
+		t.Fatalf("rows left after delete = %d, want 0", left)
+	}
+	if _, err := DeleteEntry(ctx, conn, f.FamilyID, pen.EntryID, f.ParentUserID); err != ErrEntryNotFound {
+		t.Fatalf("second delete err = %v, want ErrEntryNotFound", err)
+	}
+
+	// Deleting a reversal alone brings the penalty back as not reversed.
+	pen2, err := PostManual(ctx, conn, testNow, manualChange(f, Penalty, 4, "p2"))
+	if err != nil {
+		t.Fatalf("penalty 2: %v", err)
+	}
+	rev2, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen2.EntryID, f.ParentUserID, f.MemberID, "Oops")
+	if err != nil {
+		t.Fatalf("reverse 2: %v", err)
+	}
+	if _, err := DeleteEntry(ctx, conn, f.FamilyID, rev2.EntryID, f.ParentUserID); err != nil {
+		t.Fatalf("delete reversal: %v", err)
+	}
+	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen2.EntryID, f.ParentUserID, f.MemberID, "Again"); err != nil {
+		t.Fatalf("reverse after deleting reversal: %v", err)
+	}
+}
+
 // postAdjustment posts a manual correction and returns its ledger ID.
 func postAdjustment(t *testing.T, conn *sql.DB, f testhelper.Family, amount int, key string) string {
 	t.Helper()

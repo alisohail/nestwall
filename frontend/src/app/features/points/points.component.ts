@@ -50,6 +50,15 @@ const MANUAL_TYPES: ManualPointsType[] = ['bonus', 'penalty', 'adjustment'];
 const PAGE_SIZE = 50;
 const MAX_POINTS = 100000;
 const MAX_REASON = 200;
+// Entry types a parent can remove with a reversal. Each one has its own notice.
+const REVERSIBLE_TYPES: PointsEntryType[] = ['penalty', 'bonus', 'adjustment', 'task_award', 'bonus_task_award'];
+const REVERSED_NOTICE: Partial<Record<PointsEntryType, string>> = {
+  penalty: 'points.notice.reversedPenalty',
+  bonus: 'points.notice.reversedBonus',
+  adjustment: 'points.notice.reversedAdjustment',
+  task_award: 'points.notice.reversedTask',
+  bonus_task_award: 'points.notice.reversedTask',
+};
 
 @Component({
     selector: 'app-points',
@@ -145,11 +154,15 @@ export class PointsComponent implements OnInit {
   awardError = signal<string | null>(null);
   private awardKey = newIdempotencyKey();
 
-  // Reverse a penalty.
+  // Remove a points entry: a reversal keeps the record, a delete removes it.
   reverseTarget = signal<PointsEntry | null>(null);
   reverseError = signal<string | null>(null);
   reverseBusy = signal(false);
   reverseReason = '';
+
+  deleteTarget = signal<PointsEntry | null>(null);
+  deleteError = signal<string | null>(null);
+  deleteBusy = signal(false);
 
   ngOnInit(): void {
     if (this.isParent()) {
@@ -271,7 +284,7 @@ export class PointsComponent implements OnInit {
   }
 
   canReverse(entry: PointsEntry): boolean {
-    return this.isParent() && (entry.type === 'penalty' || entry.type === 'bonus' || entry.type === 'adjustment');
+    return this.isParent() && REVERSIBLE_TYPES.includes(entry.type);
   }
 
   openManual(): void {
@@ -412,13 +425,45 @@ export class PointsComponent implements OnInit {
         next: () => {
           this.reverseBusy.set(false);
           this.reverseTarget.set(null);
-          this.notice.set('points.notice.reversed');
+          this.notice.set(REVERSED_NOTICE[target.type] ?? 'points.notice.reversed');
           this.load();
           this.loadBalances();
         },
         error: (err: unknown) => {
           this.reverseBusy.set(false);
           this.reverseError.set(this.reverseErrorKey(err));
+        },
+      });
+  }
+
+  askDelete(entry: PointsEntry): void {
+    this.deleteTarget.set(entry);
+    this.deleteError.set(null);
+  }
+
+  closeDelete(): void {
+    if (!this.deleteBusy()) this.deleteTarget.set(null);
+  }
+
+  confirmDelete(): void {
+    const target = this.deleteTarget();
+    if (!target || this.deleteBusy()) return;
+    this.deleteBusy.set(true);
+    this.deleteError.set(null);
+    this.api
+      .deletePointsEntry(target.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.deleteBusy.set(false);
+          this.deleteTarget.set(null);
+          this.notice.set('points.notice.deleted');
+          this.load();
+          this.loadBalances();
+        },
+        error: (err: unknown) => {
+          this.deleteBusy.set(false);
+          this.deleteError.set(this.reverseErrorKey(err));
         },
       });
   }

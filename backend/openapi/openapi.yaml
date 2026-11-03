@@ -3912,8 +3912,8 @@ paths:
   /api/v1/points/entries/{id}/reverse:
     post:
       tags: [Points]
-      summary: Reverse a penalty, a manual bonus or an adjustment with a compensating entry
-      description: Requires the `rewards.manage` permission. Each penalty, manual bonus or adjustment can be reversed once. The reversal refers to the entry. Reversing a penalty or a negative adjustment adds points back. Reversing a bonus or a positive adjustment takes points away, and returns 409 `insufficient_balance` when that would leave a negative balance and the family does not allow negative balances. Returns 409 `not_reversible` for other entry types and 409 `already_reversed` on a second attempt. A removed bonus is also left out of the week's earned points for the week it was given.
+      summary: Reverse a penalty, a manual bonus, an adjustment or a task award with a compensating entry
+      description: Requires the `rewards.manage` permission. Each penalty, manual bonus, adjustment, task award or bonus task award can be reversed once. The reversal refers to the entry. Reversing a penalty or a negative adjustment adds points back. Reversing a bonus, a positive adjustment or a task award takes points away, and returns 409 `insufficient_balance` when that would leave a negative balance and the family does not allow negative balances. Returns 409 `not_reversible` for other entry types and 409 `already_reversed` on a second attempt. A removed bonus or task award is also left out of the week's earned points for the week it was given.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -3948,6 +3948,43 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+  /api/v1/points/entries/{id}:
+    delete:
+      tags: [Points]
+      summary: Hard delete a points entry and any reversal of it
+      description: Requires the `rewards.manage` permission. Removes the ledger entry and its reversal, if one exists, from the history and the balance. Only points change; the task, bonus or reward is not touched. Use it for an entry made by mistake. The action is audited as `points.entry_deleted`.
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/CSRFHeader'
+        - name: id
+          in: path
+          required: true
+          description: Ledger entry ID to delete.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Entry deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [removed, balance]
+                properties:
+                  removed:
+                    type: integer
+                    description: Number of ledger rows removed, the entry and its reversal if any.
+                  balance:
+                    type: integer
+                    description: Member balance after the delete.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /api/v1/me/points:
     get:
       tags: [Points]

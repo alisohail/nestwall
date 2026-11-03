@@ -93,6 +93,7 @@ describe('PointsComponent', () => {
             entryPage: vi.fn().mockName("RewardsService.entryPage"),
             postPoints: vi.fn().mockName("RewardsService.postPoints"),
             reversePenalty: vi.fn().mockName("RewardsService.reversePenalty"),
+            deletePointsEntry: vi.fn().mockName("RewardsService.deletePointsEntry"),
             memberBalances: vi.fn().mockName("RewardsService.memberBalances"),
             list: vi.fn().mockName("RewardsService.list")
         });
@@ -104,6 +105,7 @@ describe('PointsComponent', () => {
         } as PointsEntryPage));
         api.postPoints.mockReturnValue(of({ replayed: false } as PointsChangeResult) as unknown as Observable<PointsChangeResult>);
         api.reversePenalty.mockReturnValue(of({ replayed: false } as PointsChangeResult) as unknown as Observable<PointsChangeResult>);
+        api.deletePointsEntry.mockReturnValue(of({ removed: 1, balance: 0 }));
 
         badges = mockOf<BadgesService>({
             get: vi.fn().mockName("BadgesService.get"),
@@ -179,12 +181,19 @@ describe('PointsComponent', () => {
         expect(el('[data-testid="entry-e3"] .reverse')).toBeTruthy();
     });
 
+    it('should give a parent a delete control on every entry', () => {
+        build();
+        expect(el('[data-testid="entry-e1"] .delete')).toBeTruthy();
+        expect(el('[data-testid="entry-e2"] .delete')).toBeTruthy();
+    });
+
     it('should hide member filter, manual form and reverse controls from a child', () => {
         isChild = true;
         build();
         expect(el('[data-testid="points-add"]')).toBeNull();
         expect(el('[data-testid="filter-member-all"]')).toBeNull();
         expect(el('[data-testid="entry-e2"] .reverse')).toBeNull();
+        expect(el('[data-testid="entry-e2"] .delete')).toBeNull();
         expect(api.entryPage).toHaveBeenCalledWith(expect.objectContaining({ member_id: undefined }));
     });
 
@@ -345,7 +354,38 @@ describe('PointsComponent', () => {
         c.confirmReverse();
         expect(api.reversePenalty).toHaveBeenCalledWith('e2', 'Mistake');
         expect(c.reverseTarget()).toBeNull();
-        expect(c.notice()).toBe('points.notice.reversed');
+        expect(c.notice()).toBe('points.notice.reversedPenalty');
+    });
+
+    it('should show the task-points notice after removing a task award', () => {
+        api.reversePenalty.mockClear();
+        build();
+        const c = fixture.componentInstance;
+        c.askReverse(entry({ id: 'e4', type: 'task_award', amount: 4 }));
+        c.reverseReason = 'Duplicate';
+        c.confirmReverse();
+        expect(api.reversePenalty).toHaveBeenCalledWith('e4', 'Duplicate');
+        expect(c.notice()).toBe('points.notice.reversedTask');
+    });
+
+    it('should hard delete an entry and reload the history', () => {
+        build();
+        const c = fixture.componentInstance;
+        c.askDelete(entry({ id: 'e2', type: 'penalty', amount: -3 }));
+        c.confirmDelete();
+        expect(api.deletePointsEntry).toHaveBeenCalledWith('e2');
+        expect(c.deleteTarget()).toBeNull();
+        expect(c.notice()).toBe('points.notice.deleted');
+    });
+
+    it('should show the mapped error when the hard delete fails', () => {
+        api.deletePointsEntry.mockReturnValue(throwError(() => ({ code: 'not_found' })));
+        build();
+        const c = fixture.componentInstance;
+        c.askDelete(entry({ id: 'e2', type: 'penalty', amount: -3 }));
+        c.confirmDelete();
+        expect(c.deleteError()).toBeTruthy();
+        expect(c.deleteTarget()).not.toBeNull();
     });
 
     it('should show the mapped error when the bonus would take the balance below zero', () => {
