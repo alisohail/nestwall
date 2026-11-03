@@ -5,6 +5,10 @@ import { CHILD, PARENT } from './support/stack';
 
 const BONUS = { title: 'E2E Wash the car', points: 7 };
 
+// A bonus is listed only for the day it was published. If the run crosses midnight, the child's list is empty,
+// so a retry runs in a new worker, which re-seeds a fresh family and publishes again for the new day.
+test.describe.configure({ retries: 1 });
+
 test.beforeAll(async () => {
   await seedFreshFamily();
 });
