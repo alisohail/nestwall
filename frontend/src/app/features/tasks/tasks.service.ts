@@ -209,13 +209,13 @@ export class TasksService {
     return this.api.post<Task>(`/api/v1/tasks/${id}/archive`, {}, version);
   }
 
-  /** Removes one person's copy. scope "occurrence" is one day; "series" is that person's upcoming copies and their place in a repeating task. The last person archives the task. version is sent as If-Match. */
+  /** Removes one person's copy. scope "occurrence" is one day; "series" is that person's upcoming copies and their place in a repeating task. The last person archives a one-off task or a series. A repeating day with nobody left answers with no body. version is sent as If-Match. */
   removePerson(
     id: string,
     version: number,
     memberId: string,
     scope: RemoveScope,
-  ): Observable<Task> {
+  ): Observable<Task | null> {
     return this.api.post<Task>(
       `/api/v1/tasks/${id}/remove-person`,
       { member_id: memberId, scope },

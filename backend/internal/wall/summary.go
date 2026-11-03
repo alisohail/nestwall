@@ -36,6 +36,7 @@ type summaryOptions struct {
 type summaryTask struct {
 	OccurrenceID string     `json:"occurrence_id"`
 	Title        string     `json:"title"`
+	StartAt      *time.Time `json:"start_at"`
 	DueAt        time.Time  `json:"due_at"`
 	State        string     `json:"state"`
 	CompletedAt  *time.Time `json:"completed_at,omitempty"`
@@ -131,7 +132,7 @@ func (h *Handlers) summary(ctx context.Context, dev Device, device *weather.Coor
 	if err != nil {
 		return summaryResponse{}, err
 	}
-	children, err := h.summaryChildren(ctx, dev.FamilyID, opts, today.Format(dateLayout), pictures)
+	children, err := h.summaryChildren(ctx, dev.FamilyID, opts, today.Format(dateLayout), zone, pictures)
 	if err != nil {
 		return summaryResponse{}, err
 	}
@@ -293,7 +294,7 @@ func (h *Handlers) deviceOptions(ctx context.Context, dev Device) (summaryOption
 
 // summaryChildren returns the active children with their tasks and, when the device shows points,
 // their balance. Parents never appear here. pictures maps member IDs to their current picture.
-func (h *Handlers) summaryChildren(ctx context.Context, familyID string, opts summaryOptions, today string, pictures map[string]string) ([]summaryChild, error) {
+func (h *Handlers) summaryChildren(ctx context.Context, familyID string, opts summaryOptions, today string, zone *time.Location, pictures map[string]string) ([]summaryChild, error) {
 	rows, err := h.db.QueryContext(ctx,
 		`SELECT fm.id, u.display_name, fm.colour
 		   FROM family_members fm
@@ -323,7 +324,7 @@ func (h *Handlers) summaryChildren(ctx context.Context, familyID string, opts su
 	rows.Close()
 
 	for i := range out {
-		tasks, err := h.childTasks(ctx, familyID, out[i].MemberID, today)
+		tasks, err := h.childTasks(ctx, familyID, out[i].MemberID, today, zone)
 		if err != nil {
 			return nil, err
 		}
@@ -339,12 +340,26 @@ func (h *Handlers) summaryChildren(ctx context.Context, familyID string, opts su
 	return out, nil
 }
 
+// dueInstant is the UTC instant of a family-local date and clock time (HH:MM), as the tasks package
+// computes it. It is repeated here because wall does not import tasks.
+func dueInstant(date string, clock *string, zone *time.Location) (time.Time, error) {
+	day, err := time.ParseInLocation(dateLayout, date, zone)
+	if err != nil {
+		return time.Time{}, err
+	}
+	t, err := time.Parse("15:04", *clock)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return time.Date(day.Year(), day.Month(), day.Day(), t.Hour(), t.Minute(), 0, 0, zone).UTC(), nil
+}
+
 // childTasks returns a child's copies for today and the overdue copies still open, ordered: overdue
 // first (oldest first), then today's open copies by due time, then done copies, most recent first.
-func (h *Handlers) childTasks(ctx context.Context, familyID, memberID, today string) ([]summaryTask, error) {
+func (h *Handlers) childTasks(ctx context.Context, familyID, memberID, today string, zone *time.Location) ([]summaryTask, error) {
 	rows, err := h.db.QueryContext(ctx,
 		`SELECT o.id, d.title, strftime(?, o.due_at), oa.status, o.due_date < ? AND oa.status IN ('to_do', 'rejected'),
-		        strftime(?, oa.completed_at)
+		        strftime(?, oa.completed_at), o.due_date, d.start_time
 		   FROM task_occurrence_assignees oa
 		   JOIN task_occurrences o ON o.family_id = oa.family_id AND o.id = oa.task_occurrence_id
 		   JOIN task_definitions d ON d.family_id = o.family_id AND d.id = o.task_definition_id AND d.status = 'active'
@@ -366,13 +381,20 @@ func (h *Handlers) childTasks(ctx context.Context, familyID, memberID, today str
 	var found []row
 	for rows.Next() {
 		var r row
-		var dueAt string
-		var completed sql.NullString
-		if err := rows.Scan(&r.task.OccurrenceID, &r.task.Title, &dueAt, &r.status, &r.overdue, &completed); err != nil {
+		var dueAt, dueDate string
+		var completed, startTime sql.NullString
+		if err := rows.Scan(&r.task.OccurrenceID, &r.task.Title, &dueAt, &r.status, &r.overdue, &completed, &dueDate, &startTime); err != nil {
 			return nil, err
 		}
 		if r.task.DueAt, err = time.Parse(time.RFC3339, dueAt); err != nil {
 			return nil, err
+		}
+		if startTime.Valid {
+			start, err := dueInstant(dueDate, &startTime.String, zone)
+			if err != nil {
+				return nil, err
+			}
+			r.task.StartAt = &start
 		}
 		if completed.Valid {
 			at, err := time.Parse(time.RFC3339, completed.String)

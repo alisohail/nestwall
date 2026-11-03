@@ -57,7 +57,7 @@ func TestOneOffChecklistEditKeepsKnownStepsAndIDs(t *testing.T) {
 	}
 }
 
-func TestChecklistEditIsLockedWhenAnyoneActed(t *testing.T) {
+func TestChecklistEditIsAllowedAfterSubmission(t *testing.T) {
 	f := newFixture(t)
 	child := addChildMember(t, f, f.a.FamilyID)
 	tk := newActionTask(t, f, true, child.memberID)
@@ -68,7 +68,10 @@ func TestChecklistEditIsLockedWhenAnyoneActed(t *testing.T) {
 	rec := f.do(t, f.parent, http.MethodPatch, tasksPath+"/"+tk.ID, map[string]any{
 		"checklist": []map[string]any{{"id": nil, "text": "Late step"}},
 	}, ifMatch(tk.Version))
-	expectError(t, rec, http.StatusConflict, "checklist_locked")
+	expectStatus(t, rec, http.StatusOK)
+	if got := decodeTask(t, rec.Body.Bytes()); len(got.Checklist) != 1 || got.Checklist[0].Text != "Late step" {
+		t.Fatalf("checklist = %+v, want one step %q", got.Checklist, "Late step")
+	}
 }
 
 func TestRepeatSeriesChecklistEditUpdatesDefinitionAndOpenOccurrences(t *testing.T) {

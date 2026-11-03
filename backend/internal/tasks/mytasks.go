@@ -71,6 +71,7 @@ type MyTaskItem struct {
 	PartOfDay        *string         `json:"part_of_day"`
 	DueDate          string          `json:"due_date"`
 	DueAt            string          `json:"due_at"`
+	StartAt          *string         `json:"start_at"`
 	ExpiresAt        *string         `json:"expires_at"`
 	Points           int             `json:"points"`
 	ApprovalRequired bool            `json:"approval_required"`
@@ -98,6 +99,8 @@ type myRow struct {
 	dueDate          string
 	dueAt            time.Time
 	dueAtText        string
+	startTime        *string
+	startAt          *time.Time
 	expiresAt        *time.Time
 	expiresAtText    *string
 	points           int
@@ -121,7 +124,7 @@ const myCopyFrom = `SELECT o.id, d.title, c.emoji, c.colour, d.part_of_day, o.du
 	strftime('%Y-%m-%dT%H:%M:%SZ', o.due_at), strftime('%Y-%m-%dT%H:%M:%SZ', o.expires_at),
 	d.points, d.approval_required, d.late_points_percent, d.penalty_value, d.penalty_unit,
 	oa.status, o.status, strftime('%Y-%m-%dT%H:%M:%SZ', oa.completed_at), oa.completed_late,
-	strftime('%Y-%m-%dT%H:%M:%SZ', oa.decided_at), du.display_name, d.version, oa.id
+	strftime('%Y-%m-%dT%H:%M:%SZ', oa.decided_at), du.display_name, d.version, oa.id, d.start_time
 FROM task_occurrence_assignees oa
 JOIN task_occurrences o ON o.family_id = oa.family_id AND o.id = oa.task_occurrence_id
 JOIN task_definitions d ON d.family_id = o.family_id AND d.id = o.task_definition_id
@@ -278,6 +281,13 @@ func (h *Handlers) loadMyView(ctx context.Context, familyID, memberID string) (m
 	if err != nil {
 		return myView{}, fmt.Errorf("load copies: %w", err)
 	}
+	for i := range rows {
+		startAt, err := startInstant(rows[i].dueDate, rows[i].startTime, zone)
+		if err != nil {
+			return myView{}, fmt.Errorf("start time for %s: %w", rows[i].taskID, err)
+		}
+		rows[i].startAt = startAt
+	}
 	return myView{lists: buildMyTasks(rows, now, today), now: now, today: today, zoneName: zoneName}, nil
 }
 
@@ -294,14 +304,18 @@ func (h *Handlers) myCopies(ctx context.Context, familyID, memberID, from, to st
 		var r myRow
 		var dueText string
 		var expiresText sql.NullString
-		var completedText, decidedText, decidedBy sql.NullString
+		var completedText, decidedText, decidedBy, startTime sql.NullString
 		if err := rows.Scan(
 			&r.taskID, &r.title, &r.emoji, &r.colour, &r.partOfDay, &r.dueDate,
 			&dueText, &expiresText, &r.points, &r.approvalRequired, &r.latePct,
 			&r.penaltyValue, &r.penaltyUnit, &r.status, &r.occurrenceStatus,
 			&completedText, &r.completedLate, &decidedText, &decidedBy, &r.version, &r.assigneeID,
+			&startTime,
 		); err != nil {
 			return nil, err
+		}
+		if startTime.Valid {
+			r.startTime = &startTime.String
 		}
 		if decidedText.Valid {
 			r.decidedAt = &decidedText.String
@@ -426,6 +440,27 @@ func buildMyTasks(rows []myRow, now time.Time, today string) myLists {
 	return resp
 }
 
+// startInstant is the UTC start of a copy on its family-local date, or nil when the task has no start.
+func startInstant(date string, startTime *string, zone *time.Location) (*time.Time, error) {
+	if startTime == nil {
+		return nil, nil
+	}
+	at, err := dueInstant(date, startTime, zone)
+	if err != nil {
+		return nil, err
+	}
+	return &at, nil
+}
+
+// startAtText formats the start for the response in the same UTC layout as the due time.
+func (r myRow) startAtText() *string {
+	if r.startAt == nil {
+		return nil
+	}
+	s := r.startAt.UTC().Format(time.RFC3339)
+	return &s
+}
+
 // item converts a row to the response shape with the penalty worked out from the task's points.
 func (r myRow) item() MyTaskItem {
 	it := MyTaskItem{
@@ -436,6 +471,7 @@ func (r myRow) item() MyTaskItem {
 		PartOfDay:        nullableText(r.partOfDay),
 		DueDate:          r.dueDate,
 		DueAt:            r.dueAtText,
+		StartAt:          r.startAtText(),
 		ExpiresAt:        r.expiresAtText,
 		Points:           r.points,
 		ApprovalRequired: r.approvalRequired,

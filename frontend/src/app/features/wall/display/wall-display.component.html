@@ -82,7 +82,14 @@
                 <span class="kid-avatar">{{ kid.initial }}</span>
               }
               <div class="kh-text">
-                <div class="nm">{{ kid.name }}</div>
+                <div class="nm">
+                  {{ kid.name }}
+                  @if (kid.points !== null) {
+                    <span class="kid-pts" data-testid="kid-points" [attr.aria-label]="'wall.display.kid_points' | transloco: { points: kid.points }">
+                      <i aria-hidden="true">&#11088;</i>{{ kid.points }}
+                    </span>
+                  }
+                </div>
                 <div class="cnt" data-testid="kid-count">{{ kid.countText }}</div>
               </div>
             </div>

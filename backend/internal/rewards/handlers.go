@@ -125,7 +125,7 @@ func (h *Handlers) PostPoints(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// ReversePenaltyEntry handles POST /api/v1/points/entries/{id}/reverse. It undoes a penalty, once.
+// ReversePenaltyEntry handles POST /api/v1/points/entries/{id}/reverse. It undoes a penalty or a manual bonus, once.
 func (h *Handlers) ReversePenaltyEntry(w http.ResponseWriter, r *http.Request) {
 	familyID, userID, memberID, ok := h.actor(w, r)
 	if !ok {
@@ -146,11 +146,14 @@ func (h *Handlers) ReversePenaltyEntry(w http.ResponseWriter, r *http.Request) {
 	case errors.Is(err, ErrEntryNotFound):
 		web.RespondError(w, http.StatusNotFound, "entry_not_found", "Ledger entry not found", nil)
 		return
-	case errors.Is(err, ErrNotPenalty):
-		web.RespondError(w, http.StatusConflict, "not_a_penalty", "Only a penalty can be reversed", nil)
+	case errors.Is(err, ErrNotReversible):
+		web.RespondError(w, http.StatusConflict, "not_reversible", "Only a penalty or a manual bonus can be removed", nil)
 		return
 	case errors.Is(err, ErrAlreadyReversed):
-		web.RespondError(w, http.StatusConflict, "already_reversed", "This penalty was already reversed", nil)
+		web.RespondError(w, http.StatusConflict, "already_reversed", "This entry was already reversed", nil)
+		return
+	case errors.Is(err, ErrInsufficientBalance):
+		web.RespondError(w, http.StatusConflict, "insufficient_balance", "The child does not have enough points to remove this bonus", nil)
 		return
 	case err != nil:
 		h.internalError(w, "reverse penalty", err)
@@ -162,6 +165,32 @@ func (h *Handlers) ReversePenaltyEntry(w http.ResponseWriter, r *http.Request) {
 		Amount:  res.Amount,
 		Balance: res.Balance,
 	})
+}
+
+// deleteEntryResponse describes the result of DELETE /api/v1/points/entries/{id}.
+type deleteEntryResponse struct {
+	Removed int64 `json:"removed"`
+	Balance int   `json:"balance"`
+}
+
+// DeletePointsEntry handles DELETE /api/v1/points/entries/{id}. It hard-deletes a ledger entry and the
+// reversal that undid it. Use it for an entry made by mistake; ReversePenaltyEntry keeps the record.
+func (h *Handlers) DeletePointsEntry(w http.ResponseWriter, r *http.Request) {
+	familyID, userID, _, ok := h.actor(w, r)
+	if !ok {
+		return
+	}
+
+	res, err := DeleteEntry(r.Context(), h.db, familyID, r.PathValue("id"), userID)
+	switch {
+	case errors.Is(err, ErrEntryNotFound):
+		web.RespondError(w, http.StatusNotFound, "entry_not_found", "Ledger entry not found", nil)
+		return
+	case err != nil:
+		h.internalError(w, "delete entry", err)
+		return
+	}
+	web.RespondJSON(w, http.StatusOK, deleteEntryResponse{Removed: res.Removed, Balance: res.Balance})
 }
 
 // actor returns the signed-in member's family and IDs. It writes the error response and returns

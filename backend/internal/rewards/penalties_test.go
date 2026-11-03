@@ -136,28 +136,31 @@ func TestManualRejectsMemberOutsideFamily(t *testing.T) {
 	}
 }
 
-func TestReversePenaltyOnceAndOnlyPenalties(t *testing.T) {
+func TestReversePenaltyOnceAndOnlyPenaltiesOrBonuses(t *testing.T) {
 	conn, f := penaltyDB(t)
-	bonus := grant(t, conn, f, 20, "g1")
+	grant(t, conn, f, 20, "g1")
 	pen, err := PostManual(context.Background(), conn, testNow, manualChange(f, Penalty, 5, "p1"))
 	if err != nil {
 		t.Fatalf("penalty: %v", err)
 	}
+	adj := postAdjustment(t, conn, f, 3, "adj1")
 	ctx := context.Background()
 
 	rev, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen.EntryID, f.ParentUserID, f.MemberID, "Mistake")
 	if err != nil {
 		t.Fatalf("reverse: %v", err)
 	}
-	if rev.Amount != 5 || rev.Balance != 20 {
-		t.Fatalf("reversal amount = %d, balance = %d; want 5 and 20", rev.Amount, rev.Balance)
+	if rev.Amount != 5 || rev.Balance != 23 {
+		t.Fatalf("reversal amount = %d, balance = %d; want 5 and 23", rev.Amount, rev.Balance)
 	}
 
 	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen.EntryID, f.ParentUserID, f.MemberID, "Again"); err != ErrAlreadyReversed {
 		t.Fatalf("second reverse err = %v, want ErrAlreadyReversed", err)
 	}
-	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, bonus.EntryID, f.ParentUserID, f.MemberID, "Bonus"); err != ErrNotPenalty {
-		t.Fatalf("reverse bonus err = %v, want ErrNotPenalty", err)
+	if rev, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, adj, f.ParentUserID, f.MemberID, "Adjust"); err != nil {
+		t.Fatalf("reverse adjustment: %v", err)
+	} else if rev.Amount != -3 || rev.Balance != 20 {
+		t.Fatalf("adjustment reversal amount = %d, balance = %d; want -3 and 20", rev.Amount, rev.Balance)
 	}
 	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, "missing", f.ParentUserID, f.MemberID, "Missing"); err != ErrEntryNotFound {
 		t.Fatalf("reverse missing err = %v, want ErrEntryNotFound", err)
@@ -166,6 +169,128 @@ func TestReversePenaltyOnceAndOnlyPenalties(t *testing.T) {
 		t.Fatalf("balance = %d, want 20", got)
 	}
 }
+
+func TestReverseBonusTakesPointsBackOnce(t *testing.T) {
+	conn, f := penaltyDB(t)
+	bonus := grant(t, conn, f, 20, "g1")
+	ctx := context.Background()
+
+	rev, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, bonus.EntryID, f.ParentUserID, f.MemberID, "Removed")
+	if err != nil {
+		t.Fatalf("reverse bonus: %v", err)
+	}
+	if rev.Amount != -20 || rev.Balance != 0 {
+		t.Fatalf("reversal amount = %d, balance = %d; want -20 and 0", rev.Amount, rev.Balance)
+	}
+	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, bonus.EntryID, f.ParentUserID, f.MemberID, "Again"); err != ErrAlreadyReversed {
+		t.Fatalf("second reverse err = %v, want ErrAlreadyReversed", err)
+	}
+	if got := memberBalance(t, conn, f); got != 0 {
+		t.Fatalf("ledger balance = %d, want 0", got)
+	}
+}
+
+func TestReverseBonusRefusedWhenBalanceWouldGoNegative(t *testing.T) {
+	conn, f := penaltyDB(t)
+	ctx := context.Background()
+	first := grant(t, conn, f, 20, "g1")
+	grant(t, conn, f, 10, "g2")
+	if _, err := PostManual(ctx, conn, testNow, manualChange(f, Penalty, 25, "p1")); err != nil {
+		t.Fatalf("penalty: %v", err)
+	}
+	// 30 granted, 25 taken: the balance is 5, so removing the 20 bonus would leave -15.
+	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, first.EntryID, f.ParentUserID, f.MemberID, "Removed"); err != ErrInsufficientBalance {
+		t.Fatalf("reverse err = %v, want ErrInsufficientBalance", err)
+	}
+	if got := memberBalance(t, conn, f); got != 5 {
+		t.Fatalf("balance = %d, want 5 after the refused removal", got)
+	}
+
+	setAllowNegative(t, conn, f, "true")
+	rev, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, first.EntryID, f.ParentUserID, f.MemberID, "Removed")
+	if err != nil {
+		t.Fatalf("reverse with negative allowed: %v", err)
+	}
+	if rev.Balance != -15 {
+		t.Fatalf("balance = %d, want -15", rev.Balance)
+	}
+}
+
+func TestDeleteEntryRemovesEntryAndItsReversal(t *testing.T) {
+	conn, f := penaltyDB(t)
+	ctx := context.Background()
+	grant(t, conn, f, 20, "g1")
+	pen, err := PostManual(ctx, conn, testNow, manualChange(f, Penalty, 5, "p1"))
+	if err != nil {
+		t.Fatalf("penalty: %v", err)
+	}
+	rev, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen.EntryID, f.ParentUserID, f.MemberID, "Mistake")
+	if err != nil {
+		t.Fatalf("reverse: %v", err)
+	}
+
+	// Deleting the penalty takes its reversal with it: two rows go, the balance stays 20.
+	del, err := DeleteEntry(ctx, conn, f.FamilyID, pen.EntryID, f.ParentUserID)
+	if err != nil {
+		t.Fatalf("delete penalty: %v", err)
+	}
+	if del.Removed != 2 || del.Balance != 20 {
+		t.Fatalf("removed = %d, balance = %d; want 2 and 20", del.Removed, del.Balance)
+	}
+	var left int
+	if err := conn.QueryRow(`SELECT COUNT(*) FROM points_ledger WHERE id IN (?, ?)`, pen.EntryID, rev.EntryID).Scan(&left); err != nil {
+		t.Fatalf("count rows: %v", err)
+	}
+	if left != 0 {
+		t.Fatalf("rows left after delete = %d, want 0", left)
+	}
+	if _, err := DeleteEntry(ctx, conn, f.FamilyID, pen.EntryID, f.ParentUserID); err != ErrEntryNotFound {
+		t.Fatalf("second delete err = %v, want ErrEntryNotFound", err)
+	}
+
+	// Deleting a reversal alone brings the penalty back as not reversed.
+	pen2, err := PostManual(ctx, conn, testNow, manualChange(f, Penalty, 4, "p2"))
+	if err != nil {
+		t.Fatalf("penalty 2: %v", err)
+	}
+	rev2, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen2.EntryID, f.ParentUserID, f.MemberID, "Oops")
+	if err != nil {
+		t.Fatalf("reverse 2: %v", err)
+	}
+	if _, err := DeleteEntry(ctx, conn, f.FamilyID, rev2.EntryID, f.ParentUserID); err != nil {
+		t.Fatalf("delete reversal: %v", err)
+	}
+	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen2.EntryID, f.ParentUserID, f.MemberID, "Again"); err != nil {
+		t.Fatalf("reverse after deleting reversal: %v", err)
+	}
+}
+
+// postAdjustment posts a manual correction and returns its ledger ID.
+func postAdjustment(t *testing.T, conn *sql.DB, f testhelper.Family, amount int, key string) string {
+	t.Helper()
+	tx, err := conn.Begin()
+	if err != nil {
+		t.Fatalf("begin: %v", err)
+	}
+	defer tx.Rollback()
+	posted, err := Post(context.Background(), tx, testNow, Entry{
+		FamilyID:       f.FamilyID,
+		MemberID:       f.MemberID,
+		Type:           Adjustment,
+		Amount:         amount,
+		Reason:         "Correction",
+		ActorMemberID:  f.MemberID,
+		IdempotencyKey: key,
+	})
+	if err != nil {
+		t.Fatalf("adjustment: %v", err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatalf("commit: %v", err)
+	}
+	return posted.ID
+}
+
 
 // penaltyDefinition inserts a daily task due at 08:00 UTC with a 120-minute grace, a 3-point
 // penalty, and the family's parent as the assignee. The occurrence is missed at 10:00 UTC.

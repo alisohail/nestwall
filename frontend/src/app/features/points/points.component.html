@@ -162,6 +162,12 @@
                         (click)="askReverse(entry)"
                       >{{ 'points.reverse.action' | transloco }}</button>
                     }
+                    <button
+                      type="button"
+                      class="btn ghost sm delete"
+                      [attr.aria-label]="('points.delete.action' | transloco) + ': ' + (entry.reason || '')"
+                      (click)="askDelete(entry)"
+                    >{{ 'points.delete.action' | transloco }}</button>
                   </td>
                 }
               </tr>
@@ -362,6 +368,30 @@
         </button>
         <button type="button" class="btn primary" data-testid="reverse-confirm" (click)="confirmReverse()" [disabled]="reverseBusy()">
           {{ 'points.reverse.confirm' | transloco }}
+        </button>
+      </div>
+    </section>
+    </div>
+  }
+
+  @if (deleteTarget(); as target) {
+    <div class="modal-bg" role="presentation" (click)="$event.target === $event.currentTarget ? closeDelete() : null">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" data-testid="delete-form">
+      <h2 id="delete-title">{{ 'points.delete.title' | transloco }}</h2>
+      <p class="muted">{{ 'points.delete.body' | transloco }}</p>
+      <p class="bold">{{ target.reason || target.reward_name || '' }} ({{ amountText(target) }})</p>
+
+      @if (deleteError(); as de) {
+        <p class="hint err" role="alert" data-testid="delete-error">{{ de | transloco }}</p>
+      }
+
+      <div class="modal-foot">
+        <span class="grow"></span>
+        <button type="button" class="btn ghost" (click)="closeDelete()" [disabled]="deleteBusy()">
+          {{ 'points.cancel' | transloco }}
+        </button>
+        <button type="button" class="btn primary" data-testid="delete-confirm" (click)="confirmDelete()" [disabled]="deleteBusy()">
+          {{ 'points.delete.confirm' | transloco }}
         </button>
       </div>
     </section>

@@ -95,8 +95,9 @@ func (h *Handlers) RemovePerson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// The last person on the task archives it, as the Tasks list does. Nothing is deleted.
-	if len(members) == 1 {
+	// The last person on a one-off task, or on a whole series, archives the task as the Tasks list
+	// does. For a repeating task, "occurrence" only removes that day, so the series carries on.
+	if len(members) == 1 && (!current.Repeats || req.Scope == removeScopeSeries) {
 		if err := archiveDefinition(ctx, tx, familyID, userID, current); errors.Is(err, errVersionChanged) {
 			web.RespondError(w, http.StatusPreconditionFailed, "version_conflict", "The task changed since you loaded it", nil)
 			return
@@ -174,10 +175,19 @@ func (h *Handlers) RemovePerson(w http.ResponseWriter, r *http.Request) {
 }
 
 // respondReloadedTask reloads the task inside the transaction, commits it and writes the task
-// with its new ETag.
+// with its new ETag. When the task has no copy left, such as one day of a repeat with nobody on
+// it, there is nothing to show, so it commits and answers 204 No Content.
 func (h *Handlers) respondReloadedTask(w http.ResponseWriter, r *http.Request, tx *sql.Tx, familyID, id string) {
 	ctx := r.Context()
 	updated, err := loadTask(ctx, tx, familyID, id, "")
+	if errors.Is(err, sql.ErrNoRows) {
+		if err := tx.Commit(); err != nil {
+			h.internalError(w, "commit remove person", err)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
 	if err != nil {
 		h.internalError(w, "reload task after remove person", err)
 		return

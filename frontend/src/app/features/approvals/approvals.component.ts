@@ -15,7 +15,7 @@ import { BonusClaim, BonusTask } from '../bonus/bonus.models';
 import { TimeFormatService } from '../../core/time-format/time-format.service';
 import { BonusService } from '../bonus/bonus.service';
 import { FamilyService, MemberDetail } from '../family/family.service';
-import { RedemptionListItem } from '../rewards/rewards.models';
+import { ApprovalHistoryItem, RedemptionListItem } from '../rewards/rewards.models';
 import { RewardsService } from '../rewards/rewards.service';
 import { TaskListItem } from '../tasks/tasks.models';
 import { TasksService } from '../tasks/tasks.service';
@@ -104,7 +104,7 @@ export class ApprovalsComponent {
   readonly requests = signal<RedemptionListItem[]>([]);
   readonly requestsState = signal<LoadState>('loading');
 
-  readonly history = signal<RedemptionListItem[]>([]);
+  readonly history = signal<ApprovalHistoryItem[]>([]);
   readonly historyState = signal<LoadState>('loading');
   readonly historyCursor = signal<string | null>(null);
   readonly historyMoreBusy = signal(false);
@@ -243,7 +243,7 @@ export class ApprovalsComponent {
       });
   }
 
-  /** Loads the decided reward requests. reset starts again from the newest; otherwise the next page is appended. */
+  /** Loads the decided task completions, bonus claims and reward requests. reset starts again from the newest; otherwise the next page is appended. */
   loadHistory(reset: boolean): void {
     if (reset) {
       if (this.historyState() !== 'ready') this.historyState.set('loading');
@@ -252,8 +252,7 @@ export class ApprovalsComponent {
     }
     const cursor = reset ? undefined : (this.historyCursor() ?? undefined);
     this.rewardsApi
-      .redemptionPage({
-        status: 'approved,rejected',
+      .approvalHistory({
         limit: HISTORY_PAGE,
         cursor,
         member_id: this.memberFilter() || undefined,
@@ -261,7 +260,7 @@ export class ApprovalsComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (page) => {
-          this.history.set(reset ? page.redemptions : [...this.history(), ...page.redemptions]);
+          this.history.set(reset ? page.items : [...this.history(), ...page.items]);
           this.historyCursor.set(page.next_cursor);
           this.historyState.set('ready');
           this.historyMoreBusy.set(false);

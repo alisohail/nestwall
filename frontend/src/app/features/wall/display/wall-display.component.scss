@@ -342,10 +342,34 @@
 }
 
 .nm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em 0.5em;
   font-size: 1.6em;
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.01em;
+}
+
+.kid-pts {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.15em 0.6em;
+  border-radius: 9em;
+  font-size: 0.6em;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: white;
+  background: var(--c);
+  box-shadow: inset 0 0 0 0.12em color-mix(in srgb, white 35%, transparent);
+  white-space: nowrap;
+}
+
+.kid-pts i {
+  font-style: normal;
+  font-size: 0.9em;
 }
 
 .cnt {

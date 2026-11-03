@@ -106,37 +106,6 @@
       }
     }
 
-    @if (actionError(); as key) {
-      <app-banner tone="error">{{ key | transloco }}</app-banner>
-    }
-
-    @if (canSkip() && auth.can('tasks.manage')) {
-      <div class="row mt">
-        <button
-          type="button"
-          class="btn ghost grow"
-          data-testid="task-skip"
-          [disabled]="busy()"
-          (click)="confirmSkip.set(true)"
-        >
-          {{ 'tasks.detail.skip' | transloco }}
-        </button>
-      </div>
-    }
-
-    @if (canMarkMissed() && auth.can('tasks.manage')) {
-      <div class="row mt">
-        <button
-          type="button"
-          class="btn ghost grow"
-          data-testid="task-mark-missed"
-          [disabled]="busy()"
-          (click)="confirmMissed.set(true)"
-        >
-          {{ 'tasks.detail.mark_missed' | transloco }}
-        </button>
-      </div>
-    }
   } @else if (loadState() === 'error') {
     <app-load-error [error]="loadError()" (retry)="reload()" />
   } @else {
@@ -145,24 +114,3 @@
 </section>
 </div>
 
-@if (confirmSkip()) {
-  <app-task-confirm
-    [heading]="'tasks.skip.heading' | transloco"
-    [message]="'tasks.skip.message' | transloco"
-    [confirmLabel]="'tasks.skip.confirm' | transloco"
-    [busy]="busy()"
-    (confirmed)="skipToday()"
-    (cancelled)="confirmSkip.set(false)"
-  />
-}
-
-@if (confirmMissed()) {
-  <app-task-confirm
-    [heading]="'tasks.mark_missed.heading' | transloco"
-    [message]="'tasks.mark_missed.message' | transloco"
-    [confirmLabel]="'tasks.mark_missed.confirm' | transloco"
-    [busy]="busy()"
-    (confirmed)="markMissed()"
-    (cancelled)="confirmMissed.set(false)"
-  />
-}

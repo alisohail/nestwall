@@ -366,12 +366,17 @@
               @for (item of history(); track item.id) {
                 <tr [attr.data-testid]="'history-' + item.id">
                   <td [attr.data-label]="'approvals.history.item' | transloco">
-                    <span aria-hidden="true">{{ item.reward_icon }}</span> {{ item.reward_name }}
+                    <span aria-hidden="true">{{ item.icon }}</span> {{ item.title }}
+                    <span class="muted">· {{ 'approvals.history.kind.' + item.kind | transloco }}</span>
                   </td>
                   <td [attr.data-label]="'approvals.history.who' | transloco">{{ item.member_name }}</td>
                   <td [attr.data-label]="'approvals.history.decision' | transloco">
                     @if (item.status === 'approved') {
-                      <span class="badge ok">{{ 'approvals.history.approved' | transloco: { cost: item.cost } }}</span>
+                      @if (item.kind === 'task') {
+                        <span class="badge ok">{{ 'approvals.history.approvedPlain' | transloco }}</span>
+                      } @else {
+                        <span class="badge ok">{{ 'approvals.history.approved' | transloco: { cost: item.cost } }}</span>
+                      }
                     } @else {
                       <span class="badge err">{{ 'approvals.history.declined' | transloco }}</span>
                     }

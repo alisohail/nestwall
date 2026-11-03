@@ -3,21 +3,19 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AvatarComponent } from '../../../shared/avatar/avatar.component';
-import { BannerComponent } from '../../../shared/ui/banner/banner.component';
 import { LoadErrorComponent } from '../../../shared/ui/load-error/load-error.component';
 import { LoadingComponent } from '../../../shared/ui/loading/loading.component';
 import { ApiError } from '../../../core/api/api-client.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MemberDetail } from '../../family/family.service';
-import { TaskConfirmComponent } from '../task-confirm/task-confirm.component';
-import { dayWord, formatDay, formatTime, penaltyPoints, remaining, taskErrorKey, todayIso } from '../tasks.format';
+import { dayWord, formatDay, formatTime, penaltyPoints, remaining, todayIso } from '../tasks.format';
 import { Task, TaskCategory, TaskStatus } from '../tasks.models';
 import { TasksService } from '../tasks.service';
 
-/** Popup for one person's copy of a task. Shows the task, its checklist, and the skip action. */
+/** Popup for one person's copy of a task. Shows the task and its checklist. */
 @Component({
     selector: 'app-task-detail',
-    imports: [TranslocoModule, AvatarComponent, BannerComponent, LoadErrorComponent, LoadingComponent, TaskConfirmComponent],
+    imports: [TranslocoModule, AvatarComponent, LoadErrorComponent, LoadingComponent],
     templateUrl: './task-detail.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-detail.component.scss'
@@ -31,16 +29,11 @@ export class TaskDetailComponent {
   members = input<MemberDetail[]>([]);
   categories = input<TaskCategory[]>([]);
 
-  changed = output<void>();
   closed = output<void>();
 
   task = signal<Task | null>(null);
   loadState = signal<'loading' | 'ready' | 'error'>('loading');
   loadError = signal<ApiError | null>(null);
-  actionError = signal<string | null>(null);
-  confirmSkip = signal(false);
-  confirmMissed = signal(false);
-  busy = signal(false);
 
   private refresh = signal(0);
 
@@ -55,11 +48,6 @@ export class TaskDetailComponent {
     return task.assignees.find((a) => a.member_id === this.memberId())?.status ?? null;
   });
   canSkip = computed(() => this.copyStatus() === 'to_do' && !this.task()?.archived);
-  canMarkMissed = computed(() => {
-    const task = this.task();
-    if (!task || task.archived) return false;
-    return task.assignees.some((a) => a.status === 'to_do' || a.status === 'rejected');
-  });
   today = todayIso(new Date(), this.auth.currentUser()?.family?.timezone);
 
   constructor() {
@@ -69,7 +57,6 @@ export class TaskDetailComponent {
           this.loadState.set('loading');
           this.loadError.set(null);
           this.task.set(null);
-          this.actionError.set(null);
         }),
         switchMap(({ id, member }) =>
           this.service.get(id, member).pipe(
@@ -92,59 +79,11 @@ export class TaskDetailComponent {
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
-    if (this.confirmSkip()) {
-      this.confirmSkip.set(false);
-      return;
-    }
-    if (this.confirmMissed()) {
-      this.confirmMissed.set(false);
-      return;
-    }
     this.closed.emit();
   }
 
   reload(): void {
     this.refresh.update((n) => n + 1);
-  }
-
-  markMissed(): void {
-    const task = this.task();
-    if (!task || this.busy()) return;
-    this.busy.set(true);
-    this.actionError.set(null);
-    this.service.markMissed(task.id, task.version).subscribe({
-      next: () => {
-        this.busy.set(false);
-        this.confirmMissed.set(false);
-        this.changed.emit();
-        this.reload();
-      },
-      error: (err) => {
-        this.busy.set(false);
-        this.confirmMissed.set(false);
-        this.actionError.set(taskErrorKey(err));
-      },
-    });
-  }
-
-  skipToday(): void {
-    const task = this.task();
-    if (!task || this.busy()) return;
-    this.busy.set(true);
-    this.actionError.set(null);
-    this.service.skip(task.id, this.memberId(), task.version).subscribe({
-      next: () => {
-        this.busy.set(false);
-        this.confirmSkip.set(false);
-        this.changed.emit();
-        this.reload();
-      },
-      error: (err) => {
-        this.busy.set(false);
-        this.confirmSkip.set(false);
-        this.actionError.set(taskErrorKey(err));
-      },
-    });
   }
 
   dayWord(task: Task): string | null {

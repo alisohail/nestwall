@@ -173,6 +173,40 @@ func TestRemovePersonSeriesKeepsPastAndDropsUpcomingCopies(t *testing.T) {
 	}
 }
 
+func TestRemovePersonOneDayOfSoloRepeatKeepsSeries(t *testing.T) {
+	f := newFixture(t)
+	rep := createRepeat(t, f, f.parent, "Walk dog", "2026-10-10", f.parent.memberID)
+	target := occurrenceOn(t, f, rep.DefinitionID, "2026-10-11")
+
+	rec := f.do(t, f.parent, http.MethodPost, removePath(target),
+		removeBody(f.parent.memberID, "occurrence"), ifMatch(rep.FirstTask.Version))
+	// The day has nobody left on it, so there is no copy to return.
+	expectStatus(t, rec, http.StatusNoContent)
+
+	if n := countAudit(t, f, "task.archived", rep.FirstTask.ID); n != 0 {
+		t.Fatalf("audit task.archived rows = %d, want 0", n)
+	}
+	if !definitionHasAssignee(t, f, rep.DefinitionID, f.parent.memberID) {
+		t.Fatal("removing one day took the only person off the series")
+	}
+	want := []string{"2026-10-10", "2026-10-12", "2026-10-13", "2026-10-14"}
+	if got := copyDates(t, f, rep.DefinitionID, f.parent.memberID); !slices.Equal(got, want) {
+		t.Fatalf("copies = %v, want %v", got, want)
+	}
+}
+
+func TestRemovePersonSeriesOfSoloRepeatArchivesTask(t *testing.T) {
+	f := newFixture(t)
+	rep := createRepeat(t, f, f.parent, "Walk dog", "2026-10-10", f.parent.memberID)
+
+	rec := f.do(t, f.parent, http.MethodPost, removePath(rep.FirstTask.ID),
+		removeBody(f.parent.memberID, "series"), ifMatch(rep.FirstTask.Version))
+	expectStatus(t, rec, http.StatusOK)
+	if got := decodeTask(t, rec.Body.Bytes()); !got.Archived {
+		t.Fatal("removing the only person from the series did not archive it")
+	}
+}
+
 func TestRemovePersonOneDayKeepsSeries(t *testing.T) {
 	f := newFixture(t)
 	child := addChildMember(t, f, f.a.FamilyID)

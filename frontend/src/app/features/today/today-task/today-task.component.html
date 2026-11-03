@@ -19,7 +19,12 @@
       @if (item().past_due) {
         {{ 'myTasks.meta.past_due' | transloco: { time: clock() } }}
       } @else {
-        {{ 'myTasks.part.' + part() | transloco }} &middot; {{ 'myTasks.meta.due' | transloco: { time: clock() } }}
+        {{ 'myTasks.part.' + part() | transloco }} &middot;
+        @if (item().start_at) {
+          {{ 'myTasks.meta.starts' | transloco: { time: startClock() } }}
+        } @else {
+          {{ 'myTasks.meta.due' | transloco: { time: clock() } }}
+        }
       }
     </div>
   </div>

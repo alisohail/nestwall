@@ -16,6 +16,7 @@ export interface WallSummaryTask {
   occurrence_id: string;
   title: string;
   due_at: string;
+  start_at?: string | null;
   state: WallTaskState;
   completed_at?: string;
 }

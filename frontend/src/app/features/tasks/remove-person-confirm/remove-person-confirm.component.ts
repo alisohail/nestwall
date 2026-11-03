@@ -43,8 +43,12 @@ export class RemovePersonConfirmComponent implements OnInit {
   readonly pickedName = computed(
     () => this.people().find((p) => p.id === this.picked())?.display_name ?? '',
   );
-  /** Only one person is on this day's copy, so removing them archives the task. */
-  readonly lastPerson = computed(() => (this.task()?.assignees.length ?? 0) <= 1);
+  /** Removing the only person archives the task for a one-off task or a whole series, not for one day of a repeat. */
+  readonly lastPerson = computed(
+    () =>
+      (this.task()?.assignees.length ?? 0) <= 1 &&
+      (!this.task()?.repeats || this.scope() === 'series'),
+  );
 
   readonly message = computed(() => {
     if (this.lastPerson()) return { key: 'tasks.remove.message_last', params: {} };

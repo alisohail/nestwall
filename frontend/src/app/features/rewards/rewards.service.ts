@@ -2,10 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient } from '../../core/api/api-client.service';
 import {
+  ApprovalHistoryPage,
+  ApprovalHistoryQuery,
   ManualPointsRequest,
   MemberBalancesResponse,
   MyPointsResponse,
   PointsChangeResult,
+  PointsDeleteResult,
   PointsEntryPage,
   PointsEntryQuery,
   RedeemResult,
@@ -59,6 +62,15 @@ export class RewardsService {
     if (query.cursor) params.set('cursor', query.cursor);
     params.set('limit', String(query.limit ?? 20));
     return this.api.get<RedemptionPage>(`/api/v1/redemptions?${params.toString()}`);
+  }
+
+  /** Decided task completions, bonus claims and reward requests, newest first. Parents only. */
+  approvalHistory(query: ApprovalHistoryQuery): Observable<ApprovalHistoryPage> {
+    const params = new URLSearchParams();
+    if (query.member_id) params.set('member_id', query.member_id);
+    if (query.cursor) params.set('cursor', query.cursor);
+    params.set('limit', String(query.limit ?? 50));
+    return this.api.get<ApprovalHistoryPage>(`/api/v1/approvals/history?${params.toString()}`);
   }
 
   /** Approves a pending request. version is the request version the approval is based on. */
@@ -124,5 +136,10 @@ export class RewardsService {
   /** Undoes a penalty once, with a reason. */
   reversePenalty(entryId: string, reason: string): Observable<PointsChangeResult> {
     return this.api.post<PointsChangeResult>(`/api/v1/points/entries/${entryId}/reverse`, { reason });
+  }
+
+  /** Hard-deletes a points entry and any reversal of it. Only the points ledger changes. */
+  deletePointsEntry(entryId: string): Observable<PointsDeleteResult> {
+    return this.api.delete<PointsDeleteResult>(`/api/v1/points/entries/${entryId}`);
   }
 }

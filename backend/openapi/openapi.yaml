@@ -2251,7 +2251,7 @@ paths:
     post:
       tags: [Tasks]
       summary: Take one person off a task
-      description: Requires the `tasks.manage` permission. Removes only the named person; everyone else keeps the task. `scope` `occurrence` removes them from this day only. `scope` `series` (repeating tasks only) also stops new repeats for them and deletes all their copies from today on, in the definition's time zone, whatever their status; their copies before today are kept. Points already earned stay in the ledger. For a one-off task, removing the last person archives the task. Removing the last person from a repeating task archives the whole series. Send `If-Match` with the current version to avoid overwriting a newer change.
+      description: Requires the `tasks.manage` permission. Removes only the named person; everyone else keeps the task. `scope` `occurrence` removes them from this day only, and a repeating task keeps its other days even when that person was its last one. `scope` `series` (repeating tasks only) also stops new repeats for them and deletes all their copies from today on, in the definition's time zone, whatever their status; their copies before today are kept. Points already earned stay in the ledger. Removing the last person from a one-off task archives it. Removing the last person with scope `series` archives the whole series. Send `If-Match` with the current version to avoid overwriting a newer change.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -2275,7 +2275,7 @@ paths:
                   enum: [occurrence, series]
       responses:
         '200':
-          description: Updated task, with its new ETag (or archived, when the last person was removed)
+          description: Updated task, with its new ETag (or archived, when the last person was removed from a one-off task or a whole series)
           headers:
             ETag:
               description: The new task version, quoted.
@@ -2285,14 +2285,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
-        '400':
-          $ref: '#/components/responses/ValidationFailed'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          description: The task, the person on it, or (for scope occurrence) the person's copy of this day was not found.
+        '204':
+          description: Removed one day of a repeating task that has nobody left on it, so there is no copy to return.
+
           content:
             application/json:
               schema:
@@ -2619,7 +2614,7 @@ paths:
     post:
       tags: [Tasks]
       summary: Add a checklist item
-      description: Requires the `tasks.manage` permission. Appends an item to a one-off task's checklist. The step text is shared by everyone on the task, so it changes only while every assignee is `to_do` or `rejected`; otherwise the response is 409 checklist_locked (params.status). A missed or archived task returns 409. Send `If-Match` with the current version to avoid overwriting a newer change.
+      description: Requires the `tasks.manage` permission. Appends an item to a one-off task's checklist. The step text is shared by everyone on the task and can change at any time. A missed or archived task returns 409. Send `If-Match` with the current version to avoid overwriting a newer change.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -2657,7 +2652,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:
@@ -2683,7 +2678,7 @@ paths:
     put:
       tags: [Tasks]
       summary: Tick or untick a checklist item
-      description: Requires the `tasks.complete` permission. Sets one checklist item on a one-off task to done or not done for one person. The step text is shared by everyone assigned to the task, but the done state is kept per copy, so a tick changes only the copy it names. The copy checked is the signed-in member's own, or the copy named by `member_id` in the body; naming another member requires `tasks.manage` (403 forbidden otherwise). The checked copy must be `to_do` or `rejected`; otherwise the response is 409 checklist_locked (params.status). A missed occurrence returns 409 task_missed. Send `If-Match` with the current version to avoid overwriting a newer change.
+      description: Requires the `tasks.complete` permission. Sets one checklist item on a one-off task to done or not done for one person. The step text is shared by everyone assigned to the task, but the done state is kept per copy, so a tick changes only the copy it names. The copy checked is the signed-in member's own, or the copy named by `member_id` in the body; naming another member requires `tasks.manage` (403 forbidden otherwise). A missed occurrence returns 409 task_missed. Send `If-Match` with the current version to avoid overwriting a newer change.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -2721,7 +2716,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked for the caller (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:
@@ -2769,7 +2764,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:
@@ -2809,7 +2804,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: The checklist is locked (checklist_locked, params.status), the time to complete has passed (task_missed), or the task is archived (task_archived).
+          description: The time to complete has passed (task_missed), or the task is archived (task_archived).
           content:
             application/json:
               schema:
@@ -3917,8 +3912,8 @@ paths:
   /api/v1/points/entries/{id}/reverse:
     post:
       tags: [Points]
-      summary: Reverse a penalty with a compensating entry
-      description: Requires the `rewards.manage` permission. Each penalty can be reversed once. The reversal is a positive entry that refers to the penalty. Returns 409 `not_a_penalty` for other entry types and 409 `already_reversed` on a second attempt.
+      summary: Reverse a penalty, a manual bonus, an adjustment or a task award with a compensating entry
+      description: Requires the `rewards.manage` permission. Each penalty, manual bonus, adjustment, task award or bonus task award can be reversed once. The reversal refers to the entry. Reversing a penalty or a negative adjustment adds points back. Reversing a bonus, a positive adjustment or a task award takes points away, and returns 409 `insufficient_balance` when that would leave a negative balance and the family does not allow negative balances. Returns 409 `not_reversible` for other entry types and 409 `already_reversed` on a second attempt. A removed bonus or task award is also left out of the week's earned points for the week it was given.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -3927,7 +3922,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: Ledger entry ID of the penalty.
+          description: Ledger entry ID of the penalty, manual bonus or adjustment.
           schema:
             type: string
       requestBody:
@@ -3953,12 +3948,49 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+  /api/v1/points/entries/{id}:
+    delete:
+      tags: [Points]
+      summary: Hard delete a points entry and any reversal of it
+      description: Requires the `rewards.manage` permission. Removes the ledger entry and its reversal, if one exists, from the history and the balance. Only points change; the task, bonus or reward is not touched. Use it for an entry made by mistake. The action is audited as `points.entry_deleted`.
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/CSRFHeader'
+        - name: id
+          in: path
+          required: true
+          description: Ledger entry ID to delete.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Entry deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [removed, balance]
+                properties:
+                  removed:
+                    type: integer
+                    description: Number of ledger rows removed, the entry and its reversal if any.
+                  balance:
+                    type: integer
+                    description: Member balance after the delete.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /api/v1/me/points:
     get:
       tags: [Points]
       summary: Points for the signed-in member
       description: |
-        Requires the `rewards.view` permission. Always describes the caller, child or parent. `balance` is the spendable total after points held by pending requests; `reserved` is the points those requests hold. `week` holds points earned per local day in the family time zone, Monday first, and `today` is the index of the current day in `week`. Earned types are task awards, bonus task awards, bonuses and transfers in.
+        Requires the `rewards.view` permission. Always describes the caller, child or parent. `balance` is the spendable total after points held by pending requests; `reserved` is the points those requests hold. `week` holds points earned per local day in the family time zone, Monday first, and `today` is the index of the current day in `week`. Earned types are task awards, bonus task awards, bonuses and transfers in. `bonus` counts bonus tasks completed per day; manual bonus points from a parent are not counted there.
       security:
         - sessionCookie: []
       responses:
@@ -4327,6 +4359,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RedemptionPage'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/v1/approvals/history:
+    get:
+      tags: [Rewards]
+      summary: List decided approvals
+      description: |
+        Requires the `rewards.approve` permission. Lists approved and rejected task completions, bonus claims and reward requests for the family, newest decision first, paged by keyset. Parents only; a child gets 403.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: member_id
+          in: query
+          required: false
+          description: Limits the list to one member.
+          schema:
+            type: string
+            format: uuid
+        - name: limit
+          in: query
+          required: false
+          description: Page size, 1 to 200. Default 50.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          required: false
+          description: The `next_cursor` value of the previous page.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: One page of decided approvals
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalHistoryPage'
         '400':
           $ref: '#/components/responses/ValidationFailed'
         '401':
@@ -5461,7 +5537,54 @@ components:
           type: string
           nullable: true
           description: Pass as `cursor` to get the next page. Null on the last page.
-    RewardList:
+    ApprovalHistoryPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovalHistoryItem'
+        next_cursor:
+          type: string
+          nullable: true
+          description: Pass as `cursor` to get the next page. Null on the last page.
+    ApprovalHistoryItem:
+      type: object
+      description: One decided task completion, bonus claim or reward request. `id` is `task:<assignee id>`, `bonus:<claim id>` or `reward:<redemption id>`.
+      required: [id, kind, title, icon, member_id, member_name, status, cost, decided_at]
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum: [task, bonus, reward]
+        title:
+          type: string
+        icon:
+          type: string
+        member_id:
+          type: string
+          format: uuid
+        member_name:
+          type: string
+        status:
+          type: string
+          enum: [approved, rejected]
+        cost:
+          type: integer
+          description: Points paid for a reward or bonus. Zero for tasks, whose points are set when they are approved.
+        decided_at:
+          type: string
+          format: date-time
+        decided_by_member_id:
+          type: string
+          format: uuid
+          nullable: true
+        decision_reason:
+          type: string
+          nullable: true
+
       type: object
       required: [rewards]
       properties:
@@ -7591,6 +7714,11 @@ components:
         due_at:
           type: string
           format: date-time
+        start_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: UTC instant the task starts, from the task's start time on the due date. Null when the task has no start time.
         expires_at:
           type: string
           format: date-time

@@ -28,10 +28,12 @@ var (
 	ErrMemberNotFound = errors.New("rewards: member not found")
 	// ErrEntryNotFound means the ledger entry is not in the caller's family.
 	ErrEntryNotFound = errors.New("rewards: ledger entry not found")
-	// ErrNotPenalty means the entry to reverse is not a penalty.
-	ErrNotPenalty = errors.New("rewards: entry is not a penalty")
+	// ErrNotReversible means the entry is not a penalty, bonus or adjustment, the only kinds that can be undone.
+	ErrNotReversible = errors.New("rewards: entry cannot be reversed")
 	// ErrAlreadyReversed means the penalty was already reversed.
 	ErrAlreadyReversed = errors.New("rewards: penalty already reversed")
+	// ErrInsufficientBalance means undoing a bonus would take the balance below zero, which the family does not allow.
+	ErrInsufficientBalance = errors.New("rewards: balance too low to remove these points")
 )
 
 // allowNegativeBalance reports whether the family lets penalties take the balance below zero.
@@ -406,8 +408,10 @@ func findManual(ctx context.Context, tx *sql.Tx, familyID, key string) (storedMa
 	return s, true, nil
 }
 
-// ReversePenalty posts a compensating entry that undoes a penalty. The reversal is keyed on the
-// penalty row, so a penalty can be reversed once: a second call returns ErrAlreadyReversed.
+// ReversePenalty posts a compensating entry that undoes a penalty, a manual bonus or an adjustment. The reversal is
+// keyed on the entry, so it can be undone once: a second call returns ErrAlreadyReversed. Removing
+// bonus points fails with ErrInsufficientBalance when that would leave a negative balance and the
+// family does not allow negative balances.
 func ReversePenalty(ctx context.Context, db *sql.DB, now time.Time, familyID, entryID, actorUserID, actorMemberID, reason string) (ManualResult, error) {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -427,8 +431,9 @@ func ReversePenalty(ctx context.Context, db *sql.DB, now time.Time, familyID, en
 	if err != nil {
 		return ManualResult{}, fmt.Errorf("find entry: %w", err)
 	}
-	if entryType != string(Penalty) {
-		return ManualResult{}, ErrNotPenalty
+	if entryType != string(Penalty) && entryType != string(Bonus) && entryType != string(Adjustment) &&
+		entryType != string(TaskAward) && entryType != string(BonusTaskAward) {
+		return ManualResult{}, ErrNotReversible
 	}
 
 	posted, err := Post(ctx, tx, now, Entry{
@@ -453,7 +458,26 @@ func ReversePenalty(ctx context.Context, db *sql.DB, now time.Time, familyID, en
 	if err != nil {
 		return ManualResult{}, fmt.Errorf("read balance: %w", err)
 	}
-	if err := audit.Record(ctx, tx, familyID, actorUserID, "points.penalty_reversed", "points_ledger", &entryID,
+	// Taking points back is the only reversal that can lower the balance. The rollback drops the row.
+	if amount > 0 && balance < 0 {
+		allowNegative, err := allowNegativeBalance(ctx, tx, familyID)
+		if err != nil {
+			return ManualResult{}, fmt.Errorf("negative balance setting: %w", err)
+		}
+		if !allowNegative {
+			return ManualResult{}, ErrInsufficientBalance
+		}
+	}
+	action := "points.penalty_reversed"
+	switch entryType {
+	case string(Bonus):
+		action = "points.bonus_reversed"
+	case string(Adjustment):
+		action = "points.adjustment_reversed"
+	case string(TaskAward), string(BonusTaskAward):
+		action = "points.task_reversed"
+	}
+	if err := audit.Record(ctx, tx, familyID, actorUserID, action, "points_ledger", &entryID,
 		map[string]any{"reversal_id": posted.ID, "amount": -amount, "reason": reason}); err != nil {
 		return ManualResult{}, fmt.Errorf("audit: %w", err)
 	}
@@ -461,4 +485,67 @@ func ReversePenalty(ctx context.Context, db *sql.DB, now time.Time, familyID, en
 		return ManualResult{}, fmt.Errorf("commit reversal: %w", err)
 	}
 	return ManualResult{EntryID: posted.ID, Type: Reversal, Amount: -amount, Balance: balance}, nil
+}
+
+// DeleteResult reports a hard delete: how many ledger rows went and the member's balance afterwards.
+type DeleteResult struct {
+	Removed int64
+	Balance int
+}
+
+// DeleteEntry hard-deletes a ledger entry, along with any reversal that undid it, so neither shows in the
+// history or the balance. It only touches points_ledger; the task, bonus or reward the entry came from is
+// left unchanged. Use it to remove an entry made by mistake. ReversePenalty keeps the record instead.
+func DeleteEntry(ctx context.Context, db *sql.DB, familyID, entryID, actorUserID string) (DeleteResult, error) {
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return DeleteResult{}, fmt.Errorf("begin delete: %w", err)
+	}
+	defer tx.Rollback()
+
+	var memberID, entryType string
+	var amount int
+	err = tx.QueryRowContext(ctx,
+		`SELECT family_member_id, entry_type, amount FROM points_ledger WHERE family_id = ? AND id = ?`,
+		familyID, entryID,
+	).Scan(&memberID, &entryType, &amount)
+	if errors.Is(err, sql.ErrNoRows) {
+		return DeleteResult{}, ErrEntryNotFound
+	}
+	if err != nil {
+		return DeleteResult{}, fmt.Errorf("find entry: %w", err)
+	}
+
+	// The purge scope lifts the append-only triggers for this family until the delete ends.
+	// It sits inside the transaction, so a failure rolls it back too.
+	if _, err := tx.ExecContext(ctx, `INSERT INTO ledger_purge_scope (family_id) VALUES (?)`, familyID); err != nil {
+		return DeleteResult{}, fmt.Errorf("open ledger purge scope: %w", err)
+	}
+	res, err := tx.ExecContext(ctx,
+		`DELETE FROM points_ledger WHERE family_id = ? AND (id = ? OR (entry_type = ? AND reference_type = 'points_ledger' AND reference_id = ?))`,
+		familyID, entryID, string(Reversal), entryID,
+	)
+	if err != nil {
+		return DeleteResult{}, fmt.Errorf("delete entry: %w", err)
+	}
+	removed, err := res.RowsAffected()
+	if err != nil {
+		return DeleteResult{}, fmt.Errorf("count deleted entries: %w", err)
+	}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM ledger_purge_scope WHERE family_id = ?`, familyID); err != nil {
+		return DeleteResult{}, fmt.Errorf("close ledger purge scope: %w", err)
+	}
+
+	balance, err := Balance(ctx, tx, familyID, memberID)
+	if err != nil {
+		return DeleteResult{}, fmt.Errorf("read balance: %w", err)
+	}
+	if err := audit.Record(ctx, tx, familyID, actorUserID, "points.entry_deleted", "points_ledger", &entryID,
+		map[string]any{"entry_type": entryType, "amount": amount, "rows_removed": removed}); err != nil {
+		return DeleteResult{}, fmt.Errorf("audit: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return DeleteResult{}, fmt.Errorf("commit delete: %w", err)
+	}
+	return DeleteResult{Removed: removed, Balance: balance}, nil
 }

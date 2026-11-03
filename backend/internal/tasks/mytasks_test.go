@@ -175,6 +175,31 @@ func TestMyTasksSortsCopiesIntoSections(t *testing.T) {
 	}
 }
 
+func TestMyTasksCarriesStartTimeWhenSet(t *testing.T) {
+	f := newFixture(t)
+	child := addChildMember(t, f, f.a.FamilyID)
+
+	started := createTask(t, f, f.parent, oneOffBody("Started", "2026-10-10", child.memberID))
+	setOccurrence(t, f, started.ID, utc(10, 12), nil)
+	execSQL(t, f.db, `UPDATE task_definitions SET start_time = '09:00' WHERE id = ?`, definitionOf(t, f, started.ID))
+
+	plain := createTask(t, f, f.parent, oneOffBody("Plain", "2026-10-10", child.memberID))
+	setOccurrence(t, f, plain.ID, utc(10, 13), nil)
+
+	resp := myTasksGet(t, f, child)
+
+	byID := map[string]MyTaskItem{}
+	for _, item := range resp.Today {
+		byID[item.TaskID] = item
+	}
+	if got := byID[started.ID].StartAt; got == nil || *got != "2026-10-10T09:00:00Z" {
+		t.Fatalf("start_at = %v, want 2026-10-10T09:00:00Z", got)
+	}
+	if got := byID[plain.ID].StartAt; got != nil {
+		t.Fatalf("start_at = %v for a task with no start time, want nil", *got)
+	}
+}
+
 func TestMyTasksDoneCarriesApproverName(t *testing.T) {
 	f := newFixture(t)
 	child := addChildMember(t, f, f.a.FamilyID)

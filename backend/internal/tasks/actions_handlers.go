@@ -449,15 +449,9 @@ func (h *Handlers) TickChecklist(w http.ResponseWriter, r *http.Request) {
 	if !checkIfMatch(w, r, current.Version) {
 		return
 	}
-	own, found := findAssignment(current, targetID)
+	_, found := findAssignment(current, targetID)
 	if !found {
 		notFound(w, "Task not found")
-		return
-	}
-	if own.Status != taskStatusToDo && own.Status != statusRejected {
-		web.RespondError(w, http.StatusConflict, "checklist_locked",
-			"The checklist can only change while the task is to do or rejected",
-			map[string]any{"status": own.Status})
 		return
 	}
 

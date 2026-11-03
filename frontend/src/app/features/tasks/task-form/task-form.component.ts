@@ -122,8 +122,6 @@ export class TaskFormComponent implements UnsavedChangesAware {
     resolve?.(scope);
   }
 
-  checklistLocked = computed(() => (this.task()?.assignees ?? []).some((a) => a.status !== 'to_do' && a.status !== 'rejected'));
-
   form = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(200)]],
     description: ['', Validators.maxLength(2000)],
@@ -299,7 +297,7 @@ export class TaskFormComponent implements UnsavedChangesAware {
   toggleItem(item: ChecklistItem): void {
     const task = this.task();
     const memberId = this.copyMemberId ?? task?.assignees[0]?.member_id;
-    if (!task || !memberId || this.checklistLocked() || this.pendingStep()) return;
+    if (!task || !memberId || this.pendingStep()) return;
     this.pendingStep.set(item.id);
     this.service.tickChecklist(task.id, item.id, !item.done, task.version, memberId).subscribe({
       next: (updated) => {
