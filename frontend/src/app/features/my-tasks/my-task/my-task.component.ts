@@ -12,7 +12,7 @@ import { TimeFormatService } from '../../../core/time-format/time-format.service
 import { ChecklistItem, Task, TaskStatus } from '../../tasks/tasks.models';
 import { TaskConfirmComponent } from '../../tasks/task-confirm/task-confirm.component';
 import { TasksService } from '../../tasks/tasks.service';
-import { formatDay, taskErrorKey, todayIso } from '../../tasks/tasks.format';
+import { formatDay, formatTime, taskErrorKey, todayIso } from '../../tasks/tasks.format';
 import { MyTasksService } from '../my-tasks.service';
 
 /** One task copy for the child: its steps, a tick for each step, and the "I'm done!" button. */
@@ -146,6 +146,9 @@ export class MyTaskComponent {
   dueLabel(iso: string): string {
     return new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ weekday: 'short', hour: 'numeric', minute: '2-digit' })).format(new Date(iso));
   }
+
+  /** Family-local start clock from HH:MM, for the "Starts" chip. */
+  readonly formatTime = formatTime;
 
   /** Ticks or unticks one step. The response is the new task with the new version. */
   toggle(step: ChecklistItem): void {

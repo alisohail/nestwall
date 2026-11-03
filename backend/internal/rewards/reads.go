@@ -27,7 +27,8 @@ var earnedTypes = []EntryType{TaskAward, BonusTaskAward, Bonus, TransferIn}
 // points held by pending requests. Reserved is the sum of those held points. Week counts points
 // earned per local day, Monday first, and Today is the index of the current day in Week. TasksDone
 // counts approved tasks by completion day, TasksMissed counts missed tasks by due day, and Bonus
-// sums bonus points earned per day. All three use the same day indexing as Week.
+// counts bonus tasks completed per day. Manual bonus points are not in Bonus. All four use the same
+// day indexing as Week.
 type MyPointsResponse struct {
 	MemberID    string `json:"member_id"`
 	Balance     int    `json:"balance"`
@@ -106,7 +107,7 @@ func (h *Handlers) MyPoints(w http.ResponseWriter, r *http.Request) {
 		h.internalError(w, "points: week", err)
 		return
 	}
-	bonus, err := h.weekLedger(ctx, familyID, memberID, loc, weekStart, Bonus, BonusTaskAward)
+	bonus, err := h.weekBonusTasks(ctx, familyID, memberID, loc, weekStart)
 	if err != nil {
 		h.internalError(w, "points: bonus", err)
 		return
@@ -232,6 +233,21 @@ func (h *Handlers) weekTasksDone(ctx context.Context, familyID, memberID string,
 		`SELECT CAST(completed_at AS TEXT), 1 FROM task_occurrence_assignees
 		 WHERE family_id = ? AND family_member_id = ? AND status = 'approved' AND completed_at >= ?`,
 		familyID, memberID, dbTime(weekStart.UTC()))
+	if err != nil {
+		return week, err
+	}
+	defer rows.Close()
+	return week, addWeekRows(rows, loc, weekStart, &week)
+}
+
+// weekBonusTasks counts the bonus tasks the member completed for each day. Each bonus task award
+// row is one task. Manual bonus points from a parent are not counted here.
+func (h *Handlers) weekBonusTasks(ctx context.Context, familyID, memberID string, loc *time.Location, weekStart time.Time) ([7]int, error) {
+	var week [7]int
+	rows, err := h.db.QueryContext(ctx,
+		`SELECT CAST(created_at AS TEXT), 1 FROM points_ledger
+		 WHERE family_id = ? AND family_member_id = ? AND created_at >= ? AND entry_type = ?`,
+		familyID, memberID, dbTime(weekStart.UTC()), string(BonusTaskAward))
 	if err != nil {
 		return week, err
 	}

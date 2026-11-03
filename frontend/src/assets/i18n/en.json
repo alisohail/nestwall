@@ -246,6 +246,7 @@
     "meta": {
       "past_due": "Was due {{time}}",
       "due": "Due {{time}}",
+      "starts": "Starts {{time}}",
       "submitted_today": "Submitted today {{time}}",
       "submitted_on": "Submitted {{day}} {{time}}",
       "approved_by": "Approved by {{name}} on {{when}}",
@@ -270,6 +271,7 @@
     "retry": "Try again",
     "points": "{{points}} points",
     "due": "Due {{time}}",
+    "starts": "Starts {{time}}",
     "submitted": "Sent to a parent. They will check it.",
     "approved": "Well done! Points added.",
     "rejected": "A parent asked you to try again. Finish the steps and send it once more.",
@@ -387,7 +389,7 @@
       "count_done": "{{done}} of {{total}} done",
       "count_all_done": "All done today!",
       "count_no_tasks": "No tasks today",
-      "count_points": "{{count}} · {{points}} pts",
+      "kid_points": "{{points}} points",
       "todo_heading": "To do · {{count}}",
       "done_heading": "Done · {{count}}",
       "more_done": "+{{count}} more done",
@@ -1430,11 +1432,11 @@
       }
     },
     "reverse": {
-      "action": "Reverse",
-      "title": "Reverse this penalty?",
-      "body": "The points go back to the child's balance. A penalty can be reversed once.",
+      "action": "Remove",
+      "title": "Remove this entry?",
+      "body": "A correction undoes these points, so the child's balance changes straight away. Each entry can be removed once.",
       "reason": "Reason (required)",
-      "confirm": "Reverse penalty"
+      "confirm": "Remove"
     },
     "empty": {
       "title": "No points yet",
@@ -1452,8 +1454,9 @@
       "conflict": "This change clashes with an earlier one. Close the form and try again.",
       "invalid": "Check the details and try again.",
       "generic": "That did not work. Please try again.",
-      "alreadyReversed": "This penalty was already reversed.",
-      "notPenalty": "Only a penalty can be reversed.",
+      "alreadyReversed": "This entry was already removed.",
+      "notReversible": "Only a penalty or a manual bonus can be removed.",
+      "insufficientBalance": "The child does not have enough points to remove this bonus.",
       "notFound": "That entry could not be found.",
       "balances": "We could not load the balances."
     }

@@ -13,6 +13,8 @@ export interface MyTaskItem {
   part_of_day: PartOfDay | null;
   due_date: string;
   due_at: string;
+  /** When the copy opens. Null when the task has no start time, and the views then show the due time. */
+  start_at?: string | null;
   expires_at: string | null;
   points: number;
   approval_required: boolean;

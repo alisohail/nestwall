@@ -91,8 +91,10 @@ func TestMyPointsTasksAndBonusPerDay(t *testing.T) {
 	seed("2026-10-04", "missed", "to_do", "")                                    // previous week, ignored
 	seed("2026-10-05", "scheduled", "approved", "2026-10-03 09:00:00.000+00:00") // completed before the week, ignored
 
-	postAt(t, f.db, time.Date(2026, 10, 7, 9, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: child.memberID, Type: Bonus, Amount: 4, IdempotencyKey: "b1"})
-	postAt(t, f.db, time.Date(2026, 10, 4, 9, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: child.memberID, Type: Bonus, Amount: 9, IdempotencyKey: "b2"})
+	// A bonus task on Wednesday counts once. Manual points on Wednesday and a bonus on the previous week do not.
+	postAt(t, f.db, time.Date(2026, 10, 7, 9, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: child.memberID, Type: BonusTaskAward, Amount: 5, IdempotencyKey: "b1"})
+	postAt(t, f.db, time.Date(2026, 10, 7, 10, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: child.memberID, Type: Bonus, Amount: 4, IdempotencyKey: "b3"})
+	postAt(t, f.db, time.Date(2026, 10, 4, 9, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: child.memberID, Type: BonusTaskAward, Amount: 9, IdempotencyKey: "b2"})
 
 	var got MyPointsResponse
 	if code := getJSON(t, f, child, "/api/v1/me/points", &got); code != http.StatusOK {
@@ -104,8 +106,8 @@ func TestMyPointsTasksAndBonusPerDay(t *testing.T) {
 	if want := [7]int{0, 0, 0, 1, 0, 0, 0}; got.TasksMissed != want {
 		t.Errorf("tasks_missed = %v, want %v", got.TasksMissed, want)
 	}
-	if want := [7]int{0, 0, 4, 0, 0, 0, 0}; got.Bonus != want {
-		t.Errorf("bonus = %v, want %v", got.Bonus, want)
+	if want := [7]int{0, 0, 1, 0, 0, 0, 0}; got.Bonus != want {
+		t.Errorf("bonus = %v, want %v (bonus tasks only, manual points excluded)", got.Bonus, want)
 	}
 }
 

@@ -30,7 +30,13 @@
         <h1 id="task-title">{{ t.title }}</h1>
         <div class="chips">
           <span class="chip points"><span class="material-icons" aria-hidden="true">star</span>{{ 'myTask.points' | transloco: { points: t.points ?? 0 } }}</span>
-          <span class="chip"><span class="material-icons" aria-hidden="true">schedule</span>{{ 'myTask.due' | transloco: { time: dueLabel(t.due_at) } }}</span>
+          <span class="chip"><span class="material-icons" aria-hidden="true">schedule</span>
+            @if (t.start_time) {
+              {{ 'myTask.starts' | transloco: { time: formatTime(t.start_time) } }}
+            } @else {
+              {{ 'myTask.due' | transloco: { time: dueLabel(t.due_at) } }}
+            }
+          </span>
         </div>
       </div>
     </header>

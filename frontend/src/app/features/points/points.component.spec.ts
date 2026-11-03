@@ -99,7 +99,7 @@ describe('PointsComponent', () => {
         api.memberBalances.mockReturnValue(of({ members: [] } as MemberBalancesResponse));
         api.list.mockReturnValue(of({ rewards: [] } as RewardList));
         api.entryPage.mockReturnValue(of({
-            entries: [entry(), entry({ id: 'e2', type: 'penalty', amount: -3, reason: 'Late' })],
+            entries: [entry(), entry({ id: 'e2', type: 'penalty', amount: -3, reason: 'Late' }), entry({ id: 'e3', type: 'adjustment', amount: 2, reason: 'Fix' })],
             next_cursor: null,
         } as PointsEntryPage));
         api.postPoints.mockReturnValue(of({ replayed: false } as PointsChangeResult) as unknown as Observable<PointsChangeResult>);
@@ -169,13 +169,14 @@ describe('PointsComponent', () => {
         expect(el('[data-testid="entry-e1"]')).toBeTruthy();
     });
 
-    it('should show member and manual controls to a parent, and only penalties can be reversed', () => {
+    it('should show member and manual controls to a parent, and only penalties and bonuses can be reversed', () => {
         build();
         expect(el('[data-testid="points-add"]')).toBeTruthy();
         expect(el('[data-testid="points-award-badge"]')).toBeTruthy();
         expect(el('[data-testid="filter-member-all"]')).toBeTruthy();
         expect(el('[data-testid="entry-e2"] .reverse')).toBeTruthy();
-        expect(el('[data-testid="entry-e1"] .reverse')).toBeNull();
+        expect(el('[data-testid="entry-e1"] .reverse')).toBeTruthy();
+        expect(el('[data-testid="entry-e3"] .reverse')).toBeNull();
     });
 
     it('should hide member filter, manual form and reverse controls from a child', () => {
@@ -345,6 +346,27 @@ describe('PointsComponent', () => {
         expect(api.reversePenalty).toHaveBeenCalledWith('e2', 'Mistake');
         expect(c.reverseTarget()).toBeNull();
         expect(c.notice()).toBe('points.notice.reversed');
+    });
+
+    it('should show the mapped error when the bonus would take the balance below zero', () => {
+        api.reversePenalty.mockReturnValue(throwError(() => ({ code: 'insufficient_balance' })));
+        build();
+        const c = fixture.componentInstance;
+        c.askReverse(entry({ id: 'e1', type: 'bonus', amount: 5 }));
+        c.reverseReason = 'Mistake';
+        c.confirmReverse();
+        expect(c.reverseError()).toBe('points.error.insufficientBalance');
+        expect(c.reverseTarget()).not.toBeNull();
+    });
+
+    it('should show the mapped error when the entry is not reversible', () => {
+        api.reversePenalty.mockReturnValue(throwError(() => ({ code: 'not_reversible' })));
+        build();
+        const c = fixture.componentInstance;
+        c.askReverse(entry({ id: 'e1', type: 'bonus', amount: 5 }));
+        c.reverseReason = 'Mistake';
+        c.confirmReverse();
+        expect(c.reverseError()).toBe('points.error.notReversible');
     });
 
     it('should show the mapped error when the penalty was already reversed', () => {

@@ -271,7 +271,7 @@ export class PointsComponent implements OnInit {
   }
 
   canReverse(entry: PointsEntry): boolean {
-    return this.isParent() && entry.type === 'penalty';
+    return this.isParent() && (entry.type === 'penalty' || entry.type === 'bonus');
   }
 
   openManual(): void {
@@ -469,8 +469,10 @@ export class PointsComponent implements OnInit {
     switch (this.errorCode(err)) {
       case 'already_reversed':
         return 'points.error.alreadyReversed';
-      case 'not_a_penalty':
-        return 'points.error.notPenalty';
+      case 'not_reversible':
+        return 'points.error.notReversible';
+      case 'insufficient_balance':
+        return 'points.error.insufficientBalance';
       case 'entry_not_found':
         return 'points.error.notFound';
       default:

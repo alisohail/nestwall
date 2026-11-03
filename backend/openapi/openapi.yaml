@@ -2251,7 +2251,7 @@ paths:
     post:
       tags: [Tasks]
       summary: Take one person off a task
-      description: Requires the `tasks.manage` permission. Removes only the named person; everyone else keeps the task. `scope` `occurrence` removes them from this day only. `scope` `series` (repeating tasks only) also stops new repeats for them and deletes all their copies from today on, in the definition's time zone, whatever their status; their copies before today are kept. Points already earned stay in the ledger. For a one-off task, removing the last person archives the task. Removing the last person from a repeating task archives the whole series. Send `If-Match` with the current version to avoid overwriting a newer change.
+      description: Requires the `tasks.manage` permission. Removes only the named person; everyone else keeps the task. `scope` `occurrence` removes them from this day only, and a repeating task keeps its other days even when that person was its last one. `scope` `series` (repeating tasks only) also stops new repeats for them and deletes all their copies from today on, in the definition's time zone, whatever their status; their copies before today are kept. Points already earned stay in the ledger. Removing the last person from a one-off task archives it. Removing the last person with scope `series` archives the whole series. Send `If-Match` with the current version to avoid overwriting a newer change.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -2275,7 +2275,7 @@ paths:
                   enum: [occurrence, series]
       responses:
         '200':
-          description: Updated task, with its new ETag (or archived, when the last person was removed)
+          description: Updated task, with its new ETag (or archived, when the last person was removed from a one-off task or a whole series)
           headers:
             ETag:
               description: The new task version, quoted.
@@ -2285,14 +2285,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
-        '400':
-          $ref: '#/components/responses/ValidationFailed'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          description: The task, the person on it, or (for scope occurrence) the person's copy of this day was not found.
+        '204':
+          description: Removed one day of a repeating task that has nobody left on it, so there is no copy to return.
+
           content:
             application/json:
               schema:
@@ -3917,8 +3912,8 @@ paths:
   /api/v1/points/entries/{id}/reverse:
     post:
       tags: [Points]
-      summary: Reverse a penalty with a compensating entry
-      description: Requires the `rewards.manage` permission. Each penalty can be reversed once. The reversal is a positive entry that refers to the penalty. Returns 409 `not_a_penalty` for other entry types and 409 `already_reversed` on a second attempt.
+      summary: Reverse a penalty or a manual bonus with a compensating entry
+      description: Requires the `rewards.manage` permission. Each penalty or manual bonus can be reversed once. The reversal refers to the entry. A penalty reversal adds points back. A bonus reversal takes points away, and returns 409 `insufficient_balance` when that would leave a negative balance and the family does not allow negative balances. Returns 409 `not_reversible` for other entry types and 409 `already_reversed` on a second attempt.
       security:
         - sessionCookie: []
           csrfHeader: []
@@ -3927,7 +3922,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: Ledger entry ID of the penalty.
+          description: Ledger entry ID of the penalty or manual bonus.
           schema:
             type: string
       requestBody:
@@ -3958,7 +3953,7 @@ paths:
       tags: [Points]
       summary: Points for the signed-in member
       description: |
-        Requires the `rewards.view` permission. Always describes the caller, child or parent. `balance` is the spendable total after points held by pending requests; `reserved` is the points those requests hold. `week` holds points earned per local day in the family time zone, Monday first, and `today` is the index of the current day in `week`. Earned types are task awards, bonus task awards, bonuses and transfers in.
+        Requires the `rewards.view` permission. Always describes the caller, child or parent. `balance` is the spendable total after points held by pending requests; `reserved` is the points those requests hold. `week` holds points earned per local day in the family time zone, Monday first, and `today` is the index of the current day in `week`. Earned types are task awards, bonus task awards, bonuses and transfers in. `bonus` counts bonus tasks completed per day; manual bonus points from a parent are not counted there.
       security:
         - sessionCookie: []
       responses:
@@ -7591,6 +7586,11 @@ components:
         due_at:
           type: string
           format: date-time
+        start_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: UTC instant the task starts, from the task's start time on the due date. Null when the task has no start time.
         expires_at:
           type: string
           format: date-time

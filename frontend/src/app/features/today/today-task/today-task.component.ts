@@ -57,6 +57,9 @@ export class TodayTaskComponent {
   /** Clock time such as "5:00 pm" from the instant the copy is due. */
   clock = computed(() => new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ hour: 'numeric', minute: '2-digit' })).format(new Date(this.item().due_at)));
 
+  /** Clock time such as "9:00 am" from the instant the copy opens. Only used when the copy has a start time. */
+  startClock = computed(() => new Intl.DateTimeFormat(undefined, this.timeFormat.intl({ hour: 'numeric', minute: '2-digit' })).format(new Date(this.item().start_at ?? this.item().due_at)));
+
   constructor() {
     effect(() => {
       this.item();

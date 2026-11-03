@@ -90,6 +90,7 @@ interface KidView {
   initial: string;
   colour: string;
   avatar: string | null;
+  points: number | null;
   pct: number;
   countText: string;
   pending: PendingRow[];
@@ -646,12 +647,20 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
     const pct = total ? Math.round((done / total) * 100) : 0;
     const allDone = total > 0 && pendingTasks.length === 0;
 
-    const pending = pendingTasks.map((task) => ({
-      id: task.occurrence_id,
-      title: task.title,
-      due: format.formatDue(task.due_at, s.date, zone, locale),
-      late: task.state === "overdue",
-    }));
+    const pending = pendingTasks.map((task) => {
+      const late = task.state === "overdue";
+      return {
+        id: task.occurrence_id,
+        title: task.title,
+        due: format.formatDue(
+          !late && task.start_at ? task.start_at : task.due_at,
+          s.date,
+          zone,
+          locale,
+        ),
+        late,
+      };
+    });
 
     let countText = this.transloco.translate("wall.display.count_no_tasks");
     if (allDone)
@@ -661,13 +670,6 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
         done,
         total,
       });
-    if (total && child.points !== null && this.summary()?.options.show_points) {
-      countText = this.transloco.translate("wall.display.count_points", {
-        count: countText,
-        points: child.points,
-      });
-    }
-
     return {
       id: child.member_id,
       name: child.name,
@@ -676,6 +678,10 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
       avatar: child.avatar_id
         ? this.display.avatarUrl(child.avatar_id, 256)
         : null,
+      points:
+        child.points !== null && this.summary()?.options.show_points
+          ? child.points
+          : null,
       pct,
       countText,
       pending,
