@@ -69,6 +69,17 @@ describe('RemovePersonConfirmComponent', () => {
         expect(el('remove-person-message')?.textContent).toContain('archived for everyone');
     });
 
+    it('says only this day goes when a repeating task has one person and this day is selected', () => {
+        tasks.get.mockReturnValue(of(task({ repeats: true, assignees: [{ id: 'm1' }] })));
+
+        create();
+
+        expect(el('remove-person-message')?.textContent).not.toContain('archived for everyone');
+        (el('remove-scope-series') as HTMLInputElement).click();
+        fixture.detectChanges();
+        expect(el('remove-person-message')?.textContent).toContain('archived for everyone');
+    });
+
     it('asks which day or all repeats for a repeating task, with this day selected by default', () => {
         tasks.get.mockReturnValue(of(task({ repeats: true, assignees: [{ id: 'm1' }, { id: 'm2' }] })));
 
