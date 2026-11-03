@@ -271,7 +271,7 @@ export class PointsComponent implements OnInit {
   }
 
   canReverse(entry: PointsEntry): boolean {
-    return this.isParent() && (entry.type === 'penalty' || entry.type === 'bonus');
+    return this.isParent() && (entry.type === 'penalty' || entry.type === 'bonus' || entry.type === 'adjustment');
   }
 
   openManual(): void {

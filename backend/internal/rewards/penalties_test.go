@@ -157,14 +157,16 @@ func TestReversePenaltyOnceAndOnlyPenaltiesOrBonuses(t *testing.T) {
 	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, pen.EntryID, f.ParentUserID, f.MemberID, "Again"); err != ErrAlreadyReversed {
 		t.Fatalf("second reverse err = %v, want ErrAlreadyReversed", err)
 	}
-	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, adj, f.ParentUserID, f.MemberID, "Adjust"); err != ErrNotReversible {
-		t.Fatalf("reverse adjustment err = %v, want ErrNotReversible", err)
+	if rev, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, adj, f.ParentUserID, f.MemberID, "Adjust"); err != nil {
+		t.Fatalf("reverse adjustment: %v", err)
+	} else if rev.Amount != -3 || rev.Balance != 20 {
+		t.Fatalf("adjustment reversal amount = %d, balance = %d; want -3 and 20", rev.Amount, rev.Balance)
 	}
 	if _, err := ReversePenalty(ctx, conn, testNow, f.FamilyID, "missing", f.ParentUserID, f.MemberID, "Missing"); err != ErrEntryNotFound {
 		t.Fatalf("reverse missing err = %v, want ErrEntryNotFound", err)
 	}
-	if got := memberBalance(t, conn, f); got != 23 {
-		t.Fatalf("balance = %d, want 23", got)
+	if got := memberBalance(t, conn, f); got != 20 {
+		t.Fatalf("balance = %d, want 20", got)
 	}
 }
 

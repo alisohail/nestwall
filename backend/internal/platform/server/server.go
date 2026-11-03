@@ -305,6 +305,7 @@ func New(cfg *config.Config, log *slog.Logger, clk clock.Clock, pool *sql.DB, ou
 	mux.Handle("GET /api/v1/points/entries", permMiddleware(permissions.PermRewardsView, rewardHandlers.ListEntries))
 	mux.Handle("GET /api/v1/points/balances", permMiddleware(permissions.PermRewardsView, rewardHandlers.MemberBalances))
 	mux.Handle("GET /api/v1/redemptions", permMiddleware(permissions.PermRewardsView, rewardHandlers.ListRedemptions))
+	mux.Handle("GET /api/v1/approvals/history", permMiddleware(permissions.PermRewardsApprove, rewardHandlers.ApprovalHistory))
 
 	// Sharing (M4-08). A child with points.share sends points to a sibling; a parent cannot (403
 	// children_only). Children hold rewards.view to read their own policy and daily use. Settings

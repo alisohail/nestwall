@@ -8,7 +8,7 @@ import { getTranslocoTestingModule } from '../../core/transloco/transloco-testin
 import { BonusTask } from '../bonus/bonus.models';
 import { BonusService } from '../bonus/bonus.service';
 import { FamilyService } from '../family/family.service';
-import { RedemptionListItem } from '../rewards/rewards.models';
+import { ApprovalHistoryItem, RedemptionListItem } from '../rewards/rewards.models';
 import { RewardsService } from '../rewards/rewards.service';
 import { TaskListItem } from '../tasks/tasks.models';
 import { TasksService } from '../tasks/tasks.service';
@@ -17,6 +17,7 @@ import { mockOf } from '../../testing/mock-of';
 
 type ListReturn = ReturnType<TasksService['list']>;
 type PageReturn = ReturnType<RewardsService['redemptionPage']>;
+type HistoryReturn = ReturnType<RewardsService['approvalHistory']>;
 type ApproveReturn = ReturnType<TasksService['approve']>;
 type RedeemReturn = ReturnType<RewardsService['approveRedemption']>;
 type ListBonusReturn = ReturnType<BonusService['list']>;
@@ -103,12 +104,31 @@ describe('ApprovalsComponent', () => {
         fixture.detectChanges();
     }
 
-    /** Makes the redemption endpoint return the pending requests or the history page, depending on status. */
-    function setRedemptions(pending: RedemptionListItem[], history: RedemptionListItem[] = []): void {
-        rewards.redemptionPage.mockImplementation((query) => {
-            const items = query.status === 'pending' ? pending : history;
-            return of({ redemptions: items, next_cursor: null }) as unknown as PageReturn;
-        });
+    /** Makes the redemption endpoint return the pending requests. */
+    function setRedemptions(pending: RedemptionListItem[]): void {
+        rewards.redemptionPage.mockImplementation(() =>
+            of({ redemptions: pending, next_cursor: null }) as unknown as PageReturn);
+    }
+
+    /** Makes the approval history endpoint return the given decided items. */
+    function setHistory(items: ApprovalHistoryItem[]): void {
+        rewards.approvalHistory.mockReturnValue(of({ items, next_cursor: null }) as unknown as HistoryReturn);
+    }
+
+    function historyItem(over: Partial<ApprovalHistoryItem> = {}): ApprovalHistoryItem {
+        return {
+            kind: 'reward',
+            id: 'reward:h1',
+            status: 'approved',
+            title: 'Movie night',
+            icon: '🎬',
+            cost: 40,
+            member_id: 'm1',
+            member_name: 'Mia',
+            decided_by_member_id: 'm2',
+            decided_at: '2026-10-11T10:00:00Z',
+            ...over,
+        } as ApprovalHistoryItem;
     }
 
     beforeEach(async () => {
@@ -133,10 +153,12 @@ describe('ApprovalsComponent', () => {
 
         rewards = mockOf<RewardsService>({
             redemptionPage: vi.fn().mockName("RewardsService.redemptionPage"),
+            approvalHistory: vi.fn().mockName("RewardsService.approvalHistory"),
             approveRedemption: vi.fn().mockName("RewardsService.approveRedemption"),
             rejectRedemption: vi.fn().mockName("RewardsService.rejectRedemption")
         });
         setRedemptions([]);
+        setHistory([]);
         rewards.approveRedemption.mockReturnValue(of({}) as unknown as RedeemReturn);
         rewards.rejectRedemption.mockReturnValue(of({}) as unknown as RedeemReturn);
 
@@ -301,30 +323,45 @@ describe('ApprovalsComponent', () => {
     });
 
     it('should load the next page of history with its cursor', () => {
-        rewards.redemptionPage.mockImplementation((query) => {
-            if (query.status === 'pending') {
-                return of({ redemptions: [], next_cursor: null }) as unknown as PageReturn;
-            }
-            const next = query.cursor ? null : 'c2';
-            const id = query.cursor ? 'h2' : 'h1';
+        rewards.approvalHistory.mockImplementation((query) => {
+            const next = query?.cursor ? null : 'c2';
+            const entry = query?.cursor ? 'reward:h2' : 'reward:h1';
             return of({
-                redemptions: [request(id, { status: 'approved', decided_at: '2026-10-11T10:00:00Z' })],
+                items: [historyItem({ id: entry, kind: 'reward' })],
                 next_cursor: next,
-            }) as unknown as PageReturn;
+            }) as unknown as HistoryReturn;
         });
         build();
         click('[data-testid="tab-history"]');
         expect(el('[data-testid="history-table"]')).toBeTruthy();
         click('[data-testid="history-more"]');
-        const last = vi.mocked(rewards.redemptionPage).mock.lastCall![0];
+        const last = vi.mocked(rewards.approvalHistory).mock.lastCall![0];
         expect(last.cursor).toBe('c2');
-        expect(last.status).toBe('approved,rejected');
     });
 
     it('should show the history empty state when nothing is decided yet', () => {
         build();
         click('[data-testid="tab-history"]');
         expect(el('[data-testid="history-empty"]')).toBeTruthy();
+    });
+
+    it('should show approved tasks, bonus claims and reward requests in history', () => {
+        setHistory([
+            historyItem({ kind: 'task', id: 'task:t9', title: 'Feed the cat', icon: '🐱', cost: 0 }),
+            historyItem({ kind: 'bonus', id: 'bonus:c9', title: 'Fold the laundry', icon: '', cost: 10 }),
+            historyItem({ kind: 'reward', id: 'reward:h9', title: 'Movie night', cost: 40 }),
+        ]);
+        build();
+        click('[data-testid="tab-history"]');
+        const rows = fixture.nativeElement.querySelectorAll('[data-testid="history-table"] tbody tr') as NodeListOf<HTMLElement>;
+        expect(rows.length).toBe(3);
+        const text = Array.from(rows).map((r) => r.textContent ?? '');
+        expect(text[0]).toContain('Feed the cat');
+        expect(text[0]).toContain('Approved');
+        expect(text[0]).not.toContain('+0');
+        expect(text[1]).toContain('Fold the laundry');
+        expect(text[1]).toContain('Approved +10');
+        expect(text[2]).toContain('Movie night');
     });
 
     it('should show a submitted bonus claim with a BONUS chip and include it in approve all', () => {
@@ -423,7 +460,7 @@ describe('ApprovalsComponent', () => {
         expect(pending[pending.length - 1][0].member_id).toBe('m2');
         click('[data-testid="tab-history"]');
         click('[data-testid="member-chip-all"]');
-        const history = vi.mocked(rewards.redemptionPage).mock.calls.filter(([q]) => q.status === 'approved,rejected');
-        expect(history[history.length - 1][0].member_id).toBeUndefined();
+        const history = vi.mocked(rewards.approvalHistory).mock.calls;
+        expect(history[history.length - 1][0]?.member_id).toBeUndefined();
     });
 });

@@ -28,7 +28,7 @@ var (
 	ErrMemberNotFound = errors.New("rewards: member not found")
 	// ErrEntryNotFound means the ledger entry is not in the caller's family.
 	ErrEntryNotFound = errors.New("rewards: ledger entry not found")
-	// ErrNotReversible means the entry is not a penalty or a manual bonus, the only kinds that can be undone.
+	// ErrNotReversible means the entry is not a penalty, bonus or adjustment, the only kinds that can be undone.
 	ErrNotReversible = errors.New("rewards: entry cannot be reversed")
 	// ErrAlreadyReversed means the penalty was already reversed.
 	ErrAlreadyReversed = errors.New("rewards: penalty already reversed")
@@ -408,7 +408,7 @@ func findManual(ctx context.Context, tx *sql.Tx, familyID, key string) (storedMa
 	return s, true, nil
 }
 
-// ReversePenalty posts a compensating entry that undoes a penalty or a manual bonus. The reversal is
+// ReversePenalty posts a compensating entry that undoes a penalty, a manual bonus or an adjustment. The reversal is
 // keyed on the entry, so it can be undone once: a second call returns ErrAlreadyReversed. Removing
 // bonus points fails with ErrInsufficientBalance when that would leave a negative balance and the
 // family does not allow negative balances.
@@ -431,7 +431,7 @@ func ReversePenalty(ctx context.Context, db *sql.DB, now time.Time, familyID, en
 	if err != nil {
 		return ManualResult{}, fmt.Errorf("find entry: %w", err)
 	}
-	if entryType != string(Penalty) && entryType != string(Bonus) {
+	if entryType != string(Penalty) && entryType != string(Bonus) && entryType != string(Adjustment) {
 		return ManualResult{}, ErrNotReversible
 	}
 
@@ -468,8 +468,11 @@ func ReversePenalty(ctx context.Context, db *sql.DB, now time.Time, familyID, en
 		}
 	}
 	action := "points.penalty_reversed"
-	if entryType == string(Bonus) {
+	switch entryType {
+	case string(Bonus):
 		action = "points.bonus_reversed"
+	case string(Adjustment):
+		action = "points.adjustment_reversed"
 	}
 	if err := audit.Record(ctx, tx, familyID, actorUserID, action, "points_ledger", &entryID,
 		map[string]any{"reversal_id": posted.ID, "amount": -amount, "reason": reason}); err != nil {

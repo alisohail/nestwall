@@ -76,6 +76,33 @@ export interface RedemptionPage {
   next_cursor: string | null;
 }
 
+/** One decided task completion, bonus claim or reward request. Kind says which one. */
+export interface ApprovalHistoryItem {
+  id: string;
+  kind: 'task' | 'bonus' | 'reward';
+  title: string;
+  icon: string;
+  member_id: string;
+  member_name: string;
+  status: 'approved' | 'rejected';
+  cost: number;
+  decided_at: string;
+  decided_by_member_id: string | null;
+  decision_reason: string | null;
+}
+
+export interface ApprovalHistoryPage {
+  items: ApprovalHistoryItem[];
+  next_cursor: string | null;
+}
+
+/** Filters for GET /api/v1/approvals/history. */
+export interface ApprovalHistoryQuery {
+  member_id?: string;
+  cursor?: string;
+  limit?: number;
+}
+
 /** Filters for GET /api/v1/redemptions. status takes a comma-separated list. */
 export interface RedemptionQuery {
   status?: string;

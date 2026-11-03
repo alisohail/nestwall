@@ -1138,11 +1138,17 @@
       "by": "[=== Byy ===]",
       "when": "[=== Whenn ===]",
       "approved": "[=== Aapprovedd +{{ cost }} ===]",
+      "approvedPlain": "[=== Aapprovedd ===]",
       "declined": "[=== Deecllineed ===]",
+      "kind": {
+        "task": "[=== Taask ===]",
+        "bonus": "[=== Boonus ===]",
+        "reward": "[=== Reewaard ===]"
+      },
       "more": "[=== Loaad moree ===]",
       "empty": {
         "title": "[=== Noo deecisiions yeet ===]",
-        "body": "[=== Aapprovedd aand deecllineed reewaard reequeests appeear heere. ===]"
+        "body": "[=== Aapprovedd, deecllineed taasks, boonus cllaims aand reewaard reequeests appeear heere. ===]"
       }
     },
     "confirmAll": {

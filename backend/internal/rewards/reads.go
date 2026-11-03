@@ -23,6 +23,14 @@ const (
 // earnedTypes are the ledger types that count as points earned in the week chart.
 var earnedTypes = []EntryType{TaskAward, BonusTaskAward, Bonus, TransferIn}
 
+// notReversedBonus leaves out a manual bonus that a parent later removed. The removal is a reversal
+// row that points at the bonus, so the bonus no longer counts as earned in the week it was given.
+// It is appended to a query on points_ledger aliased as p.
+const notReversedBonus = ` AND NOT (p.entry_type = 'bonus' AND EXISTS (
+		SELECT 1 FROM points_ledger r
+		WHERE r.family_id = p.family_id AND r.entry_type = 'reversal'
+		  AND r.reference_type = 'points_ledger' AND r.reference_id = p.id))`
+
 // MyPointsResponse is the body of GET /api/v1/me/points. Balance is the spendable total, after
 // points held by pending requests. Reserved is the sum of those held points. Week counts points
 // earned per local day, Monday first, and Today is the index of the current day in Week. TasksDone
@@ -215,9 +223,9 @@ func (h *Handlers) weekLedger(ctx context.Context, familyID, memberID string, lo
 		args = append(args, string(t))
 	}
 	rows, err := h.db.QueryContext(ctx,
-		`SELECT CAST(created_at AS TEXT), amount FROM points_ledger
-		 WHERE family_id = ? AND family_member_id = ? AND created_at >= ? AND amount > 0
-		   AND entry_type IN (`+strings.Join(placeholders, ",")+`)`,
+		`SELECT CAST(p.created_at AS TEXT), p.amount FROM points_ledger p
+		 WHERE p.family_id = ? AND p.family_member_id = ? AND p.created_at >= ? AND p.amount > 0
+		   AND p.entry_type IN (`+strings.Join(placeholders, ",")+`)`+notReversedBonus,
 		args...)
 	if err != nil {
 		return week, err
@@ -320,10 +328,10 @@ func EarnedThisWeek(ctx context.Context, db *sql.DB, familyID string, loc *time.
 		args = append(args, string(t))
 	}
 	rows, err := db.QueryContext(ctx,
-		`SELECT family_member_id, SUM(amount) FROM points_ledger
-		 WHERE family_id = ? AND created_at >= ? AND amount > 0
-		   AND entry_type IN (`+strings.Join(placeholders, ",")+`)
-		 GROUP BY family_member_id`,
+		`SELECT p.family_member_id, SUM(p.amount) FROM points_ledger p
+		 WHERE p.family_id = ? AND p.created_at >= ? AND p.amount > 0
+		   AND p.entry_type IN (`+strings.Join(placeholders, ",")+`)`+notReversedBonus+`
+		 GROUP BY p.family_member_id`,
 		args...)
 	if err != nil {
 		return nil, err

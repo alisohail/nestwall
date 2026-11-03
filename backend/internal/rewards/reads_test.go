@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -26,6 +27,7 @@ func readFixture(t *testing.T) catFixture {
 	mux.HandleFunc("GET /api/v1/points/entries", h.ListEntries)
 	mux.HandleFunc("GET /api/v1/points/balances", h.MemberBalances)
 	mux.HandleFunc("GET /api/v1/redemptions", h.ListRedemptions)
+	mux.HandleFunc("GET /api/v1/approvals/history", h.ApprovalHistory)
 	f.mux = mux
 	return f
 }
@@ -167,6 +169,39 @@ func TestEarnedThisWeekSplitsByMemberFromWeekStart(t *testing.T) {
 	}
 	if _, ok := got[idle.memberID]; ok {
 		t.Errorf("earned lists a member with no earnings: %v", got)
+	}
+}
+
+func TestEarnedThisWeekDropsReversedBonusOfThatWeek(t *testing.T) {
+	f := readFixture(t)
+	ana := f.addChild(f.fam.FamilyID, "Ana")
+	ctx := context.Background()
+
+	postAt(t, f.db, time.Date(2026, 10, 5, 10, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: ana.memberID, Type: TaskAward, Amount: 10, IdempotencyKey: "e1"})
+	postAt(t, f.db, time.Date(2026, 10, 7, 8, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: ana.memberID, Type: Bonus, Amount: 7, IdempotencyKey: "e2"})
+	// A bonus from the previous week, reversed this week, must not change this week's total.
+	postAt(t, f.db, time.Date(2026, 9, 30, 8, 0, 0, 0, time.UTC), Entry{FamilyID: f.fam.FamilyID, MemberID: ana.memberID, Type: Bonus, Amount: 4, IdempotencyKey: "e4"})
+
+	var bonusID, oldID string
+	if err := f.db.QueryRowContext(ctx, `SELECT id FROM points_ledger WHERE family_id = ? AND entry_type = 'bonus' AND amount = 7`, f.fam.FamilyID).Scan(&bonusID); err != nil {
+		t.Fatalf("find week bonus: %v", err)
+	}
+	if err := f.db.QueryRowContext(ctx, `SELECT id FROM points_ledger WHERE family_id = ? AND entry_type = 'bonus' AND amount = 4`, f.fam.FamilyID).Scan(&oldID); err != nil {
+		t.Fatalf("find old bonus: %v", err)
+	}
+	now := time.Date(2026, 10, 8, 12, 0, 0, 0, time.UTC)
+	for _, id := range []string{bonusID, oldID} {
+		if _, err := ReversePenalty(ctx, f.db, now, f.fam.FamilyID, id, f.fam.ParentUserID, ana.memberID, "Removed"); err != nil {
+			t.Fatalf("reverse %s: %v", id, err)
+		}
+	}
+
+	got, err := EarnedThisWeek(ctx, f.db, f.fam.FamilyID, time.UTC, now)
+	if err != nil {
+		t.Fatalf("EarnedThisWeek: %v", err)
+	}
+	if got[ana.memberID] != 10 {
+		t.Errorf("earned = %d, want 10 (the reversed bonus of this week dropped, the earlier one not counted)", got[ana.memberID])
 	}
 }
 
@@ -367,6 +402,20 @@ func TestRedemptionsListScopedAndFiltered(t *testing.T) {
 		t.Errorf("approved,rejected filter = %+v, want the instant approval", mixed.Redemptions)
 	}
 
+	var history ApprovalHistoryPage
+	if code := getJSON(t, f, f.parent, "/api/v1/approvals/history", &history); code != http.StatusOK {
+		t.Fatalf("approval history: status %d", code)
+	}
+	if len(history.Items) != 1 || history.Items[0].Kind != "reward" || history.Items[0].Status != "approved" {
+		t.Errorf("approval history = %+v, want the one approved reward", history.Items)
+	}
+	if history.Items[0].MemberName == "" || history.Items[0].Title == "" || history.Items[0].DecidedAt.IsZero() {
+		t.Errorf("history row lacks title, member or decided_at: %+v", history.Items[0])
+	}
+	if history.NextCursor != nil {
+		t.Errorf("single decision should have no next cursor, got %q", *history.NextCursor)
+	}
+
 	var own RedemptionPage
 	getJSON(t, f, ana, "/api/v1/redemptions", &own)
 	if len(own.Redemptions) != 2 {
@@ -379,6 +428,81 @@ func TestRedemptionsListScopedAndFiltered(t *testing.T) {
 	}
 	if rec := f.do(ana, http.MethodGet, "/api/v1/redemptions?member_id="+ben.memberID, "", nil); rec.Code != http.StatusForbidden {
 		t.Errorf("child reads another child: status %d, want 403", rec.Code)
+	}
+}
+
+func TestApprovalHistoryMixesTasksBonusAndRewards(t *testing.T) {
+	f := readFixture(t)
+	child := f.addChild(f.fam.FamilyID, "Ana")
+	fam := f.fam.FamilyID
+	mustExec := func(q string, args ...any) {
+		t.Helper()
+		if _, err := f.db.Exec(q, args...); err != nil {
+			t.Fatalf("seed: %v", err)
+		}
+	}
+
+	// A task completion approved on 10 October, then a bonus claim approved on 11 October.
+	defID, occID, asgID := ids.New(), ids.New(), ids.New()
+	mustExec(`INSERT INTO task_definitions (id, family_id, title, time_zone, starts_on, points, created_by)
+		VALUES (?, ?, 'Tidy', 'UTC', '2026-10-10', 5, ?)`, defID, fam, f.fam.ParentUserID)
+	mustExec(`INSERT INTO task_occurrences (id, family_id, task_definition_id, due_date, due_at, status)
+		VALUES (?, ?, ?, '2026-10-10', '2026-10-10 18:00:00.000+00:00', 'scheduled')`, occID, fam, defID)
+	mustExec(`INSERT INTO task_occurrence_assignees (id, family_id, task_occurrence_id, family_member_id, status, completed_at, decided_at, decided_by_member_id)
+		VALUES (?, ?, ?, ?, 'approved', '2026-10-10 08:00:00.000+00:00', '2026-10-10 09:00:00.000+00:00', ?)`,
+		asgID, fam, occID, child.memberID, f.parent.memberID)
+
+	btID, claimID := ids.New(), ids.New()
+	mustExec(`INSERT INTO bonus_tasks (id, family_id, title, points, claim_mode, approval_required, ends_at, created_by)
+		VALUES (?, ?, 'Fold laundry', 10, 'first_come', 1, '2026-10-20 00:00:00.000+00:00', ?)`, btID, fam, f.fam.ParentUserID)
+	mustExec(`INSERT INTO bonus_claims (id, family_id, bonus_task_id, family_member_id, claim_mode, status, claimed_at, completed_at, decided_at, decided_by_member_id, decision_note)
+		VALUES (?, ?, ?, ?, 'first_come', 'approved', '2026-10-11 07:00:00.000+00:00', '2026-10-11 07:30:00.000+00:00', '2026-10-11 08:00:00.000+00:00', ?, 'Well done')`,
+		claimID, fam, btID, child.memberID, f.parent.memberID)
+
+	var page ApprovalHistoryPage
+	if code := getJSON(t, f, f.parent, "/api/v1/approvals/history", &page); code != http.StatusOK {
+		t.Fatalf("history: status %d", code)
+	}
+	if len(page.Items) != 2 {
+		t.Fatalf("history = %+v, want the bonus and the task", page.Items)
+	}
+	bonusRow, taskRow := page.Items[0], page.Items[1]
+	if bonusRow.Kind != "bonus" || bonusRow.Title != "Fold laundry" || bonusRow.Cost != 10 || bonusRow.Status != "approved" {
+		t.Errorf("bonus row = %+v", bonusRow)
+	}
+	if bonusRow.DecisionReason == nil || *bonusRow.DecisionReason != "Well done" {
+		t.Errorf("bonus decision note = %v, want Well done", bonusRow.DecisionReason)
+	}
+	if taskRow.Kind != "task" || taskRow.Title != "Tidy" || taskRow.Cost != 0 || taskRow.Status != "approved" {
+		t.Errorf("task row = %+v", taskRow)
+	}
+	if taskRow.DecidedByMemberID == nil || *taskRow.DecidedByMemberID != f.parent.memberID {
+		t.Errorf("task decided_by = %v, want the parent", taskRow.DecidedByMemberID)
+	}
+
+	// Paging one row at a time walks the same two rows in the same order.
+	var first ApprovalHistoryPage
+	if code := getJSON(t, f, f.parent, "/api/v1/approvals/history?limit=1", &first); code != http.StatusOK {
+		t.Fatalf("history page 1: status %d", code)
+	}
+	if len(first.Items) != 1 || first.Items[0].ID != bonusRow.ID || first.NextCursor == nil {
+		t.Fatalf("page 1 = %+v, want the bonus with a next cursor", first)
+	}
+	var second ApprovalHistoryPage
+	if code := getJSON(t, f, f.parent, "/api/v1/approvals/history?limit=1&cursor="+url.QueryEscape(*first.NextCursor), &second); code != http.StatusOK {
+		t.Fatalf("history page 2: status %d", code)
+	}
+	if len(second.Items) != 1 || second.Items[0].ID != taskRow.ID || second.NextCursor != nil {
+		t.Errorf("page 2 = %+v, want the task and no next cursor", second)
+	}
+
+	// A member filter keeps only that member's rows.
+	var none ApprovalHistoryPage
+	if code := getJSON(t, f, f.parent, "/api/v1/approvals/history?member_id="+f.parent.memberID, &none); code != http.StatusOK {
+		t.Fatalf("history filtered: status %d", code)
+	}
+	if len(none.Items) != 0 {
+		t.Errorf("parent's own history = %+v, want none", none.Items)
 	}
 }
 

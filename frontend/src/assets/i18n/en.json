@@ -1113,11 +1113,17 @@
       "by": "By",
       "when": "When",
       "approved": "Approved +{{ cost }}",
+      "approvedPlain": "Approved",
       "declined": "Declined",
+      "kind": {
+        "task": "Task",
+        "bonus": "Bonus",
+        "reward": "Reward"
+      },
       "more": "Load more",
       "empty": {
         "title": "No decisions yet",
-        "body": "Approved and declined reward requests appear here."
+        "body": "Approved and declined tasks, bonus claims and reward requests appear here."
       }
     },
     "confirmAll": {

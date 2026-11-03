@@ -169,14 +169,14 @@ describe('PointsComponent', () => {
         expect(el('[data-testid="entry-e1"]')).toBeTruthy();
     });
 
-    it('should show member and manual controls to a parent, and only penalties and bonuses can be reversed', () => {
+    it('should show member and manual controls to a parent, and bonuses, penalties and adjustments can be reversed', () => {
         build();
         expect(el('[data-testid="points-add"]')).toBeTruthy();
         expect(el('[data-testid="points-award-badge"]')).toBeTruthy();
         expect(el('[data-testid="filter-member-all"]')).toBeTruthy();
         expect(el('[data-testid="entry-e2"] .reverse')).toBeTruthy();
         expect(el('[data-testid="entry-e1"] .reverse')).toBeTruthy();
-        expect(el('[data-testid="entry-e3"] .reverse')).toBeNull();
+        expect(el('[data-testid="entry-e3"] .reverse')).toBeTruthy();
     });
 
     it('should hide member filter, manual form and reverse controls from a child', () => {
