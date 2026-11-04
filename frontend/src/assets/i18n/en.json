@@ -869,7 +869,7 @@
       "pill": {
         "waiting": "Waiting",
         "approved": "Approved",
-        "missed": "Missed",
+        "skipped": "Skipped",
         "rejected": "Not approved"
       },
       "empty": "No activity yet."
@@ -2805,7 +2805,7 @@
     },
     "row": {
       "complete": "Mark “{{title}}” as done",
-      "mark_missed": "Mark “{{title}}” as missed",
+      "mark_skipped": "Mark “{{title}}” as skipped",
       "edit": "Edit “{{title}}”",
       "delete": "Delete “{{title}}”",
       "delete_permanent": "Delete “{{title}}” permanently",
@@ -2841,6 +2841,11 @@
       "heading": "Mark as done?",
       "message": "Mark “{{title}}” as done for {{name}}?",
       "confirm": "Mark as done"
+    },
+    "mark_skipped": {
+      "heading": "Marked skipped?",
+      "message": "Mark “{{title}}” as skipped for everyone who still has it? It will not count as missed and no penalty applies.",
+      "confirm": "Mark as skipped"
     },
     "delete_permanent": {
       "heading": "Delete “{{title}}” permanently?",

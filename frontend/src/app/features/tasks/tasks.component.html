@@ -201,7 +201,11 @@
                   {{ "tasks.detail.end_at" | transloco: { time: formatTime(item.due_time) } }}
                 }
               </span>
-              @if (tab() === "expired") {
+              @if (item.status === "skipped") {
+                <span class="badge" data-testid="task-skipped-tag">{{
+                  "tasks.status.skipped" | transloco
+                }}</span>
+              } @else if (tab() === "expired") {
                 <span class="badge err" data-testid="task-expired-tag">{{
                   "tasks.status.overdue" | transloco
                 }}</span>
@@ -220,11 +224,6 @@
                   "tasks.status.rejected" | transloco
                 }}</span>
               }
-              }
-              @if (item.status === "skipped") {
-                <span class="badge">{{
-                  "tasks.status.skipped" | transloco
-                }}</span>
               }
               @if (expiresIn(item); as left) {
                 <span class="badge amber">{{
@@ -329,11 +328,11 @@
                     class="icon-btn sm danger"
                     data-testid="task-mark-missed"
                     [attr.aria-label]="
-                      'tasks.row.mark_missed' | transloco: { title: item.title }
+                      'tasks.row.mark_skipped' | transloco: { title: item.title }
                     "
                     (click)="askMissed(item)"
                   >
-                    <span class="material-icons" aria-hidden="true">event_busy</span>
+                    <span class="material-icons" aria-hidden="true">skip_next</span>
                   </button>
                 }
                 @if (auth.can("tasks.manage")) {
@@ -469,9 +468,9 @@
 
 @if (pendingMissed(); as item) {
   <app-task-confirm
-    [heading]="'tasks.mark_missed.heading' | transloco"
-    [message]="'tasks.mark_missed.message' | transloco"
-    [confirmLabel]="'tasks.mark_missed.confirm' | transloco"
+    [heading]="'tasks.mark_skipped.heading' | transloco"
+    [message]="'tasks.mark_skipped.message' | transloco: { title: item.title }"
+    [confirmLabel]="'tasks.mark_skipped.confirm' | transloco"
     [busy]="markingMissed()"
     (confirmed)="confirmMissed()"
     (cancelled)="pendingMissed.set(null)"

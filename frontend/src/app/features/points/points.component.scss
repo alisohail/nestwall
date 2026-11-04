@@ -382,11 +382,11 @@ h2 {
 
   .ledger-table .col-action {
     grid-area: action;
-  }
-
-  .reverse,
-  .delete {
-    justify-self: start;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--nw-space-2);
+    margin-top: var(--nw-space-1);
   }
 }
 

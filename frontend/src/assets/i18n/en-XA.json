@@ -894,7 +894,7 @@
       "pill": {
         "waiting": "[=== Waaiting ===]",
         "approved": "[=== Aapprovedd ===]",
-        "missed": "[=== Miissed ===]",
+        "skipped": "[=== Skiipped ===]",
         "rejected": "[=== Noot aapprovedd ===]"
       },
       "empty": "[=== Noo aactiivitty yeet. ===]"
@@ -2824,7 +2824,7 @@
       "complete": "[=== Maark “{{title}}” aas doonee ===]",
       "view": "[=== Viiew “{{title}}” ===]",
       "edit": "[=== Eedit “{{title}}” ===]",
-      "mark_missed": "[=== Maark “{{title}}” aas miissed ===]",
+      "mark_skipped": "[=== Maark “{{title}}” aas skiipped ===]",
       "delete": "[=== Deelete “{{title}}” ===]",
       "delete_permanent": "[=== Deelete “{{title}}” peermaaneently ===]",
       "restore": "[=== Reestoore “{{title}}” ===]",
@@ -2859,6 +2859,11 @@
       "heading": "[=== Maark aas doonee? ===]",
       "message": "[=== Maark “{{title}}” aas doonee foor {{name}}? ===]",
       "confirm": "[=== Maark aas doonee ===]"
+    },
+    "mark_skipped": {
+      "heading": "[=== Maarkeed skiipped? ===]",
+      "message": "[=== Maark “{{title}}” aas skiipped foor eeveryone whoo still haas it? Iit wiill noot count aas missed aand noo penaalty applies. ===]",
+      "confirm": "[=== Maark aas skiipped ===]"
     },
     "delete_permanent": {
       "heading": "[=== Deelete “{{title}}” peermaaneently? ===]",

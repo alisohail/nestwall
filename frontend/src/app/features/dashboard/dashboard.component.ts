@@ -356,7 +356,7 @@ export class DashboardComponent {
       case 'task.approved':
         return { key: 'dashboard.activity.pill.approved', params: {}, cls: 'ok' };
       case 'task.skipped':
-        return { key: 'dashboard.activity.pill.missed', params: {}, cls: 'err' };
+        return { key: 'dashboard.activity.pill.skipped', params: {}, cls: '' };
       case 'task.rejected':
         return { key: 'dashboard.activity.pill.rejected', params: {}, cls: 'err' };
       default:

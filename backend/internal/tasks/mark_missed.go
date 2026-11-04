@@ -9,10 +9,8 @@ import (
 	"nestwall/backend/internal/platform/web"
 )
 
-// MarkMissedByParent forces an open occurrence to missed, for when a child cannot mark it done.
-// Only occurrences that are scheduled or past due can be forced, and at least one copy must still
-// be open (to_do or rejected). Penalties are recorded the same way as for an expired occurrence.
-// Requires tasks.manage.
+// MarkMissedByParent skips the open copies of an occurrence, for when a child cannot mark it done.
+// Skipped copies are not penalised and leave the task lists. Requires tasks.manage.
 func (h *Handlers) MarkMissedByParent(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	familyID, userID, ok := h.memberFamily(w, r)
@@ -55,29 +53,20 @@ func (h *Handlers) MarkMissedByParent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var open int
-	if err := tx.QueryRowContext(ctx,
-		`SELECT COUNT(*) FROM task_occurrence_assignees
-		 WHERE family_id = ? AND task_occurrence_id = ? AND status IN ('to_do', 'rejected')`,
-		familyID, occ.id,
-	).Scan(&open); err != nil {
-		h.internalError(w, "count open copies for mark missed", err)
-		return
-	}
-
 	res, err := tx.ExecContext(ctx,
-		`UPDATE task_occurrences
-		 SET status = 'missed', version = version + 1, updated_at = strftime('%Y-%m-%d %H:%M:%f+00:00', 'now')
-		 WHERE family_id = ? AND id = ? AND status IN ('scheduled', 'past_due')`,
+		`UPDATE task_occurrence_assignees
+		 SET status = 'skipped', completed_at = NULL, decided_at = NULL, decided_by_member_id = NULL,
+		     decision_note = NULL, version = version + 1, updated_at = strftime('%Y-%m-%d %H:%M:%f+00:00', 'now')
+		 WHERE family_id = ? AND task_occurrence_id = ? AND status IN ('to_do', 'rejected')`,
 		familyID, occ.id,
 	)
 	if err != nil {
-		h.internalError(w, "set occurrence missed", err)
+		h.internalError(w, "skip open copies", err)
 		return
 	}
-	if n, _ := res.RowsAffected(); n == 0 || open == 0 {
+	if n, _ := res.RowsAffected(); n == 0 {
 		web.RespondError(w, http.StatusConflict, "task_not_open",
-			"Only an open task can be marked as missed", nil)
+			"Only an open task can be marked as skipped", nil)
 		return
 	}
 
@@ -91,29 +80,9 @@ func (h *Handlers) MarkMissedByParent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var e expiredOccurrence
-	e.id = occ.id
-	e.familyID = familyID
-	if err := tx.QueryRowContext(ctx,
-		`SELECT d.penalty_value, d.penalty_unit, d.points
-		 FROM task_occurrences o
-		 JOIN task_definitions d ON d.family_id = o.family_id AND d.id = o.task_definition_id
-		 WHERE o.family_id = ? AND o.id = ?`,
-		familyID, occ.id,
-	).Scan(&e.penaltyValue, &e.penaltyUnit, &e.points); err != nil {
-		h.internalError(w, "load penalty for mark missed", err)
-		return
-	}
-	if e.penaltyValue.Valid && e.penaltyUnit.Valid {
-		if _, err := recordPenaltyIntents(ctx, tx, e, dbTime(h.clock.Now())); err != nil {
-			h.internalError(w, "record penalty for mark missed", err)
-			return
-		}
-	}
-
-	if err := audit.Record(ctx, tx, familyID, userID, "task.missed", "task", &id,
-		map[string]any{"forced": true}); err != nil {
-		h.internalError(w, "audit mark missed", err)
+	if err := audit.Record(ctx, tx, familyID, userID, "task.skipped", "task", &id,
+		map[string]any{"forced": true, "by_parent": true}); err != nil {
+		h.internalError(w, "audit mark skipped", err)
 		return
 	}
 

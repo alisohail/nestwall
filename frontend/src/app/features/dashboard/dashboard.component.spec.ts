@@ -639,8 +639,8 @@ describe('DashboardComponent', () => {
         const fixture = create();
 
         const row = el(fixture, 'activity')?.querySelector('[data-testid="activity-row"]');
-        expect(row?.textContent).toContain('Missed');
-        expect(row?.querySelector('.badge')?.classList).toContain('err');
+      expect(row?.textContent).toContain('Skipped');
+        expect(row?.querySelector('.badge')?.classList).not.toContain('err');
     });
 
     it('switches Today by person between today and this week counts', () => {
