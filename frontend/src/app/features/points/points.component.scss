@@ -267,6 +267,16 @@ h2 {
   .num {
     text-align: right;
   }
+
+  .col-action {
+    text-align: right;
+    white-space: nowrap;
+    width: 1%;
+
+    .btn + .btn {
+      margin-left: var(--nw-space-2);
+    }
+  }
 }
 
 .when {
@@ -382,6 +392,7 @@ h2 {
 
   .ledger-table .col-action {
     grid-area: action;
+    width: 100%;
     display: flex;
     justify-content: flex-end;
     flex-wrap: wrap;
