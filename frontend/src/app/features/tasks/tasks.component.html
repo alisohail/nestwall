@@ -328,7 +328,8 @@
                     class="icon-btn sm danger"
                     data-testid="task-mark-missed"
                     [attr.aria-label]="
-                      'tasks.row.mark_skipped' | transloco: { title: item.title }
+                      'tasks.row.mark_skipped'
+                        | transloco: { title: item.title, name: memberOf(item)?.display_name ?? '' }
                     "
                     (click)="askMissed(item)"
                   >
@@ -469,7 +470,7 @@
 @if (pendingMissed(); as item) {
   <app-task-confirm
     [heading]="'tasks.mark_skipped.heading' | transloco"
-    [message]="'tasks.mark_skipped.message' | transloco: { title: item.title }"
+    [message]="'tasks.mark_skipped.message' | transloco: { title: item.title, name: memberOf(item)?.display_name ?? '' }"
     [confirmLabel]="'tasks.mark_skipped.confirm' | transloco"
     [busy]="markingMissed()"
     (confirmed)="confirmMissed()"

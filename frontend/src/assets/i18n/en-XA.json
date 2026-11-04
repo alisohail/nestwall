@@ -2824,7 +2824,7 @@
       "complete": "[=== Maark “{{title}}” aas doonee ===]",
       "view": "[=== Viiew “{{title}}” ===]",
       "edit": "[=== Eedit “{{title}}” ===]",
-      "mark_skipped": "[=== Maark “{{title}}” aas skiipped ===]",
+      "mark_skipped": "[=== Maark “{{title}}” aas skiipped foor {{name}} ===]",
       "delete": "[=== Deelete “{{title}}” ===]",
       "delete_permanent": "[=== Deelete “{{title}}” peermaaneently ===]",
       "restore": "[=== Reestoore “{{title}}” ===]",
@@ -2862,7 +2862,7 @@
     },
     "mark_skipped": {
       "heading": "[=== Maarkeed skiipped? ===]",
-      "message": "[=== Maark “{{title}}” aas skiipped foor eeveryone whoo still haas it? Iit wiill noot count aas missed aand noo penaalty applies. ===]",
+      "message": "[=== Maark “{{title}}” aas skiipped foor {{name}}? Thhey wiill noot get aa penaalty, aand oother peeople oon thiis taask aare noot affected. ===]",
       "confirm": "[=== Maark aas skiipped ===]"
     },
     "delete_permanent": {

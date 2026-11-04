@@ -245,7 +245,7 @@ export class TasksComponent {
     this.pendingDelete.set(item);
   }
 
-  /** Forces an open task to missed for every assignee, for when the child cannot finish it. */
+  /** Skips the named person's open copy, for when they cannot finish it. */
   askMissed(item: TaskListItem): void {
     if (item.status === 'to_do' && !item.archived) this.pendingMissed.set(item);
   }
@@ -255,7 +255,7 @@ export class TasksComponent {
     if (!item || this.markingMissed()) return;
     this.markingMissed.set(true);
     this.actionError.set(null);
-    this.service.markMissed(item.id, item.version).subscribe({
+    this.service.markMissed(item.id, item.member_id, item.version).subscribe({
       next: () => {
         this.markingMissed.set(false);
         this.pendingMissed.set(null);

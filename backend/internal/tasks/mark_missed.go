@@ -4,12 +4,14 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"strings"
 
 	"nestwall/backend/internal/audit"
 	"nestwall/backend/internal/platform/web"
 )
 
-// MarkMissedByParent skips the open copies of an occurrence, for when a child cannot mark it done.
+// MarkMissedByParent skips open copies of an occurrence, for when a child cannot mark it done.
+// A member_id in the body skips only that person's copy. Without one, every open copy is skipped.
 // Skipped copies are not penalised and leave the task lists. Requires tasks.manage.
 func (h *Handlers) MarkMissedByParent(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
@@ -20,6 +22,18 @@ func (h *Handlers) MarkMissedByParent(w http.ResponseWriter, r *http.Request) {
 	if !isUUID(id) {
 		notFound(w, "Task not found")
 		return
+	}
+	var req actionRequest
+	if !decodeOptionalBody(w, r, &req) {
+		return
+	}
+	memberID := ""
+	if req.MemberID != "" {
+		if !isUUID(strings.ToLower(req.MemberID)) {
+			respondValidation(w, &FieldError{Field: "member_id", Reason: "invalid"})
+			return
+		}
+		memberID = strings.ToLower(req.MemberID)
 	}
 
 	ctx := r.Context()
@@ -53,13 +67,16 @@ func (h *Handlers) MarkMissedByParent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := tx.ExecContext(ctx,
-		`UPDATE task_occurrence_assignees
+	query := `UPDATE task_occurrence_assignees
 		 SET status = 'skipped', completed_at = NULL, decided_at = NULL, decided_by_member_id = NULL,
 		     decision_note = NULL, version = version + 1, updated_at = strftime('%Y-%m-%d %H:%M:%f+00:00', 'now')
-		 WHERE family_id = ? AND task_occurrence_id = ? AND status IN ('to_do', 'rejected')`,
-		familyID, occ.id,
-	)
+		 WHERE family_id = ? AND task_occurrence_id = ? AND status IN ('to_do', 'rejected')`
+	args := []any{familyID, occ.id}
+	if memberID != "" {
+		query += ` AND family_member_id = ?`
+		args = append(args, memberID)
+	}
+	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		h.internalError(w, "skip open copies", err)
 		return
@@ -80,8 +97,11 @@ func (h *Handlers) MarkMissedByParent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := audit.Record(ctx, tx, familyID, userID, "task.skipped", "task", &id,
-		map[string]any{"forced": true, "by_parent": true}); err != nil {
+	auditData := map[string]any{"forced": true, "by_parent": true}
+	if memberID != "" {
+		auditData["member_id"] = memberID
+	}
+	if err := audit.Record(ctx, tx, familyID, userID, "task.skipped", "task", &id, auditData); err != nil {
 		h.internalError(w, "audit mark skipped", err)
 		return
 	}

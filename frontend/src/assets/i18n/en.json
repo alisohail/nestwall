@@ -2805,7 +2805,7 @@
     },
     "row": {
       "complete": "Mark “{{title}}” as done",
-      "mark_skipped": "Mark “{{title}}” as skipped",
+      "mark_skipped": "Mark “{{title}}” as skipped for {{name}}",
       "edit": "Edit “{{title}}”",
       "delete": "Delete “{{title}}”",
       "delete_permanent": "Delete “{{title}}” permanently",
@@ -2844,7 +2844,7 @@
     },
     "mark_skipped": {
       "heading": "Marked skipped?",
-      "message": "Mark “{{title}}” as skipped for everyone who still has it? It will not count as missed and no penalty applies.",
+      "message": "Mark “{{title}}” as skipped for {{name}}? They will not get a penalty, and other people on this task are not affected.",
       "confirm": "Mark as skipped"
     },
     "delete_permanent": {
