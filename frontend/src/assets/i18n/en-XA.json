@@ -1421,6 +1421,11 @@
       "reserved": "[=== Reserved: {{ points }} (pending) ===]"
     },
     "loading": "[=== Loading points… ===]",
+    "source": {
+      "task": "[=== View task ===]",
+      "request": "[=== View request ===]",
+      "bonus": "[=== View bonus claim ===]"
+    },
     "retry": "[=== Try again ===]",
     "loadMore": "[=== Load more ===]",
     "cancel": "[=== Cancel ===]",

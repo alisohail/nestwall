@@ -161,6 +161,8 @@ export interface PointsEntry {
   amount: number;
   reason: string | null;
   reward_name: string | null;
+  reference_type: string | null;
+  reference_id: string | null;
   created_at: string;
 }
 

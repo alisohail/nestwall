@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Subscription, finalize } from 'rxjs';
@@ -72,9 +72,11 @@ const REVERSED_NOTICE: Partial<Record<PointsEntryType, string>> = {
         EmptyStateComponent,
         ErrorStateComponent,
         SkeletonComponent,
+        RouterLink,
     ],
-    templateUrl: './points.component.html',
+
     changeDetection: ChangeDetectionStrategy.Eager,
+    templateUrl: './points.component.html',
     styleUrl: './points.component.scss'
 })
 export class PointsComponent implements OnInit {
@@ -289,6 +291,24 @@ export class PointsComponent implements OnInit {
 
   canReverse(entry: PointsEntry): boolean {
     return this.isParent() && REVERSIBLE_TYPES.includes(entry.type);
+  }
+
+  /**
+   * The page a ledger row came from. A task award opens that task. Reward and bonus rows open the
+   * approval history, which lists decided requests and claims. Null for rows with no source page.
+   */
+  sourceLink(entry: PointsEntry): { labelKey: string; path: string; query: Record<string, string> } | null {
+    if (!this.isParent() || !entry.reference_id) return null;
+    switch (entry.reference_type) {
+      case 'task_occurrence':
+        return { labelKey: 'points.source.task', path: '/tasks', query: { task: entry.reference_id, member: entry.member_id } };
+      case 'redemption':
+        return { labelKey: 'points.source.request', path: '/approvals', query: { tab: 'history' } };
+      case 'bonus_claim':
+        return { labelKey: 'points.source.bonus', path: '/approvals', query: { tab: 'history' } };
+      default:
+        return null;
+    }
   }
 
   openManual(): void {

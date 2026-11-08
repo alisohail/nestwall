@@ -22,6 +22,8 @@ function entry(over: Partial<PointsEntry> = {}): PointsEntry {
         amount: 5,
         reason: 'Tidy room',
         reward_name: null,
+        reference_type: null,
+        reference_id: null,
         created_at: '2025-01-06T10:00:00Z',
         ...over,
     };
@@ -146,6 +148,21 @@ describe('PointsComponent', () => {
         expect(el('[data-testid="entry-e2"]')).toBeTruthy();
         expect(el('[data-testid="entry-e2"] .amount')?.textContent).toContain('-3');
         expect(el('[data-testid="entry-e1"] .amount')?.textContent).toContain('+5');
+    });
+
+    it('should link each source-backed entry to where it came from, and leave other entries unlinked', () => {
+        api.entryPage.mockReturnValue(of({
+            entries: [
+                entry({ id: 'a1', type: 'task_award', amount: 4, reason: 'Dishes', reference_type: 'task_occurrence', reference_id: 'occ-9' }),
+                entry({ id: 'r1', type: 'redemption', amount: -20, reason: null, reward_name: 'Cinema', reference_type: 'redemption', reference_id: 'rq1' }),
+                entry({ id: 'b1', type: 'bonus', amount: 2 }),
+            ],
+            next_cursor: null,
+        } as PointsEntryPage));
+        build();
+        expect(el<HTMLAnchorElement>('[data-testid="entry-a1"] [data-testid="entry-source"]')?.getAttribute('href')).toBe('/tasks?task=occ-9&member=m2');
+        expect(el<HTMLAnchorElement>('[data-testid="entry-r1"] [data-testid="entry-source"]')?.getAttribute('href')).toBe('/approvals?tab=history');
+        expect(el('[data-testid="entry-b1"] [data-testid="entry-source"]')).toBeNull();
     });
 
     it('should show the member avatar and name in the Who cell for a parent', () => {

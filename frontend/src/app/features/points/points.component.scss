@@ -304,6 +304,14 @@ h2 {
   white-space: nowrap;
 }
 
+.source-link {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.85em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .amount {
   font-weight: 800;
   font-variant-numeric: tabular-nums;
