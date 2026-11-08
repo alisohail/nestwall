@@ -79,6 +79,9 @@ type Notice struct {
 	Kind        string
 	SubjectID   string
 	Body        string
+	// RefType and RefID point the notice at its source, such as a task occurrence or a bonus claim.
+	RefType string
+	RefID   string
 }
 
 // Notify writes a notification for one member when the family's in-app switch is on. It runs in the
@@ -103,14 +106,17 @@ func Notify(ctx context.Context, q Querier, n Notice, now time.Time) (bool, erro
 	pending := s.Email && !isChild
 	// A push is sent later by the push worker, so the transaction never waits on the network.
 	pushPending := s.Browser
-	var subject any
+	var subject, refType, refID any
 	if n.SubjectID != "" {
 		subject = n.SubjectID
 	}
+	if n.RefType != "" {
+		refType, refID = n.RefType, n.RefID
+	}
 	if _, err := q.ExecContext(ctx,
-		`INSERT INTO notifications (id, family_id, recipient_id, kind, subject_member_id, body, email_pending, push_pending, created_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		ids.New(), n.FamilyID, n.RecipientID, n.Kind, subject, n.Body, pending, pushPending, now,
+		`INSERT INTO notifications (id, family_id, recipient_id, kind, subject_member_id, body, email_pending, push_pending, created_at, reference_type, reference_id)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		ids.New(), n.FamilyID, n.RecipientID, n.Kind, subject, n.Body, pending, pushPending, now, refType, refID,
 	); err != nil {
 		return false, fmt.Errorf("insert notification: %w", err)
 	}

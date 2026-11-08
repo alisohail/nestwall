@@ -198,6 +198,8 @@ func Redeem(ctx context.Context, db *sql.DB, clk clock.Clock, familyID, memberID
 			FamilyID:  familyID,
 			SubjectID: memberID,
 			Kind:      "redemption_requested",
+			RefType:   "redemption",
+			RefID:     id,
 			Body:      fmt.Sprintf("%s asked for \"%s\" and it needs your approval.", name, rw.Name),
 		}, now); err != nil {
 			return RedemptionResult{}, err
@@ -350,6 +352,8 @@ func decide(ctx context.Context, db *sql.DB, clk clock.Clock, familyID, id, user
 			RecipientID: r.MemberID,
 			SubjectID:   r.MemberID,
 			Kind:        "redemption_" + o.status,
+			RefType:     "redemption",
+			RefID:       r.ID,
 			Body:        body,
 		}, now); err != nil {
 			return RedemptionResult{}, err

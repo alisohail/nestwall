@@ -531,6 +531,8 @@ func Complete(ctx context.Context, db *sql.DB, clk clock.Clock, a Actor, taskID 
 			FamilyID:  a.FamilyID,
 			SubjectID: a.MemberID,
 			Kind:      "bonus_submitted",
+			RefType:   "bonus_claim",
+			RefID:     updated.ID,
 			Body:      fmt.Sprintf("%s claimed \"%s\" and it needs your approval.", name, task.Title),
 		}, now); err != nil {
 			return Claim{}, err
@@ -587,6 +589,8 @@ func Approve(ctx context.Context, db *sql.DB, clk clock.Clock, a Actor, claimID 
 		RecipientID: claim.MemberID,
 		SubjectID:   claim.MemberID,
 		Kind:        "bonus_approved",
+		RefType:     "bonus_task",
+		RefID:       claim.BonusTaskID,
 		Body:        fmt.Sprintf("Your bonus \"%s\" was approved. You earned %d points.", task.Title, task.Points),
 	}, now); err != nil {
 		return ClaimResult{}, err
@@ -653,6 +657,8 @@ func Reject(ctx context.Context, db *sql.DB, clk clock.Clock, a Actor, claimID s
 		RecipientID: claim.MemberID,
 		SubjectID:   claim.MemberID,
 		Kind:        "bonus_rejected",
+		RefType:     "bonus_task",
+		RefID:       claim.BonusTaskID,
 		Body:        body,
 	}, now); err != nil {
 		return ClaimResult{}, err
