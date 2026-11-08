@@ -1,6 +1,7 @@
 import type { MockedObject } from "vitest";
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NEVER, Observable, of, throwError } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
@@ -119,6 +120,7 @@ describe('PointsComponent', () => {
             providers: [
                 provideHttpClient(withXhr()),
                 provideHttpClientTesting(),
+                provideRouter([]),
                 { provide: RewardsService, useValue: api },
                 { provide: BadgesService, useValue: badges },
                 {

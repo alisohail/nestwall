@@ -35,6 +35,16 @@
   padding: 0 0 var(--nw-space-3) 3rem;
 }
 
+a.badge {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a.badge:hover,
+a.stat-chip:hover {
+  text-decoration: underline;
+}
+
 
 .title {
   font-weight: 700;

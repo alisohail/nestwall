@@ -1,6 +1,7 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@ngneat/transloco';
 import { Subscription, finalize } from 'rxjs';
@@ -80,6 +81,7 @@ export class PointsComponent implements OnInit {
   private api = inject(RewardsService);
   private family = inject(FamilyService);
   private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
   timeFormat = inject(TimeFormatService);
   private badges = inject(BadgesService);
   private destroyRef = inject(DestroyRef);
@@ -176,6 +178,8 @@ export class PointsComponent implements OnInit {
       this.loadBalances();
       this.loadRewards();
     }
+    const fromMember = this.route.snapshot.queryParamMap.get('member');
+    if (fromMember) this.memberFilter.set(fromMember);
     this.load();
   }
 

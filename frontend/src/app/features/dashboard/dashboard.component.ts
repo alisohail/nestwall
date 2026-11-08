@@ -369,6 +369,11 @@ export class DashboardComponent {
     return this.todayByMember().get(memberId) ?? NO_ITEMS;
   }
 
+  /** Opens this copy's detail on the Tasks page, with that person's list behind it. */
+  taskLink(item: DashboardItem): { task: string; member: string } {
+    return { task: item.task_id, member: item.member_id };
+  }
+
   /** A copy the child has finished, approved or still waiting for a parent. */
   isDone(item: DashboardItem): boolean {
     return item.status === 'approved' || item.status === 'submitted';
