@@ -202,7 +202,7 @@
                 }
               </span>
               @if (item.status === "skipped") {
-                <span class="badge" data-testid="task-skipped-tag">{{
+                <span class="badge info" data-testid="task-skipped-tag">{{
                   "tasks.status.skipped" | transloco
                 }}</span>
               } @else if (tab() === "expired") {
