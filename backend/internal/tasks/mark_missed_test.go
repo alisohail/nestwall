@@ -21,6 +21,21 @@ func TestParentSkipsOpenTaskWithoutPenalty(t *testing.T) {
 	if n := countAudit(t, f, "task.skipped", tk.ID); n != 1 {
 		t.Errorf("audit task.skipped rows = %d, want 1", n)
 	}
+	// Skipped copies leave the default Tasks list and show in the Expired tab.
+	inExpired := func(list []listItem) bool {
+		for _, it := range list {
+			if it.ID == tk.ID {
+				return true
+			}
+		}
+		return false
+	}
+	if !inExpired(listTasks(t, f, f.parent, "?expired=true").Tasks) {
+		t.Errorf("skipped copy missing from expired=true list")
+	}
+	if inExpired(listTasks(t, f, f.parent, "").Tasks) {
+		t.Errorf("skipped copy still in the default list")
+	}
 
 	skipped := decodeTask(t, rec.Body.Bytes())
 	rec = f.do(t, f.parent, http.MethodPost, actionPath(tk.ID, "miss"), nil, ifMatch(skipped.Version))
