@@ -407,6 +407,11 @@ h2 {
     gap: var(--nw-space-2);
     margin-top: var(--nw-space-1);
   }
+
+  .reverse,
+  .delete {
+    justify-self: start;
+  }
 }
 
 .more {
