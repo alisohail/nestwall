@@ -267,6 +267,16 @@ h2 {
   .num {
     text-align: right;
   }
+
+  .col-action {
+    text-align: right;
+    white-space: nowrap;
+    width: 1%;
+
+    .btn + .btn {
+      margin-left: var(--nw-space-2);
+    }
+  }
 }
 
 .when {
@@ -291,6 +301,14 @@ h2 {
   max-width: 320px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-link {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.85em;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -382,6 +400,12 @@ h2 {
 
   .ledger-table .col-action {
     grid-area: action;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--nw-space-2);
+    margin-top: var(--nw-space-1);
   }
 
   .reverse,

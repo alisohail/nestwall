@@ -54,7 +54,7 @@
                 {{ 'dashboard.stats.overdue_none' | transloco }}
               } @else {
                 @for (g of overdueGroups(); track g.member_id) {
-                  <span class="stat-chip" [style.--chip]="g.colour"><app-avatar size="chip" [name]="g.name" [colour]="g.colour" [avatarId]="g.avatar_id" />{{ 'dashboard.stats.overdue_person' | transloco: { name: g.name, count: g.count } }}</span>
+                  <a class="stat-chip" [style.--chip]="g.colour" [routerLink]="['/tasks']" [queryParams]="{ tab: 'overdue', member: g.member_id }"><app-avatar size="chip" [name]="g.name" [colour]="g.colour" [avatarId]="g.avatar_id" />{{ 'dashboard.stats.overdue_person' | transloco: { name: g.name, count: g.count } }}</a>
                 }
               }
             </p>
@@ -99,7 +99,7 @@
               </div>
               <p class="stat-sub">
                 @for (p of pointPeople(); track p.member_id) {
-                  <span class="stat-chip" [style.--chip]="p.member_colour"><app-avatar size="chip" [name]="p.member_name" [colour]="p.member_colour" [avatarId]="p.avatar_id" />{{ p.member_name }} {{ p.points_week }}</span>
+                  <a class="stat-chip" [style.--chip]="p.member_colour" [routerLink]="['/points']" [queryParams]="{ member: p.member_id }"><app-avatar size="chip" [name]="p.member_name" [colour]="p.member_colour" [avatarId]="p.avatar_id" />{{ p.member_name }} {{ p.points_week }}</a>
                 }
               </p>
             }
@@ -143,7 +143,7 @@
                 <div class="person-head">
                   <span class="bold">{{ p.member_name }}</span>
                   @if (personStatus(p); as chip) {
-                    <span class="badge {{ chip.cls }}" data-testid="person-status">{{ chip.key | transloco: chip.params }}</span>
+                    <a class="badge {{ chip.cls }}" [routerLink]="['/tasks']" [queryParams]="{ tab: overdueFor(p.member_id) > 0 ? 'overdue' : 'today', member: p.member_id }" data-testid="person-status">{{ chip.key | transloco: chip.params }}</a>
                   }
                 </div>
                 <div
@@ -178,11 +178,11 @@
                               <div class="chips" data-testid="person-chips">
                                 @for (item of itemsFor(p.member_id); track item.task_id) {
                                   @if (isDone(item)) {
-                                    <span class="badge ok"><app-icon name="check" [size]="12" />{{ item.title }} · {{ clock(item.due_at) }}</span>
+                                    <a class="badge ok" [routerLink]="['/tasks']" [queryParams]="taskLink(item)" data-testid="person-task-chip"><app-icon name="check" [size]="12" />{{ item.title }} · {{ clock(item.due_at) }}</a>
                                   } @else if (isOverdue(item)) {
-                                    <span class="badge err">{{ item.title }} · {{ clock(item.due_at) }}</span>
+                                    <a class="badge err" [routerLink]="['/tasks']" [queryParams]="taskLink(item)" data-testid="person-task-chip">{{ item.title }} · {{ clock(item.due_at) }}</a>
                                   } @else {
-                                    <span class="badge">{{ item.title }} · {{ clock(item.due_at) }}</span>
+                                    <a class="badge" [routerLink]="['/tasks']" [queryParams]="taskLink(item)" data-testid="person-task-chip">{{ item.title }} · {{ clock(item.due_at) }}</a>
                                   }
                                 }
                               </div>

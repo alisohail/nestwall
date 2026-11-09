@@ -678,10 +678,7 @@ export class WallDisplayComponent implements OnInit, OnDestroy {
       avatar: child.avatar_id
         ? this.display.avatarUrl(child.avatar_id, 256)
         : null,
-      points:
-        child.points !== null && this.summary()?.options.show_points
-          ? child.points
-          : null,
+      points: child.points,
       pct,
       countText,
       pending,

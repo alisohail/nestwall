@@ -378,6 +378,28 @@ func TestEntriesParentFiltersAndChildIsolation(t *testing.T) {
 	}
 }
 
+func TestEntriesReturnTheSourceReference(t *testing.T) {
+	f := readFixture(t)
+	child := f.addChild(f.fam.FamilyID, "Ana")
+	at := time.Date(2026, 10, 9, 9, 0, 0, 0, time.UTC)
+	postAt(t, f.db, at, Entry{FamilyID: f.fam.FamilyID, MemberID: child.memberID, Type: TaskAward, Amount: 4,
+		Reason: "Dishes", ReferenceType: "task_occurrence", ReferenceID: "occ-1", IdempotencyKey: "src-1"})
+	postAt(t, f.db, at.Add(time.Hour), Entry{FamilyID: f.fam.FamilyID, MemberID: child.memberID, Type: Bonus, Amount: 2, IdempotencyKey: "src-2"})
+
+	var page PointsEntryPage
+	getJSON(t, f, f.parent, "/api/v1/points/entries?member_id="+child.memberID, &page)
+	if len(page.Entries) != 2 {
+		t.Fatalf("entries = %d, want 2", len(page.Entries))
+	}
+	bonus, award := page.Entries[0], page.Entries[1]
+	if bonus.ReferenceType != nil || bonus.ReferenceID != nil {
+		t.Errorf("entry without a source has reference %v/%v, want none", bonus.ReferenceType, bonus.ReferenceID)
+	}
+	if award.ReferenceType == nil || *award.ReferenceType != "task_occurrence" || award.ReferenceID == nil || *award.ReferenceID != "occ-1" {
+		t.Errorf("task award reference = %v/%v, want task_occurrence/occ-1", award.ReferenceType, award.ReferenceID)
+	}
+}
+
 func TestEntriesRejectBadQueries(t *testing.T) {
 	f := readFixture(t)
 	child := f.addChild(f.fam.FamilyID, "Ana")

@@ -1,7 +1,6 @@
 import { WeatherResponse } from '../../weather/weather.models';
 
 export interface WallSummaryOptions {
-  show_points: boolean;
   show_weather: boolean;
   show_tomorrow: boolean;
   show_pictures: boolean;

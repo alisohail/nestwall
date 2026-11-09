@@ -469,6 +469,11 @@ a  { color: var(--nw-color-primary); text-decoration: none; }
   color: var(--nw-color-error);
 }
 
+.badge.info {
+  background: var(--nw-color-info-container);
+  color: var(--nw-color-info);
+}
+
 .pts {
   display: inline-flex;
   align-items: center;

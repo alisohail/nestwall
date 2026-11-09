@@ -28,6 +28,8 @@ const entry: PointsEntry = {
     amount: 10,
     reason: null,
     reward_name: null,
+    reference_type: null,
+    reference_id: null,
     created_at: '2025-01-07T10:00:00Z',
 };
 

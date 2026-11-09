@@ -33,6 +33,8 @@ func (n *Notifier) Apply(ctx context.Context, tx *sql.Tx, e Event) error {
 			RecipientID: e.MemberID,
 			Kind:        "task_approved",
 			SubjectID:   e.MemberID,
+			RefType:     "task_occurrence",
+			RefID:       e.TaskID,
 			Body:        fmt.Sprintf("Your task \"%s\" was approved.", title),
 		})
 	case EventRejected:
@@ -45,6 +47,8 @@ func (n *Notifier) Apply(ctx context.Context, tx *sql.Tx, e Event) error {
 			RecipientID: e.MemberID,
 			Kind:        "task_rejected",
 			SubjectID:   e.MemberID,
+			RefType:     "task_occurrence",
+			RefID:       e.TaskID,
 			Body:        fmt.Sprintf("Your task \"%s\" was sent back. Check the note and try again.", title),
 		})
 	case EventSubmitted:
@@ -63,6 +67,8 @@ func (n *Notifier) Apply(ctx context.Context, tx *sql.Tx, e Event) error {
 			FamilyID:  e.FamilyID,
 			Kind:      "task_submitted",
 			SubjectID: e.MemberID,
+			RefType:   "task_occurrence",
+			RefID:     e.TaskID,
 			Body:      fmt.Sprintf("%s finished \"%s\" and it needs your approval.", name, title),
 		}, n.clock.Now())
 	}

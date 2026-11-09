@@ -631,6 +631,23 @@ describe('DashboardComponent', () => {
         expect(chip?.classList).toContain('ok');
     });
 
+    it('makes each task chip a link to that task on the Tasks page', () => {
+        dashboards.parent.mockReturnValue(of({
+            ...dashboard,
+            today: [
+                { ...member, task_id: 't9', title: 'Late copy', due_at: '2000-01-01T08:00:00Z', priority: 'normal', status: 'to_do' },
+            ],
+            people: [{ ...member, total: 1, done: 0, week_total: 1, week_done: 0, points_week: 0, overdue: 1 }],
+        }));
+        const fixture = create();
+
+        const chip = fixture.nativeElement.querySelector('[data-testid="person-task-chip"]') as HTMLAnchorElement;
+        expect(chip.tagName).toBe('A');
+        expect(chip.getAttribute('href')).toContain('/tasks');
+        expect(chip.getAttribute('href')).toContain('task=t9');
+        expect(chip.getAttribute('href')).toContain(`member=${member.member_id}`);
+    });
+
     it('shows a status pill on each activity row', () => {
         dashboards.parent.mockReturnValue(of({
             ...dashboard,
@@ -639,8 +656,8 @@ describe('DashboardComponent', () => {
         const fixture = create();
 
         const row = el(fixture, 'activity')?.querySelector('[data-testid="activity-row"]');
-        expect(row?.textContent).toContain('Missed');
-        expect(row?.querySelector('.badge')?.classList).toContain('err');
+      expect(row?.textContent).toContain('Skipped');
+        expect(row?.querySelector('.badge')?.classList).not.toContain('err');
     });
 
     it('switches Today by person between today and this week counts', () => {

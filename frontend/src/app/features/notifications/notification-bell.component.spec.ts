@@ -1,12 +1,12 @@
 import type { Mock, MockedObject } from "vitest";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { getTranslocoTestingModule } from '../../core/transloco/transloco-testing.module';
 import { mockOf } from '../../testing/mock-of';
 import { ApiClient } from '../../core/api/api-client.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { InboxItem, NotificationBellComponent, panelPlacement } from './notification-bell.component';
+import { InboxItem, NotificationBellComponent, notificationLink, panelPlacement } from './notification-bell.component';
 
 describe('panelPlacement', () => {
     it('should right-align the panel to the bell on a wide screen', () => {
@@ -28,9 +28,79 @@ describe('panelPlacement', () => {
 });
 
 const ITEMS: InboxItem[] = [
-    { id: 'n1', kind: 'task_approved', subject_member_id: null, body: 'Tidy room was approved', created_at: '2026-10-20T10:00:00Z', read_at: null },
-    { id: 'n2', kind: 'bonus_approved', subject_member_id: null, body: 'Bonus approved', created_at: '2026-10-19T10:00:00Z', read_at: '2026-10-19T11:00:00Z' },
+    { id: 'n1', kind: 'task_approved', subject_member_id: null, body: 'Tidy room was approved', created_at: '2026-10-20T10:00:00Z', read_at: null, reference_type: 'task_occurrence', reference_id: 'occ-1' },
+    { id: 'n2', kind: 'bonus_approved', subject_member_id: null, body: 'Bonus approved', created_at: '2026-10-19T10:00:00Z', read_at: '2026-10-19T11:00:00Z', reference_type: 'bonus_task', reference_id: 'bt-1' },
 ];
+
+function item(kind: string, reference_id: string | null = 'ref-1'): InboxItem {
+    return { id: 'x', kind, subject_member_id: null, body: '', created_at: '2026-10-20T10:00:00Z', read_at: null, reference_type: null, reference_id };
+}
+
+describe('notificationLink', () => {
+    it('opens a child task or bonus on their own pages', () => {
+        expect(notificationLink(item('task_approved', 'occ-1'), true)).toEqual({ commands: ['/my-tasks', 'occ-1'] });
+        expect(notificationLink(item('task_rejected', 'occ-1'), true)).toEqual({ commands: ['/my-tasks', 'occ-1'] });
+        expect(notificationLink(item('bonus_approved', 'bt-1'), true)).toEqual({ commands: ['/my-tasks', 'bonus', 'bt-1'] });
+        expect(notificationLink(item('redemption_approved'), true)).toEqual({ commands: ['/rewards'] });
+    });
+
+    it('sends parents to the Approvals tab that holds the decision', () => {
+        expect(notificationLink(item('task_submitted'), false)).toEqual({ commands: ['/approvals'], query: { tab: 'tasks' } });
+        expect(notificationLink(item('bonus_submitted'), false)).toEqual({ commands: ['/approvals'], query: { tab: 'tasks' } });
+        expect(notificationLink(item('redemption_requested'), false)).toEqual({ commands: ['/approvals'], query: { tab: 'requests' } });
+    });
+
+    it('returns null when there is no target or no reference to open', () => {
+        expect(notificationLink(item('task_approved', null), true)).toBeNull();
+        expect(notificationLink(item('task_approved', 'occ-1'), false)).toBeNull();
+        expect(notificationLink(item('task_submitted'), true)).toBeNull();
+        expect(notificationLink(item('badge_earned'), true)).toBeNull();
+    });
+});
+
+describe('NotificationBellComponent item click', () => {
+    let fixture: ComponentFixture<NotificationBellComponent>;
+    let api: MockedObject<ApiClient>;
+    let router: Router;
+
+    beforeEach(() => {
+        api = mockOf<ApiClient>({
+            get: vi.fn().mockName("ApiClient.get"),
+            post: vi.fn().mockName("ApiClient.post"),
+            delete: vi.fn().mockName("ApiClient.delete")
+        });
+        api.get.mockReturnValue(of({ notifications: ITEMS, unread_count: 1, browser_enabled: false }));
+        api.post.mockReturnValue(of({}));
+        TestBed.configureTestingModule({
+            imports: [NotificationBellComponent, getTranslocoTestingModule()],
+            providers: [provideRouter([]), { provide: ApiClient, useValue: api }, { provide: AuthService, useValue: { can: () => true, isChild: () => true, currentUser: () => null } }],
+        });
+        router = TestBed.inject(Router);
+        vi.spyOn(router, 'navigate').mockResolvedValue(true);
+        fixture = TestBed.createComponent(NotificationBellComponent);
+        fixture.detectChanges();
+    });
+
+    it('marks the item read, closes the panel and opens its source', () => {
+        const c = fixture.componentInstance;
+        c.toggle();
+        c.openItem(ITEMS[0]);
+
+        expect(api.post).toHaveBeenCalledWith('/api/v1/notifications/n1/read', {}, undefined, undefined, { silent: true });
+        expect(c.open()).toBe(false);
+        expect(router.navigate).toHaveBeenCalledWith(['/my-tasks', 'occ-1'], { queryParams: undefined });
+    });
+
+    it('closes the panel without navigating when the notice has no target', () => {
+        const c = fixture.componentInstance;
+        c.toggle();
+        c.openItem(item('badge_earned'));
+
+        expect(c.open()).toBe(false);
+        expect(router.navigate).not.toHaveBeenCalled();
+    });
+});
+
 
 /** Stands in for EventSource so tests can fire the server's events. */
 class FakeEventSource {

@@ -1,6 +1,6 @@
 import { Component, DestroyRef, ElementRef, HostListener, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 import { interval } from 'rxjs';
@@ -19,7 +19,44 @@ export interface InboxItem {
   body: string;
   created_at: string;
   read_at: string | null;
+  reference_type: string | null;
+  reference_id: string | null;
 }
+
+/** Where a notification opens: a route plus optional query parameters. */
+export interface NotificationLink {
+  commands: string[];
+  query?: Record<string, string>;
+}
+
+/**
+ * The page a notification opens, or null when it has no useful target. Children reach their own
+ * task, bonus and reward pages. Parents reach the Approvals tab where the decision is made.
+ * Notices from before references were stored have no reference ID, so task and bonus kinds
+ * without one open nothing.
+ */
+export function notificationLink(item: InboxItem, isChild: boolean): NotificationLink | null {
+  const id = item.reference_id;
+  switch (item.kind) {
+    case 'task_approved':
+    case 'task_rejected':
+      return isChild && id ? { commands: ['/my-tasks', id] } : null;
+    case 'bonus_approved':
+    case 'bonus_rejected':
+      return isChild && id ? { commands: ['/my-tasks', 'bonus', id] } : null;
+    case 'task_submitted':
+    case 'bonus_submitted':
+      return isChild ? null : { commands: ['/approvals'], query: { tab: 'tasks' } };
+    case 'redemption_requested':
+      return isChild ? null : { commands: ['/approvals'], query: { tab: 'requests' } };
+    case 'redemption_approved':
+    case 'redemption_rejected':
+      return isChild ? { commands: ['/rewards'] } : null;
+    default:
+      return null;
+  }
+}
+
 
 interface InboxResponse {
   notifications: InboxItem[];
@@ -97,6 +134,7 @@ export class NotificationBellComponent {
   private transloco = inject(TranslocoService);
   private auth = inject(AuthService);
   private push = inject(PushService);
+  private router = inject(Router);
   timeFormat = inject(TimeFormatService);
 
   /** Only users who can view family settings get the link to the notification settings page. */
@@ -183,6 +221,14 @@ export class NotificationBellComponent {
 
   close(): void {
     this.open.set(false);
+  }
+
+  /** Marks a notification read and opens the page it belongs to, when it has one. */
+  openItem(item: InboxItem): void {
+    this.markRead(item);
+    const link = notificationLink(item, this.isChild());
+    this.close();
+    if (link) void this.router.navigate(link.commands, { queryParams: link.query });
   }
 
   refresh(): void {

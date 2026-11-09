@@ -110,8 +110,13 @@ export class TasksService {
     );
   }
 
-  markMissed(id: string, version?: number): Observable<Task> {
-    return this.api.post<Task>(`/api/v1/tasks/${id}/miss`, {}, version);
+  /** Skips one person's open copy. */
+  markMissed(id: string, memberId: string, version?: number): Observable<Task> {
+    return this.api.post<Task>(
+      `/api/v1/tasks/${id}/miss`,
+      { member_id: memberId },
+      version,
+    );
   }
 
   addChecklistItem(

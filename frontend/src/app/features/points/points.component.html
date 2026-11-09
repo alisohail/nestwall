@@ -150,7 +150,12 @@
                   </td>
                 }
                 <td class="col-entry"><span [class]="typeTone(entry.type)">{{ 'points.type.' + entry.type | transloco }}</span></td>
-                <td class="col-reason reason">{{ entry.reason || entry.reward_name || '' }}</td>
+                <td class="col-reason reason">
+                  {{ entry.reason || entry.reward_name || '' }}
+                  @if (sourceLink(entry); as src) {
+                    <a class="source-link" data-testid="entry-source" [routerLink]="src.path" [queryParams]="src.query">{{ src.labelKey | transloco }}</a>
+                  }
+                </td>
                 <td class="col-points num amount" [class.pos]="entry.amount > 0" [class.neg]="entry.amount < 0">{{ amountText(entry) }}</td>
                 @if (isParent()) {
                   <td class="col-action">

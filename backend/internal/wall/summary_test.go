@@ -50,8 +50,8 @@ func intFlag(v bool) int {
 func (s summaryFx) setOptions(t *testing.T, o summaryOptions) {
 	t.Helper()
 	mustExec(t, s.db,
-		`UPDATE wall_devices SET show_points = ?, show_pictures = ?, show_tomorrow = ?, show_bonus_banner = ? WHERE id = ?`,
-		intFlag(o.ShowPoints), intFlag(o.ShowPictures), intFlag(o.ShowTomorrow), intFlag(o.ShowBonusBanner), s.deviceID)
+		`UPDATE wall_devices SET show_pictures = ?, show_tomorrow = ?, show_bonus_banner = ? WHERE id = ?`,
+		intFlag(o.ShowPictures), intFlag(o.ShowTomorrow), intFlag(o.ShowBonusBanner), s.deviceID)
 }
 
 func (s summaryFx) fetch(t *testing.T) summaryResponse {
@@ -295,19 +295,13 @@ func TestSummaryShowsBirthdaysFromDateOfBirth(t *testing.T) {
 	t.Fatalf("birthday tomorrow missing with show_tomorrow on")
 }
 
-func TestSummaryPointsFollowDeviceOption(t *testing.T) {
+func TestSummaryShowsPointsForEveryChild(t *testing.T) {
 	s := newSummaryFx(t)
 	addPoints(t, s, s.childMemberID, 5)
 
-	s.setOptions(t, summaryOptions{ShowPoints: false})
-	if child := childByID(t, s.fetch(t), s.childMemberID); child.Points != nil {
-		t.Fatalf("points with show_points off = %d, want null", *child.Points)
-	}
-
-	s.setOptions(t, summaryOptions{ShowPoints: true})
 	child := childByID(t, s.fetch(t), s.childMemberID)
 	if child.Points == nil || *child.Points != 5 {
-		t.Fatalf("points with show_points on = %v, want 5", child.Points)
+		t.Fatalf("points = %v, want 5", child.Points)
 	}
 }
 

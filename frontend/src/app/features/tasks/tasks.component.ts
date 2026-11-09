@@ -1,6 +1,6 @@
 import { Component, DestroyRef, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
 import { forkJoin, of } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
@@ -62,6 +62,7 @@ export class TasksComponent {
   private service = inject(TasksService);
   private family = inject(FamilyService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   /** Used by the template to disable actions the member may not use. */
   auth = inject(AuthService);
@@ -106,8 +107,16 @@ export class TasksComponent {
   private pageCursors: (string | null)[] = [null];
 
   constructor() {
-    const fromTab = this.route.snapshot.queryParamMap.get('tab');
+    const params = this.route.snapshot.queryParamMap;
+    const fromTab = params.get('tab');
     if (fromTab && (TASK_TABS as string[]).includes(fromTab)) this.tab.set(fromTab as TaskTab);
+    const fromMember = params.get('member');
+    if (fromMember) this.memberFilter.set(fromMember);
+    const fromTask = params.get('task');
+    if (fromTask && fromMember) {
+      this.viewing.set({ taskId: fromTask, memberId: fromMember });
+      void this.router.navigate([], { relativeTo: this.route, queryParams: { task: null }, queryParamsHandling: 'merge', replaceUrl: true });
+    }
     this.auth
       .loadPermissions()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -245,7 +254,7 @@ export class TasksComponent {
     this.pendingDelete.set(item);
   }
 
-  /** Forces an open task to missed for every assignee, for when the child cannot finish it. */
+  /** Skips the named person's open copy, for when they cannot finish it. */
   askMissed(item: TaskListItem): void {
     if (item.status === 'to_do' && !item.archived) this.pendingMissed.set(item);
   }
@@ -255,7 +264,7 @@ export class TasksComponent {
     if (!item || this.markingMissed()) return;
     this.markingMissed.set(true);
     this.actionError.set(null);
-    this.service.markMissed(item.id, item.version).subscribe({
+    this.service.markMissed(item.id, item.member_id, item.version).subscribe({
       next: () => {
         this.markingMissed.set(false);
         this.pendingMissed.set(null);

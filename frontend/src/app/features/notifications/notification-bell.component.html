@@ -52,7 +52,7 @@
               class="bell-item"
               [class.unread]="!item.read_at"
               [attr.data-kind]="item.kind"
-              (click)="markRead(item)">
+              (click)="openItem(item)">
               <span class="bell-icon tone-{{ kindMeta(item.kind).tone }}" aria-hidden="true">
                 <app-icon [name]="kindMeta(item.kind).icon" [size]="16" />
               </span>

@@ -348,11 +348,11 @@ func listConditions(q url.Values) (string, []any, error) {
 	}
 	switch q.Get("expired") {
 	case "", "false":
-		// Open copies whose occurrence was missed only appear in the expired list.
-		where.WriteString(" AND NOT (o.status = 'missed' AND oa.status IN ('to_do', 'rejected'))")
+		// Open copies whose occurrence was missed, and skipped copies, only appear in the expired list.
+		where.WriteString(" AND NOT (o.status = 'missed' AND oa.status IN ('to_do', 'rejected')) AND oa.status <> 'skipped'")
 	case "true":
-		// An expired copy is open and its occurrence was missed. Other filters still apply.
-		where.WriteString(" AND o.status = 'missed' AND oa.status IN ('to_do', 'rejected')")
+		// An expired copy is open and its occurrence was missed, or it was skipped. Other filters still apply.
+		where.WriteString(" AND ((o.status = 'missed' AND oa.status IN ('to_do', 'rejected')) OR oa.status = 'skipped')")
 	default:
 		return "", nil, &FieldError{Field: "expired", Reason: "invalid"}
 	}

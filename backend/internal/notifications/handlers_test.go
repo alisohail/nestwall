@@ -91,6 +91,40 @@ func TestListShowsUnreadFirstWithCount(t *testing.T) {
 	}
 }
 
+func TestListReturnsNoticeReferences(t *testing.T) {
+	f := newFixture(t)
+	now := time.Now().UTC()
+	linked := ids.New()
+	if _, err := f.db.Exec(
+		`INSERT INTO notifications (id, family_id, recipient_id, kind, subject_member_id, body, created_at, reference_type, reference_id)
+		 VALUES (?, ?, ?, 'task_approved', NULL, 'Linked', ?, 'task_occurrence', 'occ-9')`,
+		linked, f.fam.FamilyID, f.fam.MemberID, now,
+	); err != nil {
+		t.Fatalf("insert linked notification: %v", err)
+	}
+	f.insert(t, now.Add(-time.Minute), nil)
+
+	rec := f.call(t, f.h.List, "")
+	expectStatus(t, rec, http.StatusOK)
+	var resp ListResponse
+	if err := json.NewDecoder(rec.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	byID := map[string]NotificationView{}
+	for _, n := range resp.Notifications {
+		byID[n.ID] = n
+	}
+	got := byID[linked]
+	if got.ReferenceType == nil || *got.ReferenceType != "task_occurrence" || got.ReferenceID == nil || *got.ReferenceID != "occ-9" {
+		t.Errorf("linked reference = %v/%v, want task_occurrence/occ-9", got.ReferenceType, got.ReferenceID)
+	}
+	for _, n := range resp.Notifications {
+		if n.ID != linked && (n.ReferenceType != nil || n.ReferenceID != nil) {
+			t.Errorf("unlinked notification has a reference: %+v", n)
+		}
+	}
+}
+
 func TestMarkReadIsIdempotent(t *testing.T) {
 	f := newFixture(t)
 	id := f.insert(t, time.Now().UTC(), nil)

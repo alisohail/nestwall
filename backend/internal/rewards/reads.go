@@ -58,7 +58,10 @@ type PointsEntry struct {
 	Amount     int       `json:"amount"`
 	Reason     *string   `json:"reason"`
 	RewardName *string   `json:"reward_name"`
-	CreatedAt  time.Time `json:"created_at"`
+	// ReferenceType and ReferenceID name the task occurrence, redemption or bonus claim the row came from.
+	ReferenceType *string   `json:"reference_type"`
+	ReferenceID   *string   `json:"reference_id"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 // PointsEntryPage is the body of GET /api/v1/points/entries.
@@ -431,7 +434,7 @@ func (h *Handlers) ListEntries(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := h.db.QueryContext(ctx,
 		`SELECT l.id, l.family_member_id, l.entry_type, l.amount, l.reason, rw.name,
-		        CAST(l.created_at AS TEXT)
+		        l.reference_type, l.reference_id, CAST(l.created_at AS TEXT)
 		 FROM points_ledger l
 		 LEFT JOIN redemptions rd ON rd.family_id = l.family_id AND rd.id = l.reference_id AND l.reference_type = 'redemption'
 		 LEFT JOIN rewards rw ON rw.family_id = rd.family_id AND rw.id = rd.reward_id
@@ -447,9 +450,9 @@ func (h *Handlers) ListEntries(w http.ResponseWriter, r *http.Request) {
 	out := make([]PointsEntry, 0, limit)
 	for rows.Next() {
 		var e PointsEntry
-		var reason, rewardName sql.NullString
+		var reason, rewardName, refType, refID sql.NullString
 		var created string
-		if err := rows.Scan(&e.ID, &e.MemberID, &e.Type, &e.Amount, &reason, &rewardName, &created); err != nil {
+		if err := rows.Scan(&e.ID, &e.MemberID, &e.Type, &e.Amount, &reason, &rewardName, &refType, &refID, &created); err != nil {
 			h.internalError(w, "entries: scan", err)
 			return
 		}
@@ -462,6 +465,12 @@ func (h *Handlers) ListEntries(w http.ResponseWriter, r *http.Request) {
 		}
 		if rewardName.Valid {
 			e.RewardName = &rewardName.String
+		}
+		if refType.Valid {
+			e.ReferenceType = &refType.String
+		}
+		if refID.Valid {
+			e.ReferenceID = &refID.String
 		}
 		out = append(out, e)
 	}

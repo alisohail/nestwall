@@ -40,6 +40,8 @@ type NotificationView struct {
 	Body            string     `json:"body"`
 	CreatedAt       time.Time  `json:"created_at"`
 	ReadAt          *time.Time `json:"read_at"`
+	ReferenceType   *string    `json:"reference_type"`
+	ReferenceID     *string    `json:"reference_id"`
 }
 
 // ListResponse wraps the notification list, the unread count and whether the family has browser
@@ -60,7 +62,7 @@ func (h *Handlers) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := h.db.QueryContext(ctx,
-		`SELECT id, kind, subject_member_id, body, created_at, read_at
+		`SELECT id, kind, subject_member_id, body, created_at, read_at, reference_type, reference_id
 		 FROM notifications
 		 WHERE recipient_id = ?
 		 ORDER BY (read_at IS NULL) DESC, created_at DESC
@@ -78,7 +80,8 @@ func (h *Handlers) List(w http.ResponseWriter, r *http.Request) {
 		var n NotificationView
 		var subject sql.NullString
 		var readAt sql.NullTime
-		if err := rows.Scan(&n.ID, &n.Kind, &subject, &n.Body, &n.CreatedAt, &readAt); err != nil {
+		var refType, refID sql.NullString
+		if err := rows.Scan(&n.ID, &n.Kind, &subject, &n.Body, &n.CreatedAt, &readAt, &refType, &refID); err != nil {
 			h.internalError(w, "failed to read notification", err)
 			return
 		}
@@ -87,6 +90,10 @@ func (h *Handlers) List(w http.ResponseWriter, r *http.Request) {
 		}
 		if readAt.Valid {
 			n.ReadAt = &readAt.Time
+		}
+		if refType.Valid && refID.Valid {
+			n.ReferenceType = &refType.String
+			n.ReferenceID = &refID.String
 		}
 		out = append(out, n)
 	}

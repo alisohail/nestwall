@@ -356,7 +356,7 @@ export class DashboardComponent {
       case 'task.approved':
         return { key: 'dashboard.activity.pill.approved', params: {}, cls: 'ok' };
       case 'task.skipped':
-        return { key: 'dashboard.activity.pill.missed', params: {}, cls: 'err' };
+        return { key: 'dashboard.activity.pill.skipped', params: {}, cls: '' };
       case 'task.rejected':
         return { key: 'dashboard.activity.pill.rejected', params: {}, cls: 'err' };
       default:
@@ -367,6 +367,11 @@ export class DashboardComponent {
   /** Today's copies for one person, for the task chips. */
   itemsFor(memberId: string): DashboardItem[] {
     return this.todayByMember().get(memberId) ?? NO_ITEMS;
+  }
+
+  /** Opens this copy's detail on the Tasks page, with that person's list behind it. */
+  taskLink(item: DashboardItem): { task: string; member: string } {
+    return { task: item.task_id, member: item.member_id };
   }
 
   /** A copy the child has finished, approved or still waiting for a parent. */

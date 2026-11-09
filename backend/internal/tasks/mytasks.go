@@ -131,7 +131,7 @@ JOIN task_definitions d ON d.family_id = o.family_id AND d.id = o.task_definitio
 LEFT JOIN task_categories c ON c.family_id = d.family_id AND c.id = d.category_id
 LEFT JOIN family_members dm ON dm.family_id = oa.family_id AND dm.id = oa.decided_by_member_id
 LEFT JOIN users du ON du.id = dm.user_id
-WHERE oa.family_id = ? AND oa.family_member_id = ? AND d.status = 'active' AND oa.status != 'skipped'
+WHERE oa.family_id = ? AND oa.family_member_id = ? AND d.status = 'active'
   AND o.due_date >= ? AND o.due_date <= ?
 ORDER BY o.due_at, o.id`
 
@@ -394,6 +394,10 @@ func buildMyTasks(rows []myRow, now time.Time, today string) myLists {
 	doneStart := addDaysISO(today, -(mineDoneDays - 1))
 
 	for _, r := range rows {
+		if r.status == "skipped" {
+			resp.Expired = append(resp.Expired, r.item())
+			continue
+		}
 		open := r.status == "to_do" || r.status == "rejected"
 		done := r.status == "submitted" || r.status == "approved"
 		missed := open && (r.occurrenceStatus == "missed" || (r.expiresAt != nil && !r.expiresAt.After(now)))
