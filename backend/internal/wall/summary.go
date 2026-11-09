@@ -24,8 +24,7 @@ const (
 
 // summaryOptions are the device's display options. The wall reads them to decide what to draw.
 type summaryOptions struct {
-	ShowPoints      bool `json:"show_points"`
-	ShowWeather     bool `json:"show_weather"`
+	ShowWeather      bool `json:"show_weather"`
 	ShowTomorrow    bool `json:"show_tomorrow"`
 	ShowPictures    bool `json:"show_pictures"`
 	ShowGreeting    bool `json:"show_greeting"`
@@ -270,19 +269,18 @@ func (h *Handlers) summaryWeather(ctx context.Context, familyID string, device *
 // deviceOptions reads the display options of the device. Pictures show only when the device and the
 // family both allow them.
 func (h *Handlers) deviceOptions(ctx context.Context, dev Device) (summaryOptions, error) {
-	var points, showWeather, tomorrow, pictures, greeting, night, bonusBanner, avatarsOnWall int
+	var showWeather, tomorrow, pictures, greeting, night, bonusBanner, avatarsOnWall int
 	err := h.db.QueryRowContext(ctx,
-		`SELECT d.show_points, d.show_weather, d.show_tomorrow, d.show_pictures, d.show_greeting, d.night_mode,
+		`SELECT d.show_weather, d.show_tomorrow, d.show_pictures, d.show_greeting, d.night_mode,
 		        d.show_bonus_banner, f.show_avatars_on_wall
 		   FROM wall_devices d
 		   JOIN families f ON f.id = d.family_id
 		  WHERE d.family_id = ? AND d.id = ?`,
-		dev.FamilyID, dev.ID).Scan(&points, &showWeather, &tomorrow, &pictures, &greeting, &night, &bonusBanner, &avatarsOnWall)
+		dev.FamilyID, dev.ID).Scan(&showWeather, &tomorrow, &pictures, &greeting, &night, &bonusBanner, &avatarsOnWall)
 	if err != nil {
 		return summaryOptions{}, err
 	}
 	return summaryOptions{
-		ShowPoints:      points != 0,
 		ShowWeather:     showWeather != 0,
 		ShowTomorrow:    tomorrow != 0,
 		ShowPictures:    pictures != 0 && avatarsOnWall != 0,
@@ -292,8 +290,7 @@ func (h *Handlers) deviceOptions(ctx context.Context, dev Device) (summaryOption
 	}, nil
 }
 
-// summaryChildren returns the active children with their tasks and, when the device shows points,
-// their balance. Parents never appear here. pictures maps member IDs to their current picture.
+// summaryChildren returns the active children with their tasks and their points balance. Parents never appear here. pictures maps member IDs to their current picture.
 func (h *Handlers) summaryChildren(ctx context.Context, familyID string, opts summaryOptions, today string, zone *time.Location, pictures map[string]string) ([]summaryChild, error) {
 	rows, err := h.db.QueryContext(ctx,
 		`SELECT fm.id, u.display_name, fm.colour
@@ -329,13 +326,11 @@ func (h *Handlers) summaryChildren(ctx context.Context, familyID string, opts su
 			return nil, err
 		}
 		out[i].Tasks = tasks
-		if opts.ShowPoints {
-			balance, err := rewards.Balance(ctx, h.db, familyID, out[i].MemberID)
-			if err != nil {
-				return nil, err
-			}
-			out[i].Points = &balance
+		balance, err := rewards.Balance(ctx, h.db, familyID, out[i].MemberID)
+		if err != nil {
+			return nil, err
 		}
+		out[i].Points = &balance
 	}
 	return out, nil
 }

@@ -16,7 +16,6 @@ const summary: WallSummary = {
     timezone: "UTC",
     now: "2024-05-01T09:00:00Z",
     options: {
-        show_points: true,
         show_weather: false,
         show_tomorrow: false,
         show_pictures: false,
