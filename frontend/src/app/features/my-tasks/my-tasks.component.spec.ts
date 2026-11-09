@@ -198,6 +198,16 @@ describe('MyTasksComponent', () => {
         expect(fixture.nativeElement.querySelector('[data-testid="my-task-checking"]')?.textContent?.trim()).toBe('A parent is checking');
     });
 
+    it('shows skipped copies on the Expired tab with a Skipped chip instead of Missed', async () => {
+        const expiredTab: MyTasksResponse = {
+            ...data,
+            expired: [item({ task_id: 's1', title: 'Walk the dog', status: 'skipped' })],
+        };
+        const fixture = await setup('expired', expiredTab);
+        expect(fixture.nativeElement.querySelector('[data-testid="my-task-skipped"]')?.textContent?.trim()).toBe('Skipped');
+        expect(fixture.nativeElement.querySelector('[data-testid="my-task-expired"]')).toBeNull();
+    });
+
     const emptyResponse: MyTasksResponse = { ...data, catch_up: [], waiting: [] };
     const noPage: MyTasksPage = { tasks: [], next_cursor: null };
 

@@ -396,6 +396,25 @@ func TestBuildMyTasksMarksPastDueAndMissed(t *testing.T) {
 	}
 }
 
+func TestBuildMyTasksListsSkippedUnderExpired(t *testing.T) {
+	now := utc(10, 9)
+	rows := []myRow{
+		{taskID: "skipped", dueDate: "2026-10-10", dueAt: utc(10, 8), status: "skipped", occurrenceStatus: "scheduled"},
+		{taskID: "open", dueDate: "2026-10-10", dueAt: utc(10, 11), status: "to_do", occurrenceStatus: "scheduled"},
+	}
+	resp := buildMyTasks(rows, now, "2026-10-10")
+
+	if got := itemIDs(resp.Expired); !equalStrings(got, []string{"skipped"}) {
+		t.Fatalf("expired = %v, want the skipped copy", got)
+	}
+	if got := itemIDs(resp.Today); !equalStrings(got, []string{"open"}) {
+		t.Fatalf("today = %v, want only the open copy", got)
+	}
+	if resp.Summary.TodayTotal != 1 {
+		t.Fatalf("today total = %d, want 1; skipped copies are not counted", resp.Summary.TodayTotal)
+	}
+}
+
 func TestMyTaskItemPenaltyPoints(t *testing.T) {
 	percent := myRow{
 		taskID:       "p",

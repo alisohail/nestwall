@@ -40,7 +40,9 @@
       @if (expiresIn(); as left) {
         <span class="badge amber" data-testid="my-task-expires-in">{{ 'tasks.expires_in' | transloco: { time: (left.key | transloco: left.params) } }}</span>
       }
-      @if (expired()) {
+      @if (item().status === 'skipped') {
+        <span class="badge info" data-testid="my-task-skipped">{{ 'tasks.status.skipped' | transloco }}</span>
+      } @else if (expired()) {
         <span class="badge err" data-testid="my-task-expired">{{ 'myTasks.expired_badge' | transloco }}</span>
       }
     </span>
