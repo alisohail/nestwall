@@ -9,10 +9,10 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
 	github.com/teambition/rrule-go v1.8.2
-	golang.org/x/crypto v0.58.0
+	golang.org/x/crypto v0.59.0
 )
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
-	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
 )
